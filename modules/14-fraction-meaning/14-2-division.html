@@ -3,144 +3,216 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>分数与除法 · 五年级数学</title>
+<title>分数与除法 · 深入概念 · 五年级</title>
 <link rel="stylesheet" href="../../shared/layout.css">
+<style>
+.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;}
+.visual-step h4{font-size:17px;margin-bottom:12px;}
+.visual-step .step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:700;background:var(--accent-light);color:var(--accent-deep);margin-bottom:10px;}
+.concept-highlight{background:linear-gradient(145deg,#fefce8,#fff);border:2px solid #fde68a;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}
+.concept-highlight .big-idea{font-size:22px;font-weight:800;color:#92400e;line-height:1.6;}
+.concept-highlight .big-idea .highlight{color:var(--accent-deep);background:var(--accent-light);padding:2px 8px;border-radius:4px;}
+.thought-bubble{display:inline-block;background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:10px 16px;margin:6px 0;font-size:14px;max-width:90%;}
+.thought-bubble::before{content:'💭 ';}
+</style>
 </head>
 <body>
-<div class="top-nav"><a href="../../index.html">🏠</a><span class="breadcrumb-sep">›</span><a href="index.html">分数</a><span class="breadcrumb-sep">›</span><span>分数与除法</span></div>
+<div class="top-nav"><a href="../../index.html">🏠</a><span class="breadcrumb-sep">›</span><a href="index.html">分数的意义和性质</a><span class="breadcrumb-sep">›</span><span>分数与除法</span></div>
 <h1 class="module-title">➗ 分数与除法</h1>
-<p class="module-subtitle">3÷4=3/4 —— 除号和分数线是同一种东西</p>
+<p class="module-subtitle">除不尽怎么办？用分数表示。</p>
 
-<div class="section"><div class="section-header"><span class="emoji">🔑</span>前置检查</div><div id="gate-root"></div></div>
+<div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
 
 <div class="section">
-  <div class="section-header"><span class="emoji">🧱</span>拆到公理</div>
-  <div class="math-display">
-<b>1个蛋糕，平均分给3人。每人分得：1÷3 = <span style="color:var(--accent);">1/3</span> 个。</b><br><br>
-<b>3个月饼，平均分给4人。每人分得：3÷4 = <span style="color:var(--accent);">3/4</span> 个。</b>
+  <div class="section-header"><span class="emoji">🧱</span>拆到公理 · 分披萨</div>
+  <div class="visual-step">
+    <span class="step-label">第 1 步 · 你会做的事</span>
+    <h4>8块披萨分给4人 → 8÷4=2块/人</h4>
+    <div class="thought-bubble">能整除时，我们用整数表示结果。</div>
   </div>
-  <div class="axiom-box">
-被除数 ÷ 除数 = 被除数/除数<br><br>
-a ÷ b = a/b &nbsp;&nbsp;(b ≠ 0)<br><br>
-分数线 = 除号。<br>
-它们说的是同一件事：<b>平均分</b>。
+  <div class="visual-step">
+    <span class="step-label">第 2 步 · 新问题</span>
+    <h4>3个披萨分给4人 → 3÷4=？</h4>
+    <div style="text-align:center;margin:16px 0;">
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+        <div style="width:60px;height:60px;background:#fef3c7;border:2px solid #f59e0b;border-radius:50%;display:flex;align-items:center;justify-content:center;">🍕</div>
+        <div style="width:60px;height:60px;background:#fef3c7;border:2px solid #f59e0b;border-radius:50%;display:flex;align-items:center;justify-content:center;">🍕</div>
+        <div style="width:60px;height:60px;background:#fef3c7;border:2px solid #f59e0b;border-radius:50%;display:flex;align-items:center;justify-content:center;">🍕</div>
+      </div>
+      <p style="margin-top:8px;font-size:16px;">3个披萨，平均分给4个人 → 每人多少？</p>
+    </div>
+  </div>
+
+  <div class="visual-step" style="text-align:center;">
+    <span class="step-label">第 3 步 · 可视化</span>
+    <h4>每个披萨切成4份 → 每人从每个披萨拿1份</h4>
+    <canvas id="pizza-canvas" style="margin:0 auto;"></canvas>
+    <div style="margin-top:8px;" class="concept-highlight">
+      <div class="big-idea" style="font-size:19px;">
+        🔑 <span class="highlight">3 ÷ 4 = 3/4</span>
+      </div>
+      <p style="font-size:15px;margin-top:8px;">
+        把3个"整体1"各分成4份 → 每人每份取1/4 → 3个1/4 = 3/4
+      </p>
+    </div>
+  </div>
+
+  <div class="paradigm-diff">
+    <p><b>核心发现：除法的结果不一定是整数。</b></p>
+    <p>3 ÷ 4 = 0.75（小数） ➜ <strong style="color:var(--accent);">3 ÷ 4 = 3/4（分数）</strong></p>
+    <p>分数是除法的"真正答案"——小数只是另一种表达方式。</p>
   </div>
 </div>
 
 <div class="section">
-  <div class="section-header"><span class="emoji">🎮</span>交互 — 3个饼分给4人</div>
-  <div class="interactive-area" style="text-align:left;padding:20px;">
-    <div class="frac-bar" style="width:100%;height:40px;display:flex;gap:2px;" id="pizza-bars"></div>
-    <p style="margin-top:8px;font-size:14px;">
-      每人分到：<span id="each-gets" style="font-weight:700;color:var(--accent);">3/4</span> 个饼
-    </p>
-    <p style="font-size:13px;color:var(--text-muted);">
-      把3个饼每个切4份 = 12份。每人拿3份 = 3/4个。
-    </p>
+  <div class="section-header"><span class="emoji">🎮</span>交互 · 分东西</div>
+  <div class="interactive-area" style="text-align:center;">
+    <div>
+      <label><span id="num-items">3</span>个披萨 ÷ <span id="num-people">4</span>人</label>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:10px 0;">
+      <label>披萨数<input type="range" id="items-slider" min="1" max="6" value="3" oninput="updateDiv()"></label>
+      <label>人数<input type="range" id="people-slider" min="2" max="8" value="4" oninput="updateDiv()"></label>
+    </div>
+    <div style="font-size:24px;font-weight:800;margin:8px 0;">
+      <span id="div-result">3 ÷ 4 = 3/4</span>
+    </div>
   </div>
 </div>
 
 <div class="section">
-  <div class="section-header"><span class="emoji">📐</span>教材溯源</div>
-  <div style="cursor:pointer;padding:12px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);margin-bottom:8px;" onclick="this.querySelector('div').style.display=this.querySelector('div').style.display==='none'?'block':'none'">
-    📖 <b>教材：</b>把3个月饼平均分给4人，每人分得多少个？3÷4=3/4(个) <i>（点击看解析）</i>
-    <div style="display:none;margin-top:8px;padding:8px;background:#f0fdf4;border-radius:6px;font-size:14px;">
-      ✏️ 这是理解假分数和带分数的钥匙。3/4是真分数（分子<分母）。5/4是假分数——5÷4=1又1/4（每个饼切成4份，5份=1个完整+1/4）。
+  <div class="section-header"><span class="emoji">📐</span>教材原文</div>
+  <div style="cursor:pointer;padding:14px 18px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);" onclick="this.querySelector('.annot').style.display==='none'?'block':'none'">
+    📖 <b>教材：</b>"两个数相除，商可以用分数表示。被除数÷除数=被除数/除数。" <i>（点击看意图）</i>
+    <div class="annot" style="display:none;margin-top:10px;padding:10px 14px;background:#f0fdf4;border-radius:6px;font-size:14px;line-height:1.7;">
+      ✏️ 这句话背后的深层含义：<br>
+      分数线 = 除号。<br>
+      分子 = 被除数，分母 = 除数。<br>
+      <strong>一切除法都可以用分数表达</strong>——包括除不尽的。<br>
+      这是"分数"被创造出来的根本原因。
     </div>
   </div>
 </div>
 
 <div class="section">
   <div class="section-header"><span class="emoji">🎯</span>典例精讲</div>
-  <h3>例1：动物园大象9头，金丝猴4只。金丝猴是大象的几分之几？</h3>
-  <div class="math-display">4 ÷ 9 = <b>4/9</b></div>
-  <div style="margin-top:8px;"><p style="font-weight:600;">✏️ 5个苹果，平均分给8人。每人分到几分之几个？<input class="input-field" id="ex1" style="width:60px;"> <button class="btn btn-primary btn-sm" onclick="ck1()">提交</button></p><div class="feedback" id="fb1"></div></div>
-  <h3 style="margin-top:16px;">例2：五(1)班17幅作品参赛，4幅获奖。获奖作品占全班作品的几分之几？</h3>
-  <p style="font-weight:600;">✏️ <input class="input-field" id="ex2" style="width:60px;"> <button class="btn btn-primary btn-sm" onclick="ck2()">提交</button></p><div class="feedback" id="fb2"></div></div>
-
-<div class="section">
-  <div class="section-header"><span class="emoji">⚠️</span>踩坑预警</div>
-  <div class="pitfall">
-    <div class="pitfall-title">🕳️ a÷b 写成 b/a</div>
-    <p><b>症状：</b>3÷4写成4/3。</p>
-    <p><b>根因：</b>没真懂"分数线=除号"。被除数在分子（上面），除数在分母（下面）。</p>
-    <p style="margin-top:8px;"><b>🔍 自查：</b>问自己"谁被谁分？"被分的东西在分子。</p>
+  <div class="visual-step">
+    <h4>🎯 例1：5÷12=？</h4>
+    5 ÷ 12 = 5/12<br>
+    ✏️ 7÷9=<input class="input-field" id="ex1" style="width:50px;"> <button class="btn btn-primary btn-sm" onclick="checkEx1()">提交</button><div class="feedback" id="fb1"></div>
+  </div>
+  <div class="visual-step" style="margin-top:12px;">
+    <h4>🎯 例2：假分数</h4>
+    5个披萨分给3人 → 5÷3 = 5/3 = 1又2/3<br>
+    ✏️ 7÷4 = <input class="input-field" id="ex2" style="width:50px;">（填带分数）<button class="btn btn-primary btn-sm" onclick="checkEx2()">提交</button><div class="feedback" id="fb2"></div>
   </div>
 </div>
 
+<!-- 对抗 -->
 <div class="section">
-  <div class="section-header"><img class="avatar-icon" src="../../assets/einstein-avatar.svg" alt="" aria-hidden="true">对抗挑战</div>
+  <div class="section-header"><img class="avatar-icon" src="../../assets/einstein-avatar.svg" alt="">对抗挑战</div>
   <div id="adversary-root"></div>
 </div>
 
+<!-- 费曼 -->
 <div class="section">
-  <div class="section-header"><img class="avatar-icon" src="../../assets/feynman-avatar.svg" alt="" aria-hidden="true">费曼输出</div>
-  <p style="color:var(--text-muted);">给同学解释：<b>"为什么3÷4=3/4？分数和除法有什么关系？"</b></p>
+  <div class="section-header"><img class="avatar-icon" src="../../assets/feynman-avatar.svg" alt="">费曼输出</div>
   <div id="feynman-root"></div>
 </div>
 
 <div class="section">
-  <div class="section-header"><span class="emoji">📝</span>分层练习</div>
-  <div class="exercise-tier"><h3><span class="tier-badge basic">基础层</span></h3><div id="ex-basic"></div></div>
-  <div class="exercise-tier" id="tier-adv" style="display:none;"><h3><span class="tier-badge advanced">提升层</span></h3><div id="ex-adv"></div></div>
-  <div id="done" style="display:none;text-align:center;padding:24px;"><div style="font-size:48px;">🎉</div><p style="font-weight:700;">分数与除法 — 通关！</p></div>
+  <div class="section-header"><span class="emoji">📝</span>练习</div>
+  <div class="exercise-tier"><h3><span class="tier-badge basic">基础</span></h3><div id="ex-basic"></div></div>
+  <div class="exercise-tier" id="tier-adv" style="display:none;"><h3><span class="tier-badge advanced">提升</span></h3><div id="ex-adv"></div></div>
+  <div id="done" style="display:none;text-align:center;padding:24px;font-size:24px;">🎉 分数与除法 — 通关！</div>
 </div>
 
 <script src="../../shared/components.js"></script>
 <script>
 createGate({containerId:'gate-root',
-  questions:[{label:'12÷4=',inputs:[{key:'a',width:40}],answer:'3',check:u=>u.a==='3'},
-    {label:'用分数表示1÷4=',inputs:[{key:'a',width:60}],answer:'1/4',check:u=>u.a==='1/4'}],
-  onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:16px;">✅ 基础扎实！</div>'
+  questions:[{label:'6个月饼分给3人，每人几个？',inputs:[{key:'a',width:40}],answer:'2',check:u=>u.a==='2'}],
+  onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅ 好！</div>'
 });
 
-// Draw 3 pizzas cut into 4 each
-const pb=document.getElementById('pizza-bars');
-for(let i=0;i<3;i++){
-  pb.innerHTML+='<div style="flex:1;background:#3b82f6;margin:1px;border-radius:4px;display:flex;">'+
-    '<div style="flex:1;border-right:1px dashed #fff;"></div><div style="flex:1;border-right:1px dashed #fff;"></div><div style="flex:1;border-right:1px dashed #fff;"></div><div style="flex:1;"></div></div>';
+// ===== 披萨可视化 =====
+const pc=document.getElementById('pizza-canvas');
+pc.width=Math.min(280,pc.parentElement.clientWidth-40);pc.height=120;
+const pctx=pc.getContext('2d');
+function drawPizzas(){
+  const w=pc.width,h=pc.height;
+  pctx.clearRect(0,0,w,h);
+  const rad=30;const gap=15;
+  const totalW=3*(2*rad+gap)-gap;const ox=(w-totalW)/2;
+  for(let i=0;i<3;i++){
+    const cx=ox+i*(2*rad+gap)+rad,cy=h/2;
+    // 4等份披萨
+    for(let j=0;j<4;j++){
+      const startAngle=j*Math.PI/2, endAngle=(j+1)*Math.PI/2;
+      pctx.beginPath();pctx.moveTo(cx,cy);pctx.arc(cx,cy,rad,startAngle,endAngle);pctx.closePath();
+      pctx.fillStyle=j===0?'#fef3c7':'#fefce8';
+      pctx.fill();pctx.strokeStyle='#d97706';pctx.lineWidth=1;pctx.stroke();
+    }
+    // 标注每人拿的一块
+    pctx.fillStyle='rgba(59,130,246,0.4)';
+    pctx.beginPath();pctx.moveTo(cx,cy);pctx.arc(cx,cy,rad,0,Math.PI/2);pctx.closePath();pctx.fill();
+    pctx.fillStyle='#1e293b';pctx.font='10px sans-serif';pctx.textAlign='center';
+    pctx.fillText('🍕'+(i+1),cx,cy+4);
+  }
 }
+drawPizzas();
+window.addEventListener('resize',()=>{pc.width=Math.min(280,pc.parentElement.clientWidth-40);drawPizzas();});
 
-function ck1(){const v=document.getElementById('ex1').value,f=document.getElementById('fb1');const ok=v==='5/8';f.className='feedback show '+(ok?'success':'error');f.textContent=ok?'✅ 5÷8=5/8个苹果':'❌ 5÷8=5/8。被除数在分子，除数在分母';}
-function ck2(){const v=document.getElementById('ex2').value,f=document.getElementById('fb2');const ok=v==='4/17';f.className='feedback show '+(ok?'success':'error');f.textContent=ok?'✅ 4÷17=4/17。4幅获奖/17幅总参赛':'❌ 获奖÷总参赛=4÷17=4/17';}
+// ===== 交互 =====
+function updateDiv(){
+  const items=parseInt(document.getElementById('items-slider').value);
+  const people=parseInt(document.getElementById('people-slider').value);
+  document.getElementById('num-items').textContent=items;
+  document.getElementById('num-people').textContent=people;
+  const g=mathGcd(items,people);
+  document.getElementById('div-result').textContent=`${items} ÷ ${people} = ${items}/${people}`;
+  // 如果是假分数显示带分数
+  if(items>people){
+    const whole=Math.floor(items/people),rem=items%people;
+    document.getElementById('div-result').textContent+=rem===0?` = ${whole}`:` = ${whole}又${rem}/${people}`;
+  }
+}
+function mathGcd(a,b){while(b){[a,b]=[b,a%b];}return a;}
+updateDiv();
 
+function checkEx1(){const v=document.getElementById('ex1').value,f=document.getElementById('fb1');const ok=v==='7/9';f.className='feedback show '+(ok?'success':'error');f.innerHTML=ok?'✅ 7÷9=7/9':'❌ 被除数÷除数=被除数/除数，7÷9=7/9';}
+function checkEx2(){const v=document.getElementById('ex2').value,f=document.getElementById('fb2');const ok=v==='1又3/4'||v==='7/4'||v==='1.75';f.className='feedback show '+(ok?'success':'error');f.innerHTML=ok?'✅ 7÷4=7/4=1又3/4':'❌ 7÷4=7/4=1又3/4';}
+
+// ===== 对抗 =====
 createAdversarialChallenge({containerId:'adversary-root',
   challenges:[
-    {tag:'除法关系',statement:'3÷4可以写成3/4，因为分数线和除号表达的是同一种平均分关系。',
-      answer:'agree',hint:'被分的数量在分子，分成几份在分母。',
-      explanation:'a÷b可以写成a/b。分子是被除数，分母是除数。',
-      counterexample:'b不能为0。除以0没有意义，分母也不能是0。'},
-    {tag:'假分数',statement:'7/2不能表示除法，因为分子比分母大。',
-      answer:'refute',hint:'把7/2读成谁除以谁。',
-      explanation:'7/2就是7÷2。分子比分母大只说明结果大于1，不影响它表示除法。',
-      counterexample:'7÷2=3.5，写成分数就是7/2。'}
+    {tag:'等价',statement:'分数线和除号表达的意思完全一样。',answer:'agree',hint:'3÷4=3/4对吗？反过来成立吗？',explanation:'分数线本质上就是水平的除号。a÷b = a/b，两侧等价。',counterexample:'区别只在书写形式——除号是横着两点，分数线是横线。含义完全相同。'},
+    {tag:'假分数',statement:'分数必须小于1，所以5/3不是真正的分数。',answer:'refute',hint:'分数定义里有没有说必须小于1？',explanation:'任何两数相除得到的商都可以用分数表示。5÷3=5/3，这是真分数还是假分数？假分数也是分数。',counterexample:'假分数的"假"不是"假"的意思，是"大于等于1的分数"的意思。'}
   ],
   onComplete:()=>saveProgress({'fraction-meaning':{'division':{'adversary':'complete'}}})
 });
 
 createFeynmanFill({containerId:'feynman-root',
-  template:'a÷b = ___ (b≠0)。分数线就是___号。被除数在___（上面/下面），除数在___（上面/下面）。例如5个苹果分给8人：5÷8=___。意思是每人分到___个苹果。',
-  answer:['a/b','除号','上面','下面','5/8','5/8'],
+  template:'分数和除法是一回事。___ ÷ ___ = ___/___。分数线相当于___号，___相当于被除数，___相当于除数。比如3个披萨分给4人，每人得到___个披萨。如果是7÷4，答案是___。',
+  answer:['a','b','a','b','除','分子','分母','3/4','7/4'],
   onComplete:()=>saveProgress({'fraction-meaning':{'division':{'feynman':'complete'}}})
 });
 
 createExerciseSet({containerId:'ex-basic',
   exercises:[
-    {question:'7÷13用分数表示=',inputs:[{key:'a',width:60}],answer:'7/13',hint:'被除数/除数=7/13',check:a=>a.a==='7/13'},
-    {question:'5/6 = ___÷___',inputs:[{key:'a',width:40},{key:'b',width:40}],answer:'5, 6',hint:'分子÷分母=5÷6',check:a=>a.a==='5'&&a.b==='6'},
-    {question:'3m²花坛种4种花，每种平均占地几分之几m²？',inputs:[{key:'a',width:60}],answer:'3/4',hint:'3÷4=3/4 m²',check:a=>a.a==='3/4'}
+    {question:'3÷8=？',inputs:[{key:'a',width:40}],answer:'3/8',hint:'3÷8=3/8',check:a=>a.a==='3/8'},
+    {question:'5÷6=？',inputs:[{key:'a',width:40}],answer:'5/6',hint:'5÷6=5/6',check:a=>a.a==='5/6'}
   ],
-  passThreshold:0.67,
+  passThreshold:0.5,
   onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}
 });
 function initAdv(){
   createExerciseSet({containerId:'ex-adv',
     exercises:[
-      {question:'小明15分钟走了1km，平均每分钟走几分之几km？',inputs:[{key:'a',width:60}],answer:'1/15',hint:'1÷15=1/15 km',check:a=>a.a==='1/15'},
-      {question:'一本书标价11元，售价9元。售价是标价的几分之几？',inputs:[{key:'a',width:60}],answer:'9/11',hint:'9÷11=9/11',check:a=>a.a==='9/11'}
+      {question:'9÷4=？（用带分数表示）',inputs:[{key:'a',width:50}],answer:'2又1/4',hint:'9÷4=9/4=2又1/4',check:a=>a.a==='2又1/4'||a.a==='9/4'},
+      {question:'把3m长的绳子平均剪成5段，每段多长？',inputs:[{key:'a',width:50}],answer:'3/5',hint:'3÷5=3/5m',check:a=>a.a==='3/5'||a.a==='3/5m'}
     ],
     passThreshold:0.5,
-    onPass:()=>{document.getElementById('done').style.display='block';saveProgress({'fraction-meaning':{'division':{'completed':true}}});}
+    onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'fraction-meaning':{'division':{'completed':true}}});}
   });
 }
 </script>
