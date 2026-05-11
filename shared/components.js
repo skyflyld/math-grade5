@@ -80,6 +80,7 @@ function createGate(opts){
   q.forEach((qItem,i)=>{
     const d=document.createElement('div');
     d.style.cssText='margin:10px 0;display:flex;align-items:center;gap:8px;justify-content:center;flex-wrap:wrap;';
+    d.dataset.questionIndex=String(i);
     d.innerHTML=`<span>${i+1}. ${qItem.label}</span>`;
     if(qItem.inputs){
       const inputGroup=document.createElement('span');
@@ -91,6 +92,7 @@ function createGate(opts){
         el.style.width=(inp.width||50)+'px';
         el.type='text';el.placeholder=inp.placeholder||'';
         el.dataset.key=inp.key;
+        el.dataset.questionIndex=String(i);
         el.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('gate-submit').click();});
         inputGroup.appendChild(el);
       });
@@ -103,11 +105,10 @@ function createGate(opts){
     let allCorrect=true;
     q.forEach((qItem,i)=>{
       let answer={};
+      const questionEl=qc.querySelector(`[data-question-index="${i}"]`);
       if(qItem.inputs){
         qItem.inputs.forEach(inp=>{
-          const inputs=qc.querySelectorAll('.input-field');
-          let found=null;
-          inputs.forEach(el=>{if(el.dataset.key===inp.key)found=el;});
+          const found=questionEl?questionEl.querySelector(`.input-field[data-key="${inp.key}"]`):null;
           if(found)answer[inp.key]=found.value.trim();
         });
       }
@@ -116,15 +117,15 @@ function createGate(opts){
         allCorrect=false;
         if(qItem.inputs){
           qItem.inputs.forEach(inp=>{
-            const inputs=qc.querySelectorAll('.input-field');
-            inputs.forEach(el=>{if(el.dataset.key===inp.key)el.className='input-field wrong';});
+            const found=questionEl?questionEl.querySelector(`.input-field[data-key="${inp.key}"]`):null;
+            if(found)found.className='input-field wrong';
           });
         }
       }else{
         if(qItem.inputs){
           qItem.inputs.forEach(inp=>{
-            const inputs=qc.querySelectorAll('.input-field');
-            inputs.forEach(el=>{if(el.dataset.key===inp.key)el.className='input-field correct';});
+            const found=questionEl?questionEl.querySelector(`.input-field[data-key="${inp.key}"]`):null;
+            if(found)found.className='input-field correct';
           });
         }
       }

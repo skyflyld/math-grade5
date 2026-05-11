@@ -482,6 +482,72 @@ body {
   font-weight: 600;
 }
 
+/* ========== 学习路径 ========== */
+.learning-shell {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 10px 0 28px;
+}
+.learning-panel {
+  background: rgba(255,255,255,0.86);
+  border: 1px solid rgba(226,232,240,0.9);
+  border-radius: var(--radius-sm);
+  padding: 22px;
+  box-shadow: var(--shadow);
+}
+.learning-kicker {
+  color: var(--accent-deep);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+.learning-panel h2 {
+  font-size: 20px;
+  line-height: 1.45;
+  margin-bottom: 8px;
+}
+.learning-panel p {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+.flow-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.flow-steps span {
+  background: var(--accent-light);
+  color: var(--accent-deep);
+  border-radius: var(--radius-xs);
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.principle-grid {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+.principle-grid div {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 10px;
+  align-items: start;
+}
+.principle-grid b {
+  color: var(--text);
+  font-size: 13px;
+}
+.principle-grid span {
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
 /* ========== 模块分隔标题 ========== */
 .section-title-area {
   display: flex;
@@ -625,6 +691,9 @@ body {
   .hero-section { padding: 28px 16px 20px; }
   .textbook-compare { grid-template-columns: 1fr; }
   .concept-grid { grid-template-columns: 1fr; }
+  .learning-shell { grid-template-columns: 1fr; }
+  .learning-panel { padding: 18px 16px; }
+  .principle-grid div { grid-template-columns: 1fr; gap: 2px; }
   .section-header { font-size: 17px; }
   .section-header .emoji { font-size: 22px; }
   .axiom-box { font-size: 15px; padding: 16px 18px; }
