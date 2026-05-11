@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>五年级数学 · 概念星图</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --number-ops:#4A90D9;--geometry:#E85D75;--algebra:#7B68EE;
+  --statistics:#F0A050;--applications:#50B87A;
+  --bg:#0f1923;--surface:#162231;--text:#e0e6ed;--text-dim:#7a8b9e;
+  --card-bg:#1c2d41;--border:#2a3d55;--accent:#5ba0f5;
+}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);overflow:hidden;height:100vh;width:100vw}
+#app{display:flex;flex-direction:column;height:100vh}
+header{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:var(--surface);border-bottom:1px solid var(--border);z-index:10;flex-shrink:0}
+header h1{font-size:1.1em;font-weight:600;white-space:nowrap}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.filters button{padding:5px 12px;border:1px solid var(--border);border-radius:14px;background:transparent;color:var(--text-dim);cursor:pointer;font-size:.78em;transition:all .2s;white-space:nowrap}
+.filters button:hover{border-color:var(--accent);color:var(--text)}
+.filters button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.semester-toggle{display:flex;gap:4px}
+.semester-toggle button{padding:5px 14px;border:1px solid var(--border);border-radius:14px;background:transparent;color:var(--text-dim);cursor:pointer;font-size:.78em;transition:all .2s}
+.semester-toggle button:hover{border-color:var(--accent);color:var(--text)}
+.semester-toggle button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+#graph{flex:1;position:relative;cursor:grab}
+#graph:active{cursor:grabbing}
+.node-label{font-size:11px;fill:var(--text);pointer-events:none;text-anchor:middle;font-weight:500}
+line.edge{stroke:var(--border);stroke-width:1;stroke-opacity:.5}
+line.edge.related{stroke-dasharray:4 3;stroke-opacity:.3}
+line.edge.highlighted{stroke:var(--accent);stroke-width:2.5;stroke-opacity:1}
+#tooltip{position:absolute;padding:10px 14px;background:var(--card-bg);border:1px solid var(--border);border-radius:8px;font-size:.82em;max-width:300px;pointer-events:none;opacity:0;transition:opacity .15s;z-index:20;line-height:1.6}
+#tooltip .tt-cat{font-size:.7em;color:var(--text-dim);text-transform:uppercase;letter-spacing:.05em}
+#tooltip .tt-desc{margin-top:4px;color:var(--text-dim)}
+#tooltip .tt-edge{margin-top:6px;padding-top:6px;border-top:1px solid var(--border);color:var(--accent);font-size:.78em}
+#card-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+#card-overlay.open{opacity:1;pointer-events:auto}
+#card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:24px;max-width:480px;width:90%;max-height:80vh;overflow-y:auto}
+#card h2{font-size:1.2em;margin-bottom:4px}
+#card .badge{display:inline-block;padding:2px 10px;border-radius:10px;font-size:.72em;color:#fff;margin-bottom:12px}
+#card .section{margin-top:14px}
+#card .section h4{font-size:.8em;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+#card .section .item{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.85em}
+#card .section .item .arrow{color:var(--accent);margin:0 4px}
+#card .section .item .exp{display:block;font-size:.78em;color:var(--text-dim);margin-top:2px}
+#card .close-btn{float:right;background:none;border:none;color:var(--text-dim);font-size:1.3em;cursor:pointer;padding:0 4px}
+#card .close-btn:hover{color:var(--text)}
+.legend{position:absolute;bottom:16px;left:16px;display:flex;gap:10px;flex-wrap:wrap;z-index:5}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:.72em;color:var(--text-dim)}
+.legend-dot{width:8px;height:8px;border-radius:50%}
+.info-bar{position:absolute;bottom:16px;right:16px;font-size:.7em;color:var(--text-dim);z-index:5}
+</style>
+</head>
+<body>
+<div id="app">
+<header>
+  <h1>🪐 五年级数学 · 概念星图</h1>
+  <div class="filters" id="category-filters">
+    <button class="active" data-cat="all">全部</button>
+    <button data-cat="number_ops">数与运算</button>
+    <button data-cat="geometry">几何</button>
+    <button data-cat="algebra">代数</button>
+    <button data-cat="statistics">统计</button>
+    <button data-cat="applications">应用</button>
+  </div>
+  <div class="semester-toggle" id="semester-toggle">
+    <button class="active" data-sem="all">全学年</button>
+    <button data-sem="1">上册</button>
+    <button data-sem="2">下册</button>
+  </div>
+</header>
+<div id="graph">
+  <div class="legend" id="legend"></div>
+  <div class="info-bar" id="info-bar"></div>
+</div>
+<div id="tooltip"></div>
+</div>
+<div id="card-overlay"><div id="card"></div></div>
+
+<script>
+// === DATA ===
+const nodes = [{"id":"e65c5d65","name":"整数加减法","category":"number_ops","desc":"自然数的加法和减法运算，包括进位和退位","difficulty":1,"semester":0}, {"id":"ea935433","name":"整数乘法","category":"number_ops","desc":"乘法是加法的简便运算，理解乘法的意义","difficulty":1,"semester":0}, {"id":"87a251c8","name":"整数除法","category":"number_ops","desc":"除法的两种含义：均分和包含","difficulty":2,"semester":0}, {"id":"d9ed4cc5","name":"位置值","category":"number_ops","desc":"十进制计数法，每个数位代表不同的计数单位","difficulty":2,"semester":0}, {"id":"ab2f17ee","name":"小数的意义","category":"number_ops","desc":"小数是十分之几、百分之几的另一种写法，是位置值向右的延伸","difficulty":2,"semester":0}, {"id":"ada6e1e6","name":"整数四则运算","category":"number_ops","desc":"加减乘除的运算顺序，括号的使用","difficulty":2,"semester":0}, {"id":"1449aff7","name":"矩形面积","category":"geometry","desc":"面积 = 单位正方形个数 = 长 × 宽","difficulty":2,"semester":0}, {"id":"e2d70d40","name":"等式的性质","category":"algebra","desc":"等式两边同时加减乘除同一个非零数，等式仍然成立","difficulty":2,"semester":0}, {"id":"d6aedde0","name":"图形认知","category":"geometry","desc":"识别基本平面图形，理解边和角","difficulty":1,"semester":0}, {"id":"ca7b8697","name":"分数基础","category":"number_ops","desc":"分数表示部分与整体的关系，分子和分母的含义","difficulty":3,"semester":0}, {"id":"60d47092","name":"数据收集","category":"statistics","desc":"收集、整理和简单呈现数据的方法","difficulty":1,"semester":0}, {"id":"c99fc85f","name":"单位换算","category":"number_ops","desc":"长度、面积、质量、时间、体积单位之间的换算","difficulty":2,"semester":0}, {"id":"3d143a12","name":"轴对称与旋转","category":"geometry","desc":"识别轴对称图形和旋转现象，能在方格纸上进行简单的图形变换","difficulty":2,"semester":2}, {"id":"7b80a791","name":"小数乘法","category":"number_ops","desc":"整数乘法法则 + 处理小数点位置；理解乘小于1的数结果变小","difficulty":3,"semester":1}, {"id":"972d2981","name":"小数除法","category":"number_ops","desc":"利用商不变性质转化为整数除法","difficulty":4,"semester":1}, {"id":"39b823e4","name":"因数和倍数","category":"number_ops","desc":"一个数的因数和倍数，理解相互依存关系","difficulty":3,"semester":2}, {"id":"e6e8bcff","name":"235的倍数特征","category":"number_ops","desc":"个位0/2/4/6/8是2的倍数；数字和是3的倍数是3的倍数","difficulty":3,"semester":2}, {"id":"f5ab1e67","name":"循环小数","category":"number_ops","desc":"除不尽时小数部分不断重复的现象，循环节表示法","difficulty":3,"semester":1}, {"id":"480cc030","name":"观察物体","category":"geometry","desc":"从不同方向观察立体，能辨认和画出三视图","difficulty":2,"semester":1}, {"id":"7ec9ac40","name":"质数与合数","category":"number_ops","desc":"质数只有1和自身两个因数，合数有多于两个因数","difficulty":3,"semester":2}, {"id":"9aeeb7d4","name":"简易方程","category":"algebra","desc":"用字母表示数，等式的基本性质，解简单的一元一次方程","difficulty":3,"semester":1}, {"id":"8938c8aa","name":"长方体和正方体","category":"geometry","desc":"认识面、棱、顶点，长宽高；表面积 = 各面面积之和","difficulty":3,"semester":2}, {"id":"e7839062","name":"平行四边形面积","category":"geometry","desc":"通过剪拼法转化为长方形，推导出面积 = 底 × 高","difficulty":3,"semester":1}, {"id":"64f85488","name":"体积和体积单位","category":"geometry","desc":"体积 = 物体所占空间的大小；体积单位 cm³、dm³、m³","difficulty":3,"semester":2}, {"id":"3e85004a","name":"长方体体积","category":"geometry","desc":"体积 = 单位立方体个数 = 长 × 宽 × 高","difficulty":3,"semester":2}, {"id":"95450fcd","name":"三角形面积","category":"geometry","desc":"两个完全一样的三角形拼成平行四边形，面积 = 底 × 高 ÷ 2","difficulty":3,"semester":1}, {"id":"c9e183fc","name":"容积和容积单位","category":"geometry","desc":"容积 = 容器内部空间；L 和 mL，1L = 1dm³","difficulty":3,"semester":2}, {"id":"24ea32b7","name":"梯形面积","category":"geometry","desc":"两个完全一样的梯形拼成平行四边形，面积 = (上底+下底) × 高 ÷ 2","difficulty":4,"semester":1}, {"id":"9a067133","name":"组合图形面积","category":"geometry","desc":"分割法与添补法：将不规则图形分解为学过的图形求面积","difficulty":4,"semester":1}, {"id":"5c5b1d29","name":"分数的意义","category":"number_ops","desc":"单位1、分数单位：把整体平均分成若干份，取其中几份","difficulty":4,"semester":2}, {"id":"5a92476e","name":"真分数和假分数","category":"number_ops","desc":"真分数<1，假分数≥1；假分数化为带分数","difficulty":3,"semester":2}, {"id":"9e90fb97","name":"可能性","category":"applications","desc":"确定事件、不确定事件，用分数表示可能性大小","difficulty":2,"semester":1}, {"id":"9724b491","name":"植树问题","category":"applications","desc":"间隔数与棵数的关系：两端都栽、一端不栽、两端都不栽","difficulty":4,"semester":1}, {"id":"3896ab4f","name":"分数的基本性质","category":"number_ops","desc":"分子分母同时乘或除以同一个非零数，分数大小不变","difficulty":4,"semester":2}, {"id":"3a4535d4","name":"约分","category":"number_ops","desc":"找到分子分母的最大公因数，化成最简分数","difficulty":4,"semester":2}, {"id":"fa0737eb","name":"通分","category":"number_ops","desc":"找到分母的最小公倍数，将异分母分数化成同分母分数","difficulty":4,"semester":2}, {"id":"23ed6846","name":"分数加减法","category":"number_ops","desc":"同分母直接加减分子；异分母先通分再加减","difficulty":4,"semester":2}, {"id":"b1805809","name":"分数与小数互化","category":"number_ops","desc":"分母是10/100/1000的直接写小数；其他的用分子÷分母","difficulty":3,"semester":2}, {"id":"961714c5","name":"折线统计图","category":"statistics","desc":"用折线表示数据的变化趋势","difficulty":2,"semester":2}, {"id":"3787e5ae","name":"找次品","category":"applications","desc":"用天平称量，最优策略找到次品","difficulty":4,"semester":2}];
+
+const edges = [{"from":"e65c5d65","to":"ea935433","type":"prerequisite_of","exp":"乘法是同数连加的简便表示——理解乘法必须建立在加法之上"},{"from":"e65c5d65","to":"ada6e1e6","type":"prerequisite_of","exp":"加减法是四则运算的基础运算"},{"from":"e65c5d65","to":"87a251c8","type":"related_to","exp":"除法是连续减同一个数，试商和验算依赖减法"},{"from":"e65c5d65","to":"23ed6846","type":"prerequisite_of","exp":"计数单位相同才能直接计算——这是整数和分数的共同锚点"},{"from":"ea935433","to":"87a251c8","type":"related_to","exp":"乘除法互为逆运算：3×5=15推15÷5=3"},{"from":"ea935433","to":"c99fc85f","type":"prerequisite_of","exp":"进率换算本质是乘法：大单位→小单位用进率×数量"},{"from":"ea935433","to":"1449aff7","type":"related_to","exp":"乘法是加法累积，面积是乘法在空间上的应用"},{"from":"ea935433","to":"7b80a791","type":"prerequisite_of","exp":"小数乘法建立在整数乘法基础上，只是多了小数点处理"},{"from":"ea935433","to":"39b823e4","type":"prerequisite_of","exp":"因数是从乘法的逆向角度理解整除关系"},{"from":"ea935433","to":"64f85488","type":"prerequisite_of","exp":"体积=单位立方体个数，本质是多层乘法计数"},{"from":"87a251c8","to":"39b823e4","type":"prerequisite_of","exp":"整除是判断因数和倍数的前提"},{"from":"87a251c8","to":"5c5b1d29","type":"prerequisite_of","exp":"分数是除法的另一种表达，除不尽时产生分数"},{"from":"87a251c8","to":"9724b491","type":"prerequisite_of","exp":"植树问题本质上是一个除法问题"},{"from":"87a251c8","to":"3787e5ae","type":"prerequisite_of","exp":"找次品需要除法思维和最优策略"},{"from":"d9ed4cc5","to":"ab2f17ee","type":"prerequisite_of","exp":"小数是十进制位置值向右延伸"},{"from":"d9ed4cc5","to":"ada6e1e6","type":"prerequisite_of","exp":"列竖式计算的数位对齐以位置值理解为基础"},{"from":"d9ed4cc5","to":"7b80a791","type":"prerequisite_of","exp":"小数点移动规则的根在位置值"},{"from":"d9ed4cc5","to":"972d2981","type":"prerequisite_of","exp":"商的小数点定位取决于位置值关系"},{"from":"ab2f17ee","to":"ca7b8697","type":"related_to","exp":"小数和分数是同一个数的两种不同表达"},{"from":"ab2f17ee","to":"7b80a791","type":"prerequisite_of","exp":"理解小数的意义才能做小数运算"},{"from":"ab2f17ee","to":"972d2981","type":"prerequisite_of","exp":"理解小数除法商的意义必须先理解小数"},{"from":"ab2f17ee","to":"b1805809","type":"prerequisite_of","exp":"分数小数互化建立在理解两者意义之上"},{"from":"ada6e1e6","to":"9aeeb7d4","type":"prerequisite_of","exp":"方程建立在四则运算和等式性质之上"},{"from":"1449aff7","to":"e7839062","type":"prerequisite_of","exp":"矩形面积（单位正方形计数）是一切面积推导的基础"},{"from":"1449aff7","to":"64f85488","type":"prerequisite_of","exp":"体积 = 面积 × 高度，面积是体积的一维降级"},{"from":"1449aff7","to":"3e85004a","type":"related_to","exp":"面积和体积都源于单位计数：平方单位 vs 立方单位"},{"from":"e2d70d40","to":"9aeeb7d4","type":"prerequisite_of","exp":"等式的性质是解方程的基础"},{"from":"d6aedde0","to":"3d143a12","type":"prerequisite_of","exp":"认识基本图形是图形变换的前提"},{"from":"d6aedde0","to":"480cc030","type":"prerequisite_of","exp":"认识平面图形是辨认三视图投影形状的前提"},{"from":"d6aedde0","to":"8938c8aa","type":"prerequisite_of","exp":"长方体和正方体建立在平面图形认知之上"},{"from":"d6aedde0","to":"e7839062","type":"prerequisite_of","exp":"不理解平行四边形特征就无法理解高和剪拼法"},{"from":"ca7b8697","to":"5c5b1d29","type":"prerequisite_of","exp":"深化分数基础概念"},{"from":"ca7b8697","to":"9e90fb97","type":"prerequisite_of","exp":"可能性用分数来表达"},{"from":"60d47092","to":"961714c5","type":"prerequisite_of","exp":"折线统计图需要数据收集和整理的基础"},{"from":"c99fc85f","to":"64f85488","type":"prerequisite_of","exp":"体积单位进率换算建立在长度单位换算思维迁移之上"},{"from":"c99fc85f","to":"c9e183fc","type":"prerequisite_of","exp":"容积单位换算建立在体积单位换算基础上"},{"from":"7b80a791","to":"972d2981","type":"prerequisite_of","exp":"小数除法依赖小数乘法进行商的验证"},{"from":"972d2981","to":"f5ab1e67","type":"prerequisite_of","exp":"循环小数是除不尽的自然结果"},{"from":"39b823e4","to":"e6e8bcff","type":"prerequisite_of","exp":"在理解因数和倍数后学习倍数特征"},{"from":"39b823e4","to":"7ec9ac40","type":"prerequisite_of","exp":"质数合数的分类基于因数的个数"},{"from":"39b823e4","to":"3a4535d4","type":"prerequisite_of","exp":"约分需要找到分子分母的最大公因数"},{"from":"39b823e4","to":"fa0737eb","type":"prerequisite_of","exp":"通分需要找到分母的最小公倍数"},{"from":"480cc030","to":"8938c8aa","type":"prerequisite_of","exp":"多角度观察立体是全面认识长方体特征的基础"},{"from":"9aeeb7d4","to":"e7839062","type":"related_to","exp":"简易方程中的字母和几何公式中的字母表示未知量"},{"from":"64f85488","to":"3e85004a","type":"prerequisite_of","exp":"理解体积概念后才能推导体积公式"},{"from":"3e85004a","to":"c9e183fc","type":"prerequisite_of","exp":"容积是体积概念在容器上的应用"},{"from":"e7839062","to":"95450fcd","type":"prerequisite_of","exp":"三角形面积 = 平行四边形面积 ÷ 2"},{"from":"e7839062","to":"24ea32b7","type":"prerequisite_of","exp":"梯形面积推导同样依赖平行四边形"},{"from":"95450fcd","to":"9a067133","type":"prerequisite_of","exp":"组合图形面积需要先掌握各基本图形的面积公式"},{"from":"24ea32b7","to":"9a067133","type":"prerequisite_of","exp":"组合多边形常包含梯形元素"},{"from":"5c5b1d29","to":"5a92476e","type":"prerequisite_of","exp":"理解分数的意义后区分真分数和假分数"},{"from":"5c5b1d29","to":"3896ab4f","type":"prerequisite_of","exp":"分数的基本性质是约分和通分的理论基础"},{"from":"5c5b1d29","to":"23ed6846","type":"prerequisite_of","exp":"同分母分数加减直接基于分数单位理解"},{"from":"5c5b1d29","to":"b1805809","type":"prerequisite_of","exp":"分数小数互化需要分数基础"},{"from":"3896ab4f","to":"3a4535d4","type":"prerequisite_of","exp":"约分依赖分数的基本性质"},{"from":"3896ab4f","to":"fa0737eb","type":"prerequisite_of","exp":"通分依赖分数的基本性质"},{"from":"fa0737eb","to":"23ed6846","type":"prerequisite_of","exp":"异分母分数加减必须先通分"}];
+
+// === CONSTANTS ===
+const CAT_COLORS = {number_ops:'#4A90D9',geometry:'#E85D75',algebra:'#7B68EE',statistics:'#F0A050',applications:'#50B87A'};
+const CAT_NAMES = {number_ops:'数与运算',geometry:'几何',algebra:'代数',statistics:'统计',applications:'应用'};
+const SEM_NAMES = {0:'全学年',1:'上册',2:'下册'};
+
+// Node map for quick lookup
+const nodeMap = Object.fromEntries(nodes.map(n=>[n.id,n]));
+
+// Initialize D3
+const container = document.getElementById('graph');
+const W = container.clientWidth, H = container.clientHeight;
+const svg = d3.select('#graph').append('svg').attr('width',W).attr('height',H);
+const g = svg.append('g');
+
+// Zoom
+const zoom = d3.zoom().scaleExtent([0.2,4]).on('zoom',e=>g.attr('transform',e.transform));
+svg.call(zoom);
+
+// Tooltip
+const tooltip = d3.select('#tooltip');
+
+// Legend
+const legend = d3.select('#legend');
+Object.entries(CAT_COLORS).forEach(([cat,color])=>{
+  legend.append('div').attr('class','legend-item')
+    .html(`<span class="legend-dot" style="background:${color}"></span>${CAT_NAMES[cat]}`);
+});
+
+// Arrow markers
+const defs = svg.append('defs');
+Object.entries(CAT_COLORS).forEach(([cat,color])=>{
+  defs.append('marker').attr('id','arrow-'+cat).attr('viewBox','0 -5 10 10')
+    .attr('refX',20).attr('refY',0).attr('markerWidth',6).attr('markerHeight',6)
+    .attr('orient','auto').append('path').attr('d','M0,-5L10,0L0,5').attr('fill',color).attr('opacity',0.5);
+  defs.append('marker').attr('id','arrow-hl-'+cat).attr('viewBox','0 -5 10 10')
+    .attr('refX',20).attr('refY',0).attr('markerWidth',6).attr('markerHeight',6)
+    .attr('orient','auto').append('path').attr('d','M0,-5L10,0L0,5').attr('fill','#5ba0f5');
+});
+
+// Force simulation
+const simulation = d3.forceSimulation(nodes)
+  .force('link',d3.forceLink(edges).id(d=>d.id).distance(120))
+  .force('charge',d3.forceManyBody().strength(-400))
+  .force('center',d3.forceCenter(W/2,H/2))
+  .force('collision',d3.forceCollide().radius(28));
+
+// Draw edges
+const link = g.append('g').selectAll('line')
+  .data(edges).join('line')
+  .attr('class',d=>'edge'+(d.type==='related_to'?' related':''))
+  .attr('marker-end',d=>'url(#arrow-'+(nodeMap[d.from]?.category||'number_ops')+')');
+
+// Draw nodes
+const node = g.append('g').selectAll('g')
+  .data(nodes).join('g')
+  .attr('class','node-g')
+  .call(d3.drag()
+    .on('start',(e,d)=>{if(!e.active)simulation.alphaTarget(0.3).restart();d.fx=d.x;d.fy=d.y})
+    .on('drag',(e,d)=>{d.fx=e.x;d.fy=e.y})
+    .on('end',(e,d)=>{if(!e.active)simulation.alphaTarget(0);d.fx=null;d.fy=null})
+  );
+
+node.append('circle')
+  .attr('r',d=>8+d.difficulty*2)
+  .attr('fill',d=>CAT_COLORS[d.category])
+  .attr('stroke','rgba(255,255,255,.15)')
+  .attr('stroke-width',1.5)
+  .attr('opacity',0.9);
+
+node.append('text')
+  .attr('class','node-label')
+  .attr('dy',d=>20+d.difficulty*2)
+  .text(d=>d.name);
+
+// Interactions
+node.on('mouseenter',function(e,d){
+  const cat = CAT_NAMES[d.category];
+  const sem = SEM_NAMES[d.semester];
+  tooltip.style('opacity',1)
+    .html(`<div class="tt-cat">${cat} · ${sem}</div><strong>${d.name}</strong><div class="tt-desc">${d.desc}</div>`);
+}).on('mousemove',function(e){tooltip.style('left',(e.offsetX+16)+'px').style('top',(e.offsetY-10)+'px')})
+  .on('mouseleave',function(){tooltip.style('opacity',0);link.attr('class',d=>'edge'+(d.type==='related_to'?' related':''))});
+
+node.on('click',function(e,d){showCard(d)});
+
+link.on('mouseenter',function(e,d){
+  link.attr('class',ld=>ld===d?'edge highlighted':ld.type==='related_to'?'edge related':'edge');
+  tooltip.style('opacity',1)
+    .html(`<strong>${nodeMap[d.from].name} → ${nodeMap[d.to].name}</strong><div class="tt-edge">${d.exp}</div>`);
+}).on('mousemove',function(e){tooltip.style('left',(e.offsetX+16)+'px').style('top',(e.offsetY-10)+'px')})
+  .on('mouseleave',function(){tooltip.style('opacity',0);link.attr('class',d=>'edge'+(d.type==='related_to'?' related':''))});
+
+// Card
+function showCard(d){
+  const cat = CAT_NAMES[d.category];
+  const sem = SEM_NAMES[d.semester];
+  const color = CAT_COLORS[d.category];
+  const prereqs = edges.filter(e=>e.to===d.id).map(e=>({name:nodeMap[e.from].name,exp:e.exp,cat:nodeMap[e.from].category}));
+  const nexts = edges.filter(e=>e.from===d.id).map(e=>({name:nodeMap[e.to].name,exp:e.exp,cat:nodeMap[e.to].category}));
+
+  let html = `<button class="close-btn" onclick="closeCard()">✕</button>`;
+  html += `<h2>${d.name}</h2><span class="badge" style="background:${color}">${cat} · ${sem}</span>`;
+  html += `<p style="margin-top:8px;color:var(--text-dim);font-size:.88em">${d.desc}</p>`;
+  html += `<p style="margin-top:4px;font-size:.78em;color:var(--text-dim)">难度：${'⭐'.repeat(d.difficulty)}</p>`;
+
+  if(prereqs.length>0){
+    html += `<div class="section"><h4>前置依赖 (${prereqs.length})</h4>`;
+    prereqs.forEach(p=>{html+=`<div class="item"><span style="color:${CAT_COLORS[p.cat]}">${p.name}</span><span class="exp">${p.exp}</span></div>`});
+    html += `</div>`;
+  }
+  if(nexts.length>0){
+    html += `<div class="section"><h4>后继概念 (${nexts.length})</h4>`;
+    nexts.forEach(p=>{html+=`<div class="item"><span class="arrow">→</span><span style="color:${CAT_COLORS[p.cat]}">${p.name}</span><span class="exp">${p.exp}</span></div>`});
+    html += `</div>`;
+  }
+
+  document.getElementById('card').innerHTML = html;
+  document.getElementById('card-overlay').classList.add('open');
+  document.getElementById('card-overlay').onclick = function(e){if(e.target===this)closeCard()};
+}
+function closeCard(){document.getElementById('card-overlay').classList.remove('open')}
+
+// Filters
+let activeCat = 'all', activeSem = 'all';
+document.querySelectorAll('#category-filters button').forEach(btn=>{
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('#category-filters button').forEach(b=>b.classList.remove('active'));
+    this.classList.add('active');
+    activeCat = this.dataset.cat;
+    applyFilters();
+  });
+});
+document.querySelectorAll('#semester-toggle button').forEach(btn=>{
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('#semester-toggle button').forEach(b=>b.classList.remove('active'));
+    this.classList.add('active');
+    activeSem = this.dataset.sem;
+    applyFilters();
+  });
+});
+
+function applyFilters(){
+  node.each(function(d){
+    const catMatch = activeCat==='all' || d.category===activeCat;
+    const semMatch = activeSem==='all' || d.semester===0 || d.semester===parseInt(activeSem);
+    d3.select(this).style('opacity',catMatch&&semMatch?1:0.15);
+  });
+  link.style('opacity',d=>{
+    const from = nodeMap[d.from], to = nodeMap[d.to];
+    const fromMatch = activeCat==='all'||from.category===activeCat;
+    const toMatch = activeCat==='all'||to.category===activeCat;
+    const fromSem = activeSem==='all'||from.semester===0||from.semester===parseInt(activeSem);
+    const toSem = activeSem==='all'||to.semester===0||to.semester===parseInt(activeSem);
+    return (fromMatch&&toMatch&&fromSem&&toSem)?1:0.05;
+  });
+  updateInfo();
+}
+
+function updateInfo(){
+  const visibleNodes = nodes.filter(n=>{
+    const cm = activeCat==='all'||n.category===activeCat;
+    const sm = activeSem==='all'||n.semester===0||n.semester===parseInt(activeSem);
+    return cm&&sm;
+  }).length;
+  const visibleEdges = edges.filter(e=>{
+    const fn=nodeMap[e.from],tn=nodeMap[e.to];
+    const fcm=activeCat==='all'||fn.category===activeCat, tcm=activeCat==='all'||tn.category===activeCat;
+    const fsm=activeSem==='all'||fn.semester===0||fn.semester===parseInt(activeSem);
+    const tsm=activeSem==='all'||tn.semester===0||tn.semester===parseInt(activeSem);
+    return fcm&&tcm&&fsm&&tsm;
+  }).length;
+  document.getElementById('info-bar').textContent = `${visibleNodes} 个概念 · ${visibleEdges} 条依赖`;
+}
+
+// Simulation tick
+simulation.on('tick',()=>{
+  link.attr('x1',d=>d.source.x).attr('y1',d=>d.source.y)
+      .attr('x2',d=>d.target.x).attr('y2',d=>d.target.y);
+  node.attr('transform',d=>`translate(${d.x},${d.y})`);
+});
+
+// Initial zoom to fit
+setTimeout(()=>{
+  const bounds = g.node().getBBox();
+  const dx = bounds.width, dy = bounds.height, cx = bounds.x+dx/2, cy = bounds.y+dy/2;
+  const scale = Math.min(W/dx,H/dy)*0.85;
+  svg.transition().duration(800).call(zoom.transform,d3.zoomIdentity.translate(W/2-scale*cx,H/2-scale*cy).scale(scale));
+},1200);
+
+updateInfo();
+
+// Resize
+window.addEventListener('resize',()=>{
+  const w=container.clientWidth, h=container.clientHeight;
+  svg.attr('width',w).attr('height',h);
+  simulation.force('center',d3.forceCenter(w/2,h/2)).restart();
+});
+</script>
+</body>
+</html>
