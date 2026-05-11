@@ -14,7 +14,7 @@
   --card-bg:#1c2d41;--border:#2a3d55;--accent:#5ba0f5;
 }
 body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);overflow:hidden;height:100vh;width:100vw}
-#app{display:flex;flex-direction:column;height:100vh}
+#app{display:flex;flex-direction:column;height:100dvh;min-height:0}
 header{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:var(--surface);border-bottom:1px solid var(--border);z-index:10;flex-shrink:0}
 header h1{font-size:1.1em;font-weight:600;white-space:nowrap}
 .filters{display:flex;gap:6px;flex-wrap:wrap}
@@ -25,8 +25,9 @@ header h1{font-size:1.1em;font-weight:600;white-space:nowrap}
 .semester-toggle button{padding:5px 14px;border:1px solid var(--border);border-radius:14px;background:transparent;color:var(--text-dim);cursor:pointer;font-size:.78em;transition:all .2s}
 .semester-toggle button:hover{border-color:var(--accent);color:var(--text)}
 .semester-toggle button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-#graph{flex:1;position:relative;cursor:grab}
+#graph{flex:1;position:relative;cursor:grab;min-height:0}
 #graph:active{cursor:grabbing}
+#graph svg{width:100%;height:100%;display:block}
 .node-label{font-size:11px;fill:var(--text);pointer-events:none;text-anchor:middle;font-weight:500}
 line.edge{stroke:var(--border);stroke-width:1;stroke-opacity:.5}
 line.edge.related{stroke-dasharray:4 3;stroke-opacity:.3}
@@ -95,8 +96,11 @@ const nodeMap = Object.fromEntries(nodes.map(n=>[n.id,n]));
 
 // Initialize D3
 const container = document.getElementById('graph');
-const W = container.clientWidth, H = container.clientHeight;
-const svg = d3.select('#graph').append('svg').attr('width',W).attr('height',H);
+const W = Math.max(container.clientWidth,800);
+const H = Math.max(container.clientHeight,600);
+const svg = d3.select('#graph').append('svg')
+    .attr('viewBox',`0 0 ${W} ${H}`)
+    .style('width','100%').style('height','100%');
 const g = svg.append('g');
 
 // Zoom
@@ -129,7 +133,8 @@ const simulation = d3.forceSimulation(nodes)
   .force('link',d3.forceLink(edges).id(d=>d.id).distance(120))
   .force('charge',d3.forceManyBody().strength(-400))
   .force('center',d3.forceCenter(W/2,H/2))
-  .force('collision',d3.forceCollide().radius(28));
+  .force('collision',d3.forceCollide().radius(28))
+  .alphaDecay(0.02);
 
 // Draw edges
 const link = g.append('g').selectAll('line')
@@ -266,13 +271,24 @@ simulation.on('tick',()=>{
   node.attr('transform',d=>`translate(${d.x},${d.y})`);
 });
 
-// Initial zoom to fit
-setTimeout(()=>{
+// Initial zoom to fit: wait for simulation to settle first
+let settledCount = 0;
+simulation.on('end',()=>{
   const bounds = g.node().getBBox();
+  if(!bounds.width||!bounds.height) return;
   const dx = bounds.width, dy = bounds.height, cx = bounds.x+dx/2, cy = bounds.y+dy/2;
   const scale = Math.min(W/dx,H/dy)*0.85;
   svg.transition().duration(800).call(zoom.transform,d3.zoomIdentity.translate(W/2-scale*cx,H/2-scale*cy).scale(scale));
-},1200);
+});
+// Also try after a fixed timeout as fallback
+setTimeout(()=>{
+  const bounds = g.node().getBBox();
+  if(bounds.width&&bounds.height){
+    const dx = bounds.width, dy = bounds.height, cx = bounds.x+dx/2, cy = bounds.y+dy/2;
+    const scale = Math.min(W/dx,H/dy)*0.85;
+    svg.transition().duration(800).call(zoom.transform,d3.zoomIdentity.translate(W/2-scale*cx,H/2-scale*cy).scale(scale));
+  }
+},3000);
 
 updateInfo();
 
