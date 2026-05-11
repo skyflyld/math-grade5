@@ -74,6 +74,11 @@
 </div>
 
 <div class="section">
+  <div class="section-header"><span class="emoji">🧠</span>对抗挑战</div>
+  <div id="adversary-root"></div>
+</div>
+
+<div class="section">
   <div class="section-header"><span class="emoji">✏️</span>费曼输出</div>
   <p style="color:var(--text-muted);">给同学解释：<b>"梯形面积公式为什么是(上底+下底)×高÷2？"</b></p>
   <div id="feynman-root"></div>
@@ -147,6 +152,20 @@ drawTZ();
 
 function ck1(){const v=document.getElementById('ex1').value,f=document.getElementById('fb1');f.className='feedback show '+(v==='42'?'success':'error');f.textContent=v==='42'?'✅ (5+9)×6÷2=42cm²':'❌ (5+9)×6÷2=42cm²';}
 function ck2(){const v=document.getElementById('ex2').value,f=document.getElementById('fb2');f.className='feedback show '+(v==='8'?'success':'error');f.textContent=v==='8'?'✅ 高=2S÷(上底+下底)=96÷12=8cm':'❌ 高=2×48÷12=8cm';}
+
+createAdversarialChallenge({containerId:'adversary-root',
+  challenges:[
+    {tag:'公式来源',statement:'梯形面积=(上底+下底)×高÷2，因为两个完全一样的梯形能拼成平行四边形。',
+      answer:'agree',hint:'两个梯形拼在一起后，新平行四边形的底和高分别是什么？',
+      explanation:'两个全等梯形可以拼成平行四边形，平行四边形的底是上底+下底，高还是原来的高。',
+      counterexample:'必须是两个完全一样的梯形。不是全等梯形，不能保证拼成同一个平行四边形。'},
+    {tag:'平行边',statement:'梯形的上底和下底可以随便找两条边。',
+      answer:'refute',hint:'梯形的“底”有一个必要条件：这两条边必须是什么关系？',
+      explanation:'梯形的上底和下底必须是一组平行边。非平行边不能代入公式。',
+      counterexample:'如果把斜边当上底或下底，公式中的“高”也失去对应关系，面积会算错。'}
+  ],
+  onComplete:()=>saveProgress({'polygon-area':{'trapezoid':{'adversary':'complete'}}})
+});
 
 createFeynmanFill({containerId:'feynman-root',
   template:'梯形面积 = (___ + ___) × ___ ÷ ___。因为：两个完全相同的梯形可以拼成一个___，它的底=___+___，高=___。所以一个梯形的面积是平行四边形面积的___。',

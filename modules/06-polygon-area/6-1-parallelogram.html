@@ -87,6 +87,12 @@
   </div>
 </div>
 
+<!-- 对抗挑战 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">🧠</span>对抗挑战</div>
+  <div id="adversary-root"></div>
+</div>
+
 <!-- 费曼 -->
 <div class="section">
   <div class="section-header"><span class="emoji">✏️</span>费曼输出</div>
@@ -160,6 +166,21 @@ function ck(n){
   fb.className='feedback show '+(v===ans?'success':'error');
   fb.textContent=v===ans?'✅ 正确！':(n===1?'❌ S=底×高=8×5=40cm²':'❌ 高=S÷底=36÷9=4cm');
 }
+
+// 对抗挑战
+createAdversarialChallenge({containerId:'adversary-root',
+  challenges:[
+    {tag:'高的条件',statement:'平行四边形面积可以用“底×斜边”，因为斜边也是一条边。',
+      answer:'refute',hint:'矩形面积里的宽和长是什么关系？高和底必须是什么关系？',
+      explanation:'面积公式里的高必须垂直于底。斜边不一定垂直于底，不能当高。',
+      counterexample:'底是8cm，斜边是5cm，高可能只有4cm。真正面积是8×4，不是8×5。'},
+    {tag:'不变量',statement:'等底等高的平行四边形面积相等，即使倾斜程度不同。',
+      answer:'agree',hint:'剪拼成矩形后，真正决定面积的是哪两个量？',
+      explanation:'剪拼后都可以转化成长为底、宽为高的矩形。底和高相同，面积就相同。',
+      counterexample:'形状变了不代表面积变了。倾斜程度影响外形，不改变底×高。'}
+  ],
+  onComplete:()=>saveProgress({'polygon-area':{'parallelogram':{'adversary':'complete'}}})
+});
 
 // 费曼
 createFeynmanFill({containerId:'feynman-root',

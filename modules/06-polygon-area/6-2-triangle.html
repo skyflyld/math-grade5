@@ -75,6 +75,12 @@
   </div>
 </div>
 
+<!-- 对抗挑战 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">🧠</span>对抗挑战</div>
+  <div id="adversary-root"></div>
+</div>
+
 <!-- 费曼 -->
 <div class="section">
   <div class="section-header"><span class="emoji">✏️</span>费曼输出</div>
@@ -134,6 +140,20 @@ drawTri();
 
 function ck1(){const v=document.getElementById('ex1').value,f=document.getElementById('fb1');f.className='feedback show '+(v==='25'?'success':'error');f.textContent=v==='25'?'✅ 10×5÷2=25cm²':'❌ S=底×高÷2=10×5÷2=25cm²';}
 function ck2(){const v=document.getElementById('ex2').value,f=document.getElementById('fb2');f.className='feedback show '+(v==='5'?'success':'error');f.textContent=v==='5'?'✅ 高=2S÷底=60÷12=5cm':'❌ 高=2S÷底=2×30÷12=5cm';}
+
+createAdversarialChallenge({containerId:'adversary-root',
+  challenges:[
+    {tag:'÷2来源',statement:'三角形面积等于底×高÷2，是因为两个完全一样的三角形能拼成平行四边形。',
+      answer:'agree',hint:'想一想“两个完全一样”拼出来的总面积是谁的两倍。',
+      explanation:'两个全等三角形可以拼成平行四边形。一个三角形只占这个平行四边形的一半，所以要÷2。',
+      counterexample:'如果两个三角形不完全一样，就不能直接用这个拼法说明÷2。'},
+    {tag:'底高关系',statement:'只要底一样，三角形面积就一样。',
+      answer:'refute',hint:'面积公式里除了底，还有哪个量？',
+      explanation:'三角形面积由底和对应高共同决定。只有底相同，高不同，面积也不同。',
+      counterexample:'底都是10cm，高5cm面积25cm²；高8cm面积40cm²。'}
+  ],
+  onComplete:()=>saveProgress({'polygon-area':{'triangle':{'adversary':'complete'}}})
+});
 
 createFeynmanFill({containerId:'feynman-root',
   template:'三角形面积 = ___ × ___ ÷ ___。因为：把两个完全相同的三角形拼在一起，正好组成一个___。这个平行四边形的底=三角形的___，高=三角形的___。所以一个三角形的面积=平行四边形面积的___。',

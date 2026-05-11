@@ -179,6 +179,12 @@
   </div>
 </div>
 
+<!-- 对抗挑战 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">🧠</span> 对抗挑战</div>
+  <div id="adversary-root"></div>
+</div>
+
 <!-- 费曼输出 -->
 <div class="section">
   <div class="section-header"><span class="emoji">✏️</span> 费曼输出</div>
@@ -296,6 +302,21 @@ function ck2(){
   fb.textContent=v==='right'?'✅ 对！0.48×1.5=48×15÷1000=720÷1000=0.72。共3位小数，积就是0.720=0.72。'
     :'❌ 0.48×1.5=(48×15)÷(100×10)=720÷1000=0.72。0.48有2位，1.5有1位，共3位→0.720=0.72 ✅';
 }
+
+// 对抗挑战
+createAdversarialChallenge({containerId:'adversary-root',
+  challenges:[
+    {tag:'比例模型',statement:'0.4×0.5小于0.4，因为它表示取0.4的一半。',
+      answer:'agree',hint:'0.5就是一半。取一个数的一半，通常会变小。',
+      explanation:'当乘数在0和1之间时，可以理解成“取原数的一部分”。0.4×0.5就是0.4的一半。',
+      counterexample:'如果乘数大于1，例如0.4×2，结果就会变大。关键看乘数和1的关系。'},
+    {tag:'小数点定位',statement:'小数乘小数时，只要背“位数相加”就够了，不需要理解单位。',
+      answer:'refute',hint:'想一想0.06×0.05为什么要补0。',
+      explanation:'位数相加只是表面规则。根本原因是计数单位变成了0.01、0.001或更小。',
+      counterexample:'0.06×0.05=(6×5)÷10000=0.003。只背口诀很容易写成0.03。'}
+  ],
+  onComplete:()=>saveProgress({'decimal-multiply':{'1-2-dec':{'adversary':'complete'}}})
+});
 
 // 费曼
 createFeynmanFill({containerId:'feynman-root',

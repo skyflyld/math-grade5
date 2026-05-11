@@ -85,6 +85,11 @@
 </div>
 
 <div class="section">
+  <div class="section-header"><span class="emoji">🧠</span>对抗挑战</div>
+  <div id="adversary-root"></div>
+</div>
+
+<div class="section">
   <div class="section-header"><span class="emoji">✏️</span>费曼输出</div>
   <p style="color:var(--text-muted);">给同学解释：<b>"什么是分数？3/4是什么意思？"</b></p>
   <div id="feynman-root"></div>
@@ -137,6 +142,20 @@ drawFracBars();
 
 function ck1(){const a=document.getElementById('ex1a').value,b=document.getElementById('ex1b').value,f=document.getElementById('fb1');const ok=a==='5'&&b==='2';f.className='feedback show '+(ok?'success':'error');f.textContent=ok?'✅ 平均分5份，取2份 → 2/5':'❌ 2/5 = 平均分成5份，取其中2份';}
 function ck2(){const v=document.getElementById('ex2').value,f=document.getElementById('fb2');const ok=v==='1/4'||v==='3/12';f.className='feedback show '+(ok?'success':'error');f.textContent=ok?'✅ 12块糖分4人，每人3块=3/12=1/4':'❌ 12块分4人，每人占总数的1/4（把12块看作整体"1"）';}
+
+createAdversarialChallenge({containerId:'adversary-root',
+  challenges:[
+    {tag:'单位1',statement:'1/2个苹果和1/2盘苹果一定一样多。',
+      answer:'refute',hint:'先问“整体1”分别是什么。',
+      explanation:'分数必须先确定单位“1”。半个苹果和半盘苹果的整体不同，数量不一定相同。',
+      counterexample:'一盘有8个苹果，1/2盘是4个苹果；1/2个苹果只有半个。'},
+    {tag:'分母含义',statement:'分母越大，分数一定越小。',
+      answer:'refute',hint:'这个说法少了哪些条件？分子相同吗？单位1相同吗？',
+      explanation:'只有在单位“1”相同、分子相同的情况下，分母越大，每份越小。',
+      counterexample:'7/8大于1/2。不能只看分母。'}
+  ],
+  onComplete:()=>saveProgress({'fraction-meaning':{'meaning':{'adversary':'complete'}}})
+});
 
 createFeynmanFill({containerId:'feynman-root',
   template:'3/4表示：把"___"平均分成___份，取其中的___份。分母___表示总共___份，分子___表示取了___份。这里的"1"可以是___个苹果、___盘苹果、或者___班同学。',

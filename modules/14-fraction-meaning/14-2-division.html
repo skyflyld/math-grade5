@@ -69,6 +69,11 @@ a ÷ b = a/b &nbsp;&nbsp;(b ≠ 0)<br><br>
 </div>
 
 <div class="section">
+  <div class="section-header"><span class="emoji">🧠</span>对抗挑战</div>
+  <div id="adversary-root"></div>
+</div>
+
+<div class="section">
   <div class="section-header"><span class="emoji">✏️</span>费曼输出</div>
   <p style="color:var(--text-muted);">给同学解释：<b>"为什么3÷4=3/4？分数和除法有什么关系？"</b></p>
   <div id="feynman-root"></div>
@@ -98,6 +103,20 @@ for(let i=0;i<3;i++){
 
 function ck1(){const v=document.getElementById('ex1').value,f=document.getElementById('fb1');const ok=v==='5/8';f.className='feedback show '+(ok?'success':'error');f.textContent=ok?'✅ 5÷8=5/8个苹果':'❌ 5÷8=5/8。被除数在分子，除数在分母';}
 function ck2(){const v=document.getElementById('ex2').value,f=document.getElementById('fb2');const ok=v==='4/17';f.className='feedback show '+(ok?'success':'error');f.textContent=ok?'✅ 4÷17=4/17。4幅获奖/17幅总参赛':'❌ 获奖÷总参赛=4÷17=4/17';}
+
+createAdversarialChallenge({containerId:'adversary-root',
+  challenges:[
+    {tag:'除法关系',statement:'3÷4可以写成3/4，因为分数线和除号表达的是同一种平均分关系。',
+      answer:'agree',hint:'被分的数量在分子，分成几份在分母。',
+      explanation:'a÷b可以写成a/b。分子是被除数，分母是除数。',
+      counterexample:'b不能为0。除以0没有意义，分母也不能是0。'},
+    {tag:'假分数',statement:'7/2不能表示除法，因为分子比分母大。',
+      answer:'refute',hint:'把7/2读成谁除以谁。',
+      explanation:'7/2就是7÷2。分子比分母大只说明结果大于1，不影响它表示除法。',
+      counterexample:'7÷2=3.5，写成分数就是7/2。'}
+  ],
+  onComplete:()=>saveProgress({'fraction-meaning':{'division':{'adversary':'complete'}}})
+});
 
 createFeynmanFill({containerId:'feynman-root',
   template:'a÷b = ___ (b≠0)。分数线就是___号。被除数在___（上面/下面），除数在___（上面/下面）。例如5个苹果分给8人：5÷8=___。意思是每人分到___个苹果。',

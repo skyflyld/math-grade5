@@ -46,6 +46,7 @@
 优先复用 `shared/components.js` 中的组件：
 
 - `createGate`：前置检查
+- `createAdversarialChallenge`：对抗挑战，用“同意/反驳”训练学生找条件、举反例、识别误区
 - `createExerciseSet`：分层练习
 - `createFeynmanFill`：费曼填空
 - `saveProgress` / `getProgress`：本地学习进度

@@ -52,6 +52,11 @@ function clearFeedback(id){
   const el=document.getElementById(id);
   if(el)el.className='feedback';
 }
+function escapeHTML(value){
+  return String(value==null?'':value).replace(/[&<>"']/g,ch=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[ch]));
+}
 
 // 滚动进度条
 function initScrollProgress(){
@@ -211,6 +216,80 @@ function createExerciseSet(opts){
   render();
 }
 
+// === 对抗挑战 ===
+function createAdversarialChallenge(opts){
+  const c=document.getElementById(opts.containerId);
+  if(!c)return;
+  const challenges=opts.challenges||[];
+  const state=challenges.map(()=>({correct:false,last:null}));
+
+  function render(){
+    const done=state.filter(s=>s.correct).length;
+    c.innerHTML=`<div class="adversary-root">
+      <div class="adversary-top">
+        <div>
+          <div class="adversary-kicker">错误说法挑战</div>
+          <p>先判断，再找理由。真正理解一个概念，要能说清它什么时候不能用。</p>
+        </div>
+        <div class="adversary-progress">${done}/${challenges.length}</div>
+      </div>
+      <div class="adversary-list"></div>
+      <div class="adversary-complete" style="${done===challenges.length&&challenges.length?'display:block;':'display:none;'}">✅ 已完成本课对抗挑战</div>
+    </div>`;
+    const list=c.querySelector('.adversary-list');
+    challenges.forEach((challenge,i)=>{
+      const s=state[i];
+      const card=document.createElement('div');
+      card.className='adversary-card '+(s.correct?'correct':s.last?'wrong':'');
+      card.innerHTML=`<div class="adversary-meta">
+          <span class="tag tag-orange">${escapeHTML(challenge.tag||'概念辨析')}</span>
+          <span>挑战 ${i+1}</span>
+        </div>
+        <div class="adversary-statement">${escapeHTML(challenge.statement)}</div>
+        <div class="adversary-actions">
+          <button class="btn btn-outline btn-sm" data-choice="agree" data-index="${i}" ${s.correct?'disabled':''}>同意</button>
+          <button class="btn btn-primary btn-sm" data-choice="refute" data-index="${i}" ${s.correct?'disabled':''}>反驳</button>
+        </div>
+        <div class="adversary-feedback ${s.correct?'show success':s.last?'show hint':''}">
+          ${s.correct?renderSuccess(challenge):s.last?renderHint(challenge):''}
+        </div>`;
+      list.appendChild(card);
+    });
+
+    c.querySelectorAll('[data-choice]').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        const i=parseInt(btn.dataset.index,10);
+        const choice=btn.dataset.choice;
+        const answer=challenges[i].answer||'refute';
+        if(choice===answer){
+          state[i].correct=true;
+          state[i].last=choice;
+        }else{
+          state[i].last=choice;
+        }
+        render();
+        if(state.every(s=>s.correct)){
+          const complete=c.querySelector('.adversary-complete');
+          if(complete)celebrate(complete);
+          if(opts.onComplete)opts.onComplete();
+        }
+      });
+    });
+  }
+
+  function renderSuccess(challenge){
+    const verdict=challenge.answer==='agree'?'这句话成立。':'这句话有漏洞。';
+    const explanation=challenge.explanation?`<div><b>${verdict}</b>${escapeHTML(challenge.explanation)}</div>`:`<div><b>${verdict}</b></div>`;
+    const counterexample=challenge.counterexample?`<div class="adversary-counter"><b>反例/条件：</b>${escapeHTML(challenge.counterexample)}</div>`:'';
+    return explanation+counterexample;
+  }
+  function renderHint(challenge){
+    return `<b>再想一次：</b>${escapeHTML(challenge.hint||'检查这句话有没有少条件，或者能不能举出一个反例。')}`;
+  }
+
+  render();
+}
+
 // === 费曼填空 ===
 function createFeynmanFill(opts){
   const c=document.getElementById(opts.containerId);
@@ -290,6 +369,7 @@ window.clearFeedback=clearFeedback;
 window.initScrollProgress=initScrollProgress;
 window.createGate=createGate;
 window.createExerciseSet=createExerciseSet;
+window.createAdversarialChallenge=createAdversarialChallenge;
 window.createFeynmanFill=createFeynmanFill;
 
 // 自动初始化

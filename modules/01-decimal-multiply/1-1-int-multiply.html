@@ -223,6 +223,12 @@
   </div>
 </div>
 
+<!-- 对抗挑战 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">🧠</span>对抗挑战</div>
+  <div id="adversary-root"></div>
+</div>
+
 <!-- 费曼 -->
 <div class="section">
   <div class="section-header"><span class="emoji">✏️</span>费曼输出 · 教给小明</div>
@@ -372,6 +378,21 @@ function checkEx2(){
   const ok=v==='7.5';f.className='feedback show '+(ok?'success':'error');
   f.innerHTML=ok?'✅ 1.25×6=7.5':'❌ 1.25=125个0.01，125×6=750个0.01=7.5';
 }
+
+// ===== 对抗挑战 =====
+createAdversarialChallenge({containerId:'adversary-root',
+  challenges:[
+    {tag:'乘法本质',statement:'0.4×3和0.4+0.4+0.4表达的是同一件事。',
+      answer:'agree',hint:'把乘法读成“几个几”。3个0.4相加是什么？',
+      explanation:'小数乘整数仍然是几个相同加数的和。3个0.4相加就是0.4×3。',
+      counterexample:'注意这里讨论的是“小数×整数”。到小数×小数时，还要加入“取一部分”的比例模型。'},
+    {tag:'大小直觉',statement:'乘法就是让数变大，所以3×0.4一定比3大。',
+      answer:'refute',hint:'先算出3个0.4是多少，再和3比较。',
+      explanation:'乘法不是一定变大。3×0.4表示3个0.4相加，结果是1.2。',
+      counterexample:'1.2小于3。因为每次加的是0.4，不是1。'}
+  ],
+  onComplete:()=>saveProgress({'decimal-multiply':{'int':{'adversary':'complete'}}})
+});
 
 // ===== 费曼 =====
 createFeynmanFill({containerId:'feynman-root',
