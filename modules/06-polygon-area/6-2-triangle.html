@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>三角形面积 · 五年级数学</title>
+<link rel="stylesheet" href="../../shared/layout.css">
+<style>canvas{display:block;margin:0 auto;border-radius:var(--radius-sm);}</style>
+</head>
+<body>
+<div class="top-nav"><a href="../../index.html">🏠</a><span class="breadcrumb-sep">›</span><a href="index.html">多边形面积</a><span class="breadcrumb-sep">›</span><span>三角形</span></div>
+<h1 class="module-title">🔻 三角形面积</h1>
+<p class="module-subtitle">两个一模一样的三角形 = 一个平行四边形。所以÷2。</p>
+
+<!-- 门控 -->
+<div class="section"><div class="section-header"><span class="emoji">🔑</span>前置检查</div><div id="gate-root"></div></div>
+
+<!-- 拆到公理 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">🧱</span>拆到公理</div>
+  <div class="math-display">
+<b>已知：</b>平行四边形面积 = 底 × 高<br>
+<b>追问：</b>三角形？不能直接剪成一个矩形——<br>但<b>两个一模一样的三角形</b>，可以拼成什么？
+  </div>
+  <div class="axiom-box" style="margin-top:12px;">
+两个全等三角形拼在一起 = 平行四边形<br>
+所以一个三角形 = 平行四边形的一半<br>
+→ S = 底 × 高 ÷ 2
+  </div>
+</div>
+
+<!-- 交互 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">🎮</span>交互实验室 — 拼图法</div>
+  <p style="color:var(--text-muted);font-size:14px;">拖拽复制出的三角形到原三角形旁边 → 拼成平行四边形。</p>
+  <div class="interactive-area">
+    <canvas id="tri-canvas"></canvas>
+    <div style="margin-top:8px;">
+      <button class="btn btn-primary btn-sm" onclick="dupTri()">📋 复制一个三角形</button>
+      <button class="btn btn-success btn-sm" onclick="mergeTri()" id="btn-merge" disabled>🔗 拼成平行四边形</button>
+    </div>
+    <div id="tri-result" style="margin-top:12px;font-weight:700;font-size:16px;"></div>
+  </div>
+</div>
+
+<!-- 教材溯源 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">📐</span>教材溯源</div>
+  <div style="cursor:pointer;padding:12px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);" onclick="this.querySelector('div').style.display=this.querySelector('div').style.display==='none'?'block':'none'">
+    📖 <b>教材：</b>用两个完全一样的三角形拼一拼，看能拼成什么图形。 <i>（点击看意图）</i>
+    <div style="display:none;margin-top:8px;padding:8px;background:#f0fdf4;border-radius:6px;font-size:14px;">
+      ✏️ 教材不直接给公式，让学生自己动手拼。直角三角形拼成矩形，锐角/钝角三角形拼成平行四边形——但结论统一：S=底×高÷2。
+    </div>
+  </div>
+</div>
+
+<!-- 典例 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">🎯</span>典例精讲</div>
+  <h3>例1：底6cm，高4cm → S=6×4÷2=12cm²</h3>
+  <div style="margin-top:8px;"><p style="font-weight:600;">✏️ 自测：底10cm，高5cm → S= <input class="input-field" id="ex1" style="width:60px;"> cm² <button class="btn btn-primary btn-sm" onclick="ck1()">提交</button></p><div class="feedback" id="fb1"></div></div>
+  <h3 style="margin-top:16px;">例2：S=30cm²，底=12cm，高=？</h3>
+  <div style="margin-top:8px;"><p style="font-weight:600;">✏️ 高= <input class="input-field" id="ex2" style="width:60px;"> cm <button class="btn btn-primary btn-sm" onclick="ck2()">提交</button></p><div class="feedback" id="fb2"></div></div>
+</div>
+
+<!-- 踩坑 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">⚠️</span>踩坑预警</div>
+  <div class="pitfall">
+    <div class="pitfall-title">🕳️ 忘记÷2</div>
+    <p><b>症状：</b>底×高直接写答案，没÷2。</p>
+    <p><b>根因：</b>没真正理解"三角形=平行四边形的一半"。死记公式容易漏÷2。</p>
+    <div class="pitfall-chain">🔗 <b>后续炸雷：</b>梯形面积公式也有÷2。这里忘记，梯形也会忘。</div>
+    <p style="margin-top:8px;"><b>🔍 自查：</b>画一个平行四边形→画对角线切成两个三角形→问自己："一个三角形是整个平行四边形的一半吗？"</p>
+  </div>
+</div>
+
+<!-- 费曼 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">✏️</span>费曼输出</div>
+  <p style="color:var(--text-muted);">给同学解释：<b>"为什么三角形面积要÷2？"</b></p>
+  <div id="feynman-root"></div>
+</div>
+
+<!-- 练习 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">📝</span>分层练习</div>
+  <div class="exercise-tier"><h3><span class="tier-badge basic">基础层</span></h3><div id="ex-basic"></div></div>
+  <div class="exercise-tier" id="tier-adv" style="display:none;"><h3><span class="tier-badge advanced">提升层</span></h3><div id="ex-adv"></div></div>
+  <div id="done" style="display:none;text-align:center;padding:24px;"><div style="font-size:48px;">🎉</div><p style="font-weight:700;">三角形 — 通关！</p></div>
+</div>
+
+<script src="../../shared/components.js"></script>
+<script>
+createGate({containerId:'gate-root',
+  questions:[{label:'平行四边形面积公式：S=',inputs:[{key:'a',width:80,placeholder:'底×高'}],answer:'底×高',check:u=>u.a==='底×高'},
+    {label:'8×6÷2=',inputs:[{key:'a',width:50}],answer:'24',check:u=>u.a==='24'}],
+  onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:16px;">✅ 基础扎实！</div>'
+});
+
+// Canvas
+const c=document.getElementById('tri-canvas');
+c.width=Math.min(500,c.parentElement.clientWidth-40);c.height=240;
+const ctx=c.getContext('2d');
+let triState='single';
+
+function drawTri(){
+  ctx.clearRect(0,0,c.width,c.height);
+  const ox=120,oy=40,bw=180,bh=160;
+  ctx.fillStyle='rgba(59,130,246,0.3)';ctx.strokeStyle='#2563eb';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(ox,oy+bh);ctx.lineTo(ox+40,oy);ctx.lineTo(ox+bw,oy+bh);ctx.closePath();ctx.fill();ctx.stroke();
+  ctx.fillStyle='#dc2626';ctx.setLineDash([5,5]);ctx.beginPath();ctx.moveTo(ox+40,oy);ctx.lineTo(ox+40,oy+bh);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='#dc2626';ctx.font='13px sans-serif';ctx.fillText('高',ox+45,oy+bh/2+5);
+  ctx.fillStyle='#1a1a1a';ctx.font='14px sans-serif';ctx.fillText('底',ox+bw/2,oy+bh+20);
+  
+  if(triState==='dup'){
+    ctx.globalAlpha=0.5;
+    ctx.fillStyle='rgba(239,68,68,0.4)';ctx.strokeStyle='#ef4444';
+    ctx.beginPath();ctx.moveTo(ox+bw+20,oy+bh);ctx.lineTo(ox+bw+60,oy);ctx.lineTo(ox+bw+20+bw-40,oy+bh);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.globalAlpha=1;
+    ctx.fillStyle='#1a1a1a';ctx.font='14px sans-serif';ctx.fillText('← 复制品',ox+bw+20,oy+bh+20);
+  }else if(triState==='merged'){
+    ctx.fillStyle='rgba(34,197,94,0.3)';ctx.strokeStyle='#16a34a';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(ox,oy+bh);ctx.lineTo(ox+bw-40,oy);ctx.lineTo(ox+bw-40+bw,oy);ctx.lineTo(ox+bw,oy+bh);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.fillStyle='#1a1a1a';ctx.font='15px sans-serif';ctx.textAlign='center';
+    ctx.fillText('平行四边形！S = 底×高 = '+bw/10+'×'+bh/10+' = '+(bw*bh/100)+' cm²',ox+bw/2,oy+bh/2+5);
+    ctx.fillText('三角形 = 一半 → ÷2 → '+(bw*bh/200)+' cm²',ox+bw/2,oy+bh/2+30);
+    ctx.textAlign='start';
+  }
+}
+function dupTri(){triState='dup';drawTri();document.getElementById('btn-merge').disabled=false;}
+function mergeTri(){triState='merged';drawTri();document.getElementById('btn-merge').disabled=true;document.getElementById('tri-result').textContent='✅ 两个全等三角形 → 平行四边形。三角形面积 = 平行四边形面积的一半。';}
+drawTri();
+
+function ck1(){const v=document.getElementById('ex1').value,f=document.getElementById('fb1');f.className='feedback show '+(v==='25'?'success':'error');f.textContent=v==='25'?'✅ 10×5÷2=25cm²':'❌ S=底×高÷2=10×5÷2=25cm²';}
+function ck2(){const v=document.getElementById('ex2').value,f=document.getElementById('fb2');f.className='feedback show '+(v==='5'?'success':'error');f.textContent=v==='5'?'✅ 高=2S÷底=60÷12=5cm':'❌ 高=2S÷底=2×30÷12=5cm';}
+
+createFeynmanFill({containerId:'feynman-root',
+  template:'三角形面积 = ___ × ___ ÷ ___。因为：把两个完全相同的三角形拼在一起，正好组成一个___。这个平行四边形的底=三角形的___，高=三角形的___。所以一个三角形的面积=平行四边形面积的___。',
+  answer:['底','高','2','平行四边形','底','高','一半'],
+  onComplete:()=>saveProgress({'polygon-area':{'triangle':{'feynman':'complete'}}})
+});
+
+createExerciseSet({containerId:'ex-basic',
+  exercises:[
+    {question:'底8cm，高6cm → S=',inputs:[{key:'a',width:50}],answer:'24',hint:'8×6÷2=24cm²',check:a=>a.a==='24'},
+    {question:'底12.5m，高4m → S=',inputs:[{key:'a',width:60}],answer:'25',hint:'12.5×4÷2=25m²',check:a=>a.a==='25'},
+    {question:'S=45cm²，底=9cm，高=',inputs:[{key:'a',width:50}],answer:'10',hint:'高=2×45÷9=10cm',check:a=>a.a==='10'},
+    {question:'直角三角形两条直角边分别是6cm和8cm，面积=',inputs:[{key:'a',width:50}],answer:'24',hint:'直角边就是底和高。6×8÷2=24cm²',check:a=>a.a==='24'}
+  ],
+  passThreshold:0.75,
+  onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}
+});
+function initAdv(){
+  createExerciseSet({containerId:'ex-adv',
+    exercises:[
+      {question:'三角形底15m，高8m。每平方米铺草皮12元，一共多少元？',inputs:[{key:'a',width:60}],answer:'720',hint:'S=15×8÷2=60m²，60×12=720元',check:a=>a.a==='720'},
+      {question:'三角形和平行四边形等底等高。平行四边形面积=48cm²，三角形面积=',inputs:[{key:'a',width:50}],answer:'24',hint:'等底等高时，三角形面积=平行四边形面积÷2=24cm²',check:a=>a.a==='24'}
+    ],
+    passThreshold:0.5,
+    onPass:()=>{document.getElementById('done').style.display='block';saveProgress({'polygon-area':{'triangle':{'completed':true}}});}
+  });
+}
+</script>
+</body>
+</html>

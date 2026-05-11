@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>分数的意义 · 五年级数学</title>
+<link rel="stylesheet" href="../../shared/layout.css">
+<style>canvas{display:block;margin:0 auto;border-radius:var(--radius-sm);}.frac-bar{display:flex;gap:0;height:50px;margin:8px 0;border-radius:6px;overflow:hidden;}.frac-bar div{border-right:1px solid #fff;transition:all .3s;}</style>
+</head>
+<body>
+<div class="top-nav"><a href="../../index.html">🏠</a><span class="breadcrumb-sep">›</span><a href="index.html">分数</a><span class="breadcrumb-sep">›</span><span>意义</span></div>
+<h1 class="module-title">🔢 分数的意义</h1>
+<p class="module-subtitle">一个物体、一堆物体、一个计量单位——都可以是"1"</p>
+
+<div class="section"><div class="section-header"><span class="emoji">🔑</span>前置检查</div><div id="gate-root"></div></div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🧱</span>拆到公理</div>
+  <div class="math-display">
+<b>分数是什么？</b><br><br>
+① <b>分数是一个数：</b>1/2就是一个数，和1、2、0.5一样，站在数轴上有自己的位置。<br>
+② <b>分数是一种除法：</b>1÷2=1/2，分数线就是除号。<br>
+③ <b>分数是部分与整体的关系：</b>1/2可以是一块蛋糕的一半，也可以是全班的一半。
+  </div>
+  <div class="axiom-box" style="margin-top:12px;">
+"1"是你自己定义的。<br>
+一个苹果可以是1。<br>
+一盘苹果也可以是1。<br>
+全班同学也可以是1。<br>
+<br>
+把"1"平均分成若干份，取其中一份或几份 = 分数。
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🎮</span>交互实验室 — 分数条</div>
+  <p style="color:var(--text-muted);font-size:14px;">拖动分母滑块，观察1/2=2/4=4/8。</p>
+  <div class="interactive-area">
+    <div id="frac-bars" style="max-width:500px;margin:0 auto;"></div>
+    <div style="margin-top:12px;">
+      分母: <input type="range" id="denom-slider" min="2" max="12" value="4" oninput="drawFracBars()">
+      <span id="denom-label">4</span> 份
+    </div>
+    <p style="margin-top:8px;font-weight:600;">涂色表示 <span id="frac-display">2/4</span> = <span id="frac-simplified" style="color:var(--accent);">1/2</span></p>
+    <p style="font-size:13px;color:var(--text-muted);">分子: <input type="range" id="num-slider" min="1" max="12" value="2" oninput="drawFracBars()">
+      <span id="num-label">2</span></p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">📐</span>教材溯源</div>
+  <div style="cursor:pointer;padding:12px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);margin-bottom:8px;" onclick="this.querySelector('div').style.display=this.querySelector('div').style.display==='none'?'block':'none'">
+    📖 <b>教材：</b>"一个物体、一个计量单位或是一些物体等都可以看作一个整体——单位'1'。" <i>（点击看解析）</i>
+    <div style="display:none;margin-top:8px;padding:8px;background:#f0fdf4;border-radius:6px;font-size:14px;">
+      ✏️ 这是分数理解中最关键的一步——"1"是灵活的概念。很多学生到了五年级仍然只把"1"当成一个物体。理解"1"可以是群体，是进入分数运算的前提。
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🎯</span>典例精讲</div>
+  <h3>例1：涂色表示3/4（单位"1"是一整个圆）</h3>
+  <p style="font-weight:600;">✏️ 自测：涂色表示2/5 —— 把一个整体平均分成___份，取其中___份。</p>
+  <input class="input-field" id="ex1a" style="width:40px;"> <input class="input-field" id="ex1b" style="width:40px;"> <button class="btn btn-primary btn-sm" onclick="ck1()">提交</button><div class="feedback" id="fb1"></div>
+  
+  <h3 style="margin-top:16px;">例2：12块糖平均分给4人，每人分到这些糖的几分之几？</h3>
+  <p style="font-weight:600;">✏️ 每人分到 <input class="input-field" id="ex2" style="width:60px;"> <button class="btn btn-primary btn-sm" onclick="ck2()">提交</button></p><div class="feedback" id="fb2"></div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">⚠️</span>踩坑预警</div>
+  <div class="pitfall">
+    <div class="pitfall-title">🕳️ 分数比大小看分母——1/3 > 1/2？</div>
+    <p><b>症状：</b>3>2，所以1/3>1/2。</p>
+    <p><b>根因：</b>没理解分母是"分几份"。分母越大，每份越小。</p>
+    <div class="pitfall-chain">🔗 <b>后续炸雷：</b>异分母加减时乱通分。分数应用题全军覆没。</div>
+    <p style="margin-top:8px;"><b>🔍 自查：</b>画一个圆——分成2份，一份多大？分成3份，一份多大？比一比。</p>
+  </div>
+  <div class="pitfall" style="margin-top:14px;">
+    <div class="pitfall-title">🕳️ 分子分母加/减同一个数——1/2+1/3=2/5</div>
+    <p><b>症状：</b>分子加分子，分母加分母。</p>
+    <p><b>根因：</b>混淆了分数加减和整数加减的规则。分数的加减必须先统一分数单位（通分），不能直接加分子分母。</p>
+    <div class="pitfall-chain">🔗 <b>后续炸雷：</b>分数四则运算从根子上错。</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">✏️</span>费曼输出</div>
+  <p style="color:var(--text-muted);">给同学解释：<b>"什么是分数？3/4是什么意思？"</b></p>
+  <div id="feynman-root"></div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">📝</span>分层练习</div>
+  <div class="exercise-tier"><h3><span class="tier-badge basic">基础层</span></h3><div id="ex-basic"></div></div>
+  <div class="exercise-tier" id="tier-adv" style="display:none;"><h3><span class="tier-badge advanced">提升层</span></h3><div id="ex-adv"></div></div>
+  <div id="done" style="display:none;text-align:center;padding:24px;"><div style="font-size:48px;">🎉</div><p style="font-weight:700;">分数意义 — 通关！</p></div>
+</div>
+
+<script src="../../shared/components.js"></script>
+<script>
+createGate({containerId:'gate-root',
+  questions:[{label:'把一块蛋糕平均分成4份，每份是这块蛋糕的几分之几？',inputs:[{key:'a',width:60,placeholder:'?/?'}],answer:'1/4',check:u=>u.a==='1/4'},
+    {label:'24÷6=',inputs:[{key:'a',width:40}],answer:'4',check:u=>u.a==='4'}],
+  onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:16px;">✅ 基础扎实！</div>'
+});
+
+function drawFracBars(){
+  const d=parseInt(document.getElementById('denom-slider').value);
+  const n=parseInt(document.getElementById('num-slider').value);
+  document.getElementById('num-slider').max=d;
+  document.getElementById('denom-label').textContent=d;
+  document.getElementById('num-label').textContent=n;
+  document.getElementById('frac-display').textContent=n+'/'+d;
+  
+  // Simplify fraction
+  const g=gcd(n,d);
+  document.getElementById('frac-simplified').textContent=g>1?(n/g)+'/'+(d/g):'';
+  
+  // Draw bars
+  const container=document.getElementById('frac-bars');
+  let html='<div class="frac-bar" style="width:100%;">';
+  for(let i=0;i<d;i++){
+    html+='<div style="flex:1;background:'+(i<n?'#3b82f6':'#e5e7eb')+';"></div>';
+  }
+  html+='</div>';
+  // Comparison bars
+  if(d!==4){html+='<p style="font-size:13px;color:var(--text-muted);margin-top:4px;">对比 2/4:</p>';}
+  html+='<div class="frac-bar" style="width:100%;">';
+  for(let i=0;i<4;i++){html+='<div style="flex:1;background:'+(i<2?'#3b82f6':'#e5e7eb')+';"></div>';}
+  html+='</div><span style="font-size:13px;color:var(--text-muted);">2/4</span>';
+  
+  container.innerHTML=html;
+}
+function gcd(a,b){return b?gcd(b,a%b):a;}
+drawFracBars();
+
+function ck1(){const a=document.getElementById('ex1a').value,b=document.getElementById('ex1b').value,f=document.getElementById('fb1');const ok=a==='5'&&b==='2';f.className='feedback show '+(ok?'success':'error');f.textContent=ok?'✅ 平均分5份，取2份 → 2/5':'❌ 2/5 = 平均分成5份，取其中2份';}
+function ck2(){const v=document.getElementById('ex2').value,f=document.getElementById('fb2');const ok=v==='1/4'||v==='3/12';f.className='feedback show '+(ok?'success':'error');f.textContent=ok?'✅ 12块糖分4人，每人3块=3/12=1/4':'❌ 12块分4人，每人占总数的1/4（把12块看作整体"1"）';}
+
+createFeynmanFill({containerId:'feynman-root',
+  template:'3/4表示：把"___"平均分成___份，取其中的___份。分母___表示总共___份，分子___表示取了___份。这里的"1"可以是___个苹果、___盘苹果、或者___班同学。',
+  answer:['1','4','3','4','4','3','3','一个','一盘','全班'],
+  onComplete:()=>saveProgress({'fraction-meaning':{'meaning':{'feynman':'complete'}}})
+});
+
+createExerciseSet({containerId:'ex-basic',
+  exercises:[
+    {question:'把一根绳子平均分成5段，每段是这根绳子的几分之几？',inputs:[{key:'a',width:60}],answer:'1/5',hint:'整体是绳子，分5份，每份1/5',check:a=>a.a==='1/5'},
+    {question:'3/4的分数单位是___，它有___个这样的分数单位',inputs:[{key:'a',width:40},{key:'b',width:40}],answer:'1/4, 3',hint:'分母是4，分数单位就是1/4。分子是3，有3个1/4',check:a=>a.a==='1/4'&&a.b==='3'},
+    {question:'1/2和1/3谁大？(填1/2或1/3)',inputs:[{key:'a',width:50}],answer:'1/2',hint:'分母越小，每份越大。分2份比分3份每份大→1/2>1/3',check:a=>a.a==='1/2'}
+  ],
+  passThreshold:0.67,
+  onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}
+});
+function initAdv(){
+  createExerciseSet({containerId:'ex-adv',
+    exercises:[
+      {question:'18个苹果，平均分给6个小朋友。每人分到这些苹果的几分之几？每人分到几个？',inputs:[{key:'a',width:50},{key:'b',width:50}],answer:'1/6, 3',hint:'把18个看作整体"1"，分6份→每人1/6。18÷6=3个',check:a=>a.a==='1/6'&&a.b==='3'},
+      {question:'5/8的分数单位是___，再添___个这样的分数单位就是1。',inputs:[{key:'a',width:40},{key:'b',width:40}],answer:'1/8, 3',hint:'分数单位1/8。5/8+3/8=8/8=1，所以添3个',check:a=>a.a==='1/8'&&a.b==='3'}
+    ],
+    passThreshold:0.5,
+    onPass:()=>{document.getElementById('done').style.display='block';saveProgress({'fraction-meaning':{'meaning':{'completed':true}}});}
+  });
+}
+</script>
+</body>
+</html>

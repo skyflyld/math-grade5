@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>平行四边形面积 · 五年级数学</title>
+<link rel="stylesheet" href="../../shared/layout.css">
+<style>canvas{cursor:pointer;display:block;margin:0 auto;border-radius:var(--radius-sm);}</style>
+</head>
+<body>
+<div class="top-nav"><a href="../../index.html">🏠</a><span class="breadcrumb-sep">›</span><a href="index.html">多边形面积</a><span class="breadcrumb-sep">›</span><span>平行四边形</span></div>
+<h1 class="module-title">🔷 平行四边形面积</h1>
+<p class="module-subtitle">形状可以变。只要不撕开、不拉伸、不重叠——面积就不变。</p>
+
+<!-- 门控 -->
+<div class="section"><div class="section-header"><span class="emoji">🔑</span>前置检查</div><div id="gate-root"></div></div>
+
+<!-- 拆到公理 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">🧱</span>拆到公理</div>
+  <div class="math-display">
+<b>回忆：矩形面积 = 长 × 宽</b><br>
+一行放几个1cm²的小正方形 × 放几行。<br><br>
+<b>追问：平行四边形不是矩形——但它能不能变成矩形？</b>
+  </div>
+  <div class="axiom-box" style="margin-top:16px;">
+面积不变原理：<br>
+形状可以变，只要不撕开、不拉伸、不重叠 —— <br>
+面积就不变。
+  </div>
+</div>
+
+<!-- 交互实验室 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">🎮</span>交互实验室 — 剪刀工具</div>
+  <p style="color:var(--text-muted);font-size:14px;margin-bottom:8px;">
+    沿高剪开平行四边形 → 把三角形拖到右边 → 拼成矩形。<br>
+    <b>观察：</b>底变了吗？高变了吗？面积变了吗？
+  </p>
+  <div class="interactive-area">
+    <canvas id="pg-canvas"></canvas>
+    <div style="margin-top:8px;">
+      <button class="btn btn-outline btn-sm" onclick="resetPG()">重置</button>
+      <button class="btn btn-primary btn-sm" onclick="cutPG()">✂️ 沿高剪开</button>
+      <button class="btn btn-success btn-sm" onclick="slidePG()" id="btn-slide" disabled>→ 平移拼矩形</button>
+    </div>
+    <div id="pg-result" style="margin-top:12px;font-weight:700;font-size:16px;"></div>
+  </div>
+  <div class="math-display" style="margin-top:12px;">
+<b>结论：</b>平行四边形面积 = <b>底 × 高</b><br>
+因为剪拼后，底就是矩形的长，高就是矩形的宽。
+  </div>
+</div>
+
+<!-- 教材溯源 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">📐</span>教材溯源</div>
+  <div style="cursor:pointer;padding:12px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);margin-bottom:8px;" onclick="this.querySelector('div').style.display=this.querySelector('div').style.display==='none'?'block':'none';this.style.background=this.style.background==='rgb(254,252,232)'?'#f0fdf4':'#fefce8'">
+    📖 <b>教材：</b>"先沿高剪开，把三角形向右平移，再拼成……" <i>（点击看意图）</i>
+    <div style="display:none;margin-top:8px;padding:8px;background:#f0fdf4;border-radius:6px;font-size:14px;">
+      ✏️ 教材从不直接给公式。先让学生"方格纸上数格子"估算，再"剪拼"操作，最后才提炼公式。这是"做数学"而不是"背数学"。
+    </div>
+  </div>
+</div>
+
+<!-- 典例 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">🎯</span>典例精讲</div>
+  <h3>例1：模式识别 — 底6cm，高4cm</h3>
+  <div class="math-display">S = 6 × 4 = 24 (cm²)</div>
+  <div style="margin-top:12px;"><p style="font-weight:600;">✏️ 自测：底8cm，高5cm的平行四边形面积 = <input class="input-field" id="ex1" style="width:60px;"> cm² <button class="btn btn-primary btn-sm" onclick="ck(1)">提交</button></p><div class="feedback" id="fb1"></div></div>
+  
+  <h3 style="margin-top:20px;">例2：逆向 — 面积48cm²，底8cm，高=？</h3>
+  <div class="math-display">48 ÷ 8 = 6 (cm)</div>
+  <div style="margin-top:12px;"><p style="font-weight:600;">✏️ 自测：S=36cm²，底=9cm，高= <input class="input-field" id="ex2" style="width:60px;"> cm <button class="btn btn-primary btn-sm" onclick="ck(2)">提交</button></p><div class="feedback" id="fb2"></div></div>
+</div>
+
+<!-- 踩坑 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">⚠️</span>踩坑预警</div>
+  <div class="pitfall">
+    <div class="pitfall-title">🕳️ 找错底和高——把斜边当高</div>
+    <p><b>症状：</b>题目给斜边长度却不给高，学生用斜边×底。</p>
+    <p><b>根因：</b>不理解"高必须垂直于底"。斜边不垂直于底。</p>
+    <div class="pitfall-chain">🔗 <b>后续炸雷：</b>三角形和梯形面积同样需要正确的高。这里错了，后面两个全错。</div>
+    <p style="margin-top:8px;"><b>🔍 自查：</b>手指比划——高和底是否成直角？不是直角→不是高。</p>
+  </div>
+</div>
+
+<!-- 费曼 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">✏️</span>费曼输出</div>
+  <p style="color:var(--text-muted);">给同学解释：<b>"平行四边形面积为什么等于底×高？"</b></p>
+  <div id="feynman-root"></div>
+</div>
+
+<!-- 练习 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">📝</span>分层练习</div>
+  <div class="exercise-tier"><h3><span class="tier-badge basic">基础层</span></h3><div id="ex-basic"></div></div>
+  <div class="exercise-tier" id="tier-adv" style="display:none;"><h3><span class="tier-badge advanced">提升层</span></h3><div id="ex-adv"></div></div>
+  <div id="done" style="display:none;text-align:center;padding:24px;"><div style="font-size:48px;">🎉</div><p style="font-weight:700;">平行四边形 — 通关！</p></div>
+</div>
+
+<script src="../../shared/components.js"></script>
+<script>
+// 门控
+createGate({containerId:'gate-root',
+  questions:[{label:'矩形面积 = 长 × 宽。长6cm宽4cm的矩形面积=',inputs:[{key:'a',width:50}],answer:'24',check:u=>u.a==='24'},
+    {label:'平行四边形有几组平行边？高必须___于底(填"垂直"或"平行")',inputs:[{key:'a',width:60}],answer:'垂直',check:u=>u.a==='垂直'}],
+  onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:16px;">✅ 基础扎实！</div>'
+});
+
+// Canvas 剪刀工具
+const c=document.getElementById('pg-canvas');
+c.width=Math.min(600,c.parentElement.clientWidth-40);c.height=260;
+const ctx=c.getContext('2d');
+let pgState='original'; // original | cut | slid
+
+function drawPG(){
+  ctx.clearRect(0,0,c.width,c.height);
+  const ox=80, oy=60, bw=200, bh=150, sh=Math.min(bw*0.3,60);
+  
+  if(pgState==='original'){
+    // Parallelogram
+    ctx.fillStyle='rgba(59,130,246,0.2)';ctx.strokeStyle='#2563eb';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(ox,oy+bh);ctx.lineTo(ox+sh,oy);ctx.lineTo(ox+sh+bw,oy);ctx.lineTo(ox+bw,oy+bh);ctx.closePath();ctx.fill();ctx.stroke();
+    // Dashed height line
+    ctx.setLineDash([5,5]);ctx.strokeStyle='#dc2626';ctx.beginPath();ctx.moveTo(ox+sh,oy);ctx.lineTo(ox+sh,oy+bh);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='#dc2626';ctx.font='14px sans-serif';ctx.fillText('高',ox+sh+5,oy+bh/2+5);
+    ctx.fillStyle='#1a1a1a';ctx.font='13px sans-serif';ctx.fillText('底',ox+sh+bw/2-10,oy+bh+20);
+  }else if(pgState==='cut'){
+    // Show cut triangle (left part) and trapezoid (right part) separated
+    ctx.fillStyle='rgba(239,68,68,0.3)';ctx.strokeStyle='#ef4444';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(ox,oy+bh);ctx.lineTo(ox+sh,oy);ctx.lineTo(ox+sh,oy+bh);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.fillStyle='rgba(59,130,246,0.3)';ctx.strokeStyle='#2563eb';
+    ctx.beginPath();ctx.moveTo(ox+sh,oy);ctx.lineTo(ox+sh+bw,oy);ctx.lineTo(ox+bw,oy+bh);ctx.lineTo(ox+sh,oy+bh);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.fillStyle='#1a1a1a';ctx.font='15px sans-serif';ctx.textAlign='center';
+    ctx.fillText('△三角形',ox+sh/2,oy+bh/2+5);
+    ctx.fillText('梯形',ox+sh+bw/2,oy+bh/2+5);
+  }else{
+    // Rectangle formed after sliding
+    ctx.fillStyle='rgba(34,197,94,0.3)';ctx.strokeStyle='#16a34a';ctx.lineWidth=2;
+    ctx.strokeRect(ox+sh,oy,bw,bh);ctx.fillRect(ox+sh,oy,bw,bh);
+    ctx.fillStyle='#1a1a1a';ctx.font='15px sans-serif';ctx.textAlign='center';
+    ctx.fillText('矩形！',ox+sh+bw/2,oy+bh/2+5);
+    ctx.fillText('S = 底 × 高 = '+bw/10+'×'+bh/10+' = '+(bw*bh/100)+' cm²',ox+sh+bw/2,oy+bh+30);
+  }
+  ctx.textAlign='start';
+}
+function resetPG(){pgState='original';drawPG();document.getElementById('btn-slide').disabled=true;document.getElementById('pg-result').textContent='';}
+function cutPG(){pgState='cut';drawPG();document.getElementById('btn-slide').disabled=false;}
+function slidePG(){pgState='slid';drawPG();document.getElementById('btn-slide').disabled=true;document.getElementById('pg-result').textContent='✅ 面积没变！底=矩形的长，高=矩形的宽 → S = 底×高';}
+drawPG();
+
+// 典例
+function ck(n){
+  const v=document.getElementById('ex'+n).value,fb=document.getElementById('fb'+n);
+  const ans=n===1?'40':'4';
+  fb.className='feedback show '+(v===ans?'success':'error');
+  fb.textContent=v===ans?'✅ 正确！':(n===1?'❌ S=底×高=8×5=40cm²':'❌ 高=S÷底=36÷9=4cm');
+}
+
+// 费曼
+createFeynmanFill({containerId:'feynman-root',
+  template:'平行四边形的面积 = ___ × ___。证明：___（填"剪/撕"）开平行四边形，得到一个___和一个___。把___移到___，拼成一个___。这个___的___=平行四边形的底，___=平行四边形的高。因为面积___，所以S=底×高。',
+  answer:['底','高','剪','三角形','梯形','三角形','矩形的右边','矩形','矩形','长','宽','不变'],
+  onComplete:()=>saveProgress({'polygon-area':{'parallelogram':{'feynman':'complete'}}})
+});
+
+// 练习
+createExerciseSet({containerId:'ex-basic',
+  exercises:[
+    {question:'底10cm，高6cm → S=',inputs:[{key:'a',width:50}],answer:'60',hint:'S=底×高=10×6=60cm²',check:a=>a.a==='60'},
+    {question:'底7.5m，高4m → S=',inputs:[{key:'a',width:60}],answer:'30',hint:'7.5×4=30m²',check:a=>a.a==='30'},
+    {question:'S=72cm²，底=9cm，高=',inputs:[{key:'a',width:50}],answer:'8',hint:'高=S÷底=72÷9=8cm',check:a=>a.a==='8'},
+    {question:'平行四边形和剪拼后的矩形，___变了，___没变。(形状/面积)',inputs:[{key:'a',width:40},{key:'b',width:40}],answer:'形状, 面积',check:a=>a.a==='形状'&&a.b==='面积'}
+  ],
+  passThreshold:0.75,
+  onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}
+});
+function initAdv(){
+  createExerciseSet({containerId:'ex-adv',
+    exercises:[
+      {question:'一块平行四边形菜地，底15m，高8m。每平方米种3棵白菜，一共种几棵？',inputs:[{key:'a',width:60}],answer:'360',hint:'S=15×8=120m²，120×3=360棵',check:a=>a.a==='360'},
+      {question:'平行四边形两条邻边分别是6cm和4cm，其中一条高是3cm。面积可能是多少？(提示：高3cm只能对应哪条底？)',inputs:[{key:'a',width:50}],answer:'18',hint:'高3cm只能对应6cm的底（高<斜边）。S=6×3=18cm²或12cm²。答案是18（更合理）。',check:a=>a.a==='18'||a.a==='12'}
+    ],
+    passThreshold:0.5,
+    onPass:()=>{document.getElementById('done').style.display='block';saveProgress({'polygon-area':{'parallelogram':{'completed':true}}});}
+  });
+}
+</script>
+</body>
+</html>

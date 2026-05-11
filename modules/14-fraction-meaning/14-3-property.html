@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>分数的基本性质 · 五年级数学</title>
+<link rel="stylesheet" href="../../shared/layout.css">
+<style>.frac-demo{display:flex;gap:4px;align-items:center;justify-content:center;flex-wrap:wrap;margin:12px 0;}
+.frac-demo input{width:50px;text-align:center;padding:6px;border:2px solid var(--border);border-radius:6px;font-size:16px;}
+.frac-demo .arrow{font-size:20px;font-weight:700;color:var(--accent);}</style>
+</head>
+<body>
+<div class="top-nav"><a href="../../index.html">🏠</a><span class="breadcrumb-sep">›</span><a href="index.html">分数</a><span class="breadcrumb-sep">›</span><span>基本性质</span></div>
+<h1 class="module-title">⚖️ 分数的基本性质</h1>
+<p class="module-subtitle">分子分母同时乘或除以相同的数（0除外），分数大小不变。</p>
+
+<div class="section"><div class="section-header"><span class="emoji">🔑</span>前置检查</div><div id="gate-root"></div></div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🧱</span>拆到公理</div>
+  <div class="math-display">
+<b>拿出三张同样大的正方形纸：</b><br>
+第1张对折一次 → 1/2 涂色<br>
+第2张对折两次 → 2/4 涂色<br>
+第3张对折三次 → 4/8 涂色<br><br>
+<b>你看：</b>涂色部分一样大！<br>
+1/2 = 2/4 = 4/8
+  </div>
+  <div class="axiom-box" style="margin-top:12px;">
+分数的分子和分母同时乘或除以相同的数（0除外），<br>
+分数的大小不变。<br><br>
+这就是<b>分数的基本性质</b>。<br>
+1/2 → (×2)→ 2/4 → (×2)→ 4/8
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🎮</span>交互 — 等值分数探索器</div>
+  <p style="color:var(--text-muted);font-size:14px;">输入乘数，看分数如何保持相等。</p>
+  <div class="interactive-area">
+    <div class="frac-demo">
+      <input type="number" id="base-num" value="1" min="1" style="width:50px;" oninput="updateFrac()">
+      <span style="font-size:24px;">/</span>
+      <input type="number" id="base-den" value="2" min="2" style="width:50px;" oninput="updateFrac()">
+    </div>
+    <div style="margin:8px 0;">乘/除: <input type="number" id="mult" value="2" min="2" max="10" style="width:50px;" oninput="updateFrac()"></div>
+    <div class="frac-demo" id="equiv-result" style="font-size:20px;font-weight:700;color:var(--accent);"></div>
+    <div id="bars-demo" style="max-width:400px;margin:8px auto;"></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">📐</span>教材溯源</div>
+  <div style="cursor:pointer;padding:12px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);" onclick="this.querySelector('div').style.display=this.querySelector('div').style.display==='none'?'block':'none'">
+    📖 <b>教材：</b>"拿出三张同样大小的正方形纸，按照下图把它们平均分，并涂上颜色。你发现了什么？" <i>（点击看解析）</i>
+    <div style="display:none;margin-top:8px;padding:8px;background:#f0fdf4;border-radius:6px;font-size:14px;">
+      ✏️ 分数的基本性质是约分和通分的理论基础。教材用"对折纸"做直观引入——1/2涂半个，2/4涂两张纸各一半=一个完整半张。这是"面积不变原理"在分数中的体现。
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🎯</span>典例精讲</div>
+  <h3>例1：把2/3化成分母是12的等值分数</h3>
+  <div class="math-display">2/3 = 2×4 / 3×4 = <b>8/12</b></div>
+  <div style="margin-top:8px;"><p style="font-weight:600;">✏️ 把3/5化成分母是15的等值分数：<input class="input-field" id="ex1a" style="width:40px;">/<input class="input-field" id="ex1b" style="width:40px;"> <button class="btn btn-primary btn-sm" onclick="ck1()">提交</button></p><div class="feedback" id="fb1"></div></div>
+  
+  <h3 style="margin-top:16px;">例2：24/36 = ?/3（约分）</h3>
+  <div class="math-display">24÷12 / 36÷12 = <b>2/3</b></div>
+  <div style="margin-top:8px;"><p style="font-weight:600;">✏️ 18/24约分到最简：<input class="input-field" id="ex2a" style="width:40px;">/<input class="input-field" id="ex2b" style="width:40px;"> <button class="btn btn-primary btn-sm" onclick="ck2()">提交</button></p><div class="feedback" id="fb2"></div></div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">⚠️</span>踩坑预警</div>
+  <div class="pitfall">
+    <div class="pitfall-title">🕳️ 分子分母加/减同一个数</div>
+    <p><b>症状：</b>1/2 → 分子分母各+1 → 2/3。认为2/3=1/2。</p>
+    <p><b>根因：</b>混淆了"加减"和"乘除"对分数的影响。加减改变分数大小，乘除（同时）不改变。</p>
+    <div class="pitfall-chain">🔗 <b>后续炸雷：</b>约分和通分都不会做——因为搞不清什么时候大小变了。</div>
+    <p style="margin-top:8px;"><b>🔍 自查：</b>画两个同样大的条。1/2和2/3的长度一样吗？不一样。但1/2=2/4画出来一样。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">✏️</span>费曼输出</div>
+  <p style="color:var(--text-muted);">给同学解释：<b>"为什么1/2=2/4？分数的基本性质是什么？"</b></p>
+  <div id="feynman-root"></div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">📝</span>分层练习</div>
+  <div class="exercise-tier"><h3><span class="tier-badge basic">基础层</span></h3><div id="ex-basic"></div></div>
+  <div class="exercise-tier" id="tier-adv" style="display:none;"><h3><span class="tier-badge advanced">提升层</span></h3><div id="ex-adv"></div></div>
+  <div id="done" style="display:none;text-align:center;padding:24px;">
+    <div style="font-size:48px;">🎉</div><p style="font-size:18px;font-weight:700;">分数基本性质 — 通关！</p>
+    <p style="color:var(--text-muted;">🎊 <b>三个模块全部完成！</b>小数乘法 ✅ 多边形面积 ✅ 分数的意义和性质 ✅</p>
+  </div>
+</div>
+
+<script src="../../shared/components.js"></script>
+<script>
+createGate({containerId:'gate-root',
+  questions:[{label:'1/2 = ?/4（填分子）',inputs:[{key:'a',width:40}],answer:'2',check:u=>u.a==='2'},
+    {label:'12÷3=',inputs:[{key:'a',width:40}],answer:'4',check:u=>u.a==='4'}],
+  onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:16px;">✅ 基础扎实！</div>'
+});
+
+function updateFrac(){
+  const n=parseInt(document.getElementById('base-num').value)||1;
+  const d=parseInt(document.getElementById('base-den').value)||2;
+  const m=parseInt(document.getElementById('mult').value)||2;
+  const rn=n*m, rd=d*m;
+  document.getElementById('equiv-result').innerHTML=n+'/'+d+' = <span style="color:var(--accent);">'+rn+'/'+rd+'</span>';
+  
+  // Bars
+  const bars=document.getElementById('bars-demo');
+  let h='<div style="display:flex;height:30px;margin:4px 0;gap:1px;">';
+  for(let i=0;i<d;i++)h+='<div style="flex:1;background:'+(i<n?'#3b82f6':'#e5e7eb')+';border-radius:3px;"></div>';
+  h+='</div><span style="font-size:12px;">'+n+'/'+d+'</span>';
+  h+='<div style="display:flex;height:30px;margin:4px 0;gap:1px;">';
+  for(let i=0;i<rd;i++)h+='<div style="flex:1;background:'+(i<rn?'#3b82f6':'#e5e7eb')+';border-radius:3px;"></div>';
+  h+='</div><span style="font-size:12px;">'+rn+'/'+rd+'</span>';
+  bars.innerHTML=h;
+}
+updateFrac();
+
+function ck1(){const n=document.getElementById('ex1a').value,d=document.getElementById('ex1b').value,f=document.getElementById('fb1');const ok=n==='9'&&d==='15';f.className='feedback show '+(ok?'success':'error');f.textContent=ok?'✅ 3/5 = 3×3/5×3 = 9/15':'❌ 3→15(×5)，分子也要×5：3×5=9？不对，15÷5=3，分母×3，分子×3→9/15';}
+function ck2(){const n=document.getElementById('ex2a').value,d=document.getElementById('ex2b').value,f=document.getElementById('fb2');const ok=n==='3'&&d==='4';f.className='feedback show '+(ok?'success':'error');f.textContent=ok?'✅ 18÷6/24÷6 = 3/4':'❌ 18和24的最大公因数是6。18÷6=3，24÷6=4 → 3/4';}
+
+createFeynmanFill({containerId:'feynman-root',
+  template:'分数的基本性质：分子和分母同时___或___同一个数（___除外），分数的大小___。例如1/2=(1×2)/(2×2)=___。反过来，4/8=(4÷4)/(8÷4)=___。这个性质是___和___的理论基础。',
+  answer:['乘','除以','0','不变','2/4','1/2','约分','通分'],
+  onComplete:()=>saveProgress({'fraction-meaning':{'property':{'feynman':'complete'}}})
+});
+
+createExerciseSet({containerId:'ex-basic',
+  exercises:[
+    {question:'3/4 = ?/8（填分子）',inputs:[{key:'a',width:40}],answer:'6',hint:'分母×2=8，分子×2=6',check:a=>a.a==='6'},
+    {question:'15/20约分到最简（分子/分母）',inputs:[{key:'a',width:40},{key:'b',width:40}],answer:'3, 4',hint:'15和20的最大公因数=5。15÷5=3，20÷5=4 → 3/4',check:a=>a.a==='3'&&a.b==='4'},
+    {question:'2/3=4/6，因为分子分母同时___了2。（填"乘"或"除"）',inputs:[{key:'a',width:40}],answer:'乘',check:a=>a.a==='乘'}
+  ],
+  passThreshold:0.67,
+  onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}
+});
+function initAdv(){
+  createExerciseSet({containerId:'ex-adv',
+    exercises:[
+      {question:'7/10=?/30, 5/9=15/?, 8/24=2/?= ?/3',inputs:[{key:'a',width:40},{key:'b',width:40},{key:'c',width:40},{key:'d',width:40}],answer:'21, 27, 6, 1',hint:'7/10→分母×3=30，分子×3=21。5/9→分子×3=15，分母×3=27。8/24→÷4=2/6→÷2=1/3',check:a=>a.a==='21'&&a.b==='27'&&a.c==='6'&&a.d==='1'},
+      {question:'如果一堂课40分钟，练习占10分钟。练习时间是整堂课的几分之几？',inputs:[{key:'a',width:60}],answer:'1/4',hint:'10/40=1/4（约分：分子分母同时÷10）',check:a=>a.a==='1/4'}
+    ],
+    passThreshold:0.5,
+    onPass:()=>{document.getElementById('done').style.display='block';saveProgress({'fraction-meaning':{'property':{'completed':true}}});}
+  });
+}
+</script>
+</body>
+</html>

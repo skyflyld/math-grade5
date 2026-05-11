@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>梯形面积 · 五年级数学</title>
+<link rel="stylesheet" href="../../shared/layout.css">
+<style>canvas{display:block;margin:0 auto;border-radius:var(--radius-sm);}</style>
+</head>
+<body>
+<div class="top-nav"><a href="../../index.html">🏠</a><span class="breadcrumb-sep">›</span><a href="index.html">多边形面积</a><span class="breadcrumb-sep">›</span><span>梯形</span></div>
+<h1 class="module-title">📐 梯形面积</h1>
+<p class="module-subtitle">切一刀？补一块？拼一下？——条条大路通公式。</p>
+
+<div class="section"><div class="section-header"><span class="emoji">🔑</span>前置检查</div><div id="gate-root"></div></div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🧱</span>拆到公理</div>
+  <div class="math-display">
+<b>梯形 = 上底 + 下底，两条底平行，高度固定。</b><br>
+已知：平行四边形S=底×高，三角形S=底×高÷2<br>
+<b>追问：梯形能不能分解成我们认识的东西？</b>
+  </div>
+  <div class="axiom-box" style="margin-top:12px;">
+方法1：切成两个三角形（沿对角线）→ 各自S=底×高÷2 → 加起来<br>
+方法2：补一个相同的梯形 → 变成平行四边形 → ÷2<br>
+方法3：两个完全一样的梯形拼成平行四边形 → S=(上底+下底)×高÷2
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🎮</span>交互实验室</div>
+  <p style="color:var(--text-muted);font-size:14px;">三种方法切换，看哪种你最能理解。</p>
+  <div class="interactive-area">
+    <canvas id="tz-canvas"></canvas>
+    <div style="margin-top:8px;">
+      <button class="btn btn-outline btn-sm" onclick="tzMode(1)">方法1: 切两三角形</button>
+      <button class="btn btn-outline btn-sm" onclick="tzMode(2)">方法2: 补平行四边形</button>
+      <button class="btn btn-outline btn-sm" onclick="tzMode(3)">方法3: 双拼法</button>
+    </div>
+    <div id="tz-result" style="margin-top:8px;font-weight:700;"></div>
+  </div>
+  <div class="math-display" style="margin-top:12px;">
+<b>结论：</b>梯形面积 = <b>(上底 + 下底) × 高 ÷ 2</b>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🎯</span>典例精讲</div>
+  <h3>例1：上底3cm，下底7cm，高4cm → S=(3+7)×4÷2=20cm²</h3>
+  <div style="margin-top:8px;"><p style="font-weight:600;">✏️ 上底5cm，下底9cm，高6cm → S= <input class="input-field" id="ex1" style="width:60px;"> cm² <button class="btn btn-primary btn-sm" onclick="ck1()">提交</button></p><div class="feedback" id="fb1"></div></div>
+  <h3 style="margin-top:16px;">例2：S=48cm²，上底+下底=12cm，高=？</h3>
+  <div style="margin-top:8px;"><p style="font-weight:600;">高= <input class="input-field" id="ex2" style="width:60px;"> cm <button class="btn btn-primary btn-sm" onclick="ck2()">提交</button></p><div class="feedback" id="fb2"></div></div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">⚠️</span>踩坑预警</div>
+  <div class="pitfall">
+    <div class="pitfall-title">🕳️ 忘记÷2——最经典的错误</div>
+    <p><b>症状：</b>(3+7)×4=40，没÷2，直接写40。</p>
+    <p><b>根因：</b>没真正理解"两个梯形拼成一个平行四边形，所以一个梯形是一半"。</p>
+    <div class="pitfall-chain">🔗 <b>后续炸雷：</b>组合图形面积中，用梯形公式算台阶、屋顶等，全盘多一倍。</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">📐</span>教材溯源</div>
+  <div style="cursor:pointer;padding:12px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);margin-bottom:8px;" onclick="this.querySelector('div').style.display=this.querySelector('div').style.display==='none'?'block':'none'">
+    📖 <b>教材：</b>"你能用几种方法求出梯形的面积？" <i>（点击看解析）</i>
+    <div style="display:none;margin-top:8px;padding:8px;background:#f0fdf4;border-radius:6px;font-size:14px;">
+      ✏️ 教材在梯形面积部分不给唯一解法——鼓励学生用多种方法。这是"条条大路通公式"的教学智慧：切两三角形是还原法，补成平行四边形是构造法，双拼法是整体思维。每种方法都通向同一个公式。
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">✏️</span>费曼输出</div>
+  <p style="color:var(--text-muted);">给同学解释：<b>"梯形面积公式为什么是(上底+下底)×高÷2？"</b></p>
+  <div id="feynman-root"></div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">📝</span>分层练习</div>
+  <div class="exercise-tier"><h3><span class="tier-badge basic">基础层</span></h3><div id="ex-basic"></div></div>
+  <div class="exercise-tier" id="tier-adv" style="display:none;"><h3><span class="tier-badge advanced">提升层</span></h3><div id="ex-adv"></div></div>
+  <div id="done" style="display:none;text-align:center;padding:24px;">
+    <div style="font-size:48px;">🎉</div><p style="font-weight:700;">梯形 — 通关！多边形面积模块完成 ✅</p>
+  </div>
+</div>
+
+<script src="../../shared/components.js"></script>
+<script>
+createGate({containerId:'gate-root',
+  questions:[{label:'三角形面积公式：S=___×___÷___',inputs:[{key:'a',width:40},{key:'b',width:40},{key:'c',width:40}],answer:'底, 高, 2',check:u=>u.a==='底'&&u.b==='高'&&(u.c==='2'||u.c==='二')},
+    {label:'(5+3)×4÷2=',inputs:[{key:'a',width:50}],answer:'16',check:u=>u.a==='16'}],
+  onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:16px;">✅ 基础扎实！</div>'
+});
+
+const c=document.getElementById('tz-canvas');
+c.width=Math.min(500,c.parentElement.clientWidth-40);c.height=240;
+const ctx=c.getContext('2d');
+let tzm=1;
+
+function drawTZ(){
+  ctx.clearRect(0,0,c.width,c.height);
+  const ox=100,oy=40,top=80,bottom=180,h=140;
+  if(tzm===1){
+    // Two triangles
+    ctx.fillStyle='rgba(59,130,246,0.3)';ctx.strokeStyle='#2563eb';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(ox,oy+h);ctx.lineTo(ox,oy);ctx.lineTo(ox+top,oy+h);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.fillStyle='rgba(239,68,68,0.3)';ctx.strokeStyle='#ef4444';
+    ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(ox+top,oy+h);ctx.lineTo(ox+bottom,oy+h);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.fillStyle='#1a1a1a';ctx.font='14px sans-serif';ctx.textAlign='center';
+    ctx.fillText('△1: 上底×高÷2',ox+top/3,oy+h/2+5);
+    ctx.fillText('△2: 下底×高÷2',ox+top+(bottom-top)/2,oy+h/2+5);
+    ctx.fillText('= ('+(top/10)+'+'+(bottom/10)+')×'+(h/10)+'÷2 = '+((top+bottom)*h/200).toFixed(1)+' cm²',ox+bottom/2,oy+h+24);
+    ctx.textAlign='start';
+  }else if(tzm===2){
+    // Fill to parallelogram + subtract
+    ctx.fillStyle='rgba(59,130,246,0.3)';ctx.strokeStyle='#2563eb';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(ox,oy+h);ctx.lineTo(ox,oy);ctx.lineTo(ox+bottom,oy);ctx.lineTo(ox+bottom,oy+h);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.fillStyle='rgba(239,68,68,0.5)';ctx.strokeStyle='#ef4444';
+    ctx.beginPath();ctx.moveTo(ox+bottom,oy);ctx.lineTo(ox+top,oy+h);ctx.lineTo(ox+bottom,oy+h);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.fillStyle='#1a1a1a';ctx.font='14px sans-serif';ctx.textAlign='center';
+    ctx.fillText('平行四边形(底=下底) − 三角形',ox+bottom/2,oy+h+20);
+    ctx.fillText('= 下底×高 − (下底−上底)×高÷2 = (上底+下底)×高÷2',ox+bottom/2,oy+h+42);
+    ctx.textAlign='start';
+  }else{
+    // Two trapezoids
+    ctx.fillStyle='rgba(34,197,94,0.3)';ctx.strokeStyle='#16a34a';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(ox,oy+h);ctx.lineTo(ox,oy);ctx.lineTo(ox+top,oy);ctx.lineTo(ox+bottom,oy+h);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.globalAlpha=0.5;
+    ctx.fillStyle='rgba(59,130,246,0.4)';ctx.strokeStyle='#2563eb';
+    ctx.beginPath();ctx.moveTo(ox,oy+h);ctx.lineTo(ox+top,oy);ctx.lineTo(ox+top+bottom,oy);ctx.lineTo(ox+bottom,oy+h);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.globalAlpha=1;
+    ctx.fillStyle='#1a1a1a';ctx.font='14px sans-serif';ctx.textAlign='center';
+    ctx.fillText('两个梯形 = 平行四边形',ox+bottom,oy+h+15);
+    ctx.fillText('底 = 上底+下底 = '+(top+bottom)/10+'cm',ox+bottom,oy+h+35);
+    ctx.textAlign='start';
+  }
+  document.getElementById('tz-result').textContent=tzm===1?'方法1: S=上底×高÷2 + 下底×高÷2 = (上底+下底)×高÷2':
+    tzm===2?'方法2: 补成平行四边形(底=下底)，减去多补的三角形':
+    '方法3: 两个完全相同梯形拼成平行四边形，底=上底+下底 → 再÷2';
+}
+function tzMode(m){tzm=m;drawTZ();}
+drawTZ();
+
+function ck1(){const v=document.getElementById('ex1').value,f=document.getElementById('fb1');f.className='feedback show '+(v==='42'?'success':'error');f.textContent=v==='42'?'✅ (5+9)×6÷2=42cm²':'❌ (5+9)×6÷2=42cm²';}
+function ck2(){const v=document.getElementById('ex2').value,f=document.getElementById('fb2');f.className='feedback show '+(v==='8'?'success':'error');f.textContent=v==='8'?'✅ 高=2S÷(上底+下底)=96÷12=8cm':'❌ 高=2×48÷12=8cm';}
+
+createFeynmanFill({containerId:'feynman-root',
+  template:'梯形面积 = (___ + ___) × ___ ÷ ___。因为：两个完全相同的梯形可以拼成一个___，它的底=___+___，高=___。所以一个梯形的面积是平行四边形面积的___。',
+  answer:['上底','下底','高','2','平行四边形','上底','下底','高','一半'],
+  onComplete:()=>saveProgress({'polygon-area':{'trapezoid':{'feynman':'complete'}}})
+});
+
+createExerciseSet({containerId:'ex-basic',
+  exercises:[
+    {question:'上底4cm，下底8cm，高5cm → S=',inputs:[{key:'a',width:50}],answer:'30',hint:'(4+8)×5÷2=30cm²',check:a=>a.a==='30'},
+    {question:'上底6m，下底10m，高7m → S=',inputs:[{key:'a',width:50}],answer:'56',hint:'(6+10)×7÷2=56m²',check:a=>a.a==='56'},
+    {question:'S=60cm²，上底+下底=15cm，高=',inputs:[{key:'a',width:50}],answer:'8',hint:'高=2×60÷15=8cm',check:a=>a.a==='8'}
+  ],
+  passThreshold:0.67,
+  onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}
+});
+function initAdv(){
+  createExerciseSet({containerId:'ex-adv',
+    exercises:[
+      {question:'梯形上底5m，下底7m，高4m。如果每平方米产粮2.5kg，共产粮多少kg？',inputs:[{key:'a',width:60}],answer:'60',hint:'S=(5+7)×4÷2=24m²，24×2.5=60kg',check:a=>a.a==='60'},
+      {question:'梯形面积=平行四边形面积÷2，当___=___时成立。(上下底/高)',inputs:[{key:'a',width:60}],answer:'上底=0',hint:'当上底=0时，梯形变成三角形！(0+下底)×高÷2=下底×高÷2=三角形公式',check:a=>a.a==='上底=0'}
+    ],
+    passThreshold:0.5,
+    onPass:()=>{document.getElementById('done').style.display='block';saveProgress({'polygon-area':{'trapezoid':{'completed':true}}});}
+  });
+}
+</script>
+</body>
+</html>

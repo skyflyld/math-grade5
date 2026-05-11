@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小数×小数 · 五年级数学</title>
+<link rel="stylesheet" href="../../shared/layout.css">
+<style>
+  .area-model { text-align: center; padding: 16px; }
+  .area-model canvas { border: 1px solid var(--border); border-radius: var(--radius-sm); }
+  .compare-row { display: flex; gap: 20px; align-items: center; justify-content: center; flex-wrap: wrap; margin: 16px 0; }
+  .compare-row .side { flex:1; min-width:180px; padding:16px; border-radius:var(--radius-sm); text-align:center; }
+  .side.before { background:#fefce8; border:1px solid #fde68a; }
+  .side.after { background:#dbeafe; border:1px solid #93c5fd; }
+</style>
+</head>
+<body>
+<div class="top-nav">
+  <a href="../../index.html">🏠</a> <span class="breadcrumb-sep">›</span>
+  <a href="index.html">小数乘法</a> <span class="breadcrumb-sep">›</span>
+  <span>小数×小数</span>
+</div>
+<h1 class="module-title">🧮 小数 × 小数</h1>
+<p class="module-subtitle">两个都是小数？把单位缩得更小——然后按整数乘法算。</p>
+
+<!-- 前置门控 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">🔑</span> 前置检查 — 小数×整数复习</div>
+  <div id="gate-root"></div>
+</div>
+
+<!-- 拆到公理 -->
+<div class="section" id="sect-axiom">
+  <div class="section-header"><span class="emoji">🧱</span> 拆到公理</div>
+  <div id="axiom-seq">
+    <div id="axiom-step1">
+      <p style="font-weight:700;font-size:19px;">⚡ 0.4 × 0.5 = ?</p>
+      <p style="color:var(--text-muted);">刚才我们只会小数×整数。两个都是小数——怎么办？</p>
+      <div style="padding:12px;text-align:center;">💭 想3秒……</div>
+      <div id="axiom-r1" style="display:none;">
+        <div class="math-display">
+0.4 = 4个<strong>0.1</strong>
+0.5 = 5个<strong>0.1</strong>
+
+0.4 × 0.5 = (4个0.1) × (5个0.1)
+          = (4×5) 个 (0.1×0.1)
+          = 20 个 <strong>0.01</strong>
+          = 0.20
+          = <strong>0.2</strong>
+        </div>
+      </div>
+    </div>
+    <div id="axiom-step2" style="display:none;margin-top:20px;">
+      <div class="axiom-box">
+两个小数相乘 = 两个整数相乘 ÷ (单位倍数的乘积)<br><br>
+0.4 × 0.5 = (4×5) ÷ (10×10) = 20 ÷ 100 = 0.2<br><br>
+公理：先全部当成整数算，再按"每个因数有几个小数位"把小数点移回去。
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 交互实验室 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">🎮</span> 交互实验室</div>
+  <h3>实验1：面积模型 — 0.8 × 0.4</h3>
+  <p style="color:var(--text-muted);font-size:14px;margin-bottom:8px;">拖动滑块改变长和宽，观察面积如何变化。</p>
+  <div class="interactive-area">
+    <canvas id="area-canvas"></canvas>
+    <div style="margin-top:8px;font-size:14px;">
+      长: <input type="range" id="area-width" min="1" max="20" value="8" style="vertical-align:middle;" oninput="drawArea()">
+      <span id="w-label">0.8</span>
+      宽: <input type="range" id="area-height" min="1" max="20" value="4" style="vertical-align:middle;" oninput="drawArea()">
+      <span id="h-label">0.4</span>
+      → 面积: <strong id="area-result" style="color:var(--accent);">0.32</strong> = 32个0.01
+    </div>
+  </div>
+
+  <h3 style="margin-top:16px;">实验2：小数点联动</h3>
+  <p style="color:var(--text-muted);font-size:14px;">改因数的小数位数，观察积的位数自动变化。</p>
+  <div class="interactive-area">
+    <div style="display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;">
+      <div>
+        <div style="font-size:13px;color:var(--text-muted);">因数A</div>
+        <input type="number" id="dpa" value="0.56" step="0.01" style="width:80px;text-align:center;padding:8px;font-size:16px;" oninput="updateDP()">
+        <div style="font-size:11px;color:var(--text-muted);"><span id="dpa-dp">2</span>位小数</div>
+      </div>
+      <span style="font-size:24px;">×</span>
+      <div>
+        <div style="font-size:13px;color:var(--text-muted);">因数B</div>
+        <input type="number" id="dpb" value="0.04" step="0.01" style="width:80px;text-align:center;padding:8px;font-size:16px;" oninput="updateDP()">
+        <div style="font-size:11px;color:var(--text-muted);"><span id="dpb-dp">2</span>位小数</div>
+      </div>
+      <span style="font-size:24px;">=</span>
+      <div>
+        <div style="font-size:13px;color:var(--text-muted);">积</div>
+        <div style="font-size:20px;font-weight:800;color:var(--accent);" id="dp-result">0.0224</div>
+        <div style="font-size:11px;color:var(--accent);"><span id="dpr-dp">4</span>位小数</div>
+      </div>
+    </div>
+    <p style="margin-top:8px;font-size:13px;color:var(--text-muted);">
+      试试 0.06×0.05（结果是0.003——位数不够用0补足！）
+    </p>
+  </div>
+</div>
+
+<!-- 教材溯源 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">📐</span> 教材溯源</div>
+  <div style="cursor:pointer;padding:14px;margin-bottom:8px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);" onclick="toggleTB(this,'教材选面积作为小数×小数的引入场景。为什么？因为面积天然是"乘法"的视觉化——长×宽=格子数。0.8×0.4意味着把1m²分成100格，占其中32格=0.32m²。')">
+    📖 <b>教材：</b>"长2.4m、宽0.8m的长方形宣传栏，每平方米用油漆0.9kg。" <i>（点击看解析）</i>
+    <div class="tb-detail" style="display:none;margin-top:8px;padding:8px;background:#f0fdf4;border-radius:6px;font-size:14px;"></div>
+  </div>
+  <div style="cursor:pointer;padding:14px;margin-bottom:8px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);" onclick="toggleTB(this,'教材用"×10 ×100"标注展示转化过程。注意：2.4×0.8要两次放大（各×10→24×8），积要两次缩小（÷100）。这就是"单位倍数的乘积"。')">
+    📖 <b>教材：</b>2.4×0.8的竖式旁标有×10、×10、÷100的转化箭头。 <i>（点击看解析）</i>
+    <div class="tb-detail" style="display:none;margin-top:8px;padding:8px;background:#f0fdf4;border-radius:6px;font-size:14px;"></div>
+  </div>
+</div>
+
+<!-- 典例精讲 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">🎯</span> 典例精讲</div>
+  
+  <h3>例1：模式识别 — 0.56 × 0.04（位数不够！）</h3>
+  <div class="math-display">
+<b>【示范】</b>
+0.56 (2位小数) × 0.04 (2位小数)
+= (56×4) ÷ (100×100)
+= 224 ÷ 10000
+= 0.0224 (4位小数)
+
+竖式：   0.56     ← 2位
+       × 0.04     ← 2位
+       ──────
+       0.0224     ← 4位 (224前面补一个0)
+  </div>
+  <div style="margin-top:12px;">
+    <p style="font-weight:600;">✏️ 自测：0.06 × 0.05 = ?（位数不够，用0补）</p>
+    <input class="input-field" id="ex1-a" style="width:80px;" placeholder="?">
+    <button class="btn btn-primary btn-sm" style="margin-left:8px;" onclick="ck1()">提交</button>
+    <div class="feedback" id="ex1-fb"></div>
+  </div>
+
+  <h3 style="margin-top:20px;">例2：验证 — 找错</h3>
+  <div class="math-display">
+<b>小华算：</b>0.48 × 1.5 = 0.72<br>
+<b>小华说：</b>"0.48有2位，1.5有1位，共3位小数，所以积有3位。"<br>
+<b>问题：</b>她算对了吗？
+  </div>
+  <div style="margin-top:12px;">
+    <select id="ex2-a" style="padding:8px;border-radius:var(--radius-sm);font-size:15px;">
+      <option value="">选择...</option>
+      <option value="right">对，0.72正确</option>
+      <option value="wrong">错，应该是7.2</option>
+      <option value="wrong2">错，应该是0.072</option>
+    </select>
+    <button class="btn btn-primary btn-sm" style="margin-left:8px;" onclick="ck2()">提交</button>
+    <div class="feedback" id="ex2-fb"></div>
+  </div>
+</div>
+
+<!-- 踩坑预警 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">⚠️</span> 踩坑预警</div>
+  
+  <div class="pitfall">
+    <div class="pitfall-title">🕳️ 坑③：位数不够忘记用0补足</div>
+    <p><b>症状：</b>0.06×0.05。6×5=30，两个因数共4位小数，应该=0.0030。但学生写成0.03（少了一个0）。</p>
+    <p><b>根因：</b>没理解"补0"不是格式，而是真实的单位变化。0.06×0.05=(6×5)÷(100×100)=30÷10000。在写小数时，30只有两位，但需要4位小数，所以在30前面补两个0→0.0030。</p>
+    <div class="pitfall-chain">🔗 <b>后续炸雷：</b>学到"商的近似数"时，补0除不尽的情况也涉及类似操作。不会补0=不会精确到指定位数。</div>
+  </div>
+
+  <div class="pitfall" style="margin-top:14px;">
+    <div class="pitfall-title">🕳️ 坑④：比较大小的直觉陷阱</div>
+    <p><b>症状：</b>认为0.8×0.7 > 0.8（因为乘起来"应该更大"）。实际上0.8×0.7=0.56 < 0.8。</p>
+    <p><b>根因：</b>整数乘法中乘数≥1时积才不小于被乘数。小数<1时，乘法是"取被乘数的一部分"，结果反而变小。</p>
+    <div class="pitfall-chain">🔗 <b>后续炸雷：</b>分数乘法时，1/2×1/3=1/6，学生理解不了"越乘越小"。</div>
+    <p style="margin-top:8px;"><b>🔍 自查法：</b>乘以小于1的数 = 取原数的几分之几 = 结果变小。乘以大于1的数 = 翻倍 = 结果变大。</p>
+  </div>
+</div>
+
+<!-- 费曼输出 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">✏️</span> 费曼输出</div>
+  <p style="color:var(--text-muted);">给同学解释：<b>"为什么0.48×1.5=0.72？不是应该0.072吗？"</b></p>
+  <div id="feynman-root"></div>
+</div>
+
+<!-- 分层练习 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">📝</span> 分层练习</div>
+  <div class="exercise-tier"><h3><span class="tier-badge basic">基础层</span> 4题 · 需≥3/4</h3><div id="ex-basic"></div></div>
+  <div class="exercise-tier" id="tier-adv" style="display:none;"><h3><span class="tier-badge advanced">提升层</span> 4题 · 需≥3/4</h3><div id="ex-adv"></div></div>
+  <div class="exercise-tier" id="tier-ext" style="display:none;"><h3><span class="tier-badge extra">拓展层</span> 2题 · 可选</h3><div id="ex-ext"></div></div>
+  <div id="all-done" style="display:none;text-align:center;padding:24px;">
+    <div style="font-size:48px;">🎉</div>
+    <p style="font-size:18px;font-weight:700;">小数×小数 — 通关！</p>
+    <p style="color:var(--text-muted);">小数乘法模块完成 ✅ <a href="../06-polygon-area/index.html">下一个模块：多边形面积 →</a></p>
+  </div>
+</div>
+
+<!-- 概念地图 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">🔗</span> 概念地图</div>
+  <div class="math-display" style="text-align:center;line-height:2.2;">
+<strong>整数乘法</strong> → <strong style="color:var(--success);">小数×整数 ✅</strong> → <strong style="color:var(--accent);">🌟 小数×小数 ← 你在这里</strong>
+    │                    │
+    ▼                    ▼
+<strong>小数除法</strong>         <strong>多边形面积</strong>（底×高常涉及小数×小数）
+  </div>
+</div>
+
+<script src="../../shared/components.js"></script>
+<script>
+// 门控
+createGate({
+  containerId:'gate-root',
+  questions:[
+    {label:'0.6 × 7 =',inputs:[{key:'a',width:60,placeholder:'?'}],answer:'4.2',check:u=>u.a==='4.2'||u.a==='4.20'},
+    {label:'9.5 × 3 =（换单位法验证）',inputs:[{key:'a',width:60,placeholder:'?'}],answer:'28.5',check:u=>u.a==='28.5'}
+  ],
+  onPass:()=>{
+    document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:16px;">✅ 小数×整数扎实！开始小数×小数 ↑</div>';
+    setTimeout(startAxiom,500);
+  }
+});
+
+function startAxiom(){
+  setTimeout(()=>{document.getElementById('axiom-r1').style.display='block';},2000);
+  setTimeout(()=>{document.getElementById('axiom-step2').style.display='block';},4000);
+}
+
+// 面积模型
+function drawArea(){
+  const c=document.getElementById('area-canvas');
+  c.width=c.parentElement.clientWidth-40; c.height=300;
+  const ctx=c.getContext('2d');
+  const wv=parseInt(document.getElementById('area-width').value);
+  const hv=parseInt(document.getElementById('area-height').value);
+  const wa=wv/10, ha=hv/10;
+  document.getElementById('w-label').textContent=wa.toFixed(1);
+  document.getElementById('h-label').textContent=ha.toFixed(1);
+  document.getElementById('area-result').textContent=(wa*ha).toFixed(2);
+
+  const mg=40, gw=c.width-80, gh=c.height-80;
+  const pxPerUnit=Math.min(gw/2, gh/2);
+  const ox=mg+(gw-pxPerUnit*2)/2, oy=mg+(gh-pxPerUnit*2)/2;
+
+  // Grid
+  ctx.strokeStyle='#e5e7eb'; ctx.lineWidth=0.5;
+  for(let i=0;i<=20;i++){
+    ctx.beginPath(); ctx.moveTo(ox, oy+i*pxPerUnit/10); ctx.lineTo(ox+20*pxPerUnit/10, oy+i*pxPerUnit/10); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(ox+i*pxPerUnit/10, oy); ctx.lineTo(ox+i*pxPerUnit/10, oy+20*pxPerUnit/10); ctx.stroke();
+  }
+  // Filled area
+  ctx.fillStyle='rgba(59,130,246,0.3)';
+  ctx.fillRect(ox, oy, wv*pxPerUnit/10, hv*pxPerUnit/10);
+  ctx.strokeStyle='#2563eb'; ctx.lineWidth=2;
+  ctx.strokeRect(ox, oy, wv*pxPerUnit/10, hv*pxPerUnit/10);
+  // Labels
+  ctx.fillStyle='#1a1a1a'; ctx.font='14px sans-serif'; ctx.textAlign='center';
+  ctx.fillText(wa.toFixed(1)+' (长)', ox+wv*pxPerUnit/20, oy-8);
+  ctx.fillText(ha.toFixed(1)+' (宽)', ox-24, oy+hv*pxPerUnit/20);
+  ctx.fillText('面积='+(wa*ha).toFixed(2)+' = '+Math.round(wa*ha*100)+'个0.01', ox+wv*pxPerUnit/20, oy+hv*pxPerUnit/10+24);
+}
+setTimeout(drawArea,300);
+
+// 小数点联动
+function updateDP(){
+  const a=document.getElementById('dpa').value, b=document.getElementById('dpb').value;
+  const da=(a.split('.')[1]||'').length, db=(b.split('.')[1]||'').length;
+  document.getElementById('dpa-dp').textContent=da;
+  document.getElementById('dpb-dp').textContent=db;
+  const r=parseFloat(a)*parseFloat(b);
+  const dr=(String(r).split('.')[1]||'').length;
+  document.getElementById('dp-result').textContent=isNaN(r)?'?':r;
+  document.getElementById('dpr-dp').textContent=dr;
+}
+
+// 教材展开
+function toggleTB(el,text){
+  const d=el.querySelector('.tb-detail');
+  if(d.style.display==='none'){d.style.display='block';d.textContent='✏️ '+text;el.style.background='#f0fdf4';}
+  else{d.style.display='none';el.style.background='#fefce8';}
+}
+
+// 典例
+function ck1(){
+  const v=document.getElementById('ex1-a').value, fb=document.getElementById('ex1-fb');
+  fb.className='feedback show '+(v==='0.003'||v==='0.0030'?'success':'error');
+  fb.textContent=v==='0.003'||v==='0.0030'?'✅ 正确！6×5=30，4位小数→0.0030=0.003':'❌ 6×5=30，4位小数→前面补两个0→0.0030';
+}
+function ck2(){
+  const v=document.getElementById('ex2-a').value, fb=document.getElementById('ex2-fb');
+  fb.className='feedback show '+(v==='right'?'success':'error');
+  fb.textContent=v==='right'?'✅ 对！0.48×1.5=48×15÷1000=720÷1000=0.72。共3位小数，积就是0.720=0.72。'
+    :'❌ 0.48×1.5=(48×15)÷(100×10)=720÷1000=0.72。0.48有2位，1.5有1位，共3位→0.720=0.72 ✅';
+}
+
+// 费曼
+createFeynmanFill({containerId:'feynman-root',
+  template:'验证0.48×1.5=0.72：第一步——48×15=___。第二步——0.48有___位小数，1.5有___位小数，共___位。第三步——720的小数点向左移___位→___。为什么不是0.072？因为___。',
+  answer:['720','2','1','3','3','0.72','共3位小数，720÷1000=0.72，不是4位'],
+  onComplete:f=>{saveProgress({'decimal-multiply':{'1-2-dec':{'feynman':'complete'}}});}
+});
+
+// 基础层
+createExerciseSet({containerId:'ex-basic',
+  exercises:[
+    {question:'0.3 × 0.4 =',inputs:[{key:'a',width:60}],answer:'0.12',hint:'3×4=12，共2位小数→0.12',check:a=>a.a==='0.12'||a.a==='0.120'},
+    {question:'0.56 × 0.04 =',inputs:[{key:'a',width:80}],answer:'0.0224',hint:'56×4=224，共4位小数→0.0224(前面补0)',check:a=>a.a==='0.0224'},
+    {question:'1.2 × 0.11 =',inputs:[{key:'a',width:60}],answer:'0.132',hint:'12×11=132，共3位小数→0.132',check:a=>a.a==='0.132'},
+    {question:'不计算，判断：2.5×0.4___2.5（填> < 或=）',inputs:[{key:'a',width:40}],answer:'<',hint:'0.4<1，乘以小于1的数结果变小。2.5×0.4=1<2.5',check:a=>a.a==='<'}
+  ],
+  passThreshold:0.75,
+  onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}
+});
+
+function initAdv(){
+  createExerciseSet({containerId:'ex-adv',
+    exercises:[
+      {question:'0.06 × 0.05 =',inputs:[{key:'a',width:80}],answer:'0.003',hint:'6×5=30，共4位小数→0.0030=0.003。注意：前面要补两个0！',check:a=>a.a==='0.003'||a.a==='0.0030'},
+      {question:'2.4 × 0.8 × 0.9 = (两步：先算2.4×0.8，再×0.9)',inputs:[{key:'a',width:80}],answer:'1.728',hint:'2.4×0.8=1.92。1.92×0.9=1.728。还可以：24×8×9=1728，共3位小数→1.728',check:a=>a.a==='1.728'},
+      {question:'一个数×1.2的积大于这个数吗？(填"是"或"否")___ 一个数×0.8的积大于这个数吗？___',inputs:[{key:'a',width:40},{key:'b',width:40}],answer:'是, 否',hint:'×>1的数→变大；×<1的数→变小。',check:a=>a.a==='是'&&a.b==='否'},
+      {question:'0.48 × 1.5 = 0.72。验算：交换因数位置再乘一次——1.5 × 0.48 =',inputs:[{key:'a',width:60}],answer:'0.72',hint:'1.5×0.48=15×48÷1000=720÷1000=0.72。验证通过！',check:a=>a.a==='0.72'}
+    ],
+    passThreshold:0.75,
+    onPass:()=>{document.getElementById('tier-ext').style.display='block';initExt();}
+  });
+}
+
+function initExt(){
+  createExerciseSet({containerId:'ex-ext',
+    exercises:[
+      {question:'如果32×46=1472，那么3.2×0.046=，0.32×460=，320×0.0046=',
+        inputs:[{key:'a',width:60},{key:'b',width:60},{key:'c',width:60}],
+        answer:'0.1472, 147.2, 1.472',
+        hint:'3.2(1位)×0.046(3位)=1472÷10000=0.1472。0.32(2位)×460(0位)=1472÷100=1472? 不对：32×46=1472，0.32×460=147.2。320×0.0046=1.472',
+        check:a=>a.a==='0.1472'&&a.b==='147.2'&&a.c==='1.472'
+      },
+      {question:'编一道用小数×小数解决的实际问题，写下题目和解答。',
+        inputs:[{key:'a',width:300,placeholder:'题目+解答...'}],
+        answer:'开放题',hint:'例如：一种布料每米35.5元，买2.5米要多少钱？35.5×2.5=88.75元。',
+        check:a=>(a.a||'').length>10}
+    ],
+    passThreshold:0, onPass:()=>done(), onFail:()=>done()
+  });
+}
+
+function done(){
+  document.getElementById('all-done').style.display='block';
+  saveProgress({'decimal-multiply':{'1-2-dec':{'completed':true}}});
+}
+
+saveProgress({'decimal-multiply':{'1-2-dec':{'started':new Date().toISOString()}}});
+</script>
+</body>
+</html>
