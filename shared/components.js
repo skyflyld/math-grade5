@@ -1,367 +1,298 @@
-/* === 数学课件共享组件 === */
+// === 共享交互组件 v3 ===
+(function(){
+'use strict';
 
-// ====== 进度管理 ======
-const PROGRESS_KEY = 'math5_progress';
-
-function loadProgress() {
-  try {
-    const raw = localStorage.getItem(PROGRESS_KEY);
-    return raw ? JSON.parse(raw) : {};
-  } catch { return {}; }
+// 进度管理（localStorage）
+function saveProgress(data){
+  try{
+    const key='math5_progress';
+    const cur=JSON.parse(localStorage.getItem(key)||'{}');
+    const merged=deepMerge(cur,data);
+    localStorage.setItem(key,JSON.stringify(merged));
+  }catch(e){console.warn('saveProgress:',e);}
 }
-
-function saveProgress(patch) {
-  const current = loadProgress();
-  const merged = deepMerge(current, patch);
-  localStorage.setItem(PROGRESS_KEY, JSON.stringify(merged));
-}
-
-function deepMerge(a, b) {
-  const res = { ...a };
-  for (const [k, v] of Object.entries(b)) {
-    if (v && typeof v === 'object' && !Array.isArray(v)) {
-      res[k] = deepMerge(a[k] || {}, v);
-    } else {
-      res[k] = v;
-    }
+function getProgress(){try{return JSON.parse(localStorage.getItem('math5_progress')||'{}');}catch{return{};}}
+function deepMerge(a,b){
+  const o={...a};
+  for(const k in b){
+    if(b[k]&&typeof b[k]==='object'&&!Array.isArray(b[k])&&a[k]&&typeof a[k]==='object')
+      o[k]=deepMerge(a[k],b[k]);
+    else o[k]=b[k];
   }
-  return res;
+  return o;
 }
 
-// ====== 门控组件 ======
-function createGate({ questions, onPass, onFail }) {
-  const container = document.getElementById('gate-root');
-  if (!container) return;
-
-  let answers = {};
-  let submitted = false;
-
-  function render() {
-    container.innerHTML = `
-      <div class="gate">
-        <h3>🔑 前置检查</h3>
-        <p style="color: var(--text-muted); margin-bottom: 12px;">在继续之前，确认两件事：</p>
-        <div class="gate-questions">
-          ${questions.map((q, i) => `
-            <div style="margin: 12px 0; text-align: left;">
-              <p style="font-weight: 600; margin-bottom: 4px;">${q.label}</p>
-              ${q.inputs.map(inp => `
-                <input class="input-field" 
-                       data-q="${i}" data-key="${inp.key}"
-                       placeholder="${inp.placeholder || ''}"
-                       style="width: ${inp.width || 80}px; margin: 4px;"
-                       ${submitted ? 'disabled' : ''}>
-              `).join('')}
-              ${submitted ? `<span style="margin-left: 8px; font-size: 14px;">${q.feedback || ''}</span>` : ''}
-            </div>
-          `).join('')}
-        </div>
-        ${!submitted ? '<button class="btn btn-primary" onclick="window._gateSubmit()">提交</button>' : ''}
-        <div class="gate-result" id="gate-result"></div>
-      </div>
-    `;
-
-    if (!submitted) {
-      container.querySelectorAll('.input-field').forEach(el => {
-        el.addEventListener('input', () => {
-          const q = parseInt(el.dataset.q);
-          const key = el.dataset.key;
-          if (!answers[q]) answers[q] = {};
-          answers[q][key] = el.value;
-        });
-      });
-    }
-  }
-
-  window._gateSubmit = function() {
-    submitted = true;
-    let allCorrect = true;
-    const results = questions.map((q, i) => {
-      const user = answers[i] || {};
-      const correct = q.check(user);
-      if (!correct) allCorrect = false;
-      return { ...q, user, correct };
-    });
-    
-    render();
-    // Update feedback
-    results.forEach((r, i) => {
-      const span = container.querySelector(`[data-q="${i}"]`)?.parentElement?.querySelector('span');
-      if (span) {
-        span.textContent = r.correct ? '✅' : `❌ 正确答案: ${r.answer || ''}`;
-      }
-    });
-
-    const resultEl = document.getElementById('gate-result');
-    if (allCorrect) {
-      resultEl.innerHTML = '<span style="color: var(--success);">✅ 地基扎实，进入小数乘法的世界</span>';
-      setTimeout(onPass, 1500);
-    } else {
-      resultEl.innerHTML = '<span style="color: var(--warning);">🔄 别急，我们复习一下再试</span>';
-      setTimeout(() => { submitted = false; answers = {}; render(); }, 2000);
-    }
-  };
-
-  render();
+// 庆祝效果
+function celebrate(el){
+  if(!el)return;
+  el.classList.remove('celebrate');
+  void el.offsetWidth;
+  el.classList.add('celebrate');
 }
 
-// ====== 交互实验室：数轴拖拽器 ======
-function createNumberLineDrag(canvasId, config) {
-  const canvas = document.getElementById(canvasId);
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const W = canvas.width = canvas.parentElement.clientWidth - 40;
-  const H = canvas.height = 300;
-
-  const margin = { left: 40, right: 40, top: 40, bottom: 40 };
-  const plotW = W - margin.left - margin.right;
-  const plotH = H - margin.top - margin.bottom;
-
-  let mode = config.mode || 'tenths'; // 'tenths' or 'ones'
-  let blocks = config.blocks || [{ val: 0.4, color: '#3b82f6' }, { val: 0.4, color: '#3b82f6' }, { val: 0.4, color: '#3b82f6' }];
-  let accumulated = 0;
-
-  function draw() {
-    ctx.clearRect(0, 0, W, H);
-    
-    // Title
-    ctx.fillStyle = '#1a1a1a';
-    ctx.font = 'bold 16px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(config.title || '', W/2, 24);
-
-    // Number line
-    const y = margin.top + plotH / 2;
-    ctx.strokeStyle = '#333';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(margin.left, y);
-    ctx.lineTo(W - margin.right, y);
-    ctx.stroke();
-
-    // Ticks
-    const maxVal = mode === 'tenths' ? 3 : 30;
-    const step = mode === 'tenths' ? 0.2 : 2;
-    const pixelsPerUnit = plotW / maxVal;
-
-    for (let v = 0; v <= maxVal; v += step) {
-      const x = margin.left + v * pixelsPerUnit;
-      ctx.strokeStyle = '#ccc';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(x, y - 8);
-      ctx.lineTo(x, y + 8);
-      ctx.stroke();
-
-      ctx.fillStyle = '#666';
-      ctx.font = '11px sans-serif';
-      ctx.textAlign = 'center';
-      const label = mode === 'tenths' ? v.toFixed(1) : v.toString();
-      ctx.fillText(label, x, y + 22);
-    }
-
-    // Accumulated blocks
-    let accX = margin.left;
-    accumulated = 0;
-    blocks.forEach((b, i) => {
-      const blockW = b.val * pixelsPerUnit;
-      ctx.fillStyle = b.color;
-      ctx.globalAlpha = 0.6;
-      ctx.fillRect(accX, y - 25, blockW, 50);
-      ctx.globalAlpha = 1;
-      ctx.strokeStyle = '#1e40af';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(accX, y - 25, blockW, 50);
-      
-      ctx.fillStyle = '#fff';
-      ctx.font = 'bold 13px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(b.val.toString(), accX + blockW/2, y + 3);
-      
-      accumulated += b.val;
-      accX += blockW;
-    });
-
-    // Result
-    const endX = margin.left + accumulated * pixelsPerUnit;
-    ctx.fillStyle = '#dc2626';
-    ctx.beginPath();
-    ctx.arc(endX, y, 6, 0, Math.PI * 2);
-    ctx.fill();
-    
-    ctx.fillStyle = '#dc2626';
-    ctx.font = 'bold 15px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(`= ${accumulated.toFixed(1)}`, endX, y - 35);
-
-    // Mode toggle button area
-    ctx.fillStyle = '#2563eb';
-    ctx.font = '13px sans-serif';
-    ctx.textAlign = 'right';
-    ctx.fillText(`[ 单位: ${mode === 'tenths' ? '0.1' : '1'} — 点击切换 ]`, W - margin.right, H - 10);
-  }
-
-  canvas.addEventListener('click', (e) => {
-    const rect = canvas.getBoundingClientRect();
-    const clickY = e.clientY - rect.top;
-    if (clickY > H - 30) {
-      mode = mode === 'tenths' ? 'ones' : 'tenths';
-      draw();
-    }
-  });
-
-  draw();
+// 渐进显示
+function revealSteps(containerId){
+  const c=document.getElementById(containerId);
+  if(!c)return;
+  const steps=c.querySelectorAll('.reveal-step');
+  let i=0;
+  const showNext=()=>{if(i<steps.length){steps[i].classList.add('visible');i++;}};
+  showNext();
+  return {showNext,allShown:()=>i>=steps.length};
 }
 
-// ====== 分层练习组件 ======
-function createExerciseSet({ containerId, exercises, passThreshold, onPass, onFail }) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-
-  let userAnswers = {};
-  let submitted = false;
-  let correctCount = 0;
-
-  function render() {
-    container.innerHTML = `
-      <div class="exercise-tier">
-        ${exercises.map((ex, i) => `
-          <div class="exercise-item">
-            <span class="q-num">${i + 1}</span>
-            <span>${ex.question}</span>
-            <div style="margin-top: 8px;">
-              ${ex.inputs.map(inp => `
-                <input class="input-field" 
-                       data-ex="${i}" data-key="${inp.key}"
-                       placeholder="${inp.placeholder || ''}"
-                       style="width: ${inp.width || 80}px;"
-                       ${submitted ? 'disabled' : ''}>
-              `).join('')}
-              ${submitted ? `<span style="margin-left: 8px; font-weight: 600; color: ${userAnswers[i]?.correct ? 'var(--success)' : 'var(--danger)'}">${userAnswers[i]?.correct ? '✅' : '❌ ' + (ex.answer || '')}</span>` : ''}
-            </div>
-            ${submitted && userAnswers[i]?.hint && !userAnswers[i]?.correct ? `<div class="feedback hint show">💡 ${userAnswers[i].hint}</div>` : ''}
-          </div>
-        `).join('')}
-        ${!submitted ? `<button class="btn btn-primary" onclick="window._exSubmit()">提交</button>` : ''}
-        <div id="ex-result" style="margin-top: 16px; font-weight: 700;"></div>
-      </div>
-    `;
-
-    if (!submitted) {
-      container.querySelectorAll('.input-field').forEach(el => {
-        el.addEventListener('input', () => {
-          const idx = parseInt(el.dataset.ex);
-          const key = el.dataset.key;
-          if (!userAnswers[idx]) userAnswers[idx] = { values: {} };
-          userAnswers[idx].values[key] = el.value;
-        });
-      });
-    }
-  }
-
-  window._exSubmit = function() {
-    submitted = true;
-    correctCount = 0;
-    exercises.forEach((ex, i) => {
-      const ans = userAnswers[i]?.values || {};
-      const isCorrect = ex.check(ans);
-      userAnswers[i] = userAnswers[i] || {};
-      userAnswers[i].correct = isCorrect;
-      userAnswers[i].hint = ex.hint;
-      if (isCorrect) correctCount++;
-    });
-    render();
-    
-    const ratio = correctCount / exercises.length;
-    const resultEl = document.getElementById('ex-result');
-    if (ratio >= passThreshold) {
-      resultEl.innerHTML = `<span style="color: var(--success);">✅ ${correctCount}/${exercises.length} 正确，通过！</span>`;
-      setTimeout(onPass, 1000);
-    } else {
-      resultEl.innerHTML = `<span style="color: var(--warning);">⚠️ ${correctCount}/${exercises.length} 正确（需 ≥${Math.ceil(passThreshold * exercises.length)}/${exercises.length}）。请检查错题后重试。</span>`;
-      setTimeout(() => { submitted = false; render(); }, 2500);
-    }
-  };
-
-  render();
+// 带动画的跳转
+function showFeedback(id, type, msg){
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.className='feedback show '+type;
+  el.innerHTML=msg;
+}
+function clearFeedback(id){
+  const el=document.getElementById(id);
+  if(el)el.className='feedback';
 }
 
-// ====== 费曼填空组件 ======
-function createFeynmanFill({ containerId, template, answer, onComplete }) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-
-  // Parse template to find ___ blanks
-  const parts = template.split(/_{2,}/g);
-  
-  let filled = new Array(parts.length - 1).fill('');
-  let submitted = false;
-
-  function render() {
-    let html = '<div style="line-height: 2.2; padding: 16px;">';
-    parts.forEach((part, i) => {
-      html += `<span>${part}</span>`;
-      if (i < parts.length - 1) {
-        html += submitted 
-          ? `<span style="color: ${filled[i] === answer[i] ? 'var(--success)' : 'var(--danger)'}; font-weight: 700; border-bottom: 2px solid currentColor; padding: 0 6px;">${filled[i] || '___'}</span>`
-          : `<input class="input-field fill-input" data-idx="${i}" style="width: 80px;">`;
-      }
-    });
-    html += '</div>';
-    html += !submitted 
-      ? '<button class="btn btn-primary" onclick="window._feynSubmit()">提交</button>'
-      : `<div style="margin-top: 12px; color: var(--text-muted);">${answer.every((a, i) => a === filled[i]) ? '✅ 解释完全正确！' : '📝 以上是标准答案的对比。看看哪里不同，想想为什么。'}</div>`;
-    container.innerHTML = html;
-
-    if (!submitted) {
-      container.querySelectorAll('.fill-input').forEach(el => {
-        el.addEventListener('input', () => {
-          filled[parseInt(el.dataset.idx)] = el.value;
-        });
-      });
-    }
-  }
-
-  window._feynSubmit = function() {
-    submitted = true;
-    render();
-    if (onComplete) onComplete(filled);
-  };
-
-  render();
-}
-
-// ====== 滚动进度条 ======
-function initScrollProgress() {
-  const bar = document.createElement('div');
-  bar.className = 'progress-bar';
-  bar.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: 3px; background: transparent; margin: 0;';
-  bar.innerHTML = '<div class="fill" style="width: 0%;"></div>';
+// 滚动进度条
+function initScrollProgress(){
+  const bar=document.createElement('div');
+  bar.className='scroll-progress';bar.id='scroll-bar';
   document.body.prepend(bar);
+  window.addEventListener('scroll',()=>{
+    const h=document.documentElement.scrollHeight-window.innerHeight;
+    bar.style.width=h>0?Math.min((window.scrollY/h)*100,100)+'%':'0%';
+  },{passive:true});
+}
 
-  window.addEventListener('scroll', () => {
-    const pct = Math.min(100, (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
-    bar.querySelector('.fill').style.width = pct + '%';
+// === 前置门控 ===
+function createGate(opts){
+  const c=document.getElementById(opts.containerId);
+  if(!c)return;
+  const q=opts.questions||[];
+  c.innerHTML=`<div class="gate">
+    <h3>🔑 前置检查</h3>
+    <p style="color:var(--text-muted);font-size:14px;margin-bottom:16px;">通过后才能进入本课——确保你准备好了</p>
+    <div class="gate-questions"></div>
+    <button class="btn btn-primary" id="gate-submit">检查</button>
+    <div class="gate-result" id="gate-result"></div>
+  </div>`;
+  const qc=c.querySelector('.gate-questions');
+  q.forEach((qItem,i)=>{
+    const d=document.createElement('div');
+    d.style.cssText='margin:10px 0;display:flex;align-items:center;gap:8px;justify-content:center;flex-wrap:wrap;';
+    d.innerHTML=`<span>${i+1}. ${qItem.label}</span>`;
+    if(qItem.inputs){
+      const inputGroup=document.createElement('span');
+      inputGroup.style.cssText='display:inline-flex;align-items:center;gap:4px;';
+      qItem.inputs.forEach((inp,j)=>{
+        if(j>0)inputGroup.innerHTML+='<span style="color:var(--text-muted)">, </span>';
+        const el=document.createElement('input');
+        el.className='input-field';
+        el.style.width=(inp.width||50)+'px';
+        el.type='text';el.placeholder=inp.placeholder||'';
+        el.dataset.key=inp.key;
+        el.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('gate-submit').click();});
+        inputGroup.appendChild(el);
+      });
+      d.appendChild(inputGroup);
+    }
+    qc.appendChild(d);
+  });
+  document.getElementById('gate-submit').addEventListener('click',()=>{
+    const r=document.getElementById('gate-result');
+    let allCorrect=true;
+    q.forEach((qItem,i)=>{
+      let answer={};
+      if(qItem.inputs){
+        qItem.inputs.forEach(inp=>{
+          const inputs=qc.querySelectorAll('.input-field');
+          let found=null;
+          inputs.forEach(el=>{if(el.dataset.key===inp.key)found=el;});
+          if(found)answer[inp.key]=found.value.trim();
+        });
+      }
+      const correct=qItem.check(answer);
+      if(!correct){
+        allCorrect=false;
+        if(qItem.inputs){
+          qItem.inputs.forEach(inp=>{
+            const inputs=qc.querySelectorAll('.input-field');
+            inputs.forEach(el=>{if(el.dataset.key===inp.key)el.className='input-field wrong';});
+          });
+        }
+      }else{
+        if(qItem.inputs){
+          qItem.inputs.forEach(inp=>{
+            const inputs=qc.querySelectorAll('.input-field');
+            inputs.forEach(el=>{if(el.dataset.key===inp.key)el.className='input-field correct';});
+          });
+        }
+      }
+    });
+    if(allCorrect){
+      r.innerHTML='✅ 全部正确！进入课程...';
+      r.className='gate-result success';
+      celebrate(r);
+      setTimeout(()=>{if(opts.onPass)opts.onPass();},600);
+    }else{
+      r.innerHTML='❌ 有题目回答错误，请改正后再试';
+      r.className='gate-result fail';
+    }
   });
 }
 
-// ====== 工具函数 ======
-function animateValue(el, start, end, duration, prefix = '', suffix = '') {
-  const startTime = performance.now();
-  function update(now) {
-    const elapsed = now - startTime;
-    const progress = Math.min(elapsed / duration, 1);
-    const eased = 1 - Math.pow(1 - progress, 3); // ease-out
-    const current = start + (end - start) * eased;
-    el.textContent = prefix + (Number.isInteger(end) ? Math.round(current) : current.toFixed(1)) + suffix;
-    if (progress < 1) requestAnimationFrame(update);
+// === 分层练习 ===
+function createExerciseSet(opts){
+  const c=document.getElementById(opts.containerId);
+  if(!c)return;
+  const exs=opts.exercises||[];
+  let state=exs.map(()=>({status:'pending',answer:''}));
+  let attemptedCount=0,correctCount=0;
+
+  function render(){
+    let html='';
+    exs.forEach((ex,i)=>{
+      const s=state[i];
+      const borderColor=s.status==='correct'?'var(--success)':s.status==='wrong'?'var(--danger)':'var(--border)';
+      html+=`<div class="exercise-item" style="border-color:${borderColor}">
+        <span class="q-num">${i+1}</span> ${ex.question}
+        <div style="margin-top:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          ${ex.inputs?ex.inputs.map((inp,j)=>{
+            return (j>0?' <span style="color:var(--text-muted);font-size:13px;">, </span>':'')+
+              `<input class="input-field" id="ex-${opts.containerId}-${i}-${inp.key}" type="text" style="width:${inp.width||60}px;" value="${s.answer||''}" ${s.status!=='pending'?'disabled':''}>`;
+          }).join(''):`<input class="input-field" id="ex-${opts.containerId}-${i}" type="text" style="width:${ex.width||60}px;" value="${s.answer||''}" ${s.status!=='pending'?'disabled':''}>`}
+          <button class="btn btn-primary btn-sm" data-ex="${i}" ${s.status!=='pending'?'disabled':''}>提交</button>
+          ${s.status==='correct'?'<span style="color:var(--success);font-size:18px;">✅</span>':s.status==='wrong'?'<span style="color:var(--danger);font-size:18px;">❌</span>':''}
+        </div>
+        ${s.status==='wrong'&&ex.hint?`<div style="margin-top:6px;font-size:13px;color:var(--warning);">💡 ${ex.hint}</div>`:''}
+      </div>`;
+    });
+    c.innerHTML=html;
+
+    c.querySelectorAll('[data-ex]').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        const i=parseInt(btn.dataset.ex);
+        const ex=exs[i];
+        if(state[i].status!=='pending')return;
+        let userAnswer={};
+        if(ex.inputs){
+          ex.inputs.forEach(inp=>{
+            const el=document.getElementById(`ex-${opts.containerId}-${i}-${inp.key}`);
+            if(el)userAnswer[inp.key]=el.value.trim();
+          });
+        }else{
+          const el=document.getElementById(`ex-${opts.containerId}-${i}`);
+          if(el)userAnswer={a:el.value.trim()};
+        }
+        const correct=ex.check(userAnswer);
+        state[i].status=correct?'correct':'wrong';
+        state[i].answer=ex.inputs?ex.inputs.map(inp=>userAnswer[inp.key]||'').join(', '):userAnswer.a;
+        attemptedCount++;
+        if(correct)correctCount++;
+        render();
+        checkComplete();
+      });
+    });
   }
-  requestAnimationFrame(update);
+
+  function checkComplete(){
+    const attempted=state.filter(s=>s.status!=='pending').length;
+    if(attempted===exs.length){
+      const rate=correctCount/exs.length;
+      if(rate>=(opts.passThreshold||0.7)&&opts.onPass){
+        const doneEl=document.getElementById('done');
+        if(doneEl)celebrate(doneEl);
+        opts.onPass();
+      }
+    }
+  }
+
+  render();
 }
 
-function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+// === 费曼填空 ===
+function createFeynmanFill(opts){
+  const c=document.getElementById(opts.containerId);
+  if(!c)return;
+  const tpl=opts.template;
+  const ans=opts.answer||[];
+  let blanks=tpl.match(/___/g);
+  if(!blanks)return;
+  let parts=tpl.split('___');
+  let userInputs=new Array(blanks.length).fill('');
 
-// Auto-init
-document.addEventListener('DOMContentLoaded', () => {
-  initScrollProgress();
-});
+  function render(){
+    let html='<div style="background:linear-gradient(145deg,#f0fdf4,#fff);border:2px solid #86efac;border-radius:var(--radius);padding:20px 24px;text-align:left;line-height:2.2;">';
+    parts.forEach((p,i)=>{
+      html+=p;
+      if(i<blanks.length){
+        html+=`<input class="input-field" id="feyn-${i}" type="text" style="width:${Math.max(60,20+30*(ans[i]||'').length)}px;margin:0 2px;" value="${userInputs[i]}">`;
+      }
+    });
+    html+=`<div style="text-align:center;margin-top:16px;">
+      <button class="btn btn-success" id="feyn-submit">检查答案</button>
+      <button class="btn btn-outline btn-sm" id="feyn-reset" style="margin-left:8px;">重置</button>
+    </div><div class="feedback" id="feyn-result"></div></div>`;
+    c.innerHTML=html;
+
+    // Enter key
+    document.querySelectorAll('[id^="feyn-"]').forEach(el=>{
+      if(el.id!=='feyn-submit'&&el.id!=='feyn-reset'){
+        el.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('feyn-submit').click();});
+      }
+    });
+
+    document.getElementById('feyn-submit').addEventListener('click',()=>{
+      let correct=true;
+      for(let i=0;i<ans.length;i++){
+        const el=document.getElementById(`feyn-${i}`);
+        if(!el)continue;
+        const v=el.value.trim();
+        userInputs[i]=v;
+        if(v===ans[i])el.className='input-field correct';
+        else{el.className='input-field wrong';correct=false;}
+      }
+      const r=document.getElementById('feyn-result');
+      if(correct){
+        r.className='feedback show success';
+        r.innerHTML='🎉 完美！你理解得很透彻！';
+        celebrate(r);
+        if(opts.onComplete)opts.onComplete();
+      }else{
+        r.className='feedback show error';
+        const wrongCount=ans.filter((a,i)=>userInputs[i]!==a).length;
+        r.innerHTML=`有${wrongCount}个填空不正确，再想想看。`;
+      }
+    });
+
+    document.getElementById('feyn-reset').addEventListener('click',()=>{
+      for(let i=0;i<ans.length;i++){
+        const el=document.getElementById(`feyn-${i}`);
+        if(el){el.value='';el.className='input-field';}
+        userInputs[i]='';
+      }
+      const r=document.getElementById('feyn-result');
+      r.className='feedback';
+      r.innerHTML='';
+    });
+  }
+  render();
+}
+
+// 暴露到全局
+window.saveProgress=saveProgress;
+window.getProgress=getProgress;
+window.celebrate=celebrate;
+window.revealSteps=revealSteps;
+window.showFeedback=showFeedback;
+window.clearFeedback=clearFeedback;
+window.initScrollProgress=initScrollProgress;
+window.createGate=createGate;
+window.createExerciseSet=createExerciseSet;
+window.createFeynmanFill=createFeynmanFill;
+
+// 自动初始化
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initScrollProgress);
+else initScrollProgress();
+
+})();
