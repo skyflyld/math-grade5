@@ -147,6 +147,13 @@ body {
   color: var(--text);
 }
 .section-header .emoji { font-size: 26px; }
+.section-header .avatar-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.14);
+  flex-shrink: 0;
+}
 
 /* ========== 交互区 ========== */
 .interactive-area {
@@ -798,6 +805,7 @@ body {
   .adversary-progress { align-self: flex-start; }
   .section-header { font-size: 17px; }
   .section-header .emoji { font-size: 22px; }
+  .section-header .avatar-icon { width: 26px; height: 26px; }
   .axiom-box { font-size: 15px; padding: 16px 18px; }
   .interactive-area { padding: 18px 14px; }
   .concept-card { padding: 18px 16px; }
