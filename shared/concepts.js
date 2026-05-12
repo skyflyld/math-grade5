@@ -117,7 +117,22 @@ const lessonByConcept = {
   '通分':{href:withHash('modules/09-factors/9-4-common-denominator.html','通分'),label:'进入通分课件',meta:'统一单位'},
   '分数加减法':{href:withHash('modules/10-fraction-ops/10-1-fraction-add-sub.html','分数加减法'),label:'进入分数加减课件',meta:'同单位相加'},
   '长方体体积':{href:withHash('modules/07-volume/7-3-volume-formula.html','长方体体积'),label:'进入体积公式课件',meta:'底面积×高'},
-  '循环小数':{href:withHash('modules/02-dec-division/2-2-recurring-decimals.html','循环小数'),label:'进入循环小数课件',meta:'除不尽'}
+  '循环小数':{href:withHash('modules/02-dec-division/2-2-recurring-decimals.html','循环小数'),label:'进入循环小数课件',meta:'除不尽'},
+  '整数加减法':{href:withHash('modules/03-integer-ops/3-1-add-sub.html','整数加减法'),label:'进入加减法课件',meta:'同单位计数'},
+  '整数四则运算':{href:withHash('modules/03-integer-ops/3-2-four-operations.html','整数四则运算'),label:'进入四则运算课件',meta:'运算顺序'},
+  '单位换算':{href:withHash('modules/04-place-value/4-3-unit-conversion.html','单位换算'),label:'进入单位换算课件',meta:'单位阶梯'},
+  '等式的性质':{href:withHash('modules/05-equations/5-2-equality-properties.html','等式的性质'),label:'进入等式性质课件',meta:'天平法则'},
+  '图形认知':{href:withHash('modules/08-geometry-intro/8-1-shape-cognition.html','图形认知'),label:'进入图形课件',meta:'边和角'},
+  '观察物体':{href:withHash('modules/08-geometry-intro/8-2-observe-objects.html','观察物体'),label:'进入观察物体课件',meta:'三视图'},
+  '轴对称与旋转':{href:withHash('modules/08-geometry-intro/8-3-symmetry.html','轴对称与旋转'),label:'进入对称旋转课件',meta:'图形变换'},
+  '数据收集':{href:withHash('modules/11-statistics/11-1-data-collection.html','数据收集'),label:'进入数据收集课件',meta:'整理数据'},
+  '折线统计图':{href:withHash('modules/11-statistics/11-2-line-chart.html','折线统计图'),label:'进入折线图课件',meta:'趋势山脊'},
+  '可能性':{href:withHash('modules/11-statistics/11-3-probability.html','可能性'),label:'进入可能性课件',meta:'机会区域'},
+  '容积和容积单位':{href:withHash('modules/07-volume/7-4-capacity.html','容积和容积单位'),label:'进入容积课件',meta:'内部空间'},
+  '分数与小数互化':{href:withHash('modules/10-fraction-ops/10-2-fraction-decimal.html','分数与小数互化'),label:'进入互化课件',meta:'双语数字'},
+  '235的倍数特征':{href:withHash('modules/09-factors/9-5-divisibility.html','235的倍数特征'),label:'进入倍数特征课件',meta:'倍数筛子'},
+  '植树问题':{href:withHash('modules/12-applications/12-1-tree-planting.html','植树问题'),label:'进入植树问题课件',meta:'间隔端点'},
+  '找次品':{href:withHash('modules/12-applications/12-2-find-faulty.html','找次品'),label:'进入找次品课件',meta:'三等分策略'}
 };
 
 const conceptNames = Array.from(new Set([
