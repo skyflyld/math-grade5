@@ -375,6 +375,193 @@ body {
   justify-content: center;
   flex-wrap: wrap;
 }
+.number-line-card,
+.fraction-bar-card,
+.balance-card {
+  max-width: 720px;
+}
+.number-line-stage,
+.fraction-bar-stage,
+.balance-stage {
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+}
+.number-line-canvas,
+.balance-canvas {
+  width: 100%;
+  max-width: 100%;
+  display: block;
+  border-radius: var(--radius-md);
+  background: #fff;
+  border: 1px solid rgba(148,163,184,.22);
+  box-shadow: var(--shadow-sm);
+}
+.number-line-canvas {
+  cursor: grab;
+  touch-action: none;
+}
+.number-line-canvas:active { cursor: grabbing; }
+.number-line-info {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: #f8fafc;
+  border: 1px solid rgba(226,232,240,.9);
+  color: var(--text-muted);
+  font-size: 14px;
+}
+.number-line-info strong {
+  color: var(--accent-deep);
+  font-size: 22px;
+  line-height: 1;
+}
+.number-line-info b {
+  color: var(--text);
+  font-size: 14px;
+}
+.number-line-info em {
+  justify-self: end;
+  font-style: normal;
+  color: #92400e;
+  background: var(--warning-light);
+  border-radius: 999px;
+  padding: 3px 9px;
+  font-weight: 800;
+}
+.number-line-controls,
+.balance-controls {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.fraction-bar-track {
+  width: 100%;
+  min-height: 58px;
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: #e2e8f0;
+  border: 2px solid rgba(148,163,184,.7);
+  box-shadow: inset 0 1px 2px rgba(15,23,42,.08);
+}
+.fraction-bar-fill {
+  height: 100%;
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 800;
+  transition: width var(--transition);
+}
+.fraction-bar-segments {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  pointer-events: none;
+}
+.fraction-bar-segments span {
+  flex: 1;
+  border-right: 1px solid rgba(255,255,255,.75);
+  box-shadow: inset 1px 0 rgba(15,23,42,.08);
+}
+.fraction-bar-segments span:last-child { border-right: 0; }
+.fraction-bar-readout {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: #f8fafc;
+  border: 1px solid rgba(226,232,240,.9);
+}
+.fraction-bar-readout strong {
+  color: var(--accent-deep);
+  font-size: 24px;
+  line-height: 1;
+}
+.fraction-bar-readout span {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+.fraction-bar-readout em {
+  justify-self: end;
+  font-style: normal;
+  color: #166534;
+  background: var(--success-light);
+  border-radius: 999px;
+  padding: 3px 9px;
+  font-weight: 800;
+}
+.fraction-bar-controls {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 12px;
+}
+.fraction-bar-controls label {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 8px;
+  align-items: center;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 700;
+}
+.fraction-bar-controls input { width: 100%; }
+.fraction-bar-controls span {
+  min-width: 28px;
+  text-align: right;
+  color: var(--text);
+  font-weight: 800;
+}
+.fraction-bar-equivalents {
+  width: 100%;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+.fraction-bar-equivalents > span {
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: #f8fafc;
+  border: 1px solid rgba(226,232,240,.9);
+}
+.fraction-bar-equivalents b {
+  color: var(--accent-deep);
+}
+.balance-canvas {
+  max-width: 620px;
+}
+.balance-equation {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: var(--accent-deep);
+  font-weight: 800;
+}
+.balance-controls label {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  font-weight: 800;
+}
 
 /* ========== 公理框 ========== */
 .axiom-box {
@@ -1018,6 +1205,13 @@ body {
   .component-card-head { display: block; }
   .area-model-info { grid-template-columns: auto 1fr; }
   .area-model-info b, .area-model-info em { grid-column: 1 / -1; justify-self: start; }
+  .number-line-info,
+  .fraction-bar-readout { grid-template-columns: auto 1fr; }
+  .number-line-info b,
+  .number-line-info em,
+  .fraction-bar-readout em { grid-column: 1 / -1; justify-self: start; }
+  .fraction-bar-controls { grid-template-columns: 1fr; }
+  .balance-controls { justify-content: flex-start; }
   .concept-card { padding: 18px 16px; }
   .gate { padding: 20px 16px; }
 }

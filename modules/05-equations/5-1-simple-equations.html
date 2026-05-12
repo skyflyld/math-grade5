@@ -76,7 +76,17 @@
 <script src="../../shared/components.js"></script>
 <script>
 createGate({containerId:'gate-root',questions:[{label:'3+4=7中，等号表示什么？',inputs:[{key:'a',width:80}],check:u=>u.a.includes('相等')||u.a.includes('等于')}],onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅ 好！</div>'});
-createBalance({containerId:'bal-root',leftLabel:'x+3',rightLabel:'8',leftValue:1,rightValue:8,target:'5',onSolve:ans=>{document.getElementById('bal-fb').innerHTML='✅ x=5！';celebrate(document.getElementById('bal-fb'));}});
+createBalance({
+  containerId:'bal-root',
+  title:'方程天平：x + 3 = 8',
+  description:'输入 x 的值，检查左边 x+3 是否和右边 8 一样重。',
+  leftLabel:'x+3',
+  rightLabel:'8',
+  leftValue:1,
+  rightValue:8,
+  target:'5',
+  onSolve:ans=>{document.getElementById('bal-fb').innerHTML='✅ x=5！';celebrate(document.getElementById('bal-fb'));}
+});
 addHintButton('eq-core-hint','不要把“移项”当魔法。每一步都可以翻译成：天平两边同时做同一件事。','把方程想成天平');
 addExplanation('eq-explain-1','x+8=20 要让 x 单独留下，就要把左边的 +8 抵消掉；为保持等式成立，右边也同时 -8，所以 x=20-8=12。');
 createCourseSummary({containerId:'course-summary'});

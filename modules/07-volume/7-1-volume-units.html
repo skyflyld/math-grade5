@@ -26,6 +26,7 @@
   <div class="interactive-area">
     <p style="margin-bottom:8px;">拖拽滑块，看不同尺寸的盒子能装多少 1cm³ 方块</p>
     <div id="nl-volume"></div>
+    <div id="nl-volume-note" class="thought-bubble">当前可以装 27 个 1cm³ 方块</div>
   </div>
 </div>
 <div class="section">
@@ -61,7 +62,21 @@
 <script src="../../shared/concepts.js"></script><script src="../../shared/concept-sync.js"></script><script src="../../shared/components.js"></script>
 <script>
 createGate({containerId:'gate-root',questions:[{label:'矩形面积=长×宽，这是二维的。升一个维度变什么？',inputs:[{key:'a',width:60}],check:u=>u.a==='体积'||u.a.includes('体积')}],onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅ 好！</div>'});
-createNumberLine({containerId:'nl-volume',min:1,max:100,initial:27,step:1,unit:'cm³',onChange:v=>{document.getElementById('nl-volume').querySelector('div:last-child').textContent=v+'个1cm³方块'}});
+createNumberLine({
+  containerId:'nl-volume',
+  title:'体积数轴：方块数量',
+  description:'拖动游标，把抽象的 cm³ 转成“能放下多少个 1cm³ 小方块”。',
+  min:1,
+  max:100,
+  initial:27,
+  step:1,
+  unit:'cm³',
+  color:'#f59e0b',
+  onChange:v=>{
+    const note=document.getElementById('nl-volume-note');
+    if(note)note.textContent='当前可以装 '+v+' 个 1cm³ 方块';
+  }
+});
 function checkE(n,ans,input,fb){const ok=input.value.trim()===ans;fb.className='feedback show '+(ok?'success':'error');fb.innerHTML=ok?'✅ 正确！':`❌ 答案是 ${ans}`;}
 createAdversarialChallenge({containerId:'adversary-root',challenges:[
   {tag:'进率',statement:'1m³=100dm³',answer:'refute',hint:'米到分米的进率是多少？三维呢？',explanation:'1m=10dm，体积是三维，所以1m³=10³dm³=1000dm³',counterexample:'1m³的正方体每边10dm → 10×10×10=1000dm³'},

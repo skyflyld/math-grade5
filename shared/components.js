@@ -363,73 +363,123 @@ function createFeynmanFill(opts){
 function createNumberLine(opts){
   const c=document.getElementById(opts.containerId);
   if(!c)return;
-  const min=opts.min||0, max=opts.max||10, initial=opts.initial||5;
-  const step=opts.step||1, unit=opts.unit||'';
-  let value=initial;
+  const min=Number(opts.min??0), max=Number(opts.max??10);
+  const step=Math.max(Number(opts.step??1),0.000001), unit=opts.unit||'';
+  const initial=clamp(Number(opts.initial??opts.initialValue??min),min,max);
+  const title=opts.title||'数轴操作台';
+  const description=opts.description||'拖动游标，观察数的位置、方向和移动距离。';
+  const accent=opts.color||'#3b82f6';
+  const decimals=Math.min(4,String(step).includes('.')?String(step).split('.')[1].length:0);
   const canvas=document.createElement('canvas');
-  canvas.width=Math.min(600,c.clientWidth-24||560);
-  canvas.height=100;
-  canvas.style.cssText='max-width:100%;cursor:pointer;border-radius:8px;background:#fff;';
-  const label=document.createElement('div');
-  label.style.cssText='text-align:center;font-size:20px;font-weight:800;margin:6px 0;color:var(--accent-deep);';
-  label.textContent=value+unit;
-  c.innerHTML='';
-  c.append(canvas,label);
+  canvas.className='number-line-canvas';
+  canvas.setAttribute('aria-label',title);
+  const info=document.createElement('div');
+  info.className='number-line-info';
+  const controls=document.createElement('div');
+  controls.className='number-line-controls';
+  controls.innerHTML='<button class="btn btn-outline btn-sm" type="button" data-nl-reset>回到起点</button>';
+  let value=initial;
+  c.innerHTML=`<div class="component-card number-line-card">
+    <div class="component-card-head">
+      <div><h4>${escapeHTML(title)}</h4><p>${escapeHTML(description)}</p></div>
+    </div>
+    <div class="number-line-stage"></div>
+  </div>`;
+  const stage=c.querySelector('.number-line-stage');
+  stage.append(canvas,info,controls);
+
+  function clamp(v,lo,hi){return Math.max(lo,Math.min(hi,Number.isFinite(v)?v:lo));}
+  function formatValue(v){
+    const fixed=decimals?Number(v).toFixed(decimals):String(Math.round(v));
+    return fixed.includes('.')?fixed.replace(/\.?0+$/,''):fixed;
+  }
+  function snap(v){
+    if(v>=max-step/2)return max;
+    if(v<=min+step/2)return min;
+    const snapped=min+Math.round((v-min)/step)*step;
+    return clamp(Number(snapped.toFixed(Math.max(decimals,3))),min,max);
+  }
 
   function draw(){
     const ctx=canvas.getContext('2d'), w=canvas.width, h=canvas.height;
-    const pad=40, lw=w-2*pad, cy=55;
+    const pad=Math.max(36,Math.min(56,w*.1)), lw=w-2*pad, cy=Math.round(h*.56);
+    const range=max-min||1;
+    const anchorPos=pad+(initial-min)/range*lw;
+    const pos=pad+(value-min)/range*lw;
     ctx.clearRect(0,0,w,h);
-    // Base line
-    ctx.strokeStyle='#cbd5e1';ctx.lineWidth=2;
+    ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);
+    ctx.strokeStyle='#cbd5e1';ctx.lineWidth=3;ctx.lineCap='round';
     ctx.beginPath();ctx.moveTo(pad,cy);ctx.lineTo(w-pad,cy);ctx.stroke();
-    // Ticks + labels
-    const ticks=Math.round((max-min)/step);
-    ctx.fillStyle='#94a3b8';ctx.font='11px sans-serif';ctx.textAlign='center';
-    for(let i=0;i<=ticks;i++){
-      const x=pad+i*lw/ticks, v=min+i*step;
-      ctx.strokeStyle='#cbd5e1';ctx.lineWidth=1;
-      ctx.beginPath();ctx.moveTo(x,cy-6);ctx.lineTo(x,cy+6);ctx.stroke();
-      ctx.fillStyle='#64748b';ctx.fillText(String(v),x,cy+20);
+
+    const tickCount=Math.min(10,Math.max(2,Math.ceil((max-min)/step)));
+    ctx.font='12px sans-serif';ctx.textAlign='center';
+    for(let i=0;i<=tickCount;i++){
+      const ratio=i/tickCount, x=pad+ratio*lw, v=min+ratio*(max-min);
+      ctx.strokeStyle=i===0||i===tickCount?'#94a3b8':'#cbd5e1';ctx.lineWidth=i===0||i===tickCount?2:1;
+      ctx.beginPath();ctx.moveTo(x,cy-8);ctx.lineTo(x,cy+8);ctx.stroke();
+      ctx.fillStyle='#64748b';ctx.fillText(formatValue(v),x,cy+26);
     }
-    // Drag handle
-    const pos=pad+(value-min)/(max-min)*lw;
-    ctx.fillStyle='#f59e0b';ctx.strokeStyle='#d97706';ctx.lineWidth=2;
-    ctx.beginPath();ctx.moveTo(pos,cy-18);ctx.lineTo(pos-10,cy-6);ctx.lineTo(pos+10,cy-6);ctx.closePath();ctx.fill();ctx.stroke();
-    ctx.fillStyle='#92400e';ctx.font='14px sans-serif';ctx.textAlign='center';
-    ctx.fillText('▼',pos,cy-22);
+
+    ctx.strokeStyle='#f59e0b';ctx.lineWidth=2;ctx.setLineDash([5,5]);
+    ctx.beginPath();ctx.moveTo(anchorPos,cy-28);ctx.lineTo(anchorPos,cy+8);ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle='#92400e';ctx.font='800 12px sans-serif';ctx.fillText('起点 '+formatValue(initial),anchorPos,cy-36);
+
+    if(Math.abs(value-initial)>step/1000){
+      const left=Math.min(anchorPos,pos), right=Math.max(anchorPos,pos), mid=(left+right)/2;
+      const arcH=Math.max(28,Math.min(70,(right-left)*.32));
+      ctx.strokeStyle=accent;ctx.lineWidth=3;
+      ctx.beginPath();ctx.moveTo(anchorPos,cy-18);
+      ctx.quadraticCurveTo(mid,cy-18-arcH,pos,cy-18);
+      ctx.stroke();
+      ctx.fillStyle=accent;
+      ctx.beginPath();
+      if(pos>=anchorPos){
+        ctx.moveTo(pos,cy-18);ctx.lineTo(pos-10,cy-23);ctx.lineTo(pos-8,cy-11);
+      }else{
+        ctx.moveTo(pos,cy-18);ctx.lineTo(pos+10,cy-23);ctx.lineTo(pos+8,cy-11);
+      }
+      ctx.closePath();ctx.fill();
+    }
+
+    ctx.fillStyle='rgba(59,130,246,.12)';
+    ctx.beginPath();ctx.arc(pos,cy,22,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle=accent;ctx.strokeStyle='#fff';ctx.lineWidth=4;
+    ctx.beginPath();ctx.arc(pos,cy,13,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.fillStyle='#fff';ctx.font='800 12px sans-serif';ctx.textAlign='center';
+    ctx.fillText(formatValue(value),pos,cy+4);
+
+    const delta=value-initial;
+    const deltaText=Math.abs(delta)<step/1000?'没有移动':(delta>0?'向右移动 ':'向左移动 ')+formatValue(Math.abs(delta))+unit;
+    info.innerHTML=`<strong>${formatValue(value)}${escapeHTML(unit)}</strong><span>当前值</span><b>${escapeHTML(deltaText)}</b><em>每格 ${formatValue(step)}${escapeHTML(unit)}</em>`;
   }
   function getValueFromX(x){
-    const rect=canvas.getBoundingClientRect(), pad=40, lw=canvas.width-2*pad;
-    const ratio=Math.max(0,Math.min(1,(x-rect.left-pad)/lw));
-    const raw=min+ratio*(max-min);
-    return Math.round(raw/step)*step;
+    const rect=canvas.getBoundingClientRect(), pad=Math.max(36,Math.min(56,canvas.width*.1)), lw=canvas.width-2*pad;
+    const ratio=Math.max(0,Math.min(1,((x-rect.left)*(canvas.width/rect.width)-pad)/lw));
+    return snap(min+ratio*(max-min));
   }
-  function setValue(v){
-    value=Math.max(min,Math.min(max,v));
-    label.textContent=value+unit;
+  function setValue(v,notify=true){
+    value=snap(v);
     draw();
-    if(opts.onChange)opts.onChange(value);
+    if(notify&&opts.onChange)opts.onChange(value);
   }
 
-  canvas.addEventListener('mousedown',e=>{
-    const onMove=(ev)=>setValue(getValueFromX(ev.clientX));
-    const onUp=()=>{document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp);};
-    document.addEventListener('mousemove',onMove);
-    document.addEventListener('mouseup',onUp);
-    setValue(getValueFromX(e.clientX));
+  let dragging=false;
+  canvas.addEventListener('pointerdown',e=>{dragging=true;canvas.setPointerCapture?.(e.pointerId);setValue(getValueFromX(e.clientX));});
+  canvas.addEventListener('pointermove',e=>{if(dragging)setValue(getValueFromX(e.clientX));});
+  canvas.addEventListener('pointerup',()=>{dragging=false;});
+  canvas.addEventListener('pointercancel',()=>{dragging=false;});
+  controls.addEventListener('click',e=>{
+    if(e.target?.dataset?.nlReset!==undefined)setValue(initial);
   });
-  canvas.addEventListener('touchstart',e=>{
-    e.preventDefault();
-    const t=e.changedTouches[0];
-    const onMove=(ev)=>setValue(getValueFromX(ev.changedTouches[0].clientX));
-    const onEnd=()=>{document.removeEventListener('touchmove',onMove);document.removeEventListener('touchend',onEnd);};
-    document.addEventListener('touchmove',onMove,{passive:true});
-    document.addEventListener('touchend',onEnd);
-    setValue(getValueFromX(t.clientX));
-  });
-  draw();
-  return {getValue:()=>value,setValue};
+  function resize(){
+    canvas.width=Math.max(280,Math.min(680,c.clientWidth-32||620));
+    canvas.height=170;
+    draw();
+  }
+  resize();
+  window.addEventListener('resize',resize);
+  return {getValue:()=>value,setValue,draw};
 }
 
 // === 面积模型组件 ===
@@ -562,48 +612,75 @@ function createAreaModel(opts){
 function createFractionBar(opts){
   const c=document.getElementById(opts.containerId);
   if(!c)return;
-  const num=opts.numerator||1, den=opts.denominator||4, maxDen=opts.maxDenominator||12;
+  const maxDen=Math.max(2,opts.maxDenominator||12);
+  const title=opts.title||'分数条操作台';
+  const description=opts.description||'拖动分子和分母，观察“取几份 / 平均分成几份”的关系。';
   const color=opts.color||'#3b82f6';
-  let barW=Math.min(480,c.clientWidth-32||480);
-  const segment=document.createElement('div');
-  segment.style.cssText='margin:8px 0;';
-  const fullBar=document.createElement('div');
-  fullBar.style.cssText=`width:${barW}px;max-width:100%;height:44px;background:#e2e8f0;border-radius:8px;position:relative;overflow:hidden;border:2px solid #94a3b8;`;
-  const fill=document.createElement('div');
-  fill.style.cssText=`height:100%;width:${(num/den)*100}%;background:${color};border-radius:6px 0 0 6px;transition:width 0.3s;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:13px;`;
-  fill.textContent=`${num}/${den}`;
-  fullBar.append(fill);
-  const controls=document.createElement('div');
-  controls.style.cssText='display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:10px;';
-  controls.innerHTML=`
-    <label style="font-size:13px;">分子 <input id="fb-num" type="range" min="0" max="${den}" value="${num}" style="width:80px;"></label>
-    <label style="font-size:13px;">分母 <input id="fb-den" type="range" min="1" max="${maxDen}" value="${den}" style="width:80px;"></label>
-    <span id="fb-val" style="font-size:24px;font-weight:800;color:var(--accent-deep);">${num}/${den}</span>
-  `;
-  const eqBar=document.createElement('div');
-  eqBar.style.cssText='margin-top:16px;display:none;';
-  eqBar.innerHTML=`<div style="font-size:13px;font-weight:700;margin-bottom:4px;color:var(--text-dim);">等值分数</div><div id="fb-eq" style="font-size:18px;font-weight:800;color:var(--accent);"></div>`;
-  c.innerHTML='';c.append(segment,fullBar,controls,eqBar);
+  let denominator=Math.max(1,Math.min(maxDen,opts.denominator||4));
+  let numerator=Math.max(0,Math.min(denominator,opts.numerator??1));
+  c.innerHTML=`<div class="component-card fraction-bar-card">
+    <div class="component-card-head">
+      <div><h4>${escapeHTML(title)}</h4><p>${escapeHTML(description)}</p></div>
+    </div>
+    <div class="fraction-bar-stage">
+      <div class="fraction-bar-track" aria-label="${escapeHTML(title)}">
+        <div class="fraction-bar-fill"></div>
+        <div class="fraction-bar-segments"></div>
+      </div>
+      <div class="fraction-bar-readout"></div>
+      <div class="fraction-bar-controls">
+        <label>分子 <input class="fraction-num" type="range" min="0" max="${denominator}" value="${numerator}"><span data-fb-num>${numerator}</span></label>
+        <label>分母 <input class="fraction-den" type="range" min="1" max="${maxDen}" value="${denominator}"><span data-fb-den>${denominator}</span></label>
+      </div>
+      <div class="fraction-bar-equivalents"></div>
+    </div>
+  </div>`;
+  const fill=c.querySelector('.fraction-bar-fill');
+  const segments=c.querySelector('.fraction-bar-segments');
+  const readout=c.querySelector('.fraction-bar-readout');
+  const eqBar=c.querySelector('.fraction-bar-equivalents');
+  const numInput=c.querySelector('.fraction-num');
+  const denInput=c.querySelector('.fraction-den');
+  const numText=c.querySelector('[data-fb-num]');
+  const denText=c.querySelector('[data-fb-den]');
+  const gcd=(a,b)=>{a=Math.abs(a);b=Math.abs(b);while(b){const t=b;b=a%b;a=t;}return a||1;};
+  const ratioText=(n,d)=>d?`${n}/${d}`:'0';
 
-  function update(){
-    const n=parseInt(document.getElementById('fb-num').value);
-    const d=parseInt(document.getElementById('fb-den').value);
-    document.getElementById('fb-num').max=d;
-    fill.style.width=`${(n/d)*100}%`;
-    fill.textContent=`${n}/${d}`;
-    document.getElementById('fb-val').textContent=`${n}/${d}`;
-    // Show equivalent fractions
-    if(opts.showEquivalents!==false&&d>0&&n>0){
-      const gcd=(a,b)=>b?gcd(b,a%b):a;
+  function draw(){
+    const n=numerator, d=denominator;
+    fill.style.width=`${Math.min(100,(n/d)*100)}%`;
+    fill.style.background=color;
+    fill.textContent=n>0?ratioText(n,d):'0';
+    segments.innerHTML=Array.from({length:d},(_,i)=>`<span class="${i<n?'is-filled':''}"></span>`).join('');
+    numInput.max=d;numInput.value=n;denInput.value=d;numText.textContent=n;denText.textContent=d;
+    readout.innerHTML=`<strong>${ratioText(n,d)}</strong><span> = ${n} 份 / ${d} 份</span><em>${Math.round(n/d*100)}%</em>`;
+    if(opts.showEquivalents!==false){
       const g=gcd(n,d), sn=n/g, sd=d/g;
-      eqBar.style.display='block';
-      document.getElementById('fb-eq').textContent=sn===n&&sd===d?'(已是最简)' : `${n}/${d} = ${sn}/${sd}`;
+      const doubleD=d*2;
+      const scaled=doubleD<=maxDen?`<b>${n*2}/${doubleD}</b>`:'';
+      const simplified=sn===n&&sd===d?'<span>已是最简分数</span>':`<span>约分后 <b>${sn}/${sd}</b></span>`;
+      eqBar.innerHTML=`<span>等值观察</span>${simplified}${scaled?`<span>同样大小也可写作 ${scaled}</span>`:''}`;
     }
-    if(opts.onChange)opts.onChange({numerator:n,denominator:d,value:n/d});
   }
-  document.getElementById('fb-num').addEventListener('input',update);
-  document.getElementById('fb-den').addEventListener('input',update);
-  return {getValue:()=>({n:parseInt(document.getElementById('fb-num').value),d:parseInt(document.getElementById('fb-den').value)})};
+  function update(){
+    denominator=Math.max(1,Math.min(maxDen,parseInt(denInput.value)||1));
+    numerator=Math.max(0,Math.min(denominator,parseInt(numInput.value)||0));
+    draw();
+    if(opts.onChange)opts.onChange({
+      numerator,
+      denominator,
+      value:numerator/denominator,
+      simplified:(()=>{const g=gcd(numerator,denominator);return {numerator:numerator/g,denominator:denominator/g};})()
+    });
+  }
+  numInput.addEventListener('input',update);
+  denInput.addEventListener('input',update);
+  draw();
+  return {
+    getValue:()=>({n:numerator,d:denominator,numerator,denominator,value:numerator/denominator}),
+    setValue:(n,d)=>{denominator=Math.max(1,Math.min(maxDen,d||denominator));numerator=Math.max(0,Math.min(denominator,n||0));draw();if(opts.onChange)opts.onChange({numerator,denominator,value:numerator/denominator});},
+    draw
+  };
 }
 
 // === 天平组件 ===
@@ -611,65 +688,76 @@ function createBalance(opts){
   const c=document.getElementById(opts.containerId);
   if(!c)return;
   const leftLabel=opts.leftLabel||'?', rightLabel=opts.rightLabel||'☐';
-  let leftVal=opts.leftValue||0, rightVal=opts.rightValue||0;
+  const title=opts.title||'天平模型';
+  const description=opts.description||'方程两边像天平：两边同时做同一件事，平衡才不会被破坏。';
+  let leftVal=opts.leftValue??0, rightVal=opts.rightValue??0;
   let target=opts.target||'';
   const canvas=document.createElement('canvas');
-  const w=Math.min(400,c.clientWidth-24||400), h=180;
-  canvas.width=w;canvas.height=h;
-  canvas.style.cssText='max-width:100%;border-radius:8px;background:#fff;';
+  canvas.className='balance-canvas';
+  canvas.setAttribute('aria-label',title);
   const answerRow=document.createElement('div');
-  answerRow.style.cssText='display:flex;gap:8px;justify-content:center;align-items:center;margin:8px 0;flex-wrap:wrap;';
+  answerRow.className='balance-controls';
   answerRow.innerHTML=`
-    <span style="font-weight:700;">${leftLabel} = </span>
+    <span class="balance-equation">${escapeHTML(leftLabel)} = ${escapeHTML(rightLabel)}</span>
+    <label>x =
     <input id="bal-ans" type="text" class="input-field" style="width:60px;">
+    </label>
     <button class="btn btn-primary btn-sm" id="bal-submit">验证</button>
     <div class="feedback" id="bal-fb"></div>
   `;
-  c.innerHTML='';c.append(canvas,answerRow);
+  c.innerHTML=`<div class="component-card balance-card">
+    <div class="component-card-head">
+      <div><h4>${escapeHTML(title)}</h4><p>${escapeHTML(description)}</p></div>
+    </div>
+    <div class="balance-stage"></div>
+  </div>`;
+  const stage=c.querySelector('.balance-stage');
+  stage.append(canvas,answerRow);
 
   function draw(){
     const ctx=canvas.getContext('2d');
-    const cx=w/2;ctx.clearRect(0,0,w,h);
-    // Stand
-    ctx.strokeStyle='#94a3b8';ctx.lineWidth=3;
-    ctx.beginPath();ctx.moveTo(cx,45);ctx.lineTo(cx,h);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(cx-12,h);ctx.lineTo(cx+12,h);ctx.stroke();
-    // Beam
-    const tilt=leftVal===rightVal?0:leftVal>rightVal?8:-8;
-    ctx.save();ctx.translate(cx,45);ctx.rotate(tilt*Math.PI/180);
-    ctx.strokeStyle='#64748b';ctx.lineWidth=4;
-    ctx.beginPath();ctx.moveTo(-120,0);ctx.lineTo(120,0);ctx.stroke();
-    ctx.fillStyle='#92400e';ctx.font='12px sans-serif';ctx.textAlign='center';
-    ctx.fillText('⚖️',0,-16);
-    // Left pan
-    ctx.strokeStyle='#3b82f6';ctx.lineWidth=2;
-    ctx.beginPath();ctx.moveTo(-120,0);ctx.lineTo(-120,30);
-    ctx.moveTo(-140,35);ctx.lineTo(-100,35);ctx.moveTo(-100,30);ctx.lineTo(-100,35);ctx.stroke();
-    ctx.fillStyle='rgba(59,130,246,0.25)';ctx.fillRect(-140,35,40,20);
-    ctx.fillStyle='#1e40af';ctx.font='14px sans-serif';ctx.textAlign='center';ctx.fillText(leftLabel,-120,50);
-    // Right pan
-    ctx.strokeStyle='#16a34a';ctx.lineWidth=2;
-    ctx.beginPath();ctx.moveTo(120,0);ctx.lineTo(120,30);
-    ctx.moveTo(100,35);ctx.lineTo(140,35);ctx.moveTo(140,30);ctx.lineTo(140,35);ctx.stroke();
-    ctx.fillStyle='rgba(34,197,94,0.25)';ctx.fillRect(100,35,40,20);
-    ctx.fillStyle='#166534';ctx.font='14px sans-serif';ctx.textAlign='center';ctx.fillText(rightLabel,120,50);
+    const w=canvas.width,h=canvas.height,cx=w/2,top=56;
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);
+    const tilt=Math.max(-10,Math.min(10,(leftVal-rightVal)*1.4));
+    ctx.strokeStyle='#cbd5e1';ctx.lineWidth=5;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(cx,top);ctx.lineTo(cx,h-24);ctx.moveTo(cx-44,h-24);ctx.lineTo(cx+44,h-24);ctx.stroke();
+    ctx.save();ctx.translate(cx,top);ctx.rotate(tilt*Math.PI/180);
+    ctx.strokeStyle='#64748b';ctx.lineWidth=6;
+    ctx.beginPath();ctx.moveTo(-Math.min(170,w*.34),0);ctx.lineTo(Math.min(170,w*.34),0);ctx.stroke();
+    drawPan(ctx,-Math.min(150,w*.3),leftLabel,'#3b82f6');
+    drawPan(ctx,Math.min(150,w*.3),rightLabel,'#16a34a');
     ctx.restore();
-    // Balance indicator
-    ctx.fillStyle='#64748b';ctx.font='13px sans-serif';ctx.textAlign='center';
-    ctx.fillText(leftVal===rightVal?'⚖️ 平衡！':leftVal>rightVal?'⬅ 左边重':'右边重 ➡',cx,h-14);
+    ctx.fillStyle='#1e293b';ctx.font='800 15px sans-serif';ctx.textAlign='center';
+    ctx.fillText(leftVal===rightVal?'平衡：两边相等':leftVal>rightVal?'左边更重：需要让两边相等':'右边更重：需要找到合适的 x',cx,h-8);
   }
-  draw();
+  function drawPan(ctx,x,label,color){
+    ctx.strokeStyle=color;ctx.lineWidth=2.5;
+    ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,44);ctx.moveTo(x-42,50);ctx.quadraticCurveTo(x,66,x+42,50);ctx.stroke();
+    ctx.fillStyle=color+'22';
+    ctx.beginPath();ctx.moveTo(x-42,50);ctx.quadraticCurveTo(x,76,x+42,50);ctx.lineTo(x+32,70);ctx.quadraticCurveTo(x,82,x-32,70);ctx.closePath();ctx.fill();
+    ctx.fillStyle=color;ctx.font='800 20px sans-serif';ctx.textAlign='center';
+    ctx.fillText(label,x,62);
+  }
 
   document.getElementById('bal-submit').addEventListener('click',()=>{
     const ans=document.getElementById('bal-ans').value.trim();
     const fb=document.getElementById('bal-fb');
     if(ans===String(target)){
+      leftVal=rightVal;draw();
       fb.className='feedback show success';fb.innerHTML='✅ 正确！天平平衡！';celebrate(fb);
       if(opts.onSolve)opts.onSolve(ans);
     }else{
       fb.className='feedback show error';fb.innerHTML='❌ 再想想，天平要平衡两边必须相等';}
   });
-  return {setValues:(l,r)=>{leftVal=l;rightVal=r;draw();}};
+  function resize(){
+    canvas.width=Math.max(280,Math.min(620,c.clientWidth-32||560));
+    canvas.height=230;
+    draw();
+  }
+  resize();
+  window.addEventListener('resize',resize);
+  return {setValues:(l,r)=>{leftVal=l;rightVal=r;draw();},draw};
 }
 
 // === 三视图积木投影 ===

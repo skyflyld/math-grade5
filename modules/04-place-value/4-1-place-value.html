@@ -60,6 +60,7 @@
     <span class="step-label">第 3 步 · 数轴看位置值</span>
     <h4>拖拽滑块：500 在哪一格？</h4>
     <div id="nl-placeholder"></div>
+    <div id="nl-placeholder-note" class="thought-bubble">500 和 500 之间相差 0</div>
   </div>
   <div class="concept-highlight">
     <div class="big-idea">
@@ -139,10 +140,20 @@ createGate({containerId:'gate-root',
 });
 
 // 数轴组件
-createNumberLine({containerId:'nl-placeholder',min:0,max:1000,initial:500,step:100,unit:'',onChange:v=>{
-  const p=document.getElementById('nl-placeholder').querySelector('div:last-child');
-  if(p)p.textContent='500 和 '+v+' 之间相差 '+Math.abs(500-v);
-}});
+createNumberLine({
+  containerId:'nl-placeholder',
+  title:'数轴看位置值',
+  description:'拖动游标，观察 500 与其他整百数之间差了几个百。',
+  min:0,
+  max:1000,
+  initial:500,
+  step:100,
+  unit:'',
+  onChange:v=>{
+    const p=document.getElementById('nl-placeholder-note');
+    if(p)p.textContent='500 和 '+v+' 之间相差 '+Math.abs(500-v);
+  }
+});
 
 // 数位拆解
 function updatePlaceValue(){

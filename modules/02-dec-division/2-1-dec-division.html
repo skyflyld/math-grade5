@@ -142,7 +142,17 @@ createGate({containerId:'gate-root',
   onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅ 好！</div>'
 });
 
-createNumberLine({containerId:'nl-dec-div',min:0,max:10,initial:4.8,step:1.2,unit:'',onChange:v=>{document.getElementById('dc-a').value=v;}});
+createNumberLine({
+  containerId:'nl-dec-div',
+  title:'数轴看被除数',
+  description:'拖动改变被除数，感受小数除法本质上是在数“有几个相同单位”。',
+  min:0,
+  max:10,
+  initial:4.8,
+  step:1.2,
+  unit:'',
+  onChange:v=>{document.getElementById('dc-a').value=v;}
+});
 
 function checkDivision(){
   const a=parseFloat(document.getElementById('dc-a').value),b=parseFloat(document.getElementById('dc-b').value);

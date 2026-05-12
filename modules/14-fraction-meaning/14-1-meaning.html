@@ -84,6 +84,11 @@
 </div>
 
 <div class="section">
+  <div class="section-header"><span class="emoji">▰</span>数学操作台 · 分数条</div>
+  <div id="fraction-bar-model"></div>
+</div>
+
+<div class="section">
   <div class="section-header"><span class="emoji">📐</span>教材原文</div>
   <div style="cursor:pointer;padding:14px 18px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);" onclick="this.querySelector('.annot').style.display==='none'?'block':'none'">
     📖 <b>教材：</b>"把单位'1'平均分成若干份，表示这样的一份或几份的数叫做分数。" <i>（点击看意图）</i>
@@ -174,6 +179,15 @@ createAreaModel({
   rows:3,
   highlightCols:2,
   highlightRows:2,
+  color:'#8b5cf6'
+});
+createFractionBar({
+  containerId:'fraction-bar-model',
+  title:'用分数条看部分与整体',
+  description:'拖动分子和分母，观察分母决定“平均分成几份”，分子决定“取其中几份”。',
+  numerator:2,
+  denominator:3,
+  maxDenominator:12,
   color:'#8b5cf6'
 });
 addHintButton('fraction-core-hint','先问“单位1是谁”，再问“平均分成几份”。如果单位1变了，同一个分数对应的具体数量也会变。','抓住单位1');
