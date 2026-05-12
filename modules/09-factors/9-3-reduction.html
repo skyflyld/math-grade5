@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>约分 · 五年级</title>
+<link rel="stylesheet" href="../../shared/layout.css">
+<style>.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;}.visual-step h4{font-size:17px;margin-bottom:12px;}.visual-step .step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:700;background:var(--accent-light);color:var(--accent-deep);margin-bottom:10px;}.concept-highlight{background:linear-gradient(145deg,#fefce8,#fff);border:2px solid #fde68a;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}.concept-highlight .big-idea{font-size:22px;font-weight:800;color:#92400e;line-height:1.6;}.concept-highlight .big-idea .highlight{color:var(--accent-deep);background:var(--accent-light);padding:2px 8px;border-radius:4px;}.thought-bubble{display:inline-block;background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:10px 16px;margin:6px 0;font-size:14px;max-width:90%;}.thought-bubble::before{content:'💭 ';}</style>
+</head><body data-concept="约分,分数的基本性质,因数和倍数">
+<div class="top-nav"><a href="../../index.html#%E7%BA%A6%E5%88%86">🏠</a><span class="breadcrumb-sep">›</span><span>约分</span></div>
+<h1 class="module-title">🧹 约分 — 清扫公因数</h1>
+<p class="module-subtitle">把分子分母共同的因数清扫掉，变成最简形式，值不变。</p>
+<div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
+<div class="section">
+  <div class="section-header"><span class="emoji">🧱</span>拆到公理</div>
+  <div class="visual-step"><span class="step-label">第 1 步</span><h4>6/8和3/4一样大</h4>
+  <div style="display:flex;gap:16px;justify-content:center;margin:8px 0;">
+    <div style="text-align:center;"><div style="width:120px;height:24px;display:flex;border:2px solid #333;border-radius:4px;"><div style="width:75%;background:#3b82f6;"></div><div style="width:25%;background:#e5e7eb;"></div></div><span style="font-size:12px;">6/8 = 3/4</span></div>
+  </div>
+  <div class="thought-bubble">6/8的分子分母同时÷2=3/4。值不变，形式更简洁。</div></div>
+  <div class="visual-step"><span class="step-label">第 2 步</span><h4>找最大公因数(GCD)</h4>
+  <div style="padding:12px;background:#f0fdf4;border:2px solid #86efac;border-radius:8px;text-align:center;font-size:18px;">
+    12/18 → 12和18的gcd=6 → 12÷6/18÷6 = 2/3</div>
+  <div class="thought-bubble">也可以分步：12/18→÷2=6/9→÷3=2/3。效果一样。</div></div>
+  <div class="concept-highlight"><div class="big-idea">🔑 <span class="highlight">约分 = 用公因数消去分子分母的共同因子</span></div><p>约分不改变分数的大小——只是换了一种更简洁的表达。</p></div>
+</div>
+<div class="section"><div class="section-header"><span class="emoji">🎮</span>交互</div>
+  <div class="interactive-area" style="text-align:center;">
+    约分：<input id="gcd-a" class="input-field" type="number" value="12" style="width:50px;">/<input id="gcd-b" class="input-field" type="number" value="18" style="width:50px;">
+    <button class="btn btn-primary btn-sm" onclick="simplify()">约分</button>
+    <div id="gcd-result" style="margin-top:8px;font-size:20px;font-weight:800;"></div>
+  </div>
+</div>
+<div class="section"><div class="section-header"><span class="emoji">📐</span>教材原文</div>
+  <div style="cursor:pointer;padding:14px 18px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);" onclick="const a=this.querySelector('.annot');a.style.display=a.style.display==='none'?'block':'none'">
+    📖 <b>教材：</b>"把一个分数化成和它相等但分子分母都比较小的分数，叫做约分。" <i>（点击）</i></div></div>
+<div class="section"><div class="section-header"><span class="emoji">🎯</span>典例精讲</div>
+  <div class="visual-step"><h4>🎯 12/18→÷6=2/3</h4>✏️ 8/12约分→<input class="input-field" id="ex1" style="width:60px;"><button class="btn btn-primary btn-sm" onclick="checkE(1,'2/3',ex1,fb1)">提交</button><div class="feedback" id="fb1"></div></div>
+  <div class="visual-step"><h4>🎯 21/35→÷7=3/5</h4>✏️ 15/25→<input class="input-field" id="ex2" style="width:60px;"><button class="btn btn-primary btn-sm" onclick="checkE(2,'3/5',ex2,fb2)">提交</button><div class="feedback" id="fb2"></div></div>
+</div>
+<div class="section"><div class="section-header"><span class="emoji">⚠️</span>踩坑</div>
+  <div class="pitfall"><div class="pitfall-title">🕳️ 约分不彻底</div><p><b>症状：</b>12/18→6/9就停（还能÷3→2/3）</p><p><b>根因：</b>不知道要找最大公因数，或者没检查分子分母是否还有公因数。</p></div></div>
+<div class="section"><div class="section-header"><span class="emoji">⚡</span>对抗挑战</div><div id="adversary-root"></div></div>
+<div class="section"><div class="section-header"><span class="emoji">🦜</span>费曼输出</div><div id="feynman-root"></div></div>
+<div class="section"><div class="section-header"><span class="emoji">📝</span>练习</div>
+  <div class="exercise-tier"><h3><span class="tier-badge basic">基础</span></h3><div id="ex-basic"></div></div>
+  <div class="exercise-tier" id="tier-adv" style="display:none;"><h3><span class="tier-badge advanced">提升</span></h3><div id="ex-adv"></div></div>
+  <div id="done" style="display:none;text-align:center;padding:24px;font-size:24px;">🎉 约分 — 通关！</div></div>
+<script src="../../shared/concepts.js"></script><script src="../../shared/concept-sync.js"></script><script src="../../shared/components.js"></script>
+<script>
+createGate({containerId:'gate-root',questions:[{label:'6/8和3/4谁大？',inputs:[{key:'a',width:40}],check:u=>u.a==='一样'||u.a==='相同'||u.a==='相等'}],onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅</div>'});
+function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){[a,b]=[b,a%b];}return a;}
+function simplify(){const a=parseInt(document.getElementById('gcd-a').value),b=parseInt(document.getElementById('gcd-b').value);if(!b)return;const g=gcd(a,b),el=document.getElementById('gcd-result');el.textContent=`${a}/${b} = ${a/g}/${b/g}（gcd=${g}）`;el.style.color= g>1?'var(--success)':'var(--text)';}
+function checkE(n,ans,input,fb){const ok=input.value.trim()===ans;fb.className='feedback show '+(ok?'success':'error');fb.innerHTML=ok?'✅ 正确！':`❌ 答案是 ${ans}`;}
+createAdversarialChallenge({containerId:'adversary-root',challenges:[
+  {tag:'值的守恒',statement:'约分后分数变小了。',answer:'refute',hint:'6/8约成3/4，两块蛋糕和一盘蛋糕的关系？',explanation:'值的角度：6÷8=0.75=3÷4。值没变，只是分子分母变小。',counterexample:'6/8=0.75，3/4=0.75，完全相等。'}
+],onComplete:()=>saveProgress({'fractions':{'reduction':{'adversary':'complete'}}})});
+createFeynmanFill({containerId:'feynman-root',template:'约分就是利用___的基本性质，把分子分母同时除以它们的___。约分后大小___(变/不变)。最简分数是指分子分母的___。',answer:['分数','公因数','不变','公因数只有1'],onComplete:()=>saveProgress({'fractions':{'reduction':{'feynman':'complete'}}})});
+createExerciseSet({containerId:'ex-basic',exercises:[
+  {question:'6/8 约分→',inputs:[{key:'a',width:40}],check:a=>a.a==='3/4',hint:'÷2'},
+  {question:'9/12 约分→',inputs:[{key:'a',width:40}],check:a=>a.a==='3/4',hint:'÷3'},
+  {question:'16/24 约分→',inputs:[{key:'a',width:40}],check:a=>a.a==='2/3'}
+],passThreshold:0.67,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}});
+function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[
+  {question:'30/45约分→',inputs:[{key:'a',width:40}],check:a=>a.a==='2/3',hint:'÷15'},
+  {question:'56/64约分→',inputs:[{key:'a',width:40}],check:a=>a.a==='7/8',hint:'÷8'}
+],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'fractions':{'reduction':{'completed':true}}});}});}
+</script>
+</body>
+</html>

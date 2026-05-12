@@ -110,7 +110,14 @@ const lessonByConcept = {
   '体积和体积单位':{href:withHash('modules/07-volume/7-1-volume-units.html','体积和体积单位'),label:'进入体积课件',meta:'立方计数'},
   '长方体和正方体':{href:withHash('modules/07-volume/7-2-cuboid.html','长方体和正方体'),label:'进入长方体课件',meta:'表面积'},
   '因数和倍数':{href:withHash('modules/09-factors/9-1-factors-multiples.html','因数和倍数'),label:'进入因数课件',meta:'整除关系'},
-  '质数与合数':{href:withHash('modules/09-factors/9-2-prime-composite.html','质数与合数'),label:'进入质数课件',meta:'数字原子'}
+  '质数与合数':{href:withHash('modules/09-factors/9-2-prime-composite.html','质数与合数'),label:'进入质数课件',meta:'数字原子'},
+  '小数的意义':{href:withHash('modules/04-place-value/4-2-dec-meaning.html','小数的意义'),label:'进入小数意义课件',meta:'位置值延伸'},
+  '真分数和假分数':{href:withHash('modules/14-fraction-meaning/14-4-proper-improper.html','真分数和假分数'),label:'进入真/假分数课件',meta:'真假分界'},
+  '约分':{href:withHash('modules/09-factors/9-3-reduction.html','约分'),label:'进入约分课件',meta:'清扫公因数'},
+  '通分':{href:withHash('modules/09-factors/9-4-common-denominator.html','通分'),label:'进入通分课件',meta:'统一单位'},
+  '分数加减法':{href:withHash('modules/10-fraction-ops/10-1-fraction-add-sub.html','分数加减法'),label:'进入分数加减课件',meta:'同单位相加'},
+  '长方体体积':{href:withHash('modules/07-volume/7-3-volume-formula.html','长方体体积'),label:'进入体积公式课件',meta:'底面积×高'},
+  '循环小数':{href:withHash('modules/02-dec-division/2-2-recurring-decimals.html','循环小数'),label:'进入循环小数课件',meta:'除不尽'}
 };
 
 const conceptNames = Array.from(new Set([
