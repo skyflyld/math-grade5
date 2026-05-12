@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>五年级数学 · 概念星图</title>
 <script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="shared/concepts.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -88,6 +89,13 @@ line.edge.hovered{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
 .detail-panel .lesson-link:hover{filter:brightness(1.03);transform:translateY(-1px)}
 .detail-panel .lesson-link span{font-size:.76em;font-weight:700;opacity:.9}
 .detail-panel .lesson-note{margin-top:8px;padding:8px 10px;border-radius:10px;background:#fff8e8;color:#8a5a00;font-size:.76em;line-height:1.45}
+.detail-panel .lesson-note b{display:block;margin-bottom:5px;color:#704300}
+.detail-panel .lesson-note .priority-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:3px}
+.detail-panel .priority-pill{display:inline-flex;align-items:center;padding:2px 7px;border-radius:999px;background:#fff;color:#8a5a00;border:1px solid rgba(245,164,0,.35);font-weight:800}
+.detail-panel .priority-pill.high{background:#fef3c7;color:#92400e}
+.detail-panel .priority-pill.mid{background:#e0f2fe;color:#075985}
+.detail-panel .priority-pill.low{background:#f1f5f9;color:#475569}
+.detail-panel .lesson-note small{display:block;margin-top:4px;color:#9a6a12;line-height:1.45}
 .detail-panel .focus-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
 .detail-panel .focus-stat{padding:8px;border:1px solid var(--border);border-radius:10px;background:#fff;font-size:.78em}
 .detail-panel .focus-stat strong{display:block;font-size:1.2em;color:#1f2937}
@@ -301,7 +309,13 @@ const VISUAL_METAPHORS = {
   '折线统计图':['📈','把一串数据点连起来，看趋势怎样升降','趋势山脊'],
   '找次品':['⚖️','用天平每次把可能性切成几组，最快缩小范围','策略分组']
 };
+const CONCEPT_LIBRARY = window.MathGrade5Concepts || {};
+Object.assign(EXPERIENCE_IMAGES, CONCEPT_LIBRARY.images || {});
+Object.assign(COURSEWARE_LINKS, CONCEPT_LIBRARY.lessons || {});
+Object.assign(VISUAL_METAPHORS, CONCEPT_LIBRARY.visuals || {});
 function visualFor(node){
+  const shared = CONCEPT_LIBRARY.get?.(node.name);
+  if(shared)return {icon:shared.icon,metaphor:shared.metaphor,label:shared.label,image:shared.image};
   const meta = VISUAL_METAPHORS[node.name] || ['✨','把抽象概念变成一个可观察的数学物件','可视化模型'];
   return {icon:meta[0],metaphor:meta[1],label:meta[2],image:EXPERIENCE_IMAGES[node.name]};
 }
@@ -330,6 +344,47 @@ function passesEdgeFilter(e){
 }
 function edgeTouches(e,id){
   return e.from===id || e.to===id;
+}
+function rankScores(rows){
+  const sorted = [...rows].sort((a,b)=>b.score-a.score || a.name.localeCompare(b.name,'zh-CN'));
+  return Object.fromEntries(sorted.map((row,index)=>[row.id,index+1]));
+}
+const directDegree = Object.fromEntries(nodes.map(n=>[
+  n.id,
+  edges.filter(e=>edgeTouches(e,n.id)).length
+]));
+const prerequisiteCount = Object.fromEntries(nodes.map(n=>[
+  n.id,
+  edges.filter(e=>e.to===n.id).length
+]));
+const successorCount = Object.fromEntries(nodes.map(n=>[
+  n.id,
+  edges.filter(e=>e.from===n.id).length
+]));
+const degreeRank = rankScores(nodes.map(n=>({id:n.id,name:n.name,score:directDegree[n.id]||0})));
+const misconceptionRiskScore = Object.fromEntries(nodes.map(n=>{
+  const prereq = prerequisiteCount[n.id] || 0;
+  const next = successorCount[n.id] || 0;
+  const bridge = Math.min(directDegree[n.id] || 0,4) * 0.35;
+  return [n.id,Number((n.difficulty*2 + prereq*1.15 + next*1.25 + bridge).toFixed(2))];
+}));
+const riskRank = rankScores(nodes.map(n=>({id:n.id,name:n.name,score:misconceptionRiskScore[n.id]})));
+function lessonPriorityFor(d){
+  const degree = degreeRank[d.id] || nodes.length;
+  const risk = riskRank[d.id] || nodes.length;
+  const best = Math.min(degree,risk);
+  if(best <= 10)return {label:'高',key:'high'};
+  if(best <= 22)return {label:'中',key:'mid'};
+  return {label:'低',key:'low'};
+}
+function lessonPlanFor(d){
+  const priority = lessonPriorityFor(d);
+  return {
+    priority,
+    degreeRank:degreeRank[d.id] || nodes.length,
+    riskRank:riskRank[d.id] || nodes.length,
+    riskScore:misconceptionRiskScore[d.id] || 0
+  };
 }
 
 // Initialize D3
@@ -486,7 +541,13 @@ function showCard(d){
   if(lesson){
     html += `<a class="lesson-link" href="${lesson.href}">${lesson.label}<span>${lesson.meta} →</span></a>`;
   }else{
-    html += `<div class="lesson-note">当前节点先用于全局关系探索；深度课件会优先补齐高连接度和高误区概念。</div>`;
+    const plan = lessonPlanFor(d);
+    html += `<div class="lesson-note">
+      <b>深度课件排期</b>
+      <div class="priority-row"><span class="priority-pill ${plan.priority.key}">${plan.priority.label}优先级</span><span>连接度排名 第 ${plan.degreeRank}/${nodes.length}</span></div>
+      <div>误区风险排名 第 ${plan.riskRank}/${nodes.length} · 风险评分 ${plan.riskScore}</div>
+      <small>误区风险由概念难度、前置依赖、后继概念和图谱连接度推算；接入真实错因数据后再替换为频率排名。</small>
+    </div>`;
   }
   html += `<div class="focus-summary">
     <div class="focus-stat"><strong>${relatedConcepts.length}</strong>个相关概念</div>
