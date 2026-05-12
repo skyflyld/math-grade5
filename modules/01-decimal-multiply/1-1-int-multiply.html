@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小数×整数 · 深入概念 · 五年级</title>
+<link rel="stylesheet" href="../../shared/layout.css">
+<style>
+.visual-step {
+  background: linear-gradient(145deg, #f8fafc, #fff);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin: 16px 0;
+  transition: all 0.3s;
+}
+.visual-step h4 {
+  font-size: 17px;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+.visual-step .step-label {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--accent-light);
+  color: var(--accent-deep);
+  margin-bottom: 10px;
+}
+.concept-highlight {
+  background: linear-gradient(145deg, #fefce8, #fff);
+  border: 2px solid #fde68a;
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin: 16px 0;
+  text-align: center;
+}
+.concept-highlight .big-idea {
+  font-size: 22px;
+  font-weight: 800;
+  color: #92400e;
+  line-height: 1.6;
+}
+.concept-highlight .big-idea .highlight {
+  color: var(--accent-deep);
+  background: var(--accent-light);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.thought-bubble {
+  display: inline-block;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 16px;
+  margin: 6px 0;
+  font-size: 14px;
+  position: relative;
+  max-width: 80%;
+}
+.thought-bubble::before {
+  content: '💭 ';
+}
+</style>
+</head>
+<body>
+<div class="top-nav"><a href="../../index.html#%E5%B0%8F%E6%95%B0%E4%B9%98%E6%B3%95">🏠</a><span class="breadcrumb-sep">›</span><a href="index.html">小数乘法</a><span class="breadcrumb-sep">›</span><span>小数×整数</span></div>
+<h1 class="module-title">🧮 小数 × 整数</h1>
+<p class="module-subtitle">3×4 = 12，3×0.4 = ? —— 乘法的本质，没有变过</p>
+
+<!-- ===== 门控 ===== -->
+<div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
+
+<!-- ===== 概念讲解 ===== -->
+<div class="section">
+  <div class="section-header"><span class="emoji">🧱</span>拆到公理 · 视觉解构</div>
+  <p style="color:var(--text-muted);margin-bottom:16px;font-size:14px;">跟着下面的步骤，一步步理解 3 × 0.4 到底是什么意思。</p>
+
+  <!-- 第一步：回顾整数乘法 -->
+  <div class="visual-step" id="step1">
+    <span class="step-label">第 1 步 · 你已经会的</span>
+    <h4>3 × 4 = ？</h4>
+    <div style="display:flex;gap:6px;margin:12px 0;justify-content:center;">
+      <div style="width:30px;height:30px;background:#3b82f6;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;">1</div>
+      <div style="width:30px;height:30px;background:#3b82f6;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;">2</div>
+      <div style="width:30px;height:30px;background:#3b82f6;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;">3</div>
+      <div style="width:30px;height:30px;background:#3b82f6;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;">4</div>
+    </div>
+    <div class="thought-bubble">3 × 4 = <strong>3个4相加</strong> = 4 + 4 + 4 = <strong style="color:var(--accent);">12</strong></div>
+    <div style="margin-top:10px;font-size:14px;color:var(--text-muted);">✅ 你已经知道了：乘法的本质是 <strong>重复加法</strong>。</div>
+  </div>
+
+  <!-- 第二步：引入小数 -->
+  <div class="visual-step" id="step2">
+    <span class="step-label">第 2 步 · 一样的道理</span>
+    <h4>3 × 0.4 = ？</h4>
+    <p style="font-size:14px;color:var(--text-muted);margin-bottom:10px;">规则不变：<strong>3 × 0.4 = 3个0.4相加</strong></p>
+    <div style="display:flex;gap:6px;margin:12px 0;justify-content:center;flex-wrap:wrap;">
+      <div style="width:70px;height:30px;background:#3b82f6;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;">0.4</div>
+      <div style="display:flex;align-items:center;font-size:20px;font-weight:700;color:var(--accent);">+</div>
+      <div style="width:70px;height:30px;background:#3b82f6;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;">0.4</div>
+      <div style="display:flex;align-items:center;font-size:20px;font-weight:700;color:var(--accent);">+</div>
+      <div style="width:70px;height:30px;background:#3b82f6;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;">0.4</div>
+    </div>
+    <div class="thought-bubble">= 0.4 + 0.4 + 0.4 = <strong style="color:var(--accent);">1.2</strong></div>
+    <div style="margin-top:10px;font-size:14px;color:var(--text-muted);">🤔 但等等——有没有更聪明的方法？</div>
+  </div>
+
+  <!-- 第三步：核心洞察 -->
+  <div class="concept-highlight">
+    <div class="big-idea">
+      🔑 关键洞察：把 <span class="highlight">0.4</span> 想成 <span class="highlight">4 × 0.1</span>
+    </div>
+    <p style="margin-top:12px;font-size:16px;line-height:1.8;">
+      3 × 0.4 = 3 × <strong>4个0.1</strong><br>
+      = (3 × 4) 个 0.1<br>
+      = <strong>12</strong> 个 0.1<br>
+      = <strong>1.2</strong>
+    </p>
+  </div>
+
+  <!-- 第四步：数轴可视化 -->
+  <div class="visual-step" style="text-align:center;">
+    <span class="step-label">第 3 步 · 在数轴上看</span>
+    <h4>从0开始，跳3次，每次跳0.4</h4>
+    <canvas id="numberline-concept" style="margin:12px auto;"></canvas>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px;">
+      <button class="btn btn-outline btn-sm" onclick="animateNumberLine()">▶ 播放动画</button>
+      <span style="font-size:13px;color:var(--text-muted);padding:6px 0;">点击按钮，看跳跃过程</span>
+    </div>
+  </div>
+
+  <!-- 总结公理 -->
+  <div class="axiom-box" style="margin-top:16px;">
+    小数 × 整数 = 整数 × 整数，再调整小数点<br>
+    —— 关键在于：<span style="color:#93c5fd;">把小数拆成"整数×单位"</span>
+  </div>
+</div>
+
+<!-- ===== 交互实验室 ===== -->
+<div class="section">
+  <div class="section-header"><span class="emoji">🎮</span>交互实验室 · 自己试试</div>
+  <p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">拖动滑块或输入数字，观察小数乘法在不同数上的表现。</p>
+  <div class="interactive-area" style="background:linear-gradient(145deg,#f0f7ff,#faf5ff);">
+    <div style="font-size:18px;margin-bottom:16px;">
+      <span style="font-weight:700;">计算：</span>
+      <input type="range" id="int-slider" min="1" max="9" value="3" oninput="updateDemo()" style="width:120px;vertical-align:middle;">
+      <span id="int-val" style="font-weight:700;">3</span>
+      ×
+      <span style="color:var(--accent);font-weight:700;">0.</span>
+      <input type="range" id="dec-slider" min="1" max="9" value="4" oninput="updateDemo()" style="width:120px;vertical-align:middle;">
+      <span id="dec-val" style="color:var(--accent);font-weight:700;">4</span>
+      =
+      <span id="result-val" style="font-size:24px;font-weight:800;color:var(--accent-deep);">1.2</span>
+    </div>
+    <canvas id="demo-canvas" style="margin:0 auto;"></canvas>
+    <div style="margin-top:12px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <div style="padding:6px 14px;background:#f8fafc;border-radius:8px;font-size:13px;">
+        🧱 拆解：3 × 0.4 = 3 × <span style="color:var(--accent);font-weight:700;">4</span>个0.1 = <span style="color:var(--accent);font-weight:700;">12</span>个0.1 = <span id="breakdown-result" style="font-weight:700;">1.2</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 教材溯源 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">📐</span>教材原文</div>
+  <div style="cursor:pointer;padding:14px 18px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);" onclick="this.querySelector('.annot').style.display=this.querySelector('.annot').style.display==='none'?'block':'none'">
+    📖 <b>教材说：</b>"3.5 × 3 = 10.5。可以把3.5元看成35角，35角×3=105角=10.5元。" <i style="color:var(--text-muted);font-size:13px;">（点击看意图解析）</i>
+    <div class="annot" style="display:none;margin-top:10px;padding:10px 14px;background:#f0fdf4;border-radius:6px;font-size:14px;line-height:1.7;">
+      ✏️ 教材用的是 <strong>"单位转换法"</strong>：3.5元 = 35角（换成更小的单位），算完再换回来。这和"把0.4看成4个0.1"是同一个道理。<br><br>
+      教材不直接教"移动小数点"，而是教 <strong>"换成整数算，再换回来"</strong>——这是小数乘法的本质思想。
+    </div>
+  </div>
+</div>
+
+<!-- 典例精讲 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">🎯</span>典例精讲</div>
+  <div class="visual-step">
+    <h4>🎯 例1：0.7 × 6 = ？</h4>
+    <div style="display:flex;gap:6px;margin:12px 0;justify-content:center;flex-wrap:wrap;">
+      <div style="width:60px;height:28px;background:#8b5cf6;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12px;">0.7</div>
+      <div style="display:flex;align-items:center;font-size:18px;color:var(--purple);">×6</div>
+      <div style="width:60px;height:28px;background:#8b5cf6;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12px;">0.7</div>
+      <div style="display:flex;align-items:center;font-size:18px;color:var(--purple);">×6</div>
+      ...（共6组）
+    </div>
+    <div class="thought-bubble">0.7 = 7个0.1 → 6×0.7 = 6×7个0.1 = 42个0.1 = <strong>4.2</strong></div>
+    <div style="margin-top:10px;">
+      <p style="font-weight:600;">✏️ 自测：0.9 × 5 = <input class="input-field" id="ex1" style="width:60px;"> <button class="btn btn-primary btn-sm" onclick="checkEx1()">提交</button></p>
+      <div class="feedback" id="fb1"></div>
+    </div>
+  </div>
+  <div class="visual-step" style="margin-top:12px;">
+    <h4>🎯 例2：2.05 × 4 = ？</h4>
+    <div class="thought-bubble">2.05 = 2 + 0.05 = 200个0.01 + 5个0.01 = 205个0.01<br>→ 4 × 205个0.01 = 820个0.01 = <strong>8.20</strong></div>
+    <div class="tag tag-blue" style="margin-top:8px;">💡 先把小数拆成整数部分+小数部分，分别算再合并</div>
+    <div style="margin-top:10px;">
+      <p style="font-weight:600;">✏️ 自测：1.25 × 6 = <input class="input-field" id="ex2" style="width:60px;"> <button class="btn btn-primary btn-sm" onclick="checkEx2()">提交</button></p>
+      <div class="feedback" id="fb2"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 踩坑 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">⚠️</span>踩坑预警 · 常见误解</div>
+  <div class="pitfall">
+    <div class="pitfall-title">🕳️ 坑：忘了小数点——3×0.4=12？</div>
+    <p><b>症状：</b>3×4=12，所以3×0.4=12。</p>
+    <p><b>根因：</b>没真正理解小数和整数的区别。3×4中计数单位是"1"，3×0.4中计数单位是"0.1"。数字相同，单位不同，结果就不同。</p>
+    <div class="pitfall-chain">🔗 <b>炸雷链：</b>这个概念不清 → 小数×小数直接复制位数 → 带小数除法定位失误 → 应用题全错</div>
+    <p style="margin-top:10px;"><b>🔍 自查法：</b>问自己"这个算式的计数单位是什么？"找到单位，答案就有了。</p>
+  </div>
+  <div class="pitfall">
+    <div class="pitfall-title">🕳️ 坑：小数乘法结果是"越乘越小"——不合理？</div>
+    <p><b>症状：</b>3×0.4=1.2，比3小？乘法不是越乘越大吗？</p>
+    <p><b>根因：</b>混淆了"乘法的结果"和"加法的结果"。3×0.4是"3个0.4相加"，当然比3个1相加小——因为"加的数"本身小了。</p>
+    <p><b>💡 关键：</b>乘法的大小取决于你"加了多少个什么"。加的数小于1，结果就会比被乘数小。</p>
+  </div>
+</div>
+
+<!-- 对抗挑战 -->
+<div class="section">
+  <div class="section-header"><img class="avatar-icon" src="../../assets/portraits/einstein-avatar.png" alt="" aria-hidden="true">对抗挑战</div>
+  <div id="adversary-root"></div>
+</div>
+
+<!-- 费曼 -->
+<div class="section">
+  <div class="section-header"><img class="avatar-icon" src="../../assets/portraits/feynman-avatar.png" alt="" aria-hidden="true">费曼输出 · 教给小明</div>
+  <p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">假装你正在教三年级的小明。用他的话，解释给他听。</p>
+  <div style="background:linear-gradient(145deg,#f0fdf4,#fff);border:2px solid #86efac;border-radius:var(--radius);padding:24px;">
+    <div style="font-size:14px;color:var(--text-muted);margin-bottom:12px;background:#f8fafc;padding:10px 14px;border-radius:8px;">
+      💬 小明说："老师说 3×0.4 = 1.2。可是 3×4=12 啊。为什么 3×0.4 比 3×4 小这么多？而且0.4不是还有4吗？"
+    </div>
+    <div id="feynman-root"></div>
+  </div>
+</div>
+
+<!-- 分层练习 -->
+<div class="section">
+  <div class="section-header"><span class="emoji">📝</span>分层练习</div>
+  <div class="exercise-tier"><h3><span class="tier-badge basic">基础</span></h3><div id="ex-basic"></div></div>
+  <div class="exercise-tier" id="tier-adv" style="display:none;"><h3><span class="tier-badge advanced">提升</span></h3><div id="ex-adv"></div></div>
+  <div id="done" style="display:none;text-align:center;padding:24px;">
+    <div style="font-size:48px;">🎉</div>
+    <p style="font-size:18px;font-weight:700;margin-bottom:4px;">小数×整数 — 通关！</p>
+    <p style="color:var(--text-muted);">你已经能用自己的话解释小数乘法的本质了。</p>
+  </div>
+</div>
+
+<script src="../../shared/components.js"></script>
+<script>
+// ===== 门控 =====
+createGate({containerId:'gate-root',
+  questions:[
+    {label:'3 × 4 = ？',inputs:[{key:'a',width:40}],answer:'12',check:u=>u.a==='12'},
+    {label:'0.4 + 0.4 + 0.4 = ？',inputs:[{key:'a',width:40}],answer:'1.2',check:u=>u.a==='1.2'}
+  ],
+  onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅ 基础扎实！开始学习</div>'
+});
+
+// ===== 数轴动画 =====
+const nlc=document.getElementById('numberline-concept');
+nlc.width=Math.min(500,nlc.parentElement.clientWidth-40);
+nlc.height=100;
+const nlx=nlc.getContext('2d');
+let nlAnimFrame=0;
+
+function drawNumberLine(frame){
+  const w=nlc.width,h=nlc.height;
+  const pad=30,right=w-pad;
+  nlx.clearRect(0,0,w,h);
+  // 轴线
+  nlx.beginPath();nlx.moveTo(pad,50);nlx.lineTo(right,50);
+  nlx.strokeStyle='#94a3b8';nlx.lineWidth=2;nlx.stroke();
+  // 刻度
+  for(let i=0;i<=12;i+=3){
+    const x=pad+i*(right-pad)/12;
+    nlx.beginPath();nlx.moveTo(x,45);nlx.lineTo(x,55);nlx.stroke();
+    nlx.fillStyle='#64748b';nlx.font='12px sans-serif';nlx.textAlign='center';
+    nlx.fillText((i/10).toFixed(1),x,72);
+  }
+  // 跳跃动画
+  const steps=3;
+  const jumpLen=(right-pad)/12*4;
+  for(let s=0;s<steps;s++){
+    const visible=frame>s*10;
+    if(!visible)continue;
+    const progress=Math.min((frame-s*10)/10,1);
+    const x1=pad+s*jumpLen;
+    const x2=pad+s*jumpLen+jumpLen*progress;
+    // 弧线
+    nlx.beginPath();nlx.moveTo(x1,50);
+    const cx=(x1+x2)/2-20,cy=30;
+    nlx.quadraticCurveTo(cx,cy,x2,50);
+    nlx.strokeStyle='#3b82f6';nlx.lineWidth=2.5;nlx.stroke();
+    // 箭头
+    const ars=8;
+    nlx.beginPath();nlx.moveTo(x2-ars,45);nlx.lineTo(x2,50);nlx.lineTo(x2-ars,55);nlx.stroke();
+    // 标签
+    nlx.fillStyle='#3b82f6';nlx.font='11px sans-serif';nlx.textAlign='center';
+    nlx.fillText('0.4',cx,28);
+  }
+  // 终点标记
+  const end=3*jumpLen;
+  nlx.beginPath();nlx.arc(pad+end,50,4,0,Math.PI*2);
+  nlx.fillStyle='#ef4444';nlx.fill();
+  nlx.fillStyle='#ef4444';nlx.font='bold 13px sans-serif';
+  nlx.fillText('1.2',pad+end,92);
+}
+
+function animateNumberLine(){
+  nlAnimFrame=0;
+  const interval=setInterval(()=>{
+    nlAnimFrame++;
+    drawNumberLine(nlAnimFrame);
+    if(nlAnimFrame>30){clearInterval(interval);drawNumberLine(30);}
+  },50);
+}
+drawNumberLine(0);
+
+// ===== 交互实验室 =====
+const dc=document.getElementById('demo-canvas');
+dc.width=Math.min(500,dc.parentElement.clientWidth-40);
+dc.height=120;
+const dctx=dc.getContext('2d');
+
+function updateDemo(){
+  const i=parseInt(document.getElementById('int-slider').value);
+  const d=parseInt(document.getElementById('dec-slider').value);
+  document.getElementById('int-val').textContent=i;
+  document.getElementById('dec-val').textContent=d;
+  const result=i*d/10;
+  document.getElementById('result-val').textContent=result;
+  document.getElementById('breakdown-result').textContent=result;
+
+  dctx.clearRect(0,0,dc.width,dc.height);
+  const barW=Math.min(40,(dc.width-40)/Math.max(i,1));
+  const decUnit=d/10;
+  // 每个"组"用不同颜色
+  const colors=['#3b82f6','#8b5cf6','#f59e0b','#ef4444','#16a34a','#ec4899','#6366f1','#14b8a6','#f97316'];
+  for(let g=0;g<i;g++){
+    const color=colors[g%colors.length];
+    // 0.1小格
+    for(let u=0;u<d;u++){
+      const x=20+g*(barW+4)+u*(barW/d);
+      dctx.fillStyle=color;
+      dctx.fillRect(x,60,barW/d-1,30);
+    }
+    // 标签
+    dctx.fillStyle=color;dctx.font='11px sans-serif';dctx.textAlign='center';
+    dctx.fillText('0.'+d,20+g*(barW+4)+barW/2,52);
+  }
+  // 总标签
+  dctx.fillStyle='#1e293b';dctx.font='bold 13px sans-serif';dctx.textAlign='center';
+  const totalMsg=i+'个0.'+d+' = '+(i*d)+'个0.1 = '+result;
+  dctx.fillText(totalMsg,dc.width/2,110);
+}
+updateDemo();
+window.addEventListener('resize',()=>{
+  dc.width=Math.min(500,dc.parentElement.clientWidth-40);updateDemo();
+  nlc.width=Math.min(500,nlc.parentElement.clientWidth-40);drawNumberLine(nlAnimFrame>0?30:0);
+});
+
+// ===== 例题检查 =====
+function checkEx1(){
+  const v=document.getElementById('ex1').value,f=document.getElementById('fb1');
+  const ok=v==='4.5';f.className='feedback show '+(ok?'success':'error');
+  f.innerHTML=ok?'✅ 0.9×5=4.5 — 9个0.1×5=45个0.1=4.5':'❌ 0.9=9个0.1，9×5=45个0.1=4.5';
+}
+function checkEx2(){
+  const v=document.getElementById('ex2').value,f=document.getElementById('fb2');
+  const ok=v==='7.5';f.className='feedback show '+(ok?'success':'error');
+  f.innerHTML=ok?'✅ 1.25×6=7.5':'❌ 1.25=125个0.01，125×6=750个0.01=7.5';
+}
+
+// ===== 对抗挑战 =====
+createAdversarialChallenge({containerId:'adversary-root',
+  challenges:[
+    {tag:'乘法本质',statement:'0.4×3和0.4+0.4+0.4表达的是同一件事。',
+      answer:'agree',hint:'把乘法读成“几个几”。3个0.4相加是什么？',
+      explanation:'小数乘整数仍然是几个相同加数的和。3个0.4相加就是0.4×3。',
+      counterexample:'注意这里讨论的是“小数×整数”。到小数×小数时，还要加入“取一部分”的比例模型。'},
+    {tag:'大小直觉',statement:'乘法就是让数变大，所以3×0.4一定比3大。',
+      answer:'refute',hint:'先算出3个0.4是多少，再和3比较。',
+      explanation:'乘法不是一定变大。3×0.4表示3个0.4相加，结果是1.2。',
+      counterexample:'1.2小于3。因为每次加的是0.4，不是1。'}
+  ],
+  onComplete:()=>saveProgress({'decimal-multiply':{'int':{'adversary':'complete'}}})
+});
+
+// ===== 费曼 =====
+createFeynmanFill({containerId:'feynman-root',
+  template:'小明，3×0.4其实一点都不奇怪。你看：3×4=___，因为___。但这里是3×0.4，这里的"4"不是4个"___"，而是4个"___"。所以3×0.4 = 3×___个0.1 = ___个0.1 = ___。乘法没变，变的是___。',
+  answer:['12','3个4相加','1','0.1','4','12','1.2','计数单位'],
+  onComplete:()=>{
+    saveProgress({'decimal-multiply':{'int':{'feynman':'complete'}}});
+    document.querySelector('#feynman-root').innerHTML+='<div style="text-align:center;margin-top:16px;color:var(--success);font-weight:700;">🎉 你刚刚完成了一次费曼式教学！</div>';
+  }
+});
+
+// ===== 分层练习 =====
+createExerciseSet({containerId:'ex-basic',
+  exercises:[
+    {question:'0.6 × 5 = ？',inputs:[{key:'a',width:50}],answer:'3',hint:'0.6=6个0.1，6×5=30个0.1=3',check:a=>a.a==='3'},
+    {question:'2.3 × 4 = ？',inputs:[{key:'a',width:50}],answer:'9.2',hint:'2.3=23个0.1，23×4=92个0.1=9.2',check:a=>a.a==='9.2'},
+    {question:'4 × 0.25 = ？',inputs:[{key:'a',width:50}],answer:'1',hint:'0.25=25个0.01，4×25=100个0.01=1',check:a=>a.a==='1'}
+  ],
+  passThreshold:0.67,
+  onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}
+});
+function initAdv(){
+  createExerciseSet({containerId:'ex-adv',
+    exercises:[
+      {question:'0.75 × 8 = ？',inputs:[{key:'a',width:50}],answer:'6',hint:'0.75=75个0.01，75×8=600个0.01=6',check:a=>a.a==='6'},
+      {question:'一根绳子每段0.45米，剪成7段，一共多长？',inputs:[{key:'a',width:50}],answer:'3.15',hint:'0.45×7：0.45=45个0.01，45×7=315个0.01=3.15米',check:a=>a.a==='3.15'}
+    ],
+    passThreshold:0.5,
+    onPass:()=>{
+      document.getElementById('done').style.display='block';
+      celebrate(document.getElementById('done'));
+      saveProgress({'decimal-multiply':{'int':{'completed':true}}});
+    }
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>分数的基本性质 · 深入概念 · 五年级</title>
+<link rel="stylesheet" href="../../shared/layout.css">
+<style>
+.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;}
+.visual-step h4{font-size:17px;margin-bottom:12px;}
+.visual-step .step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:700;background:var(--accent-light);color:var(--accent-deep);margin-bottom:10px;}
+.concept-highlight{background:linear-gradient(145deg,#fefce8,#fff);border:2px solid #fde68a;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}
+.concept-highlight .big-idea{font-size:22px;font-weight:800;color:#92400e;line-height:1.6;}
+.concept-highlight .big-idea .highlight{color:var(--accent-deep);background:var(--accent-light);padding:2px 8px;border-radius:4px;}
+.thought-bubble{display:inline-block;background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:10px 16px;margin:6px 0;font-size:14px;max-width:90%;}
+.thought-bubble::before{content:'💭 ';}
+</style>
+</head>
+<body>
+<div class="top-nav"><a href="../../index.html#%E5%88%86%E6%95%B0%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%80%A7%E8%B4%A8">🏠</a><span class="breadcrumb-sep">›</span><a href="index.html">分数的意义和性质</a><span class="breadcrumb-sep">›</span><span>分数的基本性质</span></div>
+<h1 class="module-title">🌀 分数的基本性质</h1>
+<p class="module-subtitle">把对象切得更细还是更粗？只要整体不变，结果就相同。</p>
+
+<div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🧱</span>拆到公理 · 等价分数</div>
+  <div class="visual-step">
+    <span class="step-label">第 1 步 · 直觉</span>
+    <h4>1/2 = 2/4 = 3/6 = 4/8</h4>
+    <div class="thought-bubble">一块披萨切成2块取1块 = 切成4块取2块 = 还是那一块</div>
+  </div>
+
+  <div class="visual-step" style="text-align:center;">
+    <span class="step-label">第 2 步 · 可视化验证</span>
+    <h4>拖拽滑块，看看分数什么时候相等</h4>
+    <canvas id="eq-canvas" style="margin:0 auto;"></canvas>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:10px 0;">
+      <label>分子① <input type="range" id="num1" min="1" max="8" value="1" oninput="updateEquiv()"></label>
+      <label>分母① <input type="range" id="den1" min="2" max="8" value="2" oninput="updateEquiv()"></label>
+      <label>分母② <input type="range" id="den2" min="2" max="12" value="4" oninput="updateEquiv()"></label>
+    </div>
+    <div style="font-size:18px;">
+      <span id="frac1">1/2</span> <span id="eq-symbol" style="padding:0 12px;">❓</span> <span id="frac2">?/4</span>
+    </div>
+    <div id="eq-detail" style="font-size:14px;margin-top:8px;color:var(--text-muted);"></div>
+  </div>
+
+  <div class="concept-highlight">
+    <div class="big-idea">
+      🔑 <span class="highlight">分子分母同乘或同除以一个不为0的数，分数大小不变</span>
+    </div>
+    <p style="margin-top:12px;font-size:16px;">
+      因为这是同一个"整体"——只是切的份数变了。<br>
+      切得越细（分母越大），取的就越多（分子越大），比例不变。<br>
+      切4块取2块 = 切2块取1块 → <strong>2/4=1/2</strong><br>
+      反之亦然：切得越粗，取的就越少——但占的比例一样。
+    </p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🎮</span>交互 · 等价分数探索</div>
+  <div class="interactive-area" style="text-align:center;">
+    <div style="font-size:18px;margin-bottom:10px;">
+      <span id="explore-frac">1/2</span> = <span id="explore-result">2/4</span>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:center;">
+      <button class="btn btn-primary btn-sm" onclick="changeFrac(0)">⬅ 变宽</button>
+      <button class="btn btn-primary btn-sm" onclick="changeFrac(1)">变细 ➡</button>
+    </div>
+    <div id="explore-list" style="margin-top:8px;font-size:14px;color:var(--text-muted);"></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">📐</span>教材原文</div>
+  <div style="cursor:pointer;padding:14px 18px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);" onclick="this.querySelector('.annot').style.display==='none'?'block':'none'">
+    📖 <b>教材：</b>"分数的分子和分母同时乘或除以一个相同的数（0除外），分数的大小不变。" <i>（点击看意图）</i>
+    <div class="annot" style="display:none;margin-top:10px;padding:10px 14px;background:#f0fdf4;border-radius:6px;font-size:14px;line-height:1.7;">
+      ✏️ 这条性质几乎和"长方形面积=长×宽"一样重要。<br>
+      通分、约分、分数比较大小、分数加减——全依赖这条性质。<br>
+      "0除外"很重要：分子分母同除以0会崩溃。
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🎯</span>典例精讲</div>
+  <div class="visual-step">
+    <h4>🎯 例1：1/3 = 2/6 = 4/12</h4>
+    分子分母同×2：1×2/3×2=2/6<br>
+    ✏️ 1/3 = ?/9：<input class="input-field" id="ex1" style="width:40px;"> <button class="btn btn-primary btn-sm" onclick="checkEx1()">提交</button><div class="feedback" id="fb1"></div>
+  </div>
+  <div class="visual-step" style="margin-top:12px;">
+    <h4>🎯 例2：6/8 化简</h4>
+    分子分母同÷2：6÷2/8÷2=3/4<br>
+    ✏️ 4/10化简=<input class="input-field" id="ex2" style="width:50px;"> <button class="btn btn-primary btn-sm" onclick="checkEx2()">提交</button><div class="feedback" id="fb2"></div>
+  </div>
+  <div class="visual-step" style="margin-top:12px;">
+    <h4>🎯 例3：比较 2/3 和 3/4</h4>
+    通分：2/3=8/12, 3/4=9/12 → 8/12 < 9/12 → 2/3 < 3/4<br>
+    ✏️ 2/5 ? 3/7（填 > < 或 =）：<input class="input-field" id="ex3" style="width:40px;"> <button class="btn btn-primary btn-sm" onclick="checkEx3()">提交</button><div class="feedback" id="fb3"></div>
+  </div>
+</div>
+
+<!-- 对抗 -->
+<div class="section">
+  <div class="section-header"><img class="avatar-icon" src="../../assets/portraits/einstein-avatar.png" alt="">对抗挑战</div>
+  <div id="adversary-root"></div>
+</div>
+
+<!-- 费曼 -->
+<div class="section">
+  <div class="section-header"><img class="avatar-icon" src="../../assets/portraits/feynman-avatar.png" alt="">费曼输出</div>
+  <div id="feynman-root"></div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">📝</span>练习</div>
+  <div class="exercise-tier"><h3><span class="tier-badge basic">基础</span></h3><div id="ex-basic"></div></div>
+  <div class="exercise-tier" id="tier-adv" style="display:none;"><h3><span class="tier-badge advanced">提升</span></h3><div id="ex-adv"></div></div>
+  <div id="done" style="display:none;text-align:center;padding:24px;font-size:24px;">🎉 分数的基本性质 — 通关！</div>
+</div>
+
+<script src="../../shared/components.js"></script>
+<script>
+createGate({containerId:'gate-root',
+  questions:[{label:'把一块蛋糕切成4块取2块等于切成2块取___块',inputs:[{key:'a',width:40}],answer:'1',check:u=>u.a==='1'}],
+  onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅ 好！</div>'
+});
+
+// ===== 等价探索 =====
+const ec=document.getElementById('eq-canvas');
+ec.width=Math.min(320,ec.parentElement.clientWidth-40);ec.height=100;
+const ectx=ec.getContext('2d');
+
+function updateEquiv(){
+  const n1=parseInt(document.getElementById('num1').value);
+  const d1=parseInt(document.getElementById('den1').value);
+  const d2=parseInt(document.getElementById('den2').value);
+  const n2=(n1/d1*d2).toFixed(2);
+  const isEqual=n2===Math.round(n2);
+  document.getElementById('frac1').textContent=n1+'/'+d1;
+  document.getElementById('eq-symbol').textContent=isEqual?'✅':'>';
+  document.getElementById('eq-symbol').style.color=isEqual?'var(--success)':'var(--error)';
+  document.getElementById('frac2').textContent=(isEqual?Math.round(n2)+'/'+d2:n2.toFixed(2)+'/'+d2);
+  document.getElementById('eq-detail').textContent=isEqual?`${n1}/${d1} = ${Math.round(n2)}/${d2}，分子分母同×${d2/d1}`:`不相同：${n1}/${d1} ≠ ${n2.toFixed(2)}/${d2}`;
+
+  ectx.clearRect(0,0,ec.width,ec.height);
+  const cx=ec.width/2,cy=ec.height/2;
+  // 画两个条形
+  const barW=Math.min(80,ec.width/3);
+  // 左侧分数
+  ectx.fillStyle='#e5e7eb';
+  ectx.fillRect(cx-barW-40,cy-20,barW,40);
+  ectx.fillStyle='rgba(59,130,246,0.5)';
+  ectx.fillRect(cx-barW-40,cy-20,barW*n1/d1,40);
+  ectx.strokeStyle='#3b82f6';ectx.lineWidth=1.5;
+  ectx.strokeRect(cx-barW-40,cy-20,barW,40);
+  ectx.fillStyle='#1e293b';ectx.font='11px sans-serif';ectx.textAlign='center';
+  ectx.fillText(n1+'/'+d1,cx-barW-40+barW/2,cy+5);
+
+  // 右侧分数
+  ectx.fillStyle='#e5e7eb';ectx.fillRect(cx+40,cy-20,barW,40);
+  ectx.fillStyle='rgba(59,130,246,0.5)';
+  const fillW=isEqual?barW*n1/d1:barW*(parseFloat(n2))/d2;
+  ectx.fillRect(cx+40,cy-20,Math.min(fillW,barW),40);
+  ectx.strokeStyle='#3b82f6';ectx.lineWidth=1.5;
+  ectx.strokeRect(cx+40,cy-20,barW,40);
+  ectx.fillText(Math.round(n2)+'/'+d2,cx+40+barW/2,cy+5);
+}
+updateEquiv();
+
+// ===== 等价链探索 =====
+let currentNumer=1,currentDenom=2;
+const equivChain=[];
+function changeFrac(dir){
+  if(dir===0){ // 变宽（约分）
+    if(currentNumer>=2&&currentDenom>=2&&currentNumer%2===0&&currentDenom%2===0){
+      currentNumer/=2;currentDenom/=2;
+    }else{
+      equivChain.push([currentNumer,currentDenom]);
+      return;
+    }
+  }else{ // 变细（通分）
+    if(currentDenom>12)return;
+    equivChain.push([currentNumer,currentDenom]);
+    currentNumer*=2;currentDenom*=2;
+  }
+  document.getElementById('explore-frac').textContent=currentNumer+'/'+currentDenom;
+  document.getElementById('explore-result').textContent='...';
+  document.getElementById('explore-list').innerHTML=equivChain.map(p=>`${p[0]}/${p[1]}`).join(' = ');
+  document.getElementById('explore-list').innerHTML+=' = '+currentNumer+'/'+currentDenom;
+}
+document.getElementById('explore-frac').textContent='1/2';
+
+function checkEx1(){const v=document.getElementById('ex1').value,f=document.getElementById('fb1');const ok=v==='3';f.className='feedback show '+(ok?'success':'error');f.innerHTML=ok?'✅ 1/3=3/9（同×3）':'❌ 1×?=3×?，1×3=3，3×3=9 → 分子=3';}
+function checkEx2(){const v=document.getElementById('ex2').value,f=document.getElementById('fb2');const ok=v==='2/5';f.className='feedback show '+(ok?'success':'error');f.innerHTML=ok?'✅ 4/10同÷2=2/5':'❌ 4÷2=2，10÷2=5 → 4/10=2/5';}
+function checkEx3(){const v=document.getElementById('ex3').value,f=document.getElementById('fb3');const ok=v==='<';f.className='feedback show '+(ok?'success':'error');f.innerHTML=ok?'✅ 2/5=14/35，3/7=15/35，14/35<15/35':'❌ 通分：2/5=14/35，3/7=15/35，14<15 → 2/5<3/7';}
+
+// ===== 对抗 =====
+createAdversarialChallenge({containerId:'adversary-root',
+  challenges:[
+    {tag:'分子分母',statement:'2/4和1/2不一样，因为2/4的份数更细。',answer:'refute',hint:'切2块取1块 vs 切4块取2块，量一样吗？',explanation:'切得细，但取得多——比例相同。2/4=(2÷2)/(4÷2)=1/2，等价。',counterexample:'一块取1/2和取2/4确实是同一个量——只是展示方式不同。'},
+    {tag:'同时加减',statement:'分数的分子分母同时加2，分数大小不变。',answer:'refute',hint:'试试1/3，同加2：1+2=3，3+2=5 → 3/5还是1/3？',explanation:'只有同乘或同除保持分数不变。同加同减会改变比例。',counterexample:'1/3同加2得3/5≠1/3。分子分母操只有乘除才能保比例不变。'}
+  ],
+  onComplete:()=>saveProgress({'fraction-meaning':{'property':{'adversary':'complete'}}})
+});
+
+createFeynmanFill({containerId:'feynman-root',
+  template:'1/2=2/4=3/6=4/8。这些分数___等。因为分子和分母同时___或___一个相同的数（___除外），分数的大小不变。1/2到2/4是分子分母同___了2，2/4到1/2是分子分母同___了2。',
+  answer:['相','乘','除以','0','乘','除以'],
+  onComplete:()=>saveProgress({'fraction-meaning':{'property':{'feynman':'complete'}}})
+});
+
+createExerciseSet({containerId:'ex-basic',
+  exercises:[
+    {question:'1/4 = ?/8，求?',inputs:[{key:'a',width:40}],answer:'2',hint:'1×2=2',check:a=>a.a==='2'},
+    {question:'6/12化简',inputs:[{key:'a',width:40}],answer:'1/2',hint:'6÷6=1，12÷6=2',check:a=>a.a==='1/2'}
+  ],
+  passThreshold:0.5,
+  onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}
+});
+function initAdv(){
+  createExerciseSet({containerId:'ex-adv',
+    exercises:[
+      {question:'3/5 = ?/20，求?',inputs:[{key:'a',width:40}],answer:'12',hint:'3×4=12',check:a=>a.a==='12'},
+      {question:'比较大小：4/7 和 5/8',inputs:[{key:'a',width:40}],answer:'<',hint:'4/7=32/56，5/8=35/56，32<35',check:a=>a.a==='<'}
+    ],
+    passThreshold:0.5,
+    onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'fraction-meaning':{'property':{'completed':true}}});}
+  });
+}
+</script>
+</body>
+</html>

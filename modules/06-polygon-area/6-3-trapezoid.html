@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>梯形面积 · 深入概念 · 五年级</title>
+<link rel="stylesheet" href="../../shared/layout.css">
+<style>
+.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;}
+.visual-step h4{font-size:17px;margin-bottom:12px;}
+.visual-step .step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:700;background:var(--accent-light);color:var(--accent-deep);margin-bottom:10px;}
+.concept-highlight{background:linear-gradient(145deg,#fefce8,#fff);border:2px solid #fde68a;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}
+.concept-highlight .big-idea{font-size:22px;font-weight:800;color:#92400e;line-height:1.6;}
+.concept-highlight .big-idea .highlight{color:var(--accent-deep);background:var(--accent-light);padding:2px 8px;border-radius:4px;}
+.thought-bubble{display:inline-block;background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:10px 16px;margin:6px 0;font-size:14px;max-width:90%;}
+.thought-bubble::before{content:'💭 ';}
+</style>
+</head>
+<body>
+<div class="top-nav"><a href="../../index.html#%E6%A2%AF%E5%BD%A2%E9%9D%A2%E7%A7%AF">🏠</a><span class="breadcrumb-sep">›</span><a href="index.html">多边形面积</a><span class="breadcrumb-sep">›</span><span>梯形</span></div>
+<h1 class="module-title">🔶 梯形面积</h1>
+<p class="module-subtitle">上底+下底 = 平行四边形的底。平均一下，×高。 </p>
+
+<div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🧱</span>拆到公理 · 三种方法</div>
+  <div class="visual-step">
+    <span class="step-label">已经会的东西</span>
+    <h4>你会算三角形和平行四边形面积</h4>
+    <div class="thought-bubble">三角形的面积 ÷ 2 是从"两个三角形拼成平行四边形"来的</div>
+  </div>
+
+  <div class="visual-step">
+    <span class="step-label">方法一 · 切成两个三角形</span>
+    <h4>沿对角线切开：梯形 = 三角形① + 三角形②</h4>
+    <div style="display:flex;gap:20px;justify-content:center;align-items:center;flex-wrap:wrap;">
+      <div style="text-align:center;">
+        <div style="width:100px;height:50px;background:#dbeafe;border-left:60px solid transparent;border-right:20px solid transparent;display:flex;align-items:center;justify-content:center;font-size:10px;">梯形</div>
+        <p style="font-size:12px;margin-top:4px;">S₁ = a×h÷2<br>S₂ = b×h÷2<br><strong>总 = (a+b)×h÷2</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="visual-step">
+    <span class="step-label">方法二 · 补成平行四边形</span>
+    <h4>复制一个一样的梯形，拼在一起 → 平行四边形</h4>
+    <div style="display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;">
+      <div style="width:100px;height:50px;background:#dbeafe;border-left:60px solid transparent;border-right:20px solid transparent;"></div>
+      <span style="font-size:20px;">+</span>
+      <div style="width:100px;height:50px;background:#fef3c7;border-right:60px solid transparent;border-left:20px solid transparent;transform:rotate(180deg);"></div>
+      <span style="font-size:20px;">=</span>
+      <div style="width:120px;height:50px;background:linear-gradient(90deg,#dbeafe,#fef3c7);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;">S_平 = (a+b)×h</div>
+    </div>
+    <div class="thought-bubble">梯形面积 = 平行四边形的一半。底 = 上底+下底，高不变。所以 S = (上底+下底)×高÷2</div>
+  </div>
+
+  <div class="concept-highlight">
+    <div class="big-idea">
+      🔑 梯形面积 = <span class="highlight">(上底 + 下底) × 高 ÷ 2</span>
+    </div>
+    <p style="margin-top:12px;font-size:16px;">
+      不管用哪种方法推导——<br>
+      最终殊途同归：<strong>(a+b)×h÷2</strong><br>
+      记忆口诀："上底加下底，乘高除以2"
+    </p>
+  </div>
+
+  <div class="visual-step" style="text-align:center;">
+    <span class="step-label">动手试试 · 拖拽看面积</span>
+    <canvas id="demo-canvas" style="margin:0 auto;"></canvas>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px;">
+      <label>上底 <input type="range" id="a-slider" min="2" max="8" value="3"></label>
+      <label>下底 <input type="range" id="b-slider" min="3" max="10" value="6"></label>
+      <label>高 <input type="range" id="h-slider" min="2" max="6" value="4"></label>
+    </div>
+    <div style="font-size:20px;margin-top:8px;">S = (<span id="a-val">3</span>+<span id="b-val">6</span>)×<span id="h-val">4</span>÷2 = <span id="area-result" style="color:var(--accent);font-weight:800;">18</span></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">📐</span>教材溯源</div>
+  <div style="cursor:pointer;padding:14px 18px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);" onclick="this.querySelector('.annot').style.display==='none'?'block':'none'">
+    📖 <b>教材：</b>"两个完全一样的梯形可以拼成一个平行四边形。" <i>（点击看意图）</i>
+    <div class="annot" style="display:none;margin-top:10px;padding:10px 14px;background:#f0fdf4;border-radius:6px;font-size:14px;line-height:1.7;">
+      ✏️ 与三角形面积推导完全一致的转化路径。<br>
+      不同点：拼成平行四边形后，"底"变成了"上底+下底"。<br>
+      所以面积公式中出现"a+b"——这是梯形独有的特征。
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🎯</span>典例精讲</div>
+  <div class="visual-step">
+    <h4>🎯 例1：上底3cm，下底7cm，高4cm → S?</h4>
+    计算过程：(3+7)×4÷2 = 10×4÷2 = 40÷2 = 20cm²<br>
+    ✏️ 自测：(上底5+下底9)×高6÷2 = <input class="input-field" id="ex1" style="width:60px;"> <button class="btn btn-primary btn-sm" onclick="checkEx1()">提交</button>
+    <div class="feedback" id="fb1"></div>
+  </div>
+  <div class="visual-step" style="margin-top:12px;">
+    <h4>🎯 例2：面积 = 42m²，上底+下底=14m → 高？</h4>
+    <div class="thought-bubble">逆推：h = S × 2 ÷ (a+b) = 42 × 2 ÷ 14 = 6m</div>
+    ✏️ <input class="input-field" id="ex2" style="width:60px;"> <button class="btn btn-primary btn-sm" onclick="checkEx2()">提交</button>
+    <div class="feedback" id="fb2"></div>
+  </div>
+</div>
+
+<!-- 对抗 -->
+<div class="section">
+  <div class="section-header"><img class="avatar-icon" src="../../assets/portraits/einstein-avatar.png" alt="">对抗挑战</div>
+  <div id="adversary-root"></div>
+</div>
+
+<!-- 费曼 -->
+<div class="section">
+  <div class="section-header"><img class="avatar-icon" src="../../assets/portraits/feynman-avatar.png" alt="">费曼输出</div>
+  <div id="feynman-root"></div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">📝</span>练习</div>
+  <div class="exercise-tier"><h3><span class="tier-badge basic">基础</span></h3><div id="ex-basic"></div></div>
+  <div class="exercise-tier" id="tier-adv" style="display:none;"><h3><span class="tier-badge advanced">提升</span></h3><div id="ex-adv"></div></div>
+  <div id="done" style="display:none;text-align:center;padding:24px;font-size:24px;">🎉 梯形面积 — 通关！</div>
+</div>
+
+<script src="../../shared/components.js"></script>
+<script>
+createGate({containerId:'gate-root',
+  questions:[{label:'三角形面积公式？S=？',inputs:[{key:'a',width:40},{key:'b',width:40},{key:'c',width:20}],answer:'底,高,÷2',check:u=>u.a==='底'&&u.b==='高'&&u.c==="2"||u.a==='底'&&u.b==='高'&&u.c==='÷2'}],
+  onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅ 好！</div>'
+});
+
+// ===== 交互演示 =====
+const dc=document.getElementById('demo-canvas');
+dc.width=Math.min(340,dc.parentElement.clientWidth-40);dc.height=140;
+const dctx=dc.getContext('2d');
+
+function drawTrap(){
+  const a=parseInt(document.getElementById('a-slider').value);
+  const b=parseInt(document.getElementById('b-slider').value);
+  const h=parseInt(document.getElementById('h-slider').value);
+  document.getElementById('a-val').textContent=a;document.getElementById('b-val').textContent=b;document.getElementById('h-val').textContent=h;
+  document.getElementById('area-result').textContent=(a+b)*h/2;
+  const w=dc.width,cy=dc.height/2;
+  const cell=Math.min(w/(b+3),50);
+  const ox=(w-b*cell)/2,oy=cy-h*cell/2;
+  dctx.clearRect(0,0,w,dc.height);
+  // 梯形
+  dctx.fillStyle='rgba(59,130,246,0.25)';dctx.strokeStyle='#3b82f6';dctx.lineWidth=2;
+  const shift=(b-a)/2*cell;
+  dctx.beginPath();dctx.moveTo(ox+shift,oy);dctx.lineTo(ox+shift+a*cell,oy);
+  dctx.lineTo(ox+b*cell,oy+h*cell);dctx.lineTo(ox,oy+h*cell);dctx.closePath();dctx.fill();dctx.stroke();
+  // 标高
+  dctx.setLineDash([3,3]);dctx.strokeStyle='#ef4444';dctx.lineWidth=1.5;
+  dctx.beginPath();dctx.moveTo(ox+shift,oy);dctx.lineTo(ox+shift,oy+h*cell);dctx.stroke();
+  dctx.setLineDash([]);dctx.fillStyle='#ef4444';dctx.font='11px sans-serif';dctx.textAlign='center';
+  dctx.fillText('h='+h,ox+shift-10,oy+h*cell/2);
+  dctx.textAlign='left';dctx.fillText('a='+a,ox+shift+4,oy-6);
+  dctx.fillText('b='+b,ox+4,oy+h*cell+14);
+}
+drawTrap();
+['a-slider','b-slider','h-slider'].forEach(id=>document.getElementById(id).addEventListener('input',drawTrap));
+window.addEventListener('resize',()=>{dc.width=Math.min(340,dc.parentElement.clientWidth-40);drawTrap();});
+
+function checkEx1(){const v=document.getElementById('ex1').value,f=document.getElementById('fb1');const ok=v==='42';f.className='feedback show '+(ok?'success':'error');f.innerHTML=ok?'✅ (5+9)×6÷2=42':'❌ (5+9)×6÷2=14×6÷2=84÷2=42';}
+function checkEx2(){const v=document.getElementById('ex2').value,f=document.getElementById('fb2');const ok=v==='6';f.className='feedback show '+(ok?'success':'error');f.innerHTML=ok?'✅ h=S×2÷(a+b)=42×2÷14=6':'❌ h=42×2÷14=6';}
+
+// ===== 对抗 =====
+createAdversarialChallenge({containerId:'adversary-root',
+  challenges:[
+    {tag:'三种方法',statement:'不管用哪种方法，梯形面积公式都是(a+b)×h÷2。',answer:'agree',hint:'两种方法的初始路径不同，最终化简结果一样吗？',explanation:'切割成两个三角形：(a×h÷2)+(b×h÷2)=(a+b)×h÷2。补齐为平行四边形：(a+b)×h÷2。结果一致。',counterexample:'推导过程可能不同，但最终公式是同一公式的不同等价形式。'},
+    {tag:'特殊情况',statement:'当上底=0时，梯形面积公式变成三角形面积公式。',answer:'agree',hint:'代入a=0到(a+b)×h÷2试试。',explanation:'a=0时，S= (0+b)×h÷2 = b×h÷2 = 三角形面积公。梯形退化成了三角形。',counterexample:'同样，当上底=下底时(ab)，梯形公式变成(2a)×h÷2 = a×h = 平行四边形面积公式。'}
+  ],
+  onComplete:()=>saveProgress({'polygon-area':{'trapezoid':{'adversary':'complete'}}})
+});
+
+createFeynmanFill({containerId:'feynman-root',
+  template:'梯形面积 = (___+___)×___÷___。因为两个一样的梯形可以拼成一个___，拼成的平行四边形底=___+___，高=___，面积=__。一个梯形是它的一半，所以要÷___。',
+  answer:['上底','下底','高','2','平行四边形','上底','下底','高','(a+b)×h','2'],
+  onComplete:()=>saveProgress({'polygon-area':{'trapezoid':{'feynman':'complete'}}})
+});
+
+createExerciseSet({containerId:'ex-basic',
+  exercises:[
+    {question:'上底4cm，下底6cm，高5cm → 面积=',inputs:[{key:'a',width:50}],answer:'25',hint:'(4+6)×5÷2=25',check:a=>a.a==='25'},
+    {question:'上底3cm，下底9cm，高4cm → 面积=',inputs:[{key:'a',width:50}],answer:'24',hint:'(3+9)×4÷2=24',check:a=>a.a==='24'}
+  ],
+  passThreshold:0.5,
+  onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}
+});
+function initAdv(){
+  createExerciseSet({containerId:'ex-adv',
+    exercises:[
+      {question:'梯形面积=28m²，高=4m，上底+下底=',inputs:[{key:'a',width:50}],answer:'14',hint:'28×2÷4=14',check:a=>a.a==='14'},
+      {question:'梯形菜地，上底8m，下底12m，高6m。每平方米收4kg，共多少kg？',inputs:[{key:'a',width:60}],answer:'240',hint:'(8+12)×6÷2=60，60×4=240',check:a=>a.a==='240'}
+    ],
+    passThreshold:0.5,
+    onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'polygon-area':{'trapezoid':{'completed':true}}});}
+  });
+}
+</script>
+</body>
+</html>

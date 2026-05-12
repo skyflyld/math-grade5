@@ -84,6 +84,10 @@ line.edge.hovered{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
 .detail-panel .badge{display:inline-block;padding:3px 10px;border-radius:10px;font-size:.72em;color:#fff;margin-bottom:10px}
 .detail-panel .visual-hero{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px;margin:10px 0;border:1px solid var(--border);background:#f2f6f7}
 .detail-panel .core-line{margin-top:8px;color:var(--text-dim);font-size:.86em;line-height:1.55}
+.detail-panel .lesson-link{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:12px 0 4px;padding:11px 14px;border-radius:12px;background:linear-gradient(135deg,#f5a400,#fb923c);color:#fff;text-decoration:none;font-weight:800;font-size:.86em;box-shadow:0 8px 18px rgba(245,164,0,.22)}
+.detail-panel .lesson-link:hover{filter:brightness(1.03);transform:translateY(-1px)}
+.detail-panel .lesson-link span{font-size:.76em;font-weight:700;opacity:.9}
+.detail-panel .lesson-note{margin-top:8px;padding:8px 10px;border-radius:10px;background:#fff8e8;color:#8a5a00;font-size:.76em;line-height:1.45}
 .detail-panel .focus-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
 .detail-panel .focus-stat{padding:8px;border:1px solid var(--border);border-radius:10px;background:#fff;font-size:.78em}
 .detail-panel .focus-stat strong{display:block;font-size:1.2em;color:#1f2937}
@@ -241,6 +245,19 @@ const EXPERIENCE_IMAGES = {
   '分数与小数互化':'assets/concepts/fraction-meaning.png',
   '折线统计图':'assets/concepts/statistics-trend.png',
   '找次品':'assets/concepts/application-strategy.png'
+};
+const COURSEWARE_LINKS = {
+  '整数乘法':{href:'modules/01-decimal-multiply/1-1-int-multiply.html',label:'进入小数 × 整数课件',meta:'乘法意义迁移'},
+  '小数乘法':{href:'modules/01-decimal-multiply/index.html',label:'进入小数乘法模块',meta:'2 个互动课件'},
+  '矩形面积':{href:'modules/06-polygon-area/index.html',label:'进入多边形面积模块',meta:'面积推导基础'},
+  '平行四边形面积':{href:'modules/06-polygon-area/6-1-parallelogram.html',label:'进入平行四边形面积课件',meta:'剪拼转化'},
+  '三角形面积':{href:'modules/06-polygon-area/6-2-triangle.html',label:'进入三角形面积课件',meta:'双拼一半'},
+  '梯形面积':{href:'modules/06-polygon-area/6-3-trapezoid.html',label:'进入梯形面积课件',meta:'拼合推导'},
+  '组合图形面积':{href:'modules/06-polygon-area/index.html',label:'进入多边形面积模块',meta:'3 个互动课件'},
+  '整数除法':{href:'modules/14-fraction-meaning/14-2-division.html',label:'进入分数与除法课件',meta:'除法与分数线'},
+  '分数基础':{href:'modules/14-fraction-meaning/index.html',label:'进入分数意义模块',meta:'3 个互动课件'},
+  '分数的意义':{href:'modules/14-fraction-meaning/14-1-meaning.html',label:'进入分数的意义课件',meta:'单位1'},
+  '分数的基本性质':{href:'modules/14-fraction-meaning/14-3-property.html',label:'进入分数基本性质课件',meta:'等值切分'}
 };
 const VISUAL_METAPHORS = {
   '整数加减法':['➕','数块在天平上进出，数量随操作变多或变少','同单位计数'],
@@ -439,6 +456,9 @@ link.on('mouseenter',function(e,d){
 // Card
 function selectNode(d){
   selectedNodeId = d.id;
+  if(location.hash!==`#${encodeURIComponent(d.name)}`){
+    history.replaceState(null,'',`#${encodeURIComponent(d.name)}`);
+  }
   showCard(d);
   applyGraphState();
 }
@@ -448,6 +468,7 @@ function showCard(d){
   const sem = SEM_NAMES[d.semester];
   const color = CAT_COLORS[d.category];
   const visual = visualFor(d);
+  const lesson = COURSEWARE_LINKS[d.name];
   const prereqs = edges.filter(e=>e.to===d.id).map(e=>({name:nodeMap[e.from].name,exp:e.exp,cat:nodeMap[e.from].category}));
   const nexts = edges.filter(e=>e.from===d.id).map(e=>({name:nodeMap[e.to].name,exp:e.exp,cat:nodeMap[e.to].category}));
   const relationEdges = edges.filter(e=>edgeTouches(e,d.id));
@@ -462,6 +483,11 @@ function showCard(d){
   }
   html += `<p class="core-line"><strong>核心理解：</strong>${d.desc}</p>`;
   html += `<p class="core-line"><strong>视觉模型：</strong>${visual.metaphor}</p>`;
+  if(lesson){
+    html += `<a class="lesson-link" href="${lesson.href}">${lesson.label}<span>${lesson.meta} →</span></a>`;
+  }else{
+    html += `<div class="lesson-note">当前节点先用于全局关系探索；深度课件会优先补齐高连接度和高误区概念。</div>`;
+  }
   html += `<div class="focus-summary">
     <div class="focus-stat"><strong>${relatedConcepts.length}</strong>个相关概念</div>
     <div class="focus-stat"><strong>${relationEdges.length}</strong>条直接关系</div>
@@ -499,6 +525,7 @@ function showCard(d){
 }
 function closeCard(){
   selectedNodeId = null;
+  history.replaceState(null,'',location.pathname+location.search);
   document.getElementById('detail-panel').classList.remove('open');
   applyGraphState();
 }
