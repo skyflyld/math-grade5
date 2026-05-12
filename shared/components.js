@@ -780,6 +780,55 @@ function createParallelogramCutDemo(opts){
   return {setState:s=>{state=s;draw();},draw};
 }
 
+// === 提示按钮（通用） ===
+function addHintButton(containerId, hintText, label){
+  const c = document.getElementById(containerId);
+  if(!c)return;
+  const btn = document.createElement('button');
+  btn.className = 'hint-toggle';
+  btn.innerHTML = '💡 ' + (label || '提示');
+  const content = document.createElement('div');
+  content.className = 'hint-content';
+  content.textContent = hintText;
+  btn.addEventListener('click',()=>{
+    const open = content.classList.toggle('open');
+    btn.innerHTML = open ? '🙈 收起提示' : '💡 ' + (label || '提示');
+  });
+  c.appendChild(btn);
+  c.appendChild(content);
+}
+
+// === 推荐下一课 ===
+function createNextLessonSuggestion(opts){
+  const c = document.getElementById(opts.containerId);
+  if(!c)return;
+  const names = opts.conceptNames || (document.body?.dataset?.concept || '').split(/[,，]/).map(s=>s.trim()).filter(Boolean);
+  const allNext = [];
+  const seen = new Set();
+  names.forEach(name=>{
+    const next = (window.getRecommendedNext && window.getRecommendedNext(name)) || [];
+    next.forEach(r=>{
+      if(seen.has(r.name))return;
+      seen.add(r.name);
+      allNext.push(r);
+    });
+  });
+  if(!allNext.length){
+    c.style.display = 'none';
+    return;
+  }
+  c.style.display = '';
+  const rootPrefix = (function(){const s=Array.from(document.scripts).find(s=>/concept-sync/.test(s.getAttribute('src')||''));const src=s?.getAttribute('src')||'';const i=src.indexOf('shared/concept-sync.js');return i>=0?src.slice(0,i):'';})();
+  c.innerHTML = '<h3>🎯 学完这篇，继续探索</h3><div class="next-lesson-grid">' +
+    allNext.map(r=>{
+      const icon = r.data?.icon || '📘';
+      const lessonUrl = r.data?.lesson;
+      const href = lessonUrl ? (lessonUrl.href || lessonUrl) : rootPrefix + 'index.html#' + encodeURIComponent(r.name);
+      return '<a href="'+escapeHTML(href)+'">'+escapeHTML(icon)+' '+escapeHTML(r.name)+'</a>';
+    }).join('') +
+  '</div>';
+}
+
 // 暴露到全局
 window.saveProgress=saveProgress;
 window.getProgress=getProgress;
@@ -799,6 +848,8 @@ window.createBalance=createBalance;
 window.createThreeViewDemo=createThreeViewDemo;
 window.createTransformDemo=createTransformDemo;
 window.createParallelogramCutDemo=createParallelogramCutDemo;
+window.addHintButton=addHintButton;
+window.createNextLessonSuggestion=createNextLessonSuggestion;
 
 // 自动初始化
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initScrollProgress);

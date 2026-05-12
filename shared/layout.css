@@ -941,3 +941,82 @@ body {
   body { padding: 32px 24px 100px; }
   .section { padding: 32px 32px; }
 }
+
+/* ========== 提示按钮 ========== */
+.hint-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--warning-light);
+  color: #8a5a00;
+  font-size: .8em;
+  font-weight: 700;
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: all .2s;
+  user-select: none;
+}
+.hint-toggle:hover {
+  background: #fde68a;
+  border-color: #f59e0b;
+  transform: translateY(-1px);
+}
+.hint-content {
+  display: none;
+  margin-top: 8px;
+  padding: 12px 16px;
+  background: var(--warning-light);
+  border: 1px solid rgba(245,158,11,.25);
+  border-radius: var(--radius-sm);
+  font-size: .88em;
+  line-height: 1.65;
+  color: #5c3d00;
+  animation: fadeIn .25s ease;
+}
+.hint-content.open { display: block; }
+@keyframes fadeIn {
+  from{opacity:0;transform:translateY(-4px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* ========== 下一课推荐 ========== */
+.next-lesson-card {
+  margin-top: 16px;
+  padding: 14px 18px;
+  border: 1px solid rgba(59,130,246,.2);
+  border-radius: var(--radius);
+  background: linear-gradient(145deg, #f0f7ff, #fff);
+  text-align: center;
+}
+.next-lesson-card h3 {
+  font-size: .92em;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+.next-lesson-card .next-lesson-grid {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.next-lesson-card a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid rgba(234,223,206,.88);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--text);
+  font-weight: 700;
+  font-size: .82em;
+  text-decoration: none;
+  transition: all .18s;
+}
+.next-lesson-card a:hover {
+  border-color: var(--accent);
+  background: var(--accent-light);
+  transform: translateY(-1px);
+}

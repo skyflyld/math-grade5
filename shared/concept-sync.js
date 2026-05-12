@@ -98,4 +98,42 @@ if(document.readyState === 'loading'){
   renderConceptSyncCard();
 }
 window.addEventListener('hashchange',renderConceptSyncCard);
+
+// === 推荐下一课映射（基于依赖图自动生成） ===
+const __nextConceptMap = {
+  "整数加减法":["整数乘法","整数四则运算","分数加减法"],
+  "整数乘法":["单位换算","小数乘法","因数和倍数","体积和体积单位"],
+  "整数除法":["因数和倍数","分数的意义","植树问题","找次品"],
+  "位置值":["小数的意义","整数四则运算","小数乘法","小数除法"],
+  "小数的意义":["小数乘法","小数除法","分数与小数互化"],
+  "整数四则运算":["简易方程"],
+  "矩形面积":["平行四边形面积","体积和体积单位"],
+  "等式的性质":["简易方程"],
+  "图形认知":["轴对称与旋转","观察物体","长方体和正方体","平行四边形面积"],
+  "分数基础":["分数的意义","可能性"],
+  "数据收集":["折线统计图"],
+  "单位换算":["体积和体积单位","容积和容积单位"],
+  "小数乘法":["小数除法"],
+  "小数除法":["循环小数"],
+  "因数和倍数":["235的倍数特征","质数与合数","约分","通分"],
+  "观察物体":["长方体和正方体"],
+  "体积和体积单位":["长方体体积"],
+  "长方体体积":["容积和容积单位"],
+  "平行四边形面积":["三角形面积","梯形面积"],
+  "三角形面积":["组合图形面积"],
+  "梯形面积":["组合图形面积"],
+  "分数的意义":["真分数和假分数","分数的基本性质","分数加减法","分数与小数互化"],
+  "分数的基本性质":["约分","通分"],
+  "通分":["分数加减法"]
+};
+
+function getRecommendedNext(conceptName){
+  const nextNames = __nextConceptMap[conceptName];
+  if(!nextNames || !nextNames.length)return [];
+  const api = window.MathGrade5Concepts;
+  if(!api)return nextNames.map(name=>({name}));
+  return nextNames.map(name=>({name, data: api.get(name)})).filter(r=>r.data);
+}
+window.getRecommendedNext = getRecommendedNext;
+
 })();
