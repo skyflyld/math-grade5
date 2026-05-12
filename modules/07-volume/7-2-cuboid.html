@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>长方体和正方体 · 五年级</title>
+<link rel="stylesheet" href="../../shared/layout.css">
+<style>.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;}.visual-step h4{font-size:17px;margin-bottom:12px;}.visual-step .step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:700;background:var(--accent-light);color:var(--accent-deep);margin-bottom:10px;}.concept-highlight{background:linear-gradient(145deg,#fefce8,#fff);border:2px solid #fde68a;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}.concept-highlight .big-idea{font-size:22px;font-weight:800;color:#92400e;line-height:1.6;}.concept-highlight .big-idea .highlight{color:var(--accent-deep);background:var(--accent-light);padding:2px 8px;border-radius:4px;}.thought-bubble{display:inline-block;background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:10px 16px;margin:6px 0;font-size:14px;max-width:90%;}.thought-bubble::before{content:'💭 ';}</style>
+</head><body data-concept="长方体和正方体,体积和体积单位,图形认知">
+<div class="top-nav"><a href="../../index.html#%E9%95%BF%E6%96%B9%E4%BD%93%E5%92%8C%E6%AD%A3%E6%96%B9%E4%BD%93">🏠</a><span class="breadcrumb-sep">›</span><span>长方体和正方体</span></div>
+<h1 class="module-title">📦 长方体和正方体 — 三维世界的盒子</h1>
+<p class="module-subtitle">6个面、12条棱、8个顶点——这就是长方体的一切。正方体是特殊的长方体。</p>
+<div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
+<div class="section">
+  <div class="section-header"><span class="emoji">🧱</span>拆到公理</div>
+  <div class="visual-step"><span class="step-label">第 1 步 · 认识元素</span><h4>面·棱·顶点——长方体有6个面（3对相对的面）</h4>
+  <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+    <div style="padding:12px;background:#dbeafe;border-radius:8px;text-align:center;"><span style="font-size:28px;">⬜</span><br><span style="font-size:12px;">面 ×6</span></div>
+    <div style="padding:12px;background:#fef3c7;border-radius:8px;text-align:center;"><span style="font-size:28px;">📏</span><br><span style="font-size:12px;">棱 ×12</span></div>
+    <div style="padding:12px;background:#dcfce7;border-radius:8px;text-align:center;"><span style="font-size:28px;">🔴</span><br><span style="font-size:12px;">顶点 ×8</span></div>
+  </div></div>
+  <div class="visual-step"><span class="step-label">第 2 步 · 表面积</span><h4>表面积=所有面的面积加起来</h4>
+  <div style="padding:12px;background:#f0fdf4;border:2px solid #86efac;border-radius:8px;text-align:center;font-size:15px;">
+    长方体 S = 2(ab + bc + ca)<br>
+    正方体 S = 6a²
+  </div></div>
+  <div class="visual-step"><span class="step-label">第 3 步 · 正方体是特殊的长方体</span><h4>长=宽=高时，长方体就变成了正方体</h4>
+  <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+    <div style="position:relative;width:70px;height:60px;background:#dbeafe;border:2px solid #3b82f6;border-radius:2px;"><span style="position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:11px;white-space:nowrap;">长方体</span></div>
+    <div style="font-size:20px;display:grid;place-items:center;color:var(--accent);">→</div>
+    <div style="width:60px;height:60px;background:#fef3c7;border:2px solid #f59e0b;"><span style="display:block;text-align:center;font-size:11px;margin-top:64px;">正方体</span></div>
+  </div>
+  <div class="thought-bubble" style="margin-top:20px;">正方体的所有棱都相等，所有面都相同——长方体+三条边相等</div></div>
+  <div class="concept-highlight"><div class="big-idea">🔑 <span class="highlight">6个面 · 表面积=f(长,宽,高)</span></div><p>表面积=外面的大小，体积=里面的空间。两个不同的概念。</p></div>
+</div>
+<div class="section">
+  <div class="section-header"><span class="emoji">🎮</span>交互 · 表面积计算</div>
+  <div class="interactive-area">
+    <span>长 <input id="l-slider" type="range" min="2" max="10" value="5" oninput="refreshCuboid()" style="width:80px;"> <span id="l-val">5</span></span><br>
+    <span>宽 <input id="w-slider" type="range" min="2" max="8" value="3" oninput="refreshCuboid()" style="width:80px;"> <span id="w-val">3</span></span><br>
+    <span>高 <input id="h-slider" type="range" min="1" max="6" value="4" oninput="refreshCuboid()" style="width:80px;"> <span id="h-val">4</span></span><br>
+    <div style="margin-top:8px;font-size:18px;font-weight:800;">表面积 = <span id="sa-result" style="color:var(--accent-deep);">94</span></div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-header"><span class="emoji">📐</span>教材原文</div>
+  <div style="cursor:pointer;padding:14px 18px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);" onclick="const a=this.querySelector('.annot');a.style.display=a.style.display==='none'?'block':'none'">
+    📖 <b>教材：</b>"长方体有6个面，12条棱，8个顶点。" <i>（点击）</i>
+    <div class="annot" style="display:none;margin-top:10px;padding:10px 14px;background:#f0fdf4;border-radius:6px;font-size:14px;">
+      ✏️ 记数字不难——但更重要的理解是：<strong>正方体是长宽高都相等的长方体</strong>。
+      6个面都是正方形，12条棱都相等。</div></div></div>
+<div class="section">
+  <div class="section-header"><span class="emoji">🎯</span>典例精讲</div>
+  <div class="visual-step"><h4>🎯 长方体长5cm宽3cm高4cm：表面积=2×(5×3+5×4+3×4)=2×(15+20+12)=94cm²</h4>
+  ✏️ 长6宽2高3 → S=<input class="input-field" id="ex1" style="width:60px;">cm²<button class="btn btn-primary btn-sm" onclick="checkE(1,'72',ex1,fb1)">提交</button><div class="feedback" id="fb1"></div></div>
+  <div class="visual-step"><h4>🎯 正方体棱长5cm：表面积=6×5²=150cm²</h4>
+  ✏️ 棱长3cm → S=<input class="input-field" id="ex2" style="width:60px;">cm²<button class="btn btn-primary btn-sm" onclick="checkE(2,'54',ex2,fb2)">提交</button><div class="feedback" id="fb2"></div></div>
+</div>
+<div class="section">
+  <div class="section-header"><span class="emoji">⚠️</span>踩坑</div>
+  <div class="pitfall"><div class="pitfall-title">🕳️ 只算2个面或算重了面</div><p><b>症状：</b>长方体表面积只算3个不同的面，忘了×2</p><p><b>根因：</b>长方体有3对相对的面，每对×2。</p></div>
+</div>
+<div class="section">
+  <div class="section-header"><span class="emoji">⚡</span>对抗挑战</div><div id="adversary-root"></div></div>
+<div class="section">
+  <div class="section-header"><span class="emoji">🦜</span>费曼输出</div><div id="feynman-root"></div></div>
+<div class="section">
+  <div class="section-header"><span class="emoji">📝</span>练习</div>
+  <div class="exercise-tier"><h3><span class="tier-badge basic">基础</span></h3><div id="ex-basic"></div></div>
+  <div class="exercise-tier" id="tier-adv" style="display:none;"><h3><span class="tier-badge advanced">提升</span></h3><div id="ex-adv"></div></div>
+  <div id="done" style="display:none;text-align:center;padding:24px;font-size:24px;">🎉 长方体和正方体 — 通关！</div></div>
+<script src="../../shared/concepts.js"></script><script src="../../shared/concept-sync.js"></script><script src="../../shared/components.js"></script>
+<script>
+createGate({containerId:'gate-root',questions:[{label:'一个长方形有几个面？',inputs:[{key:'a',width:40}],check:u=>u.a==='6'||u.a==='6个'}],onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅ 好！</div>'});
+function refreshCuboid(){
+  const l=parseInt(document.getElementById('l-slider').value),w=parseInt(document.getElementById('w-slider').value),h=parseInt(document.getElementById('h-slider').value);
+  document.getElementById('l-val').textContent=l;document.getElementById('w-val').textContent=w;document.getElementById('h-val').textContent=h;
+  document.getElementById('sa-result').textContent=2*(l*w+l*h+w*h);
+}
+refreshCuboid();
+function checkE(n,ans,input,fb){const ok=input.value.trim()===ans;fb.className='feedback show '+(ok?'success':'error');fb.innerHTML=ok?'✅ 正确！':`❌ 答案是 ${ans}`;}
+createAdversarialChallenge({containerId:'adversary-root',challenges:[
+  {tag:'面与棱',statement:'长方体有8条棱。',answer:'refute',hint:'3组×？=12',explanation:'长方体有3组平行棱，每组4条→12条棱。',counterexample:'长一组4条、宽一组4条、高一組4条，共12条。'},
+  {tag:'正方体',statement:'正方体是特殊的长方体。',answer:'agree',hint:'正方体具备长方体的什么特征？',explanation:'正方体有6个面12条棱8个顶点——具备长方体的全部特征，只是长宽高相等。'}
+],onComplete:()=>saveProgress({'cuboids':{'intro':{'adversary':'complete'}}})});
+createFeynmanFill({containerId:'feynman-root',template:'长方体有___个面、___条棱、___个顶点。表面积公式是___。正方体是___的长方体，所有棱都___，所有面都是___，表面积公式是___。',answer:['6','12','8','2(ab+bc+ca)','特殊','相等','正方形','6a²'],onComplete:()=>saveProgress({'cuboids':{'intro':{'feynman':'complete'}}})});
+createExerciseSet({containerId:'ex-basic',exercises:[
+  {question:'长方体长4宽3高2，S=?',inputs:[{key:'a',width:40}],check:a=>a.a==='52',hint:'2×(12+8+6)=52'},
+  {question:'正方体棱长6，S=?',inputs:[{key:'a',width:40}],check:a=>a.a==='216',hint:'6×36=216'},
+  {question:'长方体有几条棱？',inputs:[{key:'a',width:40}],check:a=>a.a==='12',hint:'3组×4=12'}
+],passThreshold:0.67,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}});
+function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[
+  {question:'无盖长方体盒子长6宽5高4，求表面积（去掉顶部）',inputs:[]
+  .concat([{key:'a',width:60}]),check:a=>a.a==='118',hint:'2×(6×5+6×4+5×4)-6×5=148-30=118'},
+  {question:'正方体棱长扩大2倍，表面积扩大几倍？',inputs:[{key:'a',width:40}],check:a=>a.a==='4',hint:'S=6a²，a→2a则S→6×4a²=4×原S'}
+],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'cuboids':{'intro':{'completed':true}}});}});}
+</script>
+</body>
+</html>

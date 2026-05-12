@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>因数和倍数 · 五年级</title>
+<link rel="stylesheet" href="../../shared/layout.css">
+<style>.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;}.visual-step h4{font-size:17px;margin-bottom:12px;}.visual-step .step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:700;background:var(--accent-light);color:var(--accent-deep);margin-bottom:10px;}.concept-highlight{background:linear-gradient(145deg,#fefce8,#fff);border:2px solid #fde68a;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}.concept-highlight .big-idea{font-size:22px;font-weight:800;color:#92400e;line-height:1.6;}.concept-highlight .big-idea .highlight{color:var(--accent-deep);background:var(--accent-light);padding:2px 8px;border-radius:4px;}.thought-bubble{display:inline-block;background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:10px 16px;margin:6px 0;font-size:14px;max-width:90%;}.thought-bubble::before{content:'💭 ';}</style>
+</head><body data-concept="因数和倍数,整数除法,235的倍数特征">
+<div class="top-nav"><a href="../../index.html#%E5%9B%A0%E6%95%B0%E5%92%8C%E5%80%8D%E6%95%B0">🏠</a><span class="breadcrumb-sep">›</span><span>因数和倍数</span></div>
+<h1 class="module-title">🧩 因数和倍数 — 数字的朋友圈</h1>
+<p class="module-subtitle">12÷3=4——3是12的因数，12是3的倍数。它们成对出现。</p>
+<div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
+<div class="section">
+  <div class="section-header"><span class="emoji">🧱</span>拆到公理</div>
+  <div class="visual-step"><span class="step-label">第 1 步 · 什么是整除</span><h4>12÷3=4——余数为0，我们就说3能整除12</h4>
+  <div class="thought-bubble">因数和倍数的前提是"整除"——两个整数相除，余数为0</div></div>
+  <div class="visual-step"><span class="step-label">第 2 步 · 成对出现</span><h4>12的因数有哪些？</h4>
+  <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:8px 0;">
+    <div style="padding:10px;background:#dbeafe;border:2px solid #3b82f6;border-radius:8px;text-align:center;"><strong>1</strong><br><span style="font-size:11px;">1×12</span></div>
+    <div style="padding:10px;background:#dbeafe;border:2px solid #3b82f6;border-radius:8px;text-align:center;"><strong>2</strong><br><span style="font-size:11px;">2×6</span></div>
+    <div style="padding:10px;background:#dbeafe;border:2px solid #3b82f6;border-radius:8px;text-align:center;"><strong>3</strong><br><span style="font-size:11px;">3×4</span></div>
+    <div style="padding:10px;background:#dbeafe;border:2px solid #3b82f6;border-radius:8px;text-align:center;"><strong>4,6,12</strong><br><span style="font-size:11px;">对称的"另一半"</span></div>
+  </div>
+  <div class="thought-bubble">因数都是成对出现的——每找到一对，就找到了两个因数。检查到√n就够了。</div></div>
+  <div class="concept-highlight"><div class="big-idea">🔑 <span class="highlight">a×b=c → a和b是c的因数，c是a和b的倍数</span></div><p>因数和倍数是相互依存的关系——没有a就没有b的倍数。</p></div>
+</div>
+<div class="section">
+  <div class="section-header"><span class="emoji">🎮</span>交互 · 找因数</div>
+  <div class="interactive-area">
+    <span>输入一个数，找出所有因数：</span>
+    <input id="factor-input" class="input-field" type="number" value="12" style="width:60px;" oninput="findFactors()">
+    <div id="factor-result" style="margin-top:8px;font-size:16px;"></div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-header"><span class="emoji">📐</span>教材原文</div>
+  <div style="cursor:pointer;padding:14px 18px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);" onclick="const a=this.querySelector('.annot');a.style.display=a.style.display==='none'?'block':'none'">
+    📖 <b>教材：</b>"在整数除法中，如果商是整数而没有余数，我们就说除数是被除数的因数。" <i>（点击）</i>
+    <div class="annot" style="display:none;margin-top:10px;padding:10px 14px;background:#f0fdf4;border-radius:6px;font-size:14px;">✏️ 注意教材的表述——"除数是被除数的因数"，不是"被除数是除数的因数"。</div></div></div>
+<div class="section">
+  <div class="section-header"><span class="emoji">🎯</span>典例精讲</div>
+  <div class="visual-step"><h4>🎯 18的因数：</h4>1,2,3,6,9,18（共6个）<br>
+  ✏️ 24的因数有___个？<input class="input-field" id="ex1" style="width:60px;"><button class="btn btn-primary btn-sm" onclick="checkE(1,'8',ex1,fb1)">提交</button><div class="feedback" id="fb1"></div><span style="font-size:12px;color:var(--text-dim);">提示：1,2,3,4,6,8,12,24</span></div>
+  <div class="visual-step"><h4>🎯 100以内6的倍数：</h4>6,12,18,24,30,36,42,48,54,60,66,72,78,84,90,96<br>
+  ✏️ 写出72的因数：<input class="input-field" id="ex2" style="width:120px;"><button class="btn btn-primary btn-sm" onclick="checkE(2,'1,2,3,4,6,8,9,12,18,24,36,72',ex2,fb2)">提交</button><div class="feedback" id="fb2"></div></div>
+</div>
+<div class="section">
+  <div class="section-header"><span class="emoji">⚠️</span>踩坑</div>
+  <div class="pitfall"><div class="pitfall-title">🕳️ 把因数当成"除法的结果"</div><p><b>症状：</b>问18的因数，回答9（只想到18÷2=9中的9）</p><p><b>根因：</b>只记住了"因数=除数"的一半，没理解成对出现。</p></div>
+</div>
+<div class="section">
+  <div class="section-header"><span class="emoji">⚡</span>对抗挑战</div><div id="adversary-root"></div></div>
+<div class="section">
+  <div class="section-header"><span class="emoji">🦜</span>费曼输出</div><div id="feynman-root"></div></div>
+<div class="section">
+  <div class="section-header"><span class="emoji">📝</span>练习</div>
+  <div class="exercise-tier"><h3><span class="tier-badge basic">基础</span></h3><div id="ex-basic"></div></div>
+  <div class="exercise-tier" id="tier-adv" style="display:none;"><h3><span class="tier-badge advanced">提升</span></h3><div id="ex-adv"></div></div>
+  <div id="done" style="display:none;text-align:center;padding:24px;font-size:24px;">🎉 因数和倍数 — 通关！</div></div>
+<script src="../../shared/concepts.js"></script><script src="../../shared/concept-sync.js"></script><script src="../../shared/components.js"></script>
+<script>
+createGate({containerId:'gate-root',questions:[{label:'12÷3=4，余数为？',inputs:[{key:'a',width:40}],check:u=>u.a==='0'}],onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅ 好！</div>'});
+function findFactors(){const n=parseInt(document.getElementById('factor-input').value)||1;const r=[];for(let i=1;i<=n;i++)if(n%i===0)r.push(i);document.getElementById('factor-result').innerHTML=`<strong>${n}</strong>的因数（共${r.length}个）：<span style="color:var(--accent-deep);font-weight:800;">${r.join(', ')}</span>`;}
+findFactors();
+function checkE(n,ans,input,fb){const ok=input.value.trim()===ans.trim();fb.className='feedback show '+(ok?'success':'error');fb.innerHTML=ok?'✅ 正确！':`❌ 答案是 ${ans}`;}
+createAdversarialChallenge({containerId:'adversary-root',challenges:[
+  {tag:'相互依存',statement:'"因数和倍数是两个数之间的关系，不是单个数的属性。"',answer:'agree',hint:'你能说"12是倍数"吗？',explanation:'必须说"12是谁的倍数"——因数和倍数都是成对说的。',counterexample:'说"12是倍数"没有意义——12是6的倍数，2的倍数，等等。'},
+  {tag:'因数范围',statement:'一个数的因数一定比这个数小。',answer:'refute',hint:'有没有等于它本身的因数？',explanation:'一个数最大的因数就是它本身（如12的因数包括12）。'}
+],onComplete:()=>saveProgress({'factors':{'intro':{'adversary':'complete'}}})});
+createFeynmanFill({containerId:'feynman-root',template:'如果___除以整数b没有余数，我们就说b是a的___，a是b的___。因数和倍数是相互___的关系。一个数的因数中最___的是1，最___的是它本身。',answer:['a','因数','倍数','依存','小','大'],onComplete:()=>saveProgress({'factors':{'intro':{'feynman':'complete'}}})});
+createExerciseSet({containerId:'ex-basic',exercises:[
+  {question:'15的因数有哪些？（用逗号分隔）',inputs:[{key:'a',width:100}],check:a=>a.a==='1,3,5,15',hint:'1,3,5,15'},
+  {question:'20以内7的倍数有？',inputs:[{key:'a',width:80}],check:a=>a.a==='7,14',hint:'7,14'}
+],passThreshold:0.5,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}});
+function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[
+  {question:'36的因数共有几个？',inputs:[{key:'a',width:40}],check:a=>a.a==='9',hint:'1,2,3,4,6,9,12,18,36'},
+  {question:'一个数的最大因数是24，这个数是？',inputs:[{key:'a',width:40}],check:a=>a.a==='24',hint:'最大因数=本身'}
+],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'factors':{'intro':{'completed':true}}});}});}
+</script>
+</body>
+</html>

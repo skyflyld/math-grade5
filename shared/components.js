@@ -359,6 +359,249 @@ function createFeynmanFill(opts){
   render();
 }
 
+// === 数轴组件 ===
+function createNumberLine(opts){
+  const c=document.getElementById(opts.containerId);
+  if(!c)return;
+  const min=opts.min||0, max=opts.max||10, initial=opts.initial||5;
+  const step=opts.step||1, unit=opts.unit||'';
+  let value=initial;
+  const canvas=document.createElement('canvas');
+  canvas.width=Math.min(600,c.clientWidth-24||560);
+  canvas.height=100;
+  canvas.style.cssText='max-width:100%;cursor:pointer;border-radius:8px;background:#fff;';
+  const label=document.createElement('div');
+  label.style.cssText='text-align:center;font-size:20px;font-weight:800;margin:6px 0;color:var(--accent-deep);';
+  label.textContent=value+unit;
+  c.innerHTML='';
+  c.append(canvas,label);
+
+  function draw(){
+    const ctx=canvas.getContext('2d'), w=canvas.width, h=canvas.height;
+    const pad=40, lw=w-2*pad, cy=55;
+    ctx.clearRect(0,0,w,h);
+    // Base line
+    ctx.strokeStyle='#cbd5e1';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(pad,cy);ctx.lineTo(w-pad,cy);ctx.stroke();
+    // Ticks + labels
+    const ticks=Math.round((max-min)/step);
+    ctx.fillStyle='#94a3b8';ctx.font='11px sans-serif';ctx.textAlign='center';
+    for(let i=0;i<=ticks;i++){
+      const x=pad+i*lw/ticks, v=min+i*step;
+      ctx.strokeStyle='#cbd5e1';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(x,cy-6);ctx.lineTo(x,cy+6);ctx.stroke();
+      ctx.fillStyle='#64748b';ctx.fillText(String(v),x,cy+20);
+    }
+    // Drag handle
+    const pos=pad+(value-min)/(max-min)*lw;
+    ctx.fillStyle='#f59e0b';ctx.strokeStyle='#d97706';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(pos,cy-18);ctx.lineTo(pos-10,cy-6);ctx.lineTo(pos+10,cy-6);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.fillStyle='#92400e';ctx.font='14px sans-serif';ctx.textAlign='center';
+    ctx.fillText('▼',pos,cy-22);
+  }
+  function getValueFromX(x){
+    const rect=canvas.getBoundingClientRect(), pad=40, lw=canvas.width-2*pad;
+    const ratio=Math.max(0,Math.min(1,(x-rect.left-pad)/lw));
+    const raw=min+ratio*(max-min);
+    return Math.round(raw/step)*step;
+  }
+  function setValue(v){
+    value=Math.max(min,Math.min(max,v));
+    label.textContent=value+unit;
+    draw();
+    if(opts.onChange)opts.onChange(value);
+  }
+
+  canvas.addEventListener('mousedown',e=>{
+    const onMove=(ev)=>setValue(getValueFromX(ev.clientX));
+    const onUp=()=>{document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp);};
+    document.addEventListener('mousemove',onMove);
+    document.addEventListener('mouseup',onUp);
+    setValue(getValueFromX(e.clientX));
+  });
+  canvas.addEventListener('touchstart',e=>{
+    e.preventDefault();
+    const t=e.changedTouches[0];
+    const onMove=(ev)=>setValue(getValueFromX(ev.changedTouches[0].clientX));
+    const onEnd=()=>{document.removeEventListener('touchmove',onMove);document.removeEventListener('touchend',onEnd);};
+    document.addEventListener('touchmove',onMove,{passive:true});
+    document.addEventListener('touchend',onEnd);
+    setValue(getValueFromX(t.clientX));
+  });
+  draw();
+  return {getValue:()=>value,setValue};
+}
+
+// === 面积模型组件 ===
+function createAreaModel(opts){
+  const c=document.getElementById(opts.containerId);
+  if(!c)return;
+  const cols=opts.cols||5, rows=opts.rows||3, cell=opts.cellSize||40;
+  let highlightCols=opts.highlightCols||0, highlightRows=opts.highlightRows||0;
+  const canvas=document.createElement('canvas');
+  const pad=16;
+  canvas.width=Math.min(cols*cell+2*pad,c.clientWidth-24||600);
+  canvas.height=rows*cell+2*pad+30;
+  canvas.style.cssText='max-width:100%;border-radius:8px;background:#f8fafc;cursor:pointer;';
+  const info=document.createElement('div');
+  info.style.cssText='text-align:center;font-size:18px;font-weight:800;margin:6px 0;color:var(--accent-deep);';
+  c.innerHTML='';c.append(canvas,info);
+
+  function draw(){
+    const ctx=canvas.getContext('2d'), w=canvas.width, h=canvas.height;
+    const ox=pad, oy=pad;
+    ctx.clearRect(0,0,w,h);
+    const total=cols*rows, shown=(highlightCols||cols)*(highlightRows||rows);
+    info.textContent=`${shown} 个格子 (${highlightCols||cols}×${highlightRows||rows} = ${shown})`;
+    // Grid
+    for(let r=0;r<rows;r++){
+      for(let ct=0;ct<cols;ct++){
+        const x=ox+ct*cell, y=oy+r*cell, hl=ct<highlightCols&&r<highlightRows;
+        ctx.fillStyle=hl?'rgba(59,130,246,0.35)':'rgba(148,163,184,0.1)';
+        ctx.fillRect(x,y,cell,cell);
+        ctx.strokeStyle=hl?'#3b82f6':'#cbd5e1';
+        ctx.lineWidth=hl?2:1;
+        ctx.strokeRect(x,y,cell,cell);
+        if(hl){ctx.fillStyle='#1e40af';ctx.font='14px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('■',x+cell/2,y+cell/2);}
+      }
+    }
+    // Highlight border
+    if(highlightCols>0&&highlightRows>0){
+      ctx.strokeStyle='#f59e0b';ctx.lineWidth=3;ctx.setLineDash([6,4]);
+      ctx.strokeRect(ox,oy,highlightCols*cell,highlightRows*cell);
+      ctx.setLineDash([]);
+    }
+    ctx.fillStyle='#64748b';ctx.font='12px sans-serif';ctx.textAlign='center';
+    ctx.fillText(`${cols} 列`,ox+cols*cell/2,oy+rows*cell+18);
+  }
+
+  canvas.addEventListener('click',e=>{
+    const rect=canvas.getBoundingClientRect();
+    const x=e.clientX-rect.left-ox, y=e.clientY-rect.top-oy;
+    if(x<0||y<0||x>cols*cell||y>rows*cell)return;
+    const ct=Math.floor(x/cell), rw=Math.floor(y/cell);
+    highlightCols=ct+1;highlightRows=rw+1;
+    draw();
+    if(opts.onChange)opts.onChange({cols:highlightCols,rows:highlightRows,total:highlightCols*highlightRows});
+  });
+  draw();
+  return {getDimensions:()=>({cols:highlightCols,rows:highlightRows,total:highlightCols*highlightRows}),reset:(cl,rw)=>{highlightCols=cl||0;highlightRows=rw||0;draw();}};
+}
+
+// === 分数条组件 ===
+function createFractionBar(opts){
+  const c=document.getElementById(opts.containerId);
+  if(!c)return;
+  const num=opts.numerator||1, den=opts.denominator||4, maxDen=opts.maxDenominator||12;
+  const color=opts.color||'#3b82f6';
+  let barW=Math.min(480,c.clientWidth-32||480);
+  const segment=document.createElement('div');
+  segment.style.cssText='margin:8px 0;';
+  const fullBar=document.createElement('div');
+  fullBar.style.cssText=`width:${barW}px;max-width:100%;height:44px;background:#e2e8f0;border-radius:8px;position:relative;overflow:hidden;border:2px solid #94a3b8;`;
+  const fill=document.createElement('div');
+  fill.style.cssText=`height:100%;width:${(num/den)*100}%;background:${color};border-radius:6px 0 0 6px;transition:width 0.3s;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:13px;`;
+  fill.textContent=`${num}/${den}`;
+  fullBar.append(fill);
+  const controls=document.createElement('div');
+  controls.style.cssText='display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:10px;';
+  controls.innerHTML=`
+    <label style="font-size:13px;">分子 <input id="fb-num" type="range" min="0" max="${den}" value="${num}" style="width:80px;"></label>
+    <label style="font-size:13px;">分母 <input id="fb-den" type="range" min="1" max="${maxDen}" value="${den}" style="width:80px;"></label>
+    <span id="fb-val" style="font-size:24px;font-weight:800;color:var(--accent-deep);">${num}/${den}</span>
+  `;
+  const eqBar=document.createElement('div');
+  eqBar.style.cssText='margin-top:16px;display:none;';
+  eqBar.innerHTML=`<div style="font-size:13px;font-weight:700;margin-bottom:4px;color:var(--text-dim);">等值分数</div><div id="fb-eq" style="font-size:18px;font-weight:800;color:var(--accent);"></div>`;
+  c.innerHTML='';c.append(segment,fullBar,controls,eqBar);
+
+  function update(){
+    const n=parseInt(document.getElementById('fb-num').value);
+    const d=parseInt(document.getElementById('fb-den').value);
+    document.getElementById('fb-num').max=d;
+    fill.style.width=`${(n/d)*100}%`;
+    fill.textContent=`${n}/${d}`;
+    document.getElementById('fb-val').textContent=`${n}/${d}`;
+    // Show equivalent fractions
+    if(opts.showEquivalents!==false&&d>0&&n>0){
+      const gcd=(a,b)=>b?gcd(b,a%b):a;
+      const g=gcd(n,d), sn=n/g, sd=d/g;
+      eqBar.style.display='block';
+      document.getElementById('fb-eq').textContent=sn===n&&sd===d?'(已是最简)' : `${n}/${d} = ${sn}/${sd}`;
+    }
+    if(opts.onChange)opts.onChange({numerator:n,denominator:d,value:n/d});
+  }
+  document.getElementById('fb-num').addEventListener('input',update);
+  document.getElementById('fb-den').addEventListener('input',update);
+  return {getValue:()=>({n:parseInt(document.getElementById('fb-num').value),d:parseInt(document.getElementById('fb-den').value)})};
+}
+
+// === 天平组件 ===
+function createBalance(opts){
+  const c=document.getElementById(opts.containerId);
+  if(!c)return;
+  const leftLabel=opts.leftLabel||'?', rightLabel=opts.rightLabel||'☐';
+  let leftVal=opts.leftValue||0, rightVal=opts.rightValue||0;
+  let target=opts.target||'';
+  const canvas=document.createElement('canvas');
+  const w=Math.min(400,c.clientWidth-24||400), h=180;
+  canvas.width=w;canvas.height=h;
+  canvas.style.cssText='max-width:100%;border-radius:8px;background:#fff;';
+  const answerRow=document.createElement('div');
+  answerRow.style.cssText='display:flex;gap:8px;justify-content:center;align-items:center;margin:8px 0;flex-wrap:wrap;';
+  answerRow.innerHTML=`
+    <span style="font-weight:700;">${leftLabel} = </span>
+    <input id="bal-ans" type="text" class="input-field" style="width:60px;">
+    <button class="btn btn-primary btn-sm" id="bal-submit">验证</button>
+    <div class="feedback" id="bal-fb"></div>
+  `;
+  c.innerHTML='';c.append(canvas,answerRow);
+
+  function draw(){
+    const ctx=canvas.getContext('2d');
+    const cx=w/2;ctx.clearRect(0,0,w,h);
+    // Stand
+    ctx.strokeStyle='#94a3b8';ctx.lineWidth=3;
+    ctx.beginPath();ctx.moveTo(cx,45);ctx.lineTo(cx,h);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx-12,h);ctx.lineTo(cx+12,h);ctx.stroke();
+    // Beam
+    const tilt=leftVal===rightVal?0:leftVal>rightVal?8:-8;
+    ctx.save();ctx.translate(cx,45);ctx.rotate(tilt*Math.PI/180);
+    ctx.strokeStyle='#64748b';ctx.lineWidth=4;
+    ctx.beginPath();ctx.moveTo(-120,0);ctx.lineTo(120,0);ctx.stroke();
+    ctx.fillStyle='#92400e';ctx.font='12px sans-serif';ctx.textAlign='center';
+    ctx.fillText('⚖️',0,-16);
+    // Left pan
+    ctx.strokeStyle='#3b82f6';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(-120,0);ctx.lineTo(-120,30);
+    ctx.moveTo(-140,35);ctx.lineTo(-100,35);ctx.moveTo(-100,30);ctx.lineTo(-100,35);ctx.stroke();
+    ctx.fillStyle='rgba(59,130,246,0.25)';ctx.fillRect(-140,35,40,20);
+    ctx.fillStyle='#1e40af';ctx.font='14px sans-serif';ctx.textAlign='center';ctx.fillText(leftLabel,-120,50);
+    // Right pan
+    ctx.strokeStyle='#16a34a';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(120,0);ctx.lineTo(120,30);
+    ctx.moveTo(100,35);ctx.lineTo(140,35);ctx.moveTo(140,30);ctx.lineTo(140,35);ctx.stroke();
+    ctx.fillStyle='rgba(34,197,94,0.25)';ctx.fillRect(100,35,40,20);
+    ctx.fillStyle='#166534';ctx.font='14px sans-serif';ctx.textAlign='center';ctx.fillText(rightLabel,120,50);
+    ctx.restore();
+    // Balance indicator
+    ctx.fillStyle='#64748b';ctx.font='13px sans-serif';ctx.textAlign='center';
+    ctx.fillText(leftVal===rightVal?'⚖️ 平衡！':leftVal>rightVal?'⬅ 左边重':'右边重 ➡',cx,h-14);
+  }
+  draw();
+
+  document.getElementById('bal-submit').addEventListener('click',()=>{
+    const ans=document.getElementById('bal-ans').value.trim();
+    const fb=document.getElementById('bal-fb');
+    if(ans===String(target)){
+      fb.className='feedback show success';fb.innerHTML='✅ 正确！天平平衡！';celebrate(fb);
+      if(opts.onSolve)opts.onSolve(ans);
+    }else{
+      fb.className='feedback show error';fb.innerHTML='❌ 再想想，天平要平衡两边必须相等';}
+  });
+  return {setValues:(l,r)=>{leftVal=l;rightVal=r;draw();}};
+}
+
 // 暴露到全局
 window.saveProgress=saveProgress;
 window.getProgress=getProgress;
@@ -371,6 +614,10 @@ window.createGate=createGate;
 window.createExerciseSet=createExerciseSet;
 window.createAdversarialChallenge=createAdversarialChallenge;
 window.createFeynmanFill=createFeynmanFill;
+window.createNumberLine=createNumberLine;
+window.createAreaModel=createAreaModel;
+window.createFractionBar=createFractionBar;
+window.createBalance=createBalance;
 
 // 自动初始化
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initScrollProgress);

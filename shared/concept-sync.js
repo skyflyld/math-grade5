@@ -74,7 +74,7 @@ function renderConceptSyncCard(){
   const graphLink = nav.querySelector('a:first-child');
   if(graphLink)graphLink.setAttribute('href',graphHref);
   const visual = image
-    ? `<img class="concept-sync-image" src="${escapeHTML(image)}" alt="${escapeHTML(concept.name)}的视觉模型">`
+    ? `<img class="concept-sync-image" loading="lazy" src="${escapeHTML(image)}" alt="${escapeHTML(concept.name)}的视觉模型">`
     : `<div class="concept-sync-symbol">${escapeHTML(concept.icon)}</div>`;
 
   const card = document.createElement('section');

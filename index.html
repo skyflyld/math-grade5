@@ -231,46 +231,46 @@ const CAT_COLORS = {number_ops:'#4A90D9',geometry:'#E85D75',algebra:'#7B68EE',st
 const CAT_NAMES = {number_ops:'数与运算',geometry:'几何',algebra:'代数',statistics:'统计',applications:'应用'};
 const SEM_NAMES = {0:'全学年',1:'上册',2:'下册'};
 const EXPERIENCE_IMAGES = {
-  '整数加减法':'assets/concepts/place-value-tower.png',
-  '整数乘法':'assets/concepts/decimal-multiply.png',
-  '整数除法':'assets/concepts/fraction-meaning.png',
-  '位置值':'assets/concepts/place-value-tower.png',
-  '小数的意义':'assets/concepts/place-value-tower.png',
-  '整数四则运算':'assets/concepts/equation-balance.png',
-  '矩形面积':'assets/concepts/polygon-area.png',
-  '等式的性质':'assets/concepts/equation-balance.png',
-  '图形认知':'assets/concepts/polygon-area.png',
-  '数据收集':'assets/concepts/statistics-trend.png',
-  '单位换算':'assets/concepts/place-value-tower.png',
-  '轴对称与旋转':'assets/concepts/polygon-area.png',
-  '小数乘法':'assets/concepts/decimal-multiply.png',
-  '小数除法':'assets/concepts/decimal-multiply.png',
-  '因数和倍数':'assets/concepts/number-theory-sieve.png',
-  '235的倍数特征':'assets/concepts/number-theory-sieve.png',
-  '循环小数':'assets/concepts/decimal-multiply.png',
-  '观察物体':'assets/concepts/volume-cubes.png',
-  '质数与合数':'assets/concepts/number-theory-sieve.png',
-  '简易方程':'assets/concepts/equation-balance.png',
-  '长方体和正方体':'assets/concepts/volume-cubes.png',
-  '平行四边形面积':'assets/concepts/polygon-area.png',
-  '体积和体积单位':'assets/concepts/volume-cubes.png',
-  '长方体体积':'assets/concepts/volume-cubes.png',
-  '三角形面积':'assets/concepts/polygon-area.png',
-  '容积和容积单位':'assets/concepts/volume-cubes.png',
-  '梯形面积':'assets/concepts/polygon-area.png',
-  '组合图形面积':'assets/concepts/polygon-area.png',
-  '分数的意义':'assets/concepts/fraction-meaning.png',
-  '分数基础':'assets/concepts/fraction-meaning.png',
-  '真分数和假分数':'assets/concepts/fraction-meaning.png',
-  '可能性':'assets/concepts/application-strategy.png',
-  '植树问题':'assets/concepts/application-strategy.png',
-  '分数的基本性质':'assets/concepts/fraction-meaning.png',
-  '约分':'assets/concepts/fraction-meaning.png',
-  '通分':'assets/concepts/fraction-meaning.png',
-  '分数加减法':'assets/concepts/fraction-meaning.png',
-  '分数与小数互化':'assets/concepts/fraction-meaning.png',
-  '折线统计图':'assets/concepts/statistics-trend.png',
-  '找次品':'assets/concepts/application-strategy.png'
+  '整数加减法':'assets/concepts/place-value-tower.webp',
+  '整数乘法':'assets/concepts/decimal-multiply.webp',
+  '整数除法':'assets/concepts/fraction-meaning.webp',
+  '位置值':'assets/concepts/place-value-tower.webp',
+  '小数的意义':'assets/concepts/place-value-tower.webp',
+  '整数四则运算':'assets/concepts/equation-balance.webp',
+  '矩形面积':'assets/concepts/polygon-area.webp',
+  '等式的性质':'assets/concepts/equation-balance.webp',
+  '图形认知':'assets/concepts/polygon-area.webp',
+  '数据收集':'assets/concepts/statistics-trend.webp',
+  '单位换算':'assets/concepts/place-value-tower.webp',
+  '轴对称与旋转':'assets/concepts/polygon-area.webp',
+  '小数乘法':'assets/concepts/decimal-multiply.webp',
+  '小数除法':'assets/concepts/decimal-multiply.webp',
+  '因数和倍数':'assets/concepts/number-theory-sieve.webp',
+  '235的倍数特征':'assets/concepts/number-theory-sieve.webp',
+  '循环小数':'assets/concepts/decimal-multiply.webp',
+  '观察物体':'assets/concepts/volume-cubes.webp',
+  '质数与合数':'assets/concepts/number-theory-sieve.webp',
+  '简易方程':'assets/concepts/equation-balance.webp',
+  '长方体和正方体':'assets/concepts/volume-cubes.webp',
+  '平行四边形面积':'assets/concepts/polygon-area.webp',
+  '体积和体积单位':'assets/concepts/volume-cubes.webp',
+  '长方体体积':'assets/concepts/volume-cubes.webp',
+  '三角形面积':'assets/concepts/polygon-area.webp',
+  '容积和容积单位':'assets/concepts/volume-cubes.webp',
+  '梯形面积':'assets/concepts/polygon-area.webp',
+  '组合图形面积':'assets/concepts/polygon-area.webp',
+  '分数的意义':'assets/concepts/fraction-meaning.webp',
+  '分数基础':'assets/concepts/fraction-meaning.webp',
+  '真分数和假分数':'assets/concepts/fraction-meaning.webp',
+  '可能性':'assets/concepts/application-strategy.webp',
+  '植树问题':'assets/concepts/application-strategy.webp',
+  '分数的基本性质':'assets/concepts/fraction-meaning.webp',
+  '约分':'assets/concepts/fraction-meaning.webp',
+  '通分':'assets/concepts/fraction-meaning.webp',
+  '分数加减法':'assets/concepts/fraction-meaning.webp',
+  '分数与小数互化':'assets/concepts/fraction-meaning.webp',
+  '折线统计图':'assets/concepts/statistics-trend.webp',
+  '找次品':'assets/concepts/application-strategy.webp'
 };
 const COURSEWARE_LINKS = {
   '整数乘法':{href:'modules/01-decimal-multiply/1-1-int-multiply.html',label:'进入小数 × 整数课件',meta:'乘法意义迁移'},
@@ -578,8 +578,8 @@ function showCard(d){
   </div>`;
   html += `<p class="core-line">难度：${'⭐'.repeat(d.difficulty)}</p>`;
   html += `<div class="mentor-row">
-    <div class="mentor"><img src="assets/portraits/einstein-avatar.png" alt=""><div><b>对抗式思考</b><span>这句话少了什么条件？能不能举反例？</span></div></div>
-    <div class="mentor"><img src="assets/portraits/feynman-avatar.png" alt=""><div><b>费曼输出</b><span>用一句话讲给低年级同学听。</span></div></div>
+    <div class="mentor"><img src="assets/portraits/einstein-avatar.webp" alt=""><div><b>对抗式思考</b><span>这句话少了什么条件？能不能举反例？</span></div></div>
+    <div class="mentor"><img src="assets/portraits/feynman-avatar.webp" alt=""><div><b>费曼输出</b><span>用一句话讲给低年级同学听。</span></div></div>
   </div>`;
 
   const relationButton = (other,arrow,exp)=>`<button class="relation-item" type="button" onclick="focusNodeById('${other.id}')"><span class="relation-name" style="color:${CAT_COLORS[other.category]}">${arrow} ${other.name}</span><span class="relation-exp">${exp}</span></button>`;

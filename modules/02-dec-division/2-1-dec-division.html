@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小数除法 · 深入概念 · 五年级</title>
+<link rel="stylesheet" href="../../shared/layout.css">
+<style>
+.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;}
+.visual-step h4{font-size:17px;margin-bottom:12px;}
+.visual-step .step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:700;background:var(--accent-light);color:var(--accent-deep);margin-bottom:10px;}
+.concept-highlight{background:linear-gradient(145deg,#fefce8,#fff);border:2px solid #fde68a;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}
+.concept-highlight .big-idea{font-size:22px;font-weight:800;color:#92400e;line-height:1.6;}
+.concept-highlight .big-idea .highlight{color:var(--accent-deep);background:var(--accent-light);padding:2px 8px;border-radius:4px;}
+.thought-bubble{display:inline-block;background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:10px 16px;margin:6px 0;font-size:14px;max-width:90%;}
+.thought-bubble::before{content:'💭 ';}
+</style>
+</head>
+<body data-concept="小数除法,小数乘法,整数除法">
+<div class="top-nav"><a href="../../index.html#%E5%B0%8F%E6%95%B0%E9%99%A4%E6%B3%95">🏠</a><span class="breadcrumb-sep">›</span><span>小数除法</span></div>
+<h1 class="module-title">➗ 小数除法</h1>
+<p class="module-subtitle">除数是小数？别慌——把除数变成整数，整个算式一起换单位。</p>
+
+<div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🧱</span>拆到公理 · 商不变</div>
+  <div class="visual-step">
+    <span class="step-label">第 1 步 · 商不变性质</span>
+    <h4>被除数和除数同时乘以同一个非零数，商不变</h4>
+    <div style="text-align:center;font-size:20px;font-weight:800;padding:16px;background:#f0fdf4;border-radius:8px;margin:8px 0;">
+      12 ÷ 4 = 3<br>
+      120 ÷ 40 = 3<br>
+      1200 ÷ 400 = 3
+    </div>
+    <div class="thought-bubble">这就是"换单位"思维：12个一除以4个一=3；120个十除以40个十=3</div>
+  </div>
+  <div class="visual-step">
+    <span class="step-label">第 2 步 · 遇到小数</span>
+    <h4>0.6 ÷ 0.2 = ?</h4>
+    <div style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin:12px 0;">
+      <div style="text-align:center;padding:16px;background:#fef3c7;border:2px solid #f59e0b;border-radius:8px;">
+        <div style="font-size:14px;">0.6 ÷ 0.2</div>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">除数是小数！</div>
+      </div>
+      <div style="display:grid;place-items:center;font-size:24px;color:var(--accent);">→×10→</div>
+      <div style="text-align:center;padding:16px;background:#dbeafe;border:2px solid #3b82f6;border-radius:8px;">
+        <div style="font-size:14px;">6 ÷ 2 = 3</div>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">变成整数除法！</div>
+      </div>
+    </div>
+    <div class="thought-bubble">同时×10：0.6 → 6，0.2 → 2，商不变，仍然=3</div>
+  </div>
+  <div class="visual-step">
+    <span class="step-label">第 3 步 · 三位法则</span>
+    <h4>三步解决所有小数除法</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:12px 0;">
+      <div style="text-align:center;padding:14px;background:#dbeafe;border-radius:8px;"><strong>① 移</strong><br><span style="font-size:12px;color:var(--text-dim);">除数小数→整数</span></div>
+      <div style="text-align:center;padding:14px;background:#fef3c7;border-radius:8px;"><strong>② 跟</strong><br><span style="font-size:12px;color:var(--text-dim);">被除数同步移动</span></div>
+      <div style="text-align:center;padding:14px;background:#dcfce7;border-radius:8px;"><strong>③ 算</strong><br><span style="font-size:12px;color:var(--text-dim);">按整数除法计算</span></div>
+    </div>
+  </div>
+  <div class="concept-highlight">
+    <div class="big-idea">
+      🔑 核心：<span class="highlight">商不变 = 换单位</span>
+    </div>
+    <p style="margin-top:12px;font-size:16px;">
+      0.6÷0.2 不是"0.6里有几个0.2"，而是"6个0.1里有多少个2个0.1"。<br>
+      单位相同了，就变成一个整数除法问题。<strong>这不是算得快，是在换单位。</strong>
+    </p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🎮</span>交互 · 移动小数点</div>
+  <div class="interactive-area">
+    <div id="nl-dec-div"></div>
+    <div style="margin-top:8px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <span>计算：<input id="dc-a" class="input-field" style="width:50px;" value="4.8"> ÷ <input id="dc-b" class="input-field" style="width:50px;" value="1.2"> = ?</span>
+      <button class="btn btn-primary btn-sm" onclick="checkDivision()">验证</button>
+      <div class="feedback" id="dc-fb"></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">📐</span>教材原文</div>
+  <div style="cursor:pointer;padding:14px 18px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);" onclick="const a=this.querySelector('.annot');a.style.display=a.style.display==='none'?'block':'none'">
+    📖 <b>教材：</b>"除数是小数的除法→先移动除数的小数点，使除数变成整数" <i>（点击见解释）</i>
+    <div class="annot" style="display:none;margin-top:10px;padding:10px 14px;background:#f0fdf4;border-radius:6px;font-size:14px;line-height:1.7;">
+      ✏️ 教材说的是"怎么做"，没解释"为什么能这么做"。<br>
+      <strong>原因就是商不变性质</strong>——被除数和除数同时×10、×100、×1000……不改变商的大小。
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🎯</span>典例精讲</div>
+  <div class="visual-step"><h4>🎯 例1：7.2 ÷ 0.8 = ?</h4>
+    同时×10：72 ÷ 8 = 9。✅<br>
+    ✏️ 4.2 ÷ 0.6 = <input class="input-field" id="ex1" style="width:60px;"> <button class="btn btn-primary btn-sm" onclick="checkE(1,'7',document.getElementById('ex1'),document.getElementById('fb1'))">提交</button><div class="feedback" id="fb1"></div>
+  </div>
+  <div class="visual-step"><h4>🎯 例2：0.75 ÷ 0.25 = ?</h4>
+    同时×100：75 ÷ 25 = 3。✅<br>
+    ✏️ 1.44 ÷ 1.2 = <input class="input-field" id="ex2" style="width:60px;"> <button class="btn btn-primary btn-sm" onclick="checkE(2,'1.2',document.getElementById('ex2'),document.getElementById('fb2'))">提交</button><div class="feedback" id="fb2"></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">⚠️</span>踩坑</div>
+  <div class="pitfall">
+    <div class="pitfall-title">🕳️ 被除数忘记同步移动小数点</div>
+    <p><b>症状：</b>0.6÷0.2 — 0.2变成2，但0.6不变，算出0.6÷2=0.3</p>
+    <p><b>根因：</b>只移动了除数，没移动被除数——商不变性质要求两边都变。</p>
+    <div class="pitfall-chain">🔗 炸雷链 → 移位的位数不一致 → 商有误差 → 循环小数不理解</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">⚡</span>对抗挑战</div>
+  <div id="adversary-root"></div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🦜</span>费曼输出</div>
+  <div id="feynman-root"></div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">📝</span>练习</div>
+  <div class="exercise-tier"><h3><span class="tier-badge basic">基础</span></h3><div id="ex-basic"></div></div>
+  <div class="exercise-tier" id="tier-adv" style="display:none;"><h3><span class="tier-badge advanced">提升</span></h3><div id="ex-adv"></div></div>
+  <div id="done" style="display:none;text-align:center;padding:24px;font-size:24px;">🎉 小数除法 — 通关！</div>
+</div>
+
+<script src="../../shared/concepts.js"></script>
+<script src="../../shared/concept-sync.js"></script>
+<script src="../../shared/components.js"></script>
+<script>
+createGate({containerId:'gate-root',
+  questions:[{label:'12÷4=3，那120÷40=?',inputs:[{key:'a',width:40}],check:u=>u.a==='3'}],
+  onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅ 好！</div>'
+});
+
+createNumberLine({containerId:'nl-dec-div',min:0,max:10,initial:4.8,step:1.2,unit:'',onChange:v=>{document.getElementById('dc-a').value=v;}});
+
+function checkDivision(){
+  const a=parseFloat(document.getElementById('dc-a').value),b=parseFloat(document.getElementById('dc-b').value);
+  if(!b){document.getElementById('dc-fb').className='feedback show error';document.getElementById('dc-fb').innerHTML='除数不能为0';return;}
+  const ans=a/b, f=document.getElementById('dc-fb');
+  const correct=Math.abs(ans-4.8/1.2)<0.01||Math.abs(ans-(Math.round(a/b*10)/10))<0.01;
+  f.className='feedback show '+(correct?'success':'error');
+  f.innerHTML=correct?`✅ ${a}÷${b}=${ans}`:`❌ ${a}÷${b}=${ans}，检查小数点位置`;
+}
+
+function checkE(n,ans,input,fb){const ok=input.value.trim()===ans;fb.className='feedback show '+(ok?'success':'error');fb.innerHTML=ok?'✅ 正确！':`❌ 正确答案是 ${ans}`;}
+
+createAdversarialChallenge({containerId:'adversary-root',
+  challenges:[
+    {tag:'商不变',statement:'0.6÷0.2 = 6÷20，因为都要移动小数点。',answer:'refute',hint:'移动小数点是为了什么？',explanation:'应该是6÷2（同时×10），不是6÷20（一个×10一个×100）。',counterexample:'0.6÷0.2→6÷2→=3；6÷20=0.3，差10倍。'},
+    {tag:'理解',statement:'小数除法比整数除法难，因为它涉及完全不同的计算规则。',answer:'refute',hint:'移小数点之后变成了什么？',explanation:'移完小数点就变成了整数除法，规则是一样的。',counterexample:'0.6÷0.2变成6÷2，竖式计算方法和整数除法一模一样。'}
+  ],
+  onComplete:()=>saveProgress({'dec-division':{'concept':{'adversary':'complete'}}})
+});
+
+createFeynmanFill({containerId:'feynman-root',
+  template:'除数是___的除法：先移动___的小数点使它变成___，再移动___的小数点同样的位数。这样做的依据是___性质：被除数和除数同时乘以同一个___，商不变。',
+  answer:['小数','除数','整数','被除数','商不变','非零数'],
+  onComplete:()=>saveProgress({'dec-division':{'concept':{'feynman':'complete'}}})
+});
+
+createExerciseSet({containerId:'ex-basic',
+  exercises:[
+    {question:'4.8÷1.2=?（先变成整数除法）',inputs:[{key:'a',width:50}],check:a=>a.a==='4',hint:'48÷12=4'},
+    {question:'0.36÷0.06=?',inputs:[{key:'a',width:50}],check:a=>a.a==='6',hint:'36÷6=6'},
+    {question:'2.5÷0.5=?',inputs:[{key:'a',width:50}],check:a=>a.a==='5',hint:'25÷5=5'}
+  ],
+  passThreshold:0.67,
+  onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}
+});
+function initAdv(){
+  createExerciseSet({containerId:'ex-adv',
+    exercises:[
+      {question:'0.56÷0.07=?',inputs:[{key:'a',width:50}],check:a=>a.a==='8',hint:'56÷7=8'},
+      {question:'妈妈用3.6米布做窗帘，每个窗帘0.6米，能做几个？',inputs:[{key:'a',width:50}],check:a=>a.a==='6',hint:'3.6÷0.6=36÷6=6个'}
+    ],
+    passThreshold:0.5,
+    onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'dec-division':{'concept':{'completed':true}}});}
+  });
+}
+</script>
+</body>
+</html>
