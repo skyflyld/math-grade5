@@ -45,13 +45,7 @@
   <div class="visual-step" style="text-align:center;">
     <span class="step-label">第 3 步 · 剪开 → 平移 → 拼合</span>
     <h4>点击按钮，看平行四边形变成矩形</h4>
-    <canvas id="pg-canvas" style="margin:8px auto;cursor:pointer;"></canvas>
-    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px;">
-      <button class="btn btn-primary btn-sm" onclick="playCut(1)">✂️ 剪开</button>
-      <button class="btn btn-primary btn-sm" onclick="playCut(2)">▶ 平移</button>
-      <button class="btn btn-primary btn-sm" onclick="playCut(3)">🧩 拼成矩形</button>
-      <button class="btn btn-outline btn-sm" onclick="playCut(0)">🔄 重置</button>
-    </div>
+    <div id="pg-cut-demo"></div>
   </div>
   <div class="concept-highlight">
     <div class="big-idea">
@@ -143,58 +137,7 @@ createGate({containerId:'gate-root',
   onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅ 好！</div>'
 });
 
-// ===== 剪刀动画Canvas =====
-const pc=document.getElementById('pg-canvas');
-pc.width=Math.min(340,pc.parentElement.clientWidth-40);pc.height=160;
-const pctx=pc.getContext('2d');
-let cutState=0; // 0=原始, 1=剪开, 2=移动中, 3=拼好
-
-function drawPG(state){
-  const w=pc.width,h=pc.height,cx=w/2,cy=h/2;
-  const base=100,height=70,shift=45;
-  pctx.clearRect(0,0,w,h);
-  pctx.lineWidth=2.5;
-  if(state===0){
-    // 原平行四边形
-    pctx.fillStyle='rgba(59,130,246,0.25)';pctx.strokeStyle='#3b82f6';
-    pctx.beginPath();pctx.moveTo(cx-base/2+shift,cy-height/2);pctx.lineTo(cx+base/2+shift,cy-height/2);
-    pctx.lineTo(cx+base/2,cy+height/2);pctx.lineTo(cx-base/2,cy+height/2);pctx.closePath();pctx.fill();pctx.stroke();
-    pctx.fillStyle='#1e293b';pctx.font='14px sans-serif';pctx.textAlign='center';
-    pctx.fillText('平行四边形',cx,cy+5);
-  }else if(state===1){
-    // 剪开：显示虚线切割线
-    pctx.fillStyle='rgba(59,130,246,0.25)';pctx.strokeStyle='#3b82f6';
-    pctx.beginPath();pctx.moveTo(cx-base/2+shift,cy-height/2);pctx.lineTo(cx+base/2+shift,cy-height/2);
-    pctx.lineTo(cx+base/2,cy+height/2);pctx.lineTo(cx-base/2,cy+height/2);pctx.closePath();pctx.fill();pctx.stroke();
-    // 切割线
-    pctx.setLineDash([4,4]);pctx.strokeStyle='#ef4444';pctx.lineWidth=2;
-    pctx.beginPath();pctx.moveTo(cx-base/2,cy+height/2);pctx.lineTo(cx-base/2,cy-height/2);pctx.stroke();
-    pctx.setLineDash([]);pctx.fillStyle='#ef4444';pctx.font='12px sans-serif';pctx.fillText('✂️ 沿高剪开',cx-base/2,cy-height/2-8);
-  }else if(state===2){
-    // 平移：三角形在移动中
-    const offset=20;
-    pctx.fillStyle='rgba(59,130,246,0.25)';pctx.strokeStyle='#3b82f6';
-    pctx.beginPath();pctx.moveTo(cx-base/2+shift,cy-height/2);pctx.lineTo(cx+base/2+shift,cy-height/2);
-    pctx.lineTo(cx+base/2,cy+height/2);pctx.lineTo(cx-base/2,cy+height/2);pctx.closePath();pctx.fill();pctx.stroke();
-    // 剪下的三角形正平移
-    pctx.fillStyle='rgba(239,68,68,0.4)';pctx.strokeStyle='#ef4444';
-    pctx.beginPath();pctx.moveTo(cx-base/2+offset,cy+height/2);pctx.lineTo(cx-base/2+offset,cy-height/2);pctx.lineTo(cx-base/2,cy+height/2);pctx.closePath();pctx.fill();pctx.stroke();
-    pctx.fillStyle='#ef4444';pctx.font='12px sans-serif';pctx.fillText('▶ 平移中',cx-base/2+offset/2,cy+height/2+18);
-  }else{
-    // 拼成矩形
-    pctx.fillStyle='rgba(59,130,246,0.25)';pctx.strokeStyle='#3b82f6';
-    pctx.beginPath();pctx.moveTo(cx-base/2+shift,cy-height/2);pctx.lineTo(cx+base/2+shift,cy-height/2);
-    pctx.lineTo(cx+base/2,cy+height/2);pctx.lineTo(cx-base/2+shift,cy+height/2);pctx.closePath();pctx.fill();pctx.stroke();
-    // 补上的三角形
-    pctx.fillStyle='rgba(34,197,94,0.3)';pctx.strokeStyle='#16a34a';
-    pctx.beginPath();pctx.moveTo(cx-base/2+shift,cy+height/2);
-    pctx.lineTo(cx-base/2+shift,cy-height/2);pctx.lineTo(cx-base/2,cy+height/2);pctx.closePath();pctx.fill();pctx.stroke();
-    pctx.fillStyle='#1e293b';pctx.font='14px sans-serif';pctx.textAlign='center';
-    pctx.fillText('🎯 矩形！底×高 = '+Math.round((base+shift)/10*height/10),cx,cy+5);
-  }
-}
-function playCut(s){cutState=s;drawPG(s);}
-drawPG(0);
+createParallelogramCutDemo({containerId:'pg-cut-demo'});
 
 // ===== 交互演示 =====
 const dc=document.getElementById('demo-canvas');
@@ -220,7 +163,7 @@ function refreshDemo(){
   dctx.fillStyle='#1e293b';dctx.font='12px sans-serif';dctx.fillText('底='+b,ox+shift+b*cell/2,oy+h*cell+16);
 }
 refreshDemo();
-window.addEventListener('resize',()=>{dc.width=Math.min(320,dc.parentElement.clientWidth-40);refreshDemo();pc.width=Math.min(340,pc.parentElement.clientWidth-40);drawPG(cutState);});
+window.addEventListener('resize',()=>{dc.width=Math.min(320,dc.parentElement.clientWidth-40);refreshDemo();});
 
 function checkEx1(){const v=document.getElementById('ex1').value,f=document.getElementById('fb1');const ok=v==='48';f.className='feedback show '+(ok?'success':'error');f.innerHTML=ok?'✅ 12×4=48':'❌ 底×高=12×4=48';}
 function checkEx2(){const v=document.getElementById('ex2').value,f=document.getElementById('fb2');const ok=v==='6';f.className='feedback show '+(ok?'success':'error');f.innerHTML=ok?'✅ 54÷9=6':'❌ 高=S÷底=54÷9=6';}

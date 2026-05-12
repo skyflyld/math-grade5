@@ -284,6 +284,13 @@ body {
   display: block;
   margin: 0 auto;
 }
+.visual-canvas {
+  width: 100%;
+  max-width: 100%;
+  display: block;
+  border: 1px solid rgba(148,163,184,0.22);
+  box-shadow: var(--shadow-sm);
+}
 
 /* ========== 公理框 ========== */
 .axiom-box {

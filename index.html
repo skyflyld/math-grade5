@@ -29,8 +29,19 @@ header h1{font-size:1.18em;font-weight:760;white-space:nowrap;letter-spacing:0}
 .filter-title span{font-size:1.2em}
 .filter-grid{display:grid;gap:12px}
 .filter-block{display:grid;grid-template-columns:56px 1fr;align-items:center;gap:10px}
-.filter-block label{font-size:.82em;font-weight:700;color:var(--text-dim);position:relative}
-.filter-block label::after{content:"";position:absolute;left:52px;right:-8px;top:50%;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+.filter-block label,.search-block label{font-size:.82em;font-weight:700;color:var(--text-dim);position:relative}
+.filter-block label::after,.search-block label::after{content:"";position:absolute;left:52px;right:-8px;top:50%;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+.search-block{display:grid;grid-template-columns:56px minmax(0,1fr);align-items:start;gap:10px}
+.search-box{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center}
+.search-box input{width:100%;min-height:38px;border:1px solid var(--border);border-radius:16px;background:#fff;padding:8px 14px;font:inherit;font-size:.86em;font-weight:700;color:var(--text);box-shadow:0 1px 4px rgba(31,41,55,.04)}
+.search-box input:focus{outline:2px solid rgba(245,164,0,.28);border-color:var(--accent)}
+.search-box button{min-height:38px;border:1px solid var(--border);border-radius:15px;background:#fff;color:var(--text-dim);font-weight:800;padding:0 13px;cursor:pointer}
+.search-box button:hover{border-color:var(--accent);color:#9a6400;background:#fff8e8}
+.search-results{grid-column:2;display:none;gap:8px;flex-wrap:wrap;margin-top:-4px}
+.search-results.open{display:flex}
+.search-results button{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:16px;background:#fff;color:#2f3a4a;padding:6px 10px;font-size:.76em;font-weight:800;cursor:pointer;box-shadow:0 1px 4px rgba(31,41,55,.04)}
+.search-results button:hover{border-color:var(--accent);background:#fff8e8}
+.search-results .empty{font-size:.78em;color:var(--text-dim);padding:6px 2px}
 .filters,.semester-toggle{display:flex;gap:8px;flex-wrap:wrap}
 .filters button,.semester-toggle button{display:flex;align-items:center;gap:7px;padding:8px 16px;border:1px solid var(--border);border-radius:17px;background:#fff;color:#2f3a4a;cursor:pointer;font-size:.86em;font-weight:700;transition:all .18s;white-space:nowrap;box-shadow:0 1px 4px rgba(31,41,55,.04)}
 .filters button::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--chip-color,#9aa6b2)}
@@ -99,6 +110,12 @@ line.edge.hovered{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
 .detail-panel .priority-pill.mid{background:#e0f2fe;color:#075985}
 .detail-panel .priority-pill.low{background:#f1f5f9;color:#475569}
 .detail-panel .lesson-note small{display:block;margin-top:4px;color:#9a6a12;line-height:1.45}
+.detail-panel .path-card{margin-top:10px;padding:10px;border:1px solid rgba(245,164,0,.35);border-radius:12px;background:linear-gradient(145deg,#fff8e8,#fff)}
+.detail-panel .path-card b{display:block;color:#8a5a00;font-size:.78em;margin-bottom:6px}
+.detail-panel .path-list{display:grid;gap:6px}
+.detail-panel .path-list button{width:100%;border:1px solid rgba(234,223,206,.88);border-radius:10px;background:#fff;text-align:left;padding:7px 9px;color:#2f3a4a;font:inherit;font-size:.8em;font-weight:800;cursor:pointer}
+.detail-panel .path-list button span{display:block;margin-top:2px;color:var(--text-dim);font-size:.9em;font-weight:600;line-height:1.4}
+.detail-panel .path-list button:hover{border-color:var(--accent);background:#fffaf0}
 .detail-panel .focus-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}
 .detail-panel .focus-stat{min-width:0;padding:8px;border:1px solid var(--border);border-radius:10px;background:#fff;font-size:.78em}
 .detail-panel .focus-stat strong{display:block;font-size:1.2em;color:#1f2937}
@@ -123,6 +140,12 @@ line.edge.hovered{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
 .legend-item:hover,.legend-item.active{background:#fff8e8;color:#1f2937;font-weight:800}
 .legend-dot{width:10px;height:10px;border-radius:50%}
 .info-bar{position:absolute;bottom:16px;right:16px;font-size:.78em;color:var(--text-dim);z-index:5;background:rgba(255,253,249,.94);border:1px solid var(--border);border-radius:18px;padding:8px 14px;box-shadow:var(--soft-shadow)}
+.path-panel{position:absolute;right:16px;bottom:62px;z-index:5;width:min(320px,calc(100% - 180px));background:rgba(255,253,249,.95);border:1px solid var(--border);border-radius:14px;box-shadow:var(--soft-shadow);padding:12px 14px}
+.path-panel h3{font-size:.82em;margin-bottom:8px;color:#2f3a4a}
+.path-panel .path-actions{display:grid;gap:7px}
+.path-panel button{border:1px solid rgba(234,223,206,.9);border-radius:10px;background:#fff;color:#2f3a4a;text-align:left;font:inherit;font-size:.76em;font-weight:800;line-height:1.35;padding:8px 9px;cursor:pointer}
+.path-panel button span{display:block;color:var(--text-dim);font-size:.9em;font-weight:600;margin-top:2px}
+.path-panel button:hover{border-color:var(--accent);background:#fff8e8}
 .graph-hint{position:absolute;top:16px;left:16px;z-index:6;border:1px solid var(--border);background:rgba(255,253,249,.92);border-radius:18px;padding:7px 12px;color:var(--text-dim);font-size:.78em;box-shadow:var(--soft-shadow)}
 .spotlight{position:absolute;top:56px;left:16px;z-index:6;display:flex;gap:8px;flex-wrap:wrap;max-width:690px}
 .spotlight button{display:flex;align-items:center;gap:6px;padding:7px 10px;border-radius:16px;border:1px solid var(--border);background:rgba(255,253,249,.92);color:#2f3a4a;font-weight:700;font-size:.76em;cursor:pointer;box-shadow:0 1px 6px rgba(31,41,55,.06)}
@@ -152,9 +175,16 @@ line.edge.hovered{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
   .filter-title{font-size:.92em;margin-bottom:8px}
   .filter-title span{font-size:1.12em}
   .filter-grid{gap:9px}
-  .filter-block{grid-template-columns:minmax(0,1fr);gap:6px;min-width:0}
-  .filter-block label{font-size:.78em}
-  .filter-block label::after{left:48px;right:0}
+  .filter-block,.search-block{grid-template-columns:minmax(0,1fr);gap:6px;min-width:0}
+  .filter-block label,.search-block label{font-size:.78em}
+  .filter-block label::after,.search-block label::after{left:48px;right:0}
+  .search-box{grid-template-columns:minmax(0,1fr) auto}
+  .search-box input{min-height:36px;font-size:.82em;border-radius:15px}
+  .search-box button{min-height:36px;padding:0 11px;font-size:.8em}
+  .search-results{grid-column:1;display:none;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;padding-bottom:3px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .search-results::-webkit-scrollbar{display:none}
+  .search-results.open{display:flex}
+  .search-results button{flex:0 0 auto}
   .filters,.semester-toggle{width:100%;min-width:0;max-width:100%;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;padding-bottom:3px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
   .filters::-webkit-scrollbar,.semester-toggle::-webkit-scrollbar{display:none}
   .filters button,.semester-toggle button{flex:0 0 auto;padding:7px 12px;border-radius:15px;font-size:.82em}
@@ -165,6 +195,12 @@ line.edge.hovered{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
   .zoom-controls{right:12px;top:12px;gap:8px}
   .zoom-controls button{width:40px;height:40px;font-size:1.08em}
   .info-bar{left:12px;right:12px;bottom:12px;max-width:none;text-align:center;font-size:.72em;padding:7px 11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .path-panel{left:12px;right:12px;bottom:52px;width:auto;padding:10px 12px}
+  .path-panel h3{font-size:.78em;margin-bottom:6px}
+  .path-panel .path-actions{display:flex;gap:7px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+  .path-panel .path-actions::-webkit-scrollbar{display:none}
+  .path-panel button{flex:0 0 210px;font-size:.72em}
+  #graph.detail-open .path-panel{display:none}
   #graph.detail-open .spotlight{display:none}
   #graph.detail-open .graph-hint{display:none}
   .legend{display:none}
@@ -204,6 +240,14 @@ line.edge.hovered{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
 <section class="filter-panel">
   <div class="filter-title"><span>🔍</span>筛选知识</div>
   <div class="filter-grid">
+    <div class="search-block">
+      <label>搜索</label>
+      <div class="search-box">
+        <input id="concept-search" type="search" autocomplete="off" placeholder="输入概念或关键词：分数、面积、单位">
+        <button id="clear-search" type="button">清除</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+    </div>
     <div class="filter-block">
       <label>按类别</label>
   <div class="filters" id="category-filters">
@@ -235,6 +279,7 @@ line.edge.hovered{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
     <button id="zoom-out" aria-label="缩小">−</button>
     <button id="zoom-reset" aria-label="重置视图">↺</button>
   </div>
+  <div class="path-panel" id="path-panel"></div>
   <div class="info-bar" id="info-bar"></div>
   <div class="detail-panel" id="detail-panel"></div>
 </div>
@@ -363,7 +408,7 @@ function visualFor(node){
 // Node map for quick lookup
 const nodeMap = Object.fromEntries(nodes.map(n=>[n.id,n]));
 const graphEdges = edges.map(e=>({...e,source:e.from,target:e.to}));
-let activeCat = 'all', activeSem = 'all', selectedNodeId = null;
+let activeCat = 'all', activeSem = 'all', activeSearch = '', selectedNodeId = null;
 
 const relationMap = new Map(nodes.map(n=>[n.id,new Set([n.id])]));
 edges.forEach(e=>{
@@ -376,8 +421,19 @@ function passesSemester(d){
   if(activeSem==='0')return d.semester===0;
   return d.semester===0 || d.semester===parseInt(activeSem);
 }
+function normalizeSearch(value){
+  return String(value || '').trim().toLowerCase();
+}
+function searchTextFor(d){
+  const visual = visualFor(d);
+  return normalizeSearch([d.name,d.desc,CAT_NAMES[d.category],SEM_NAMES[d.semester],visual.label,visual.metaphor].join(' '));
+}
+function matchesSearch(d){
+  if(!activeSearch)return true;
+  return searchTextFor(d).includes(activeSearch);
+}
 function passesNodeFilter(d){
-  return (activeCat==='all'||d.category===activeCat) && passesSemester(d);
+  return (activeCat==='all'||d.category===activeCat) && passesSemester(d) && matchesSearch(d);
 }
 function passesEdgeFilter(e){
   return passesNodeFilter(nodeMap[e.from]) && passesNodeFilter(nodeMap[e.to]);
@@ -416,6 +472,39 @@ function lessonPriorityFor(d){
   if(best <= 10)return {label:'高',key:'high'};
   if(best <= 22)return {label:'中',key:'mid'};
   return {label:'低',key:'low'};
+}
+
+function recommendedNextFor(d,limit=3){
+  const direct = edges
+    .filter(e=>e.from===d.id && e.type==='prerequisite_of')
+    .map(e=>({node:nodeMap[e.to],exp:e.exp,kind:'next'}))
+    .filter(row=>row.node);
+  const related = edges
+    .filter(e=>edgeTouches(e,d.id) && e.type==='related_to')
+    .map(e=>({node:nodeMap[e.from===d.id?e.to:e.from],exp:e.exp,kind:'related'}))
+    .filter(row=>row.node);
+  const remedial = edges
+    .filter(e=>e.to===d.id && e.type==='prerequisite_of')
+    .map(e=>({node:nodeMap[e.from],exp:e.exp,kind:'prereq'}))
+    .filter(row=>row.node);
+  const seen = new Set([d.id]);
+  return [...direct,...related,...remedial]
+    .filter(row=>!seen.has(row.node.id) && seen.add(row.node.id))
+    .sort((a,b)=>{
+      const weight = {next:0,related:1,prereq:2};
+      return weight[a.kind]-weight[b.kind] || a.node.difficulty-b.node.difficulty || (degreeRank[a.node.id]||99)-(degreeRank[b.node.id]||99);
+    })
+    .slice(0,limit);
+}
+function starterPath(limit=3){
+  return nodes
+    .filter(n=>prerequisiteCount[n.id]===0)
+    .sort((a,b)=>a.difficulty-b.difficulty || (degreeRank[a.id]||99)-(degreeRank[b.id]||99))
+    .slice(0,limit)
+    .map(node=>({node,exp:'基础入口，先建立全局坐标',kind:'start'}));
+}
+function pathKindLabel(kind){
+  return {next:'下一步',related:'横向连接',prereq:'补前置',start:'起点'}[kind] || '推荐';
 }
 function lessonPlanFor(d){
   const priority = lessonPriorityFor(d);
@@ -624,6 +713,16 @@ function showCard(d){
     <div class="mentor"><img src="assets/portraits/feynman-avatar.webp" alt=""><div><b>费曼输出</b><span>用一句话讲给低年级同学听。</span></div></div>
   </div>`;
 
+  const pathRows = recommendedNextFor(d,3);
+  if(pathRows.length){
+    html += `<div class="path-card"><b>学习路径推荐</b><div class="path-list">`;
+    pathRows.forEach(row=>{
+      const v = visualFor(row.node);
+      html += `<button type="button" onclick="focusNodeById('${row.node.id}')">${pathKindLabel(row.kind)} · ${v.icon} ${row.node.name}<span>${row.exp}</span></button>`;
+    });
+    html += `</div></div>`;
+  }
+
   const relationButton = (other,arrow,exp)=>`<button class="relation-item" type="button" onclick="focusNodeById('${other.id}')"><span class="relation-name" style="color:${CAT_COLORS[other.category]}">${arrow} ${other.name}</span><span class="relation-exp">${exp}</span></button>`;
 
   if(relationEdges.length>0){
@@ -668,6 +767,48 @@ document.querySelectorAll('#category-filters button').forEach(btn=>{
 document.querySelectorAll('#semester-toggle button').forEach(btn=>{
   btn.addEventListener('click',()=>setSemester(btn.dataset.sem));
 });
+const searchInput = document.getElementById('concept-search');
+searchInput.addEventListener('input',()=>setSearch(searchInput.value));
+searchInput.addEventListener('keydown',e=>{
+  if(e.key==='Enter'){
+    const first = searchMatches()[0];
+    if(first)focusNode(first);
+  }
+});
+document.getElementById('clear-search').addEventListener('click',()=>{
+  searchInput.value = '';
+  setSearch('');
+  searchInput.focus();
+});
+
+function searchMatches(limit=8){
+  if(!activeSearch)return [];
+  return nodes
+    .filter(n=>(activeCat==='all'||n.category===activeCat) && passesSemester(n) && matchesSearch(n))
+    .sort((a,b)=>{
+      const aq = normalizeSearch(a.name).includes(activeSearch) ? 0 : 1;
+      const bq = normalizeSearch(b.name).includes(activeSearch) ? 0 : 1;
+      return aq-bq || (degreeRank[a.id]||99)-(degreeRank[b.id]||99) || a.difficulty-b.difficulty;
+    })
+    .slice(0,limit);
+}
+function renderSearchResults(){
+  const box = document.getElementById('search-results');
+  if(!activeSearch){box.classList.remove('open');box.innerHTML='';return;}
+  box.classList.add('open');
+  const matches = searchMatches();
+  if(!matches.length){
+    box.innerHTML = `<span class="empty">没有匹配概念，试试“面积”“分数”“单位”。</span>`;
+    return;
+  }
+  box.innerHTML = matches.map(n=>{
+    const v = visualFor(n);
+    return `<button type="button" data-id="${n.id}">${v.icon} ${n.name}</button>`;
+  }).join('');
+  box.querySelectorAll('button').forEach(btn=>{
+    btn.addEventListener('click',()=>focusNodeById(btn.dataset.id));
+  });
+}
 
 function setCategory(cat){
   activeCat = cat;
@@ -675,6 +816,7 @@ function setCategory(cat){
   document.getElementById('detail-panel').classList.remove('open');
   container.classList.remove('detail-open');
   syncControls();
+  renderSearchResults();
   applyGraphState();
 }
 function setSemester(sem){
@@ -683,12 +825,36 @@ function setSemester(sem){
   document.getElementById('detail-panel').classList.remove('open');
   container.classList.remove('detail-open');
   syncControls();
+  renderSearchResults();
+  applyGraphState();
+}
+function setSearch(value){
+  activeSearch = normalizeSearch(value);
+  selectedNodeId = null;
+  document.getElementById('detail-panel').classList.remove('open');
+  container.classList.remove('detail-open');
+  renderSearchResults();
   applyGraphState();
 }
 function syncControls(){
   document.querySelectorAll('#category-filters button').forEach(b=>b.classList.toggle('active',b.dataset.cat===activeCat));
   document.querySelectorAll('#semester-toggle button').forEach(b=>b.classList.toggle('active',b.dataset.sem===activeSem));
   document.querySelectorAll('#legend .legend-item').forEach(b=>b.classList.toggle('active',b.dataset.cat===activeCat));
+}
+function renderPathPanel(){
+  const panel = document.getElementById('path-panel');
+  const selected = selectedNodeId ? nodeMap[selectedNodeId] : null;
+  const rows = selected ? recommendedNextFor(selected,3) : starterPath(3);
+  if(!rows.length){panel.innerHTML='';panel.style.display='none';return;}
+  panel.style.display='';
+  const title = selected ? `从“${selected.name}”继续学` : '推荐学习起点';
+  panel.innerHTML = `<h3>${title}</h3><div class="path-actions">${rows.map(row=>{
+    const v = visualFor(row.node);
+    return `<button type="button" data-id="${row.node.id}">${pathKindLabel(row.kind)} · ${v.icon} ${row.node.name}<span>${row.exp}</span></button>`;
+  }).join('')}</div>`;
+  panel.querySelectorAll('button').forEach(btn=>{
+    btn.addEventListener('click',()=>focusNodeById(btn.dataset.id));
+  });
 }
 function applyGraphState(){
   const focusIds = selectedNodeId ? relationMap.get(selectedNodeId) : null;
@@ -724,6 +890,7 @@ function applyGraphState(){
     return visible?1:0.04;
   });
   updateInfo();
+  renderPathPanel();
 }
 
 function updateInfo(){

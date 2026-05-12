@@ -602,6 +602,184 @@ function createBalance(opts){
   return {setValues:(l,r)=>{leftVal=l;rightVal=r;draw();}};
 }
 
+// === 三视图积木投影 ===
+function createThreeViewDemo(opts){
+  const c=document.getElementById(opts.containerId);
+  if(!c)return;
+  const shapes=[
+    {name:'阶梯积木',cubes:[[0,0,0],[1,0,0],[2,0,0],[2,1,0],[2,1,1]]},
+    {name:'L 形积木',cubes:[[0,0,0],[1,0,0],[2,0,0],[0,1,0],[0,1,1]]},
+    {name:'小长方体',cubes:[[0,0,0],[1,0,0],[0,1,0],[1,1,0],[0,0,1],[1,0,1],[0,1,1],[1,1,1]]}
+  ];
+  let index=0;
+  c.innerHTML=`<div class="interactive-area">
+    <canvas class="visual-canvas" id="${opts.containerId}-canvas" aria-label="三视图积木投影"></canvas>
+    <div class="visual-controls" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px;"></div>
+    <div id="${opts.containerId}-hint" style="margin-top:8px;color:var(--text-muted);font-size:14px;">同一个积木，正面、上面、左面看到的是三个不同投影。</div>
+  </div>`;
+  const canvas=document.getElementById(`${opts.containerId}-canvas`);
+  const controls=c.querySelector('.visual-controls');
+  shapes.forEach((shape,i)=>{
+    const btn=document.createElement('button');
+    btn.className='btn '+(i===0?'btn-primary':'btn-outline')+' btn-sm';
+    btn.textContent=shape.name;
+    btn.addEventListener('click',()=>{index=i;[...controls.children].forEach((b,j)=>b.className='btn '+(j===i?'btn-primary':'btn-outline')+' btn-sm');draw();});
+    controls.appendChild(btn);
+  });
+  function resize(){
+    const w=Math.min(720,c.clientWidth-32||720);
+    canvas.width=w;canvas.height=w<520?420:310;
+    draw();
+  }
+  function drawGrid(ctx,origin,label,cells,color){
+    const size=22, gap=2;
+    ctx.fillStyle='#1e293b';ctx.font='700 13px sans-serif';ctx.textAlign='left';
+    ctx.fillText(label,origin.x,origin.y-10);
+    ctx.strokeStyle='#cbd5e1';ctx.lineWidth=1;
+    for(let r=0;r<4;r++)for(let col=0;col<4;col++){
+      const x=origin.x+col*(size+gap), y=origin.y+r*(size+gap);
+      ctx.fillStyle='rgba(148,163,184,.12)';ctx.fillRect(x,y,size,size);ctx.strokeRect(x,y,size,size);
+    }
+    cells.forEach(([col,r])=>{
+      const x=origin.x+col*(size+gap), y=origin.y+r*(size+gap);
+      ctx.fillStyle=color;ctx.fillRect(x+2,y+2,size-4,size-4);
+    });
+  }
+  function project(cubes,view){
+    const set=new Set();
+    cubes.forEach(([x,y,z])=>{
+      if(view==='front')set.add(`${x},${2-z}`);
+      if(view==='top')set.add(`${x},${y}`);
+      if(view==='left')set.add(`${y},${2-z}`);
+    });
+    return [...set].map(v=>v.split(',').map(Number));
+  }
+  function cube(ctx,x,y,s){
+    ctx.beginPath();ctx.moveTo(x,y-s*.45);ctx.lineTo(x+s*.55,y-s*.75);ctx.lineTo(x+s*1.1,y-s*.45);ctx.lineTo(x+s*.55,y-s*.15);ctx.closePath();ctx.fillStyle='#dbeafe';ctx.fill();ctx.strokeStyle='#60a5fa';ctx.stroke();
+    ctx.beginPath();ctx.moveTo(x,y-s*.45);ctx.lineTo(x+s*.55,y-s*.15);ctx.lineTo(x+s*.55,y+s*.5);ctx.lineTo(x,y+s*.2);ctx.closePath();ctx.fillStyle='#93c5fd';ctx.fill();ctx.stroke();
+    ctx.beginPath();ctx.moveTo(x+s*1.1,y-s*.45);ctx.lineTo(x+s*.55,y-s*.15);ctx.lineTo(x+s*.55,y+s*.5);ctx.lineTo(x+s*1.1,y+s*.2);ctx.closePath();ctx.fillStyle='#3b82f6';ctx.fill();ctx.stroke();
+  }
+  function draw(){
+    const ctx=canvas.getContext('2d'), w=canvas.width, h=canvas.height;
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);
+    const shape=shapes[index], cubes=[...shape.cubes].sort((a,b)=>(a[0]+a[1]+a[2])-(b[0]+b[1]+b[2]));
+    const baseX=w<520?55:70, baseY=w<520?130:170, s=w<520?34:38;
+    ctx.fillStyle='#334155';ctx.font='800 15px sans-serif';ctx.textAlign='left';ctx.fillText(shape.name+'：立体积木',baseX,28);
+    cubes.forEach(([x,y,z])=>cube(ctx,baseX+(x-y)*s*.58,baseY+(x+y)*s*.24-z*s*.68,s));
+    const topY=w<520?210:62, left=w<520?34:360;
+    drawGrid(ctx,{x:left,y:topY},'正视图：前面看',project(shape.cubes,'front'),'rgba(59,130,246,.72)');
+    drawGrid(ctx,{x:left+(w<520?0:120),y:topY+(w<520?105:0)},'俯视图：上面看',project(shape.cubes,'top'),'rgba(245,158,11,.72)');
+    drawGrid(ctx,{x:left+(w<520?0:240),y:topY+(w<520?210:0)},'左视图：左面看',project(shape.cubes,'left'),'rgba(34,197,94,.72)');
+  }
+  resize();
+  window.addEventListener('resize',resize);
+  return {draw,setShape:i=>{index=Math.max(0,Math.min(shapes.length-1,i));draw();}};
+}
+
+// === 轴对称与旋转变换演示 ===
+function createTransformDemo(opts){
+  const c=document.getElementById(opts.containerId);
+  if(!c)return;
+  let angle=90, mode='rotate';
+  c.innerHTML=`<div class="interactive-area">
+    <canvas class="visual-canvas" id="${opts.containerId}-canvas" aria-label="轴对称与旋转演示"></canvas>
+    <div style="display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:12px;">
+      <button class="btn btn-primary btn-sm" id="${opts.containerId}-rotate">旋转</button>
+      <button class="btn btn-outline btn-sm" id="${opts.containerId}-mirror">轴对称</button>
+      <label style="font-size:13px;color:var(--text-muted);">角度 <input id="${opts.containerId}-angle" type="range" min="0" max="180" step="15" value="90"></label>
+      <b id="${opts.containerId}-label" style="color:var(--accent-deep);">90°</b>
+    </div>
+  </div>`;
+  const canvas=document.getElementById(`${opts.containerId}-canvas`);
+  const label=document.getElementById(`${opts.containerId}-label`);
+  function resize(){canvas.width=Math.min(640,c.clientWidth-32||640);canvas.height=300;draw();}
+  function polyPoints(cx,cy){
+    return [[-42,-28],[18,-28],[18,-55],[54,0],[18,55],[18,28],[-42,28]].map(([x,y])=>[cx+x,cy+y]);
+  }
+  function drawPoly(ctx,pts,fill,stroke){
+    ctx.beginPath();pts.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();ctx.fillStyle=fill;ctx.fill();ctx.strokeStyle=stroke;ctx.lineWidth=2.4;ctx.stroke();
+  }
+  function transformPoint([x,y],cx,cy){
+    if(mode==='mirror')return [2*cx-x,y];
+    const rad=angle*Math.PI/180, dx=x-cx, dy=y-cy;
+    return [cx+dx*Math.cos(rad)-dy*Math.sin(rad),cy+dx*Math.sin(rad)+dy*Math.cos(rad)];
+  }
+  function draw(){
+    const ctx=canvas.getContext('2d'), w=canvas.width, h=canvas.height, cx=w/2, cy=h/2+8;
+    ctx.clearRect(0,0,w,h);ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);
+    ctx.strokeStyle='#e2e8f0';ctx.lineWidth=1;
+    for(let x=20;x<w;x+=24){ctx.beginPath();ctx.moveTo(x,20);ctx.lineTo(x,h-20);ctx.stroke();}
+    for(let y=20;y<h;y+=24){ctx.beginPath();ctx.moveTo(20,y);ctx.lineTo(w-20,y);ctx.stroke();}
+    ctx.setLineDash([6,4]);ctx.strokeStyle=mode==='mirror'?'#f59e0b':'#94a3b8';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(cx,30);ctx.lineTo(cx,h-28);ctx.stroke();ctx.setLineDash([]);
+    const origin=polyPoints(cx-70,cy), moved=origin.map(p=>mode==='mirror'?transformPoint(p,cx,cy):transformPoint(p,cx-70,cy));
+    drawPoly(ctx,origin,'rgba(59,130,246,.3)','#3b82f6');
+    drawPoly(ctx,moved,mode==='mirror'?'rgba(245,158,11,.35)':'rgba(34,197,94,.32)',mode==='mirror'?'#f59e0b':'#16a34a');
+    ctx.fillStyle='#1e293b';ctx.font='800 14px sans-serif';ctx.textAlign='center';
+    ctx.fillText('原图形',cx-70,34);ctx.fillText(mode==='mirror'?'镜像后':'旋转后',mode==='mirror'?cx+70:cx-70, h-34);
+    ctx.fillStyle='#64748b';ctx.font='13px sans-serif';
+    ctx.fillText(mode==='mirror'?'对称轴两侧到轴距离相等，形状大小不变':'绕中心点转动，形状大小不变',cx,h-10);
+  }
+  document.getElementById(`${opts.containerId}-angle`).addEventListener('input',e=>{angle=parseInt(e.target.value,10);label.textContent=angle+'°';draw();});
+  document.getElementById(`${opts.containerId}-rotate`).addEventListener('click',()=>{mode='rotate';draw();});
+  document.getElementById(`${opts.containerId}-mirror`).addEventListener('click',()=>{mode='mirror';draw();});
+  resize();
+  window.addEventListener('resize',resize);
+  return {draw};
+}
+
+// === 平行四边形剪拼演示 ===
+function createParallelogramCutDemo(opts){
+  const c=document.getElementById(opts.containerId);
+  if(!c)return;
+  let state=0;
+  c.innerHTML=`<div class="interactive-area">
+    <canvas class="visual-canvas" id="${opts.containerId}-canvas" aria-label="平行四边形剪拼演示"></canvas>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px;">
+      <button class="btn btn-primary btn-sm" data-state="1">剪开</button>
+      <button class="btn btn-primary btn-sm" data-state="2">平移</button>
+      <button class="btn btn-primary btn-sm" data-state="3">拼成矩形</button>
+      <button class="btn btn-outline btn-sm" data-state="0">重置</button>
+    </div>
+    <div id="${opts.containerId}-caption" style="margin-top:8px;color:var(--text-muted);font-size:14px;"></div>
+  </div>`;
+  const canvas=document.getElementById(`${opts.containerId}-canvas`);
+  const caption=document.getElementById(`${opts.containerId}-caption`);
+  function resize(){canvas.width=Math.min(620,c.clientWidth-32||620);canvas.height=240;draw();}
+  function drawShape(ctx,pts,fill,stroke){
+    ctx.beginPath();pts.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();ctx.fillStyle=fill;ctx.fill();ctx.strokeStyle=stroke;ctx.lineWidth=2.4;ctx.stroke();
+  }
+  function draw(){
+    const ctx=canvas.getContext('2d'), w=canvas.width, h=canvas.height, cx=w/2, cy=h/2+6;
+    const base=Math.min(230,w*.5), high=92, shift=Math.min(72,w*.16);
+    ctx.clearRect(0,0,w,h);ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);
+    const left=cx-base/2, right=cx+base/2, top=cy-high/2, bottom=cy+high/2;
+    if(state<3){
+      drawShape(ctx,[[left+shift,top],[right+shift,top],[right,bottom],[left,bottom]],'rgba(59,130,246,.24)','#3b82f6');
+      ctx.setLineDash([6,4]);ctx.strokeStyle='#ef4444';ctx.lineWidth=2.2;
+      ctx.beginPath();ctx.moveTo(left+shift,top);ctx.lineTo(left+shift,bottom);ctx.stroke();ctx.setLineDash([]);
+      if(state>=1){
+        const off=state===1?0:shift;
+        drawShape(ctx,[[left+shift-off,top],[left+shift-off,bottom],[left-off,bottom]],'rgba(239,68,68,.38)','#ef4444');
+      }
+      if(state===0)caption.textContent='平行四边形是“歪”的，但底和高已经决定了面积。';
+      if(state===1)caption.textContent='沿高剪开，剪下一个三角形。';
+      if(state===2)caption.textContent='把三角形平移到另一边，面积没有变。';
+    }else{
+      drawShape(ctx,[[left,top],[right,top],[right,bottom],[left,bottom]],'rgba(34,197,94,.24)','#16a34a');
+      drawShape(ctx,[[left,top],[left+shift,top],[left,bottom]],'rgba(245,158,11,.36)','#f59e0b');
+      caption.textContent='拼成矩形：长=底，宽=高，所以面积=底×高。';
+    }
+    ctx.fillStyle='#1e293b';ctx.font='800 14px sans-serif';ctx.textAlign='center';ctx.fillText('底',cx,bottom+24);
+    ctx.fillStyle='#ef4444';ctx.fillText('高',left+shift-16,cy);
+  }
+  c.querySelectorAll('[data-state]').forEach(btn=>btn.addEventListener('click',()=>{state=parseInt(btn.dataset.state,10);draw();}));
+  resize();
+  window.addEventListener('resize',resize);
+  return {setState:s=>{state=s;draw();},draw};
+}
+
 // 暴露到全局
 window.saveProgress=saveProgress;
 window.getProgress=getProgress;
@@ -618,6 +796,9 @@ window.createNumberLine=createNumberLine;
 window.createAreaModel=createAreaModel;
 window.createFractionBar=createFractionBar;
 window.createBalance=createBalance;
+window.createThreeViewDemo=createThreeViewDemo;
+window.createTransformDemo=createTransformDemo;
+window.createParallelogramCutDemo=createParallelogramCutDemo;
 
 // 自动初始化
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initScrollProgress);
