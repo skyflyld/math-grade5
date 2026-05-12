@@ -1020,3 +1020,81 @@ body {
   background: var(--accent-light);
   transform: translateY(-1px);
 }
+
+/* ========== 复习卡 ========== */
+.course-summary {
+  margin-top: 20px;
+  padding: 18px 20px;
+  border: 1px solid rgba(59,130,246,.15);
+  border-radius: var(--radius);
+  background: linear-gradient(145deg, #f8faff, #fff);
+}
+.summary-kicker {
+  font-size: .82em;
+  font-weight: 800;
+  color: var(--accent-deep);
+  margin-bottom: 12px;
+}
+.summary-grid {
+  display: grid;
+  gap: 10px;
+}
+.summary-item {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 10px;
+  align-items: start;
+  padding: 8px 10px;
+  background: #fff;
+  border: 1px solid rgba(234,223,206,.6);
+  border-radius: var(--radius-sm);
+}
+.summary-icon {
+  font-size: 1.1em;
+  line-height: 1.6;
+}
+.summary-item b {
+  display: block;
+  font-size: .88em;
+  margin-bottom: 2px;
+  color: var(--text);
+}
+.summary-item span {
+  font-size: .82em;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ========== 解析按钮 ========== */
+.explain-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--accent-light);
+  color: var(--accent-deep);
+  font-size: .76em;
+  font-weight: 700;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: all .2s;
+  margin-top: 6px;
+}
+.explain-toggle:hover {
+  background: #bfdbfe;
+  border-color: var(--accent);
+}
+.explain-content {
+  display: none;
+  margin-top: 6px;
+  padding: 10px 14px;
+  background: #f0f7ff;
+  border: 1px solid rgba(59,130,246,.15);
+  border-radius: var(--radius-sm);
+  font-size: .84em;
+  line-height: 1.6;
+  color: #1e3a5f;
+  animation: fadeIn .2s ease;
+}
+.explain-content.open { display: block; }

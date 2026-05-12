@@ -829,6 +829,85 @@ function createNextLessonSuggestion(opts){
   '</div>';
 }
 
+// === 课件复习卡 ===
+const __conceptSummary = {
+  '整数加减法':['🔢','加减法是在数轴上移动；进位/退位=相邻数位的满十/借一'],
+  '整数乘法':['🔢','乘法=同数连加；因数交换、结合、分配让计算更灵活'],
+  '整数除法':['🔢','除法=均分或包含；乘除互为逆运算'],
+  '位置值':['🔢','每个数位有自己的值；向左×10，向右÷10'],
+  '小数的意义':['🔢','小数=位置值向右延伸；十分位/百分位/千分位'],
+  '整数四则运算':['🔢','先乘除后加减；括号改变运算顺序'],
+  '矩形面积':['📐','面积=单位正方形个数=长×宽'],
+  '等式的性质':['⚖️','等式两边同加减乘除同个数，等式仍成立'],
+  '图形认知':['📐','认识平面图形的基本特征：边/角/对称'],
+  '分数基础':['🔢','分数=部分/整体；分母=总份数，分子=取几份'],
+  '数据收集':['📊','数据收集=问问题+做记录；整理后用图表更好看'],
+  '单位换算':['🔢','大→小×进率，小→大÷进率；1m=100cm'],
+  '轴对称与旋转':['📐','对称=左右完全一样；旋转=图形绕点转，大小形状不变'],
+  '小数乘法':['🔢','先按整数乘，再移动小数点；乘<1的数结果会变小'],
+  '小数除法':['🔢','利用商不变性质转化为整数除法'],
+  '因数和倍数':['🔢','因数×因数=积；倍数=这个数×自然数'],
+  '235的倍数特征':['🔢','看个位（2/5）；各位数字和（3）'],
+  '循环小数':['🔢','除不尽时小数重复出现；循环节表示'],
+  '观察物体':['📐','从正面/上面/左面看立体，三个视图各不相同'],
+  '质数与合数':['🔢','只有两个因数=质数；多于两个=合数；1不是质数也不是合数'],
+  '简易方程':['⚖️','设未知数列等式；用等式的性质求解'],
+  '长方体和正方体':['📐','6面/12棱/8顶点；表面积=6个面面积之和'],
+  '平行四边形面积':['📐','剪拼→矩形；面积=底×高'],
+  '体积和体积单位':['📐','体积=空间大小；1cm³=棱长1cm的正方体'],
+  '长方体体积':['📐','体积=长×宽×高=底面积×高'],
+  '三角形面积':['📐','两个全等三角形拼成平行四边形；面积=底×高÷2'],
+  '容积和容积单位':['📐','容积=内部空间；1L=1dm³=1000mL'],
+  '梯形面积':['📐','两个全等梯形拼成平行四边形；面积=(上底+下底)×高÷2'],
+  '组合图形面积':['📐','分割法或添补法，分解为基本图形'],
+  '分数的意义':['🔢','单位"1"平均分；分数单位=1/分母'],
+  '真分数和假分数':['🔢','真<1<假；假=整数+真（带分数）'],
+  '可能性':['🎯','确定/不确定；可能性大小用分数表示'],
+  '植树问题':['🎯','间隔数+1=两端都栽；-1=两端不栽'],
+  '分数的基本性质':['🔢','分子分母同×÷相同非零数，分数大小不变'],
+  '约分':['🔢','最大公因数约到最简'],
+  '通分':['🔢','最小公倍数化同分母'],
+  '分数加减法':['🔢','同分母直接算；异分母先通分'],
+  '分数与小数互化':['🔢','10/100/1000直接写小数；其余分子÷分母'],
+  '折线统计图':['📊','点=数据，线=变化趋势'],
+  '找次品':['🎯','分成3组最优；天平每次排除2/3'],
+};
+
+function createCourseSummary(opts){
+  const c = document.getElementById(opts.containerId);
+  if(!c)return;
+  const names = opts.conceptNames || (document.body?.dataset?.concept || '').split(/[,，]/).map(s=>s.trim()).filter(Boolean);
+  const concepts = names.map(n=>({name:n,data:__conceptSummary[n]})).filter(r=>r.data);
+  if(!concepts.length){c.style.display='none';return;}
+  c.style.display='';
+  c.innerHTML = '<div class="course-summary">' +
+    '<div class="summary-kicker">📖 你刚才学到了什么</div>' +
+    '<div class="summary-grid">' +
+    concepts.map(({name,data})=>'<div class="summary-item">' +
+      '<span class="summary-icon">'+escapeHTML(data[0])+'</span>' +
+      '<div><b>'+escapeHTML(name)+'</b><span>'+escapeHTML(data[1])+'</span></div>' +
+    '</div>').join('') +
+    '</div></div>';
+}
+
+// === 解析按钮 ===
+function addExplanation(containerId, explanation){
+  const c = document.getElementById(containerId);
+  if(!c)return;
+  const toggle = document.createElement('button');
+  toggle.className = 'explain-toggle';
+  toggle.textContent = '📖 解析';
+  const content = document.createElement('div');
+  content.className = 'explain-content';
+  content.textContent = explanation;
+  toggle.addEventListener('click',()=>{
+    const open = content.classList.toggle('open');
+    toggle.textContent = open ? '🙈 收起解析' : '📖 解析';
+  });
+  c.appendChild(toggle);
+  c.appendChild(content);
+}
+
 // 暴露到全局
 window.saveProgress=saveProgress;
 window.getProgress=getProgress;
@@ -850,6 +929,8 @@ window.createTransformDemo=createTransformDemo;
 window.createParallelogramCutDemo=createParallelogramCutDemo;
 window.addHintButton=addHintButton;
 window.createNextLessonSuggestion=createNextLessonSuggestion;
+window.createCourseSummary=createCourseSummary;
+window.addExplanation=addExplanation;
 
 // 自动初始化
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initScrollProgress);
