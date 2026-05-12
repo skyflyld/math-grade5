@@ -26,10 +26,12 @@
   --shadow-md: 0 4px 10px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04);
   --shadow-lg: 0 8px 24px rgba(0,0,0,0.08), 0 4px 8px rgba(0,0,0,0.04);
   --shadow-xl: 0 16px 40px rgba(0,0,0,0.1);
-  --radius: 16px;
-  --radius-md: 12px;
-  --radius-sm: 8px;
-  --radius-xs: 6px;
+  --radius: 18px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --radius-xs: 8px;
+  --font-weight-heavy: 800;
+  --font-weight-bold: 700;
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-cn: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', '苹方', sans-serif;
   --font-mono: 'SF Mono', 'JetBrains Mono', 'Consolas', monospace;
@@ -75,8 +77,8 @@ body {
   background: rgba(255,255,255,0.82);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border-radius: 14px;
-  box-shadow: var(--shadow);
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
   margin-bottom: 28px;
   font-size: 13px;
   color: var(--text-muted);
