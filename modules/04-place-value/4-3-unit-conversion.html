@@ -1,0 +1,50 @@
+<!DOCTYPE html><html lang="zh-CN"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>单位换算 · 五年级</title>
+<link rel="stylesheet" href="../../shared/layout.css">
+<style>.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;}.visual-step h4{font-size:17px;margin-bottom:12px;}.visual-step .step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:700;background:var(--accent-light);color:var(--accent-deep);margin-bottom:10px;}.concept-highlight{background:linear-gradient(145deg,#fefce8,#fff);border:2px solid #fde68a;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}.concept-highlight .big-idea{font-size:22px;font-weight:800;color:#92400e;line-height:1.6;}.concept-highlight .big-idea .highlight{color:var(--accent-deep);background:var(--accent-light);padding:2px 8px;border-radius:4px;}.thought-bubble{display:inline-block;background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:10px 16px;margin:6px 0;font-size:14px;max-width:90%;}.thought-bubble::before{content:'💭 ';}
+</style></head>
+<body data-concept="单位换算">
+<div class="top-nav"><a href="../../index.html#%E5%8D%95%E4%BD%8D%E6%8D%A2%E7%AE%97">🏠</a><span class="breadcrumb-sep">›</span><span>单位换算</span></div>
+<h1 class="module-title">🪜 单位换算 — 单位阶梯</h1>
+<p class="module-subtitle">大单位→小单位用乘法，小单位→大单位用除法。每级阶梯的进率要记清。</p>
+<div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
+<div class="section"><div class="section-header"><span class="emoji">🧱</span>拆到公理</div>
+  <div class="visual-step"><span class="step-label">第 1 步</span><h4>1m=100cm——一个单位等于几个更小的单位</h4><div class="thought-bubble">从大到小：×进率。从小到大：÷进率。单位是"度量衡"里的"量"，进率是它们之间的倍数关系。</div></div>
+  <div class="visual-step"><span class="step-label">第 2 步</span><h4>常用进率</h4>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+    <div style="padding:10px;background:#dbeafe;border-radius:8px;"><strong>长度</strong><br>1m=10dm=100cm=1000mm</div>
+    <div style="padding:10px;background:#fef3c7;border-radius:8px;"><strong>面积</strong><br>1m²=100dm²=10000cm²</div>
+    <div style="padding:10px;background:#dcfce7;border-radius:8px;"><strong>体积</strong><br>1m³=1000dm³=1000000cm³</div>
+    <div style="padding:10px;background:#fce7f3;border-radius:8px;"><strong>质量</strong><br>1kg=1000g，1t=1000kg</div>
+  </div></div>
+  <div class="concept-highlight"><div class="big-idea">🔑 <span class="highlight">×进率（大→小）÷进率（小→大）</span></div></div>
+</div>
+<div class="section"><div class="section-header"><span class="emoji">🎯</span>典例精讲</div>
+  <div class="visual-step"><h4>🎯 3m=？cm</h4>3×100=300cm<br>✏️ 5km=？m<input class="input-field" id="ex1" style="width:50px;"><button class="btn btn-primary btn-sm" onclick="checkE(1,'5000',ex1,fb1)">提交</button><div class="feedback" id="fb1"></div></div>
+  <div class="visual-step"><h4>🎯 500cm=？m</h4>500÷100=5m<br>✏️ 3000g=？kg<input class="input-field" id="ex2" style="width:50px;"><button class="btn btn-primary btn-sm" onclick="checkE(2,'3',ex2,fb2)">提交</button><div class="feedback" id="fb2"></div></div>
+</div>
+<div class="section"><div class="section-header"><span class="emoji">⚡</span>对抗挑战</div><div id="adversary-root"></div></div>
+<div class="section"><div class="section-header"><span class="emoji">🦜</span>费曼输出</div><div id="feynman-root"></div></div>
+<div class="section"><div class="section-header"><span class="emoji">📝</span>练习</div>
+  <div class="exercise-tier"><h3><span class="tier-badge basic">基础</span></h3><div id="ex-basic"></div></div>
+  <div class="exercise-tier" id="tier-adv" style="display:none;"><h3><span class="tier-badge advanced">提升</span></h3><div id="ex-adv"></div></div>
+  <div id="done">🎉 通关！</div></div>
+<script src="../../shared/concepts.js"></script><script src="../../shared/concept-sync.js"></script><script src="../../shared/components.js"></script>
+<script>
+createGate({containerId:'gate-root',questions:[{label:'1m=?cm',inputs:[{key:'a',width:40}],check:u=>u.a==='100'}],onPass:()=>document.getElementById('gate-root').innerHTML='✅'});
+function checkE(n,ans,input,fb){const ok=input.value.trim()===ans;fb.className='feedback show '+(ok?'success':'error');fb.innerHTML=ok?'✅':`❌ ${ans}`;}
+createAdversarialChallenge({containerId:'adversary-root',challenges:[{tag:'面积进率',statement:'1m²=100dm²',answer:'agree',hint:'1m=10dm，面积是平方',explanation:'1m²=10dm×10dm=100dm²'}],onComplete:()=>saveProgress({'units':{'conversion':{'adversary':'complete'}}})});
+createFeynmanFill({containerId:'feynman-root',template:'大单位→小单位用___法（×进率）。小单位→大单位用___法（÷进率）。长度进率是___，面积进率是___的平方。',answer:['乘','除','10','10'],onComplete:()=>saveProgress({'units':{'conversion':{'feynman':'complete'}}})});
+createExerciseSet({containerId:'ex-basic',exercises:[
+  {question:'2m=?cm',inputs:[{key:'a',width:40}],check:a=>a.a==='200'},
+  {question:'3kg=?g',inputs:[{key:'a',width:40}],check:a=>a.a==='3000'},
+  {question:'400cm=?m',inputs:[{key:'a',width:40}],check:a=>a.a==='4'}
+],passThreshold:0.67,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}});
+function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[
+  {question:'5km²=?m²',inputs:[{key:'a',width:60}],check:a=>a.a==='5000000'},
+  {question:'2.5km=?m',inputs:[{key:'a',width:40}],check:a=>a.a==='2500'}
+],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'units':{'conversion':{'completed':true}}});}});}
+</script>
+</body>
+</html>
