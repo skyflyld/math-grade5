@@ -3,7 +3,7 @@ const fs = require("fs");
 const data = fs.readFileSync("shared/concepts.js","utf-8");
 const match = data.match(/const lessonByConcept = \{([\s\S]*?)\};/);
 const block = match[1];
-const lines = block.split("\n").filter(l => l.includes(":href:withHash"));
+const lines = block.split("\n").filter(l => l.includes("href:withHash"));
 const entries = lines.map(l => {
   const nm = l.match(/^\s+'([^']+)'/);
   const hf = l.match(/withHash\('([^']+)'/);

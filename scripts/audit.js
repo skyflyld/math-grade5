@@ -86,7 +86,7 @@ if(lcMatch){
   while((m=hrefRegex.exec(lcMatch[0]))!==null){
     fileCount++;
     const cname=m[1], filePath=m[2];
-    const absPath=path.join(__dirname, filePath);
+    const absPath=path.join(__dirname, "..", filePath);
     if(!fs.existsSync(absPath)){
       missingFiles++;
       check(false, "File MISSING: "+cname+" -> "+filePath);
@@ -101,21 +101,29 @@ console.log("  Pass: "+(pass-p4pass)+" in this phase");
 // === Phase 5: Courseware structural check ===
 let p5pass=pass;
 console.log("\n=== Phase 5: Courseware structural check ===");
-let totalCW=0, noGate=0, noAdv=0, noFeyn=0, noEx=0, noComponents=0, noConceptAttr=0;
+let totalCW=0, deepLessons=0, noGate=0, noAdv=0, noFeyn=0, noEx=0, noComponents=0, noConceptAttr=0;
 let nonMatchingAttr=[];
 fs.readdirSync("modules",{recursive:true}).filter(f=>f.endsWith(".html")).forEach(f=>{
   const fp=path.join("modules",f);
   if(!fs.existsSync(fp))return;
   totalCW++;
+  const isModuleIndex=path.basename(f)==="index.html";
   const c=fs.readFileSync(fp,"utf-8");
-  if(!c.includes("createGate")) noGate++;
-  if(!c.includes("createAdversarialChallenge")) noAdv++;
-  if(!c.includes("createFeynmanFill")) noFeyn++;
-  if(!c.includes("createExerciseSet")) noEx++;
-  if(!c.includes("shared/components.js")) noComponents++;
+  if(!isModuleIndex){
+    deepLessons++;
+    if(!c.includes("createGate")) noGate++;
+    if(!c.includes("createAdversarialChallenge")) noAdv++;
+    if(!c.includes("createFeynmanFill")) noFeyn++;
+    if(!c.includes("createExerciseSet")) noEx++;
+  }
+  if(!isModuleIndex && !c.includes("shared/components.js")) noComponents++;
   if(!c.includes("data-concept=")) noConceptAttr++;
   const cd=c.match(/data-concept="([^"]+)"/);
-  if(cd && !nodeNameSet.has(cd[1])) nonMatchingAttr.push(f+" -> \""+cd[1]+"\" not in graph");
+  if(cd){
+    cd[1].split(",").map(v=>v.trim()).filter(Boolean).forEach(name=>{
+      if(!nodeNameSet.has(name)) nonMatchingAttr.push(f+" -> \""+name+"\" not in graph");
+    });
+  }
 });
 check(totalCW===40, "Total courseware: "+totalCW+" (expected 40)");
 check(noGate===0, "Missing createGate: "+noGate);
@@ -125,7 +133,7 @@ check(noEx===0, "Missing ExerciseSet: "+noEx);
 check(noComponents===0, "Missing components.js import: "+noComponents);
 check(noConceptAttr===0, "Missing data-concept: "+noConceptAttr);
 nonMatchingAttr.forEach(v=>check(false, v));
-console.log("  Courseware files: "+totalCW+", structural issues: "+(noGate+noAdv+noFeyn+noEx+noComponents+noConceptAttr+nonMatchingAttr.length));
+console.log("  Courseware files: "+totalCW+", deep lessons: "+deepLessons+", structural issues: "+(noGate+noAdv+noFeyn+noEx+noComponents+noConceptAttr+nonMatchingAttr.length));
 console.log("  Pass: "+(pass-p5pass)+" in this phase");
 
 // === Phase 6: Shared components ===
