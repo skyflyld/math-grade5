@@ -187,6 +187,33 @@ body {
   font-size: 14px;
   line-height: 1.6;
 }
+.concept-sync-related {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 2px;
+}
+.concept-sync-related a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 30px;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.78);
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: all var(--transition);
+}
+.concept-sync-related a:hover,
+.concept-sync-related a.active {
+  border-color: var(--accent);
+  background: #eff6ff;
+  color: var(--accent-deep);
+}
 .concept-sync-link {
   align-self: flex-start;
   color: var(--accent);

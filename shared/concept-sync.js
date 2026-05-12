@@ -27,21 +27,46 @@ function hashConcept(){
   }
 }
 
-function resolveConceptName(api){
+function parseConceptList(value){
+  return String(value || '')
+    .split(/[,，]/)
+    .map(item=>item.trim())
+    .filter(Boolean);
+}
+
+function uniqueConcepts(names){
+  return [...new Set(names)];
+}
+
+function resolveConcepts(api){
   const fromHash = hashConcept();
-  if(fromHash && api.get(fromHash))return fromHash;
-  const fromBody = document.body?.dataset?.concept || '';
-  if(fromBody && api.get(fromBody))return fromBody;
-  return fromHash || fromBody;
+  const bodyConcepts = parseConceptList(document.body?.dataset?.concept);
+  const knownBodyConcepts = bodyConcepts.filter(name=>api.get(name));
+  const concepts = fromHash && api.get(fromHash)
+    ? uniqueConcepts([fromHash,...knownBodyConcepts])
+    : knownBodyConcepts;
+  return concepts;
+}
+
+function renderConceptChips(concepts,activeName){
+  if(concepts.length <= 1)return '';
+  return `<div class="concept-sync-related" aria-label="关联概念">${
+    concepts.map(concept=>{
+      const href = `${location.pathname.split('/').pop() || 'index.html'}#${encodeURIComponent(concept.name)}`;
+      return `<a class="${concept.name === activeName ? 'active' : ''}" href="${escapeHTML(href)}">${escapeHTML(concept.icon)} ${escapeHTML(concept.name)}</a>`;
+    }).join('')
+  }</div>`;
 }
 
 function renderConceptSyncCard(){
   const api = window.MathGrade5Concepts;
   if(!api)return;
-  const conceptName = resolveConceptName(api);
-  const concept = api.get(conceptName);
+  const concepts = resolveConcepts(api).map(name=>api.get(name)).filter(Boolean);
+  const concept = concepts[0];
   const nav = document.querySelector('.top-nav');
-  if(!concept || !nav || document.querySelector('.concept-sync-card'))return;
+  const existing = document.querySelector('.concept-sync-card');
+  if(existing)existing.remove();
+  if(!concept || !nav)return;
 
   const rootPrefix = inferRootPrefix();
   const image = api.assetUrl(concept.image,rootPrefix);
@@ -61,6 +86,7 @@ function renderConceptSyncCard(){
       <div class="concept-sync-kicker">来自知识图谱的当前概念</div>
       <h2>${escapeHTML(concept.icon)} ${escapeHTML(concept.name)} <span>${escapeHTML(concept.label)}</span></h2>
       <p><strong>视觉模型：</strong>${escapeHTML(concept.metaphor)}</p>
+      ${renderConceptChips(concepts,concept.name)}
       <a class="concept-sync-link" href="${escapeHTML(graphHref)}">回到图谱节点</a>
     </div>`;
   nav.insertAdjacentElement('afterend',card);
@@ -71,4 +97,5 @@ if(document.readyState === 'loading'){
 }else{
   renderConceptSyncCard();
 }
+window.addEventListener('hashchange',renderConceptSyncCard);
 })();
