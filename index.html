@@ -10,37 +10,65 @@
 :root{
   --number-ops:#4A90D9;--geometry:#E85D75;--algebra:#7B68EE;
   --statistics:#F0A050;--applications:#50B87A;
-  --bg:#0f1923;--surface:#162231;--text:#e0e6ed;--text-dim:#7a8b9e;
-  --card-bg:#1c2d41;--border:#2a3d55;--accent:#5ba0f5;
+  --bg:#f7f9fb;--surface:#fffdf9;--text:#1f2937;--text-dim:#667085;
+  --card-bg:#fffdf9;--border:#eadfce;--accent:#f5a400;--green:#45c77a;
+  --shadow:0 12px 34px rgba(31,41,55,.12);--soft-shadow:0 8px 24px rgba(70,80,96,.10);
 }
-body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);overflow:hidden;height:100vh;width:100vw}
+body{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);overflow:hidden;height:100vh;width:100vw}
 #app{display:flex;flex-direction:column;height:100dvh;min-height:0}
-header{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:var(--surface);border-bottom:1px solid var(--border);z-index:10;flex-shrink:0}
-header h1{font-size:1.1em;font-weight:600;white-space:nowrap}
-.filters{display:flex;gap:6px;flex-wrap:wrap}
-.filters button{padding:5px 12px;border:1px solid var(--border);border-radius:14px;background:transparent;color:var(--text-dim);cursor:pointer;font-size:.78em;transition:all .2s;white-space:nowrap}
-.filters button:hover{border-color:var(--accent);color:var(--text)}
-.filters button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-.semester-toggle{display:flex;gap:4px}
-.semester-toggle button{padding:5px 14px;border:1px solid var(--border);border-radius:14px;background:transparent;color:var(--text-dim);cursor:pointer;font-size:.78em;transition:all .2s}
-.semester-toggle button:hover{border-color:var(--accent);color:var(--text)}
-.semester-toggle button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-#graph{flex:1;position:relative;cursor:grab;min-height:0}
+header{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:10px 28px;background:var(--surface);border-bottom:1px solid var(--border);z-index:12;flex-shrink:0}
+.brand{display:flex;align-items:center;gap:12px;min-width:280px}
+.brand-icon{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#f2df4b,#62d184);box-shadow:inset 0 0 0 1px rgba(255,255,255,.55);font-size:24px}
+header h1{font-size:1.18em;font-weight:760;white-space:nowrap;letter-spacing:0}
+.tagline{font-size:.82em;color:var(--text-dim);margin-top:2px;white-space:nowrap}
+.stats{display:flex;align-items:baseline;gap:6px;color:var(--text-dim);font-size:.86em;white-space:nowrap}
+.stats strong{font-size:1.05em;color:#1f2937;margin-left:10px}
+.filter-panel{padding:14px 28px 12px;background:rgba(255,253,249,.96);border-bottom:1px solid var(--border);box-shadow:0 2px 12px rgba(31,41,55,.04);z-index:11;flex-shrink:0}
+.filter-title{display:flex;align-items:center;gap:8px;font-weight:760;margin-bottom:12px}
+.filter-title span{font-size:1.2em}
+.filter-grid{display:grid;gap:12px}
+.filter-block{display:grid;grid-template-columns:56px 1fr;align-items:center;gap:10px}
+.filter-block label{font-size:.82em;font-weight:700;color:var(--text-dim);position:relative}
+.filter-block label::after{content:"";position:absolute;left:52px;right:-8px;top:50%;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+.filters,.semester-toggle{display:flex;gap:8px;flex-wrap:wrap}
+.filters button,.semester-toggle button{display:flex;align-items:center;gap:7px;padding:8px 16px;border:1px solid var(--border);border-radius:17px;background:#fff;color:#2f3a4a;cursor:pointer;font-size:.86em;font-weight:700;transition:all .18s;white-space:nowrap;box-shadow:0 1px 4px rgba(31,41,55,.04)}
+.filters button::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--chip-color,#9aa6b2)}
+.filters button[data-cat="all"]::before{display:none}
+.filters button[data-cat="number_ops"]{--chip-color:var(--number-ops)}
+.filters button[data-cat="geometry"]{--chip-color:var(--geometry)}
+.filters button[data-cat="algebra"]{--chip-color:var(--algebra)}
+.filters button[data-cat="statistics"]{--chip-color:var(--statistics)}
+.filters button[data-cat="applications"]{--chip-color:var(--applications)}
+.filters button:hover,.semester-toggle button:hover{transform:translateY(-1px);border-color:#d6c8b2;box-shadow:var(--soft-shadow)}
+.filters button.active{background:#8e8e8e;color:#fff;border-color:#8e8e8e}
+.semester-toggle button.active{background:var(--green);color:#fff;border-color:var(--green)}
+#graph{flex:1;position:relative;cursor:grab;min-height:0;background:radial-gradient(circle at center,#ffffff 0,#f8fbfc 48%,#f2f6f7 100%)}
 #graph:active{cursor:grabbing}
 #graph svg{width:100%;height:100%;display:block}
-.node-label{font-size:11px;fill:var(--text);pointer-events:none;text-anchor:middle;font-weight:500}
-line.edge{stroke:var(--border);stroke-width:1;stroke-opacity:.5}
-line.edge.related{stroke-dasharray:4 3;stroke-opacity:.3}
-line.edge.highlighted{stroke:var(--accent);stroke-width:2.5;stroke-opacity:1}
-#tooltip{position:absolute;padding:10px 14px;background:var(--card-bg);border:1px solid var(--border);border-radius:8px;font-size:.82em;max-width:300px;pointer-events:none;opacity:0;transition:opacity .15s;z-index:20;line-height:1.6}
+.node-label{font-size:11px;fill:#2f3a4a;pointer-events:none;text-anchor:middle;font-weight:800;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}
+line.edge{stroke:#8191a6;stroke-width:1.5;stroke-opacity:.68}
+line.edge.related{stroke-dasharray:5 4;stroke-opacity:.55}
+line.edge.highlighted{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
+line.edge.dimmed{stroke-opacity:.08}
+line.edge.hovered{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
+#tooltip{position:absolute;padding:10px 14px;background:#fff;border:1px solid var(--border);border-radius:10px;font-size:.82em;max-width:300px;pointer-events:none;opacity:0;transition:opacity .15s;z-index:20;line-height:1.6;box-shadow:var(--soft-shadow)}
 #tooltip .tt-cat{font-size:.7em;color:var(--text-dim);text-transform:uppercase;letter-spacing:.05em}
 #tooltip .tt-desc{margin-top:4px;color:var(--text-dim)}
 #tooltip .tt-edge{margin-top:6px;padding-top:6px;border-top:1px solid var(--border);color:var(--accent);font-size:.78em}
-#card-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
-#card-overlay.open{opacity:1;pointer-events:auto}
-#card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:24px;max-width:480px;width:90%;max-height:80vh;overflow-y:auto}
-#card h2{font-size:1.2em;margin-bottom:4px}
+#card-overlay{display:none}
+#card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:520px;width:min(92vw,520px);max-height:calc(100dvh - 36px);overflow-y:auto;box-shadow:var(--shadow)}
+#card h2{font-size:1.28em;margin-bottom:4px}
 #card .badge{display:inline-block;padding:2px 10px;border-radius:10px;font-size:.72em;color:#fff;margin-bottom:12px}
+#card .visual-hero{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px;margin:12px 0;border:1px solid var(--border);background:#f2f6f7}
+#card .visual-fallback{display:grid;grid-template-columns:84px 1fr;gap:14px;align-items:center;min-height:130px;margin:12px 0;padding:16px;border:1px solid var(--border);border-radius:12px;background:linear-gradient(135deg,#fff7df,#f4fbff)}
+#card .visual-symbol{width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:34px;background:#fff;box-shadow:inset 0 0 0 1px rgba(31,41,55,.08)}
+#card .visual-copy strong{display:block;margin-bottom:4px}
+#card .visual-copy span{display:block;color:var(--text-dim);font-size:.83em;line-height:1.55}
+#card .mentor-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+#card .mentor{display:grid;grid-template-columns:36px 1fr;gap:8px;align-items:center;padding:10px;border:1px solid var(--border);border-radius:12px;background:#fff}
+#card .mentor img{width:36px;height:36px;border-radius:50%;object-fit:cover}
+#card .mentor b{display:block;font-size:.78em}
+#card .mentor span{display:block;color:var(--text-dim);font-size:.72em;line-height:1.35}
 #card .section{margin-top:14px}
 #card .section h4{font-size:.8em;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
 #card .section .item{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.85em}
@@ -48,16 +76,84 @@ line.edge.highlighted{stroke:var(--accent);stroke-width:2.5;stroke-opacity:1}
 #card .section .item .exp{display:block;font-size:.78em;color:var(--text-dim);margin-top:2px}
 #card .close-btn{float:right;background:none;border:none;color:var(--text-dim);font-size:1.3em;cursor:pointer;padding:0 4px}
 #card .close-btn:hover{color:var(--text)}
-.legend{position:absolute;bottom:16px;left:16px;display:flex;gap:10px;flex-wrap:wrap;z-index:5}
-.legend-item{display:flex;align-items:center;gap:4px;font-size:.72em;color:var(--text-dim)}
-.legend-dot{width:8px;height:8px;border-radius:50%}
-.info-bar{position:absolute;bottom:16px;right:16px;font-size:.7em;color:var(--text-dim);z-index:5}
+.detail-panel{position:absolute;top:16px;right:72px;z-index:7;width:min(390px,calc(100% - 210px));max-height:calc(100% - 32px);overflow-y:auto;background:rgba(255,253,249,.97);border:1px solid var(--border);border-radius:16px;padding:18px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transform:translateX(14px);transition:opacity .18s,transform .18s}
+.detail-panel.open{opacity:1;pointer-events:auto;transform:translateX(0)}
+.detail-panel .close-btn{float:right;background:none;border:none;color:var(--text-dim);font-size:1.25em;cursor:pointer;padding:0 4px}
+.detail-panel .close-btn:hover{color:var(--text)}
+.detail-panel h2{font-size:1.1em;margin-bottom:5px}
+.detail-panel .badge{display:inline-block;padding:3px 10px;border-radius:10px;font-size:.72em;color:#fff;margin-bottom:10px}
+.detail-panel .visual-hero{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px;margin:10px 0;border:1px solid var(--border);background:#f2f6f7}
+.detail-panel .core-line{margin-top:8px;color:var(--text-dim);font-size:.86em;line-height:1.55}
+.detail-panel .focus-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.detail-panel .focus-stat{padding:8px;border:1px solid var(--border);border-radius:10px;background:#fff;font-size:.78em}
+.detail-panel .focus-stat strong{display:block;font-size:1.2em;color:#1f2937}
+.detail-panel .mentor-row{display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px}
+.detail-panel .mentor{display:grid;grid-template-columns:32px 1fr;gap:8px;align-items:center;padding:9px;border:1px solid var(--border);border-radius:11px;background:#fff}
+.detail-panel .mentor img{width:32px;height:32px;border-radius:50%;object-fit:cover}
+.detail-panel .mentor b{display:block;font-size:.76em}
+.detail-panel .mentor span{display:block;color:var(--text-dim);font-size:.72em;line-height:1.35}
+.detail-panel .section{margin-top:12px}
+.detail-panel .section h4{font-size:.76em;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+.detail-panel .section .item{padding:6px 0;border-top:1px solid rgba(31,41,55,.07);font-size:.82em}
+.detail-panel .section .exp{display:block;color:var(--text-dim);font-size:.78em;line-height:1.45;margin-top:2px}
+.legend{position:absolute;bottom:16px;left:16px;display:grid;gap:9px;z-index:5;background:rgba(255,253,249,.94);border:1px solid var(--border);border-radius:14px;padding:14px 16px;box-shadow:var(--soft-shadow)}
+.legend::before{content:"知识分类";font-size:.86em;font-weight:800;color:#2f3a4a;margin-bottom:2px}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:.78em;color:var(--text-dim);border:0;background:transparent;text-align:left;cursor:pointer;padding:3px 4px;border-radius:8px}
+.legend-item:hover,.legend-item.active{background:#fff8e8;color:#1f2937;font-weight:800}
+.legend-dot{width:10px;height:10px;border-radius:50%}
+.info-bar{position:absolute;bottom:16px;right:16px;font-size:.78em;color:var(--text-dim);z-index:5;background:rgba(255,253,249,.94);border:1px solid var(--border);border-radius:18px;padding:8px 14px;box-shadow:var(--soft-shadow)}
+.graph-hint{position:absolute;top:16px;left:16px;z-index:6;border:1px solid var(--border);background:rgba(255,253,249,.92);border-radius:18px;padding:7px 12px;color:var(--text-dim);font-size:.78em;box-shadow:var(--soft-shadow)}
+.spotlight{position:absolute;top:56px;left:16px;z-index:6;display:flex;gap:8px;flex-wrap:wrap;max-width:690px}
+.spotlight button{display:flex;align-items:center;gap:6px;padding:7px 10px;border-radius:16px;border:1px solid var(--border);background:rgba(255,253,249,.92);color:#2f3a4a;font-weight:700;font-size:.76em;cursor:pointer;box-shadow:0 1px 6px rgba(31,41,55,.06)}
+.spotlight button:hover{border-color:var(--accent);background:#fff8e8;transform:translateY(-1px)}
+.zoom-controls{position:absolute;right:16px;top:16px;z-index:6;display:grid;gap:10px}
+.zoom-controls button{width:42px;height:42px;border-radius:50%;border:1px solid var(--border);background:#fff;color:var(--accent);font-size:1.2em;font-weight:800;cursor:pointer;box-shadow:var(--soft-shadow)}
+.zoom-controls button:hover{background:#fff8e8;transform:translateY(-1px)}
+.node-g{cursor:pointer;transition:opacity .18s}
+.node-g.dimmed{opacity:.12}
+.node-g.filtered{opacity:.08}
+.node-g.selected .node-ring{stroke:var(--accent);stroke-width:3;fill:rgba(245,164,0,.10)}
+.node-g.related-focus .node-ring{stroke:rgba(245,164,0,.85);stroke-width:2}
+.node-core{filter:drop-shadow(0 7px 10px rgba(31,41,55,.2))}
+.node-ring{fill:none;stroke:rgba(31,41,55,.16);stroke-width:1.4}
+.node-icon{font-size:13px;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+@media (max-width:720px){
+  header{align-items:flex-start;gap:8px;flex-wrap:wrap;padding:10px 16px}
+  .brand{min-width:0}
+  .brand-icon{width:42px;height:42px}
+  .tagline{white-space:normal}
+  .stats{width:100%;justify-content:flex-end}
+  .filter-panel{padding:12px 16px}
+  .filter-block{grid-template-columns:1fr;gap:8px}
+  .spotlight{top:54px;right:72px;max-height:82px;overflow:hidden}
+  .legend{display:none}
+  .detail-panel{left:12px;right:12px;top:auto;bottom:12px;width:auto;max-height:52%;transform:translateY(14px)}
+  .detail-panel.open{transform:translateY(0)}
+  #card{padding:18px}
+  #card .mentor-row{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
 <div id="app">
 <header>
-  <h1>🪐 五年级数学 · 概念星图</h1>
+  <div class="brand">
+    <div class="brand-icon">📖</div>
+    <div>
+      <h1>五年级数学知识图谱 ✨</h1>
+      <div class="tagline">探索概念间的联系，点击节点查看详情</div>
+    </div>
+  </div>
+  <div class="stats">
+    <strong id="total-nodes">40</strong><span>个概念</span>
+    <strong id="total-edges">57</strong><span>条关系</span>
+  </div>
+</header>
+<section class="filter-panel">
+  <div class="filter-title"><span>🔍</span>筛选知识</div>
+  <div class="filter-grid">
+    <div class="filter-block">
+      <label>按类别</label>
   <div class="filters" id="category-filters">
     <button class="active" data-cat="all">全部</button>
     <button data-cat="number_ops">数与运算</button>
@@ -66,15 +162,29 @@ line.edge.highlighted{stroke:var(--accent);stroke-width:2.5;stroke-opacity:1}
     <button data-cat="statistics">统计</button>
     <button data-cat="applications">应用</button>
   </div>
+    </div>
+    <div class="filter-block">
+      <label>按学期</label>
   <div class="semester-toggle" id="semester-toggle">
     <button class="active" data-sem="all">全学年</button>
+    <button data-sem="0">基础</button>
     <button data-sem="1">上册</button>
     <button data-sem="2">下册</button>
   </div>
-</header>
+    </div>
+  </div>
+</section>
 <div id="graph">
   <div class="legend" id="legend"></div>
+  <div class="graph-hint">↔ 拖拽节点 · 滚轮缩放 · 点击查看详情</div>
+  <div class="spotlight" id="spotlight"></div>
+  <div class="zoom-controls">
+    <button id="zoom-in" aria-label="放大">+</button>
+    <button id="zoom-out" aria-label="缩小">−</button>
+    <button id="zoom-reset" aria-label="重置视图">↺</button>
+  </div>
   <div class="info-bar" id="info-bar"></div>
+  <div class="detail-panel" id="detail-panel"></div>
 </div>
 <div id="tooltip"></div>
 </div>
@@ -90,9 +200,120 @@ const edges = [{"from":"e65c5d65","to":"ea935433","type":"prerequisite_of","exp"
 const CAT_COLORS = {number_ops:'#4A90D9',geometry:'#E85D75',algebra:'#7B68EE',statistics:'#F0A050',applications:'#50B87A'};
 const CAT_NAMES = {number_ops:'数与运算',geometry:'几何',algebra:'代数',statistics:'统计',applications:'应用'};
 const SEM_NAMES = {0:'全学年',1:'上册',2:'下册'};
+const EXPERIENCE_IMAGES = {
+  '整数加减法':'assets/concepts/place-value-tower.png',
+  '整数乘法':'assets/concepts/decimal-multiply.png',
+  '整数除法':'assets/concepts/fraction-meaning.png',
+  '位置值':'assets/concepts/place-value-tower.png',
+  '小数的意义':'assets/concepts/place-value-tower.png',
+  '整数四则运算':'assets/concepts/equation-balance.png',
+  '矩形面积':'assets/concepts/polygon-area.png',
+  '等式的性质':'assets/concepts/equation-balance.png',
+  '图形认知':'assets/concepts/polygon-area.png',
+  '数据收集':'assets/concepts/statistics-trend.png',
+  '单位换算':'assets/concepts/place-value-tower.png',
+  '轴对称与旋转':'assets/concepts/polygon-area.png',
+  '小数乘法':'assets/concepts/decimal-multiply.png',
+  '小数除法':'assets/concepts/decimal-multiply.png',
+  '因数和倍数':'assets/concepts/number-theory-sieve.png',
+  '235的倍数特征':'assets/concepts/number-theory-sieve.png',
+  '循环小数':'assets/concepts/decimal-multiply.png',
+  '观察物体':'assets/concepts/volume-cubes.png',
+  '质数与合数':'assets/concepts/number-theory-sieve.png',
+  '简易方程':'assets/concepts/equation-balance.png',
+  '长方体和正方体':'assets/concepts/volume-cubes.png',
+  '平行四边形面积':'assets/concepts/polygon-area.png',
+  '体积和体积单位':'assets/concepts/volume-cubes.png',
+  '长方体体积':'assets/concepts/volume-cubes.png',
+  '三角形面积':'assets/concepts/polygon-area.png',
+  '容积和容积单位':'assets/concepts/volume-cubes.png',
+  '梯形面积':'assets/concepts/polygon-area.png',
+  '组合图形面积':'assets/concepts/polygon-area.png',
+  '分数的意义':'assets/concepts/fraction-meaning.png',
+  '分数基础':'assets/concepts/fraction-meaning.png',
+  '真分数和假分数':'assets/concepts/fraction-meaning.png',
+  '可能性':'assets/concepts/application-strategy.png',
+  '植树问题':'assets/concepts/application-strategy.png',
+  '分数的基本性质':'assets/concepts/fraction-meaning.png',
+  '约分':'assets/concepts/fraction-meaning.png',
+  '通分':'assets/concepts/fraction-meaning.png',
+  '分数加减法':'assets/concepts/fraction-meaning.png',
+  '分数与小数互化':'assets/concepts/fraction-meaning.png',
+  '折线统计图':'assets/concepts/statistics-trend.png',
+  '找次品':'assets/concepts/application-strategy.png'
+};
+const VISUAL_METAPHORS = {
+  '整数加减法':['➕','数块在天平上进出，数量随操作变多或变少','同单位计数'],
+  '整数乘法':['✖️','一排排同样多的方块，乘法就是等量分组','等量分组'],
+  '整数除法':['🍕','把一张饼公平分给几个人，或看能分成几组','平均分'],
+  '位置值':['🏗️','进位塔：10个小方块升成1根十条，10根十条升成1个百块','进位塔'],
+  '小数的意义':['🔬','把1继续切成十分之一、百分之一，数轴被放大','放大小单位'],
+  '整数四则运算':['🧭','运算路线图：括号先走，乘除再走，加减最后走','运算顺序'],
+  '矩形面积':['▦','单位正方形铺满长方形，面积就是铺了多少个格子','单位铺砖'],
+  '等式的性质':['⚖️','天平两边同时做同一件事，平衡不被破坏','平衡保持'],
+  '图形认知':['🔷','边和角组成图形骨架，先认清形状再谈公式','形状骨架'],
+  '分数基础':['🥧','一个整体被平均切开，取其中几份','切蛋糕'],
+  '数据收集':['📋','把杂乱数据装进格子，才能看清规律','数据装盒'],
+  '单位换算':['🪜','沿单位阶梯上下来回走，每一级都有固定进率','单位阶梯'],
+  '轴对称与旋转':['🪞','镜子和转盘：图形变了位置，但结构保持','镜像转盘'],
+  '小数乘法':['📏','数轴上一次次跳同样长，计数单位变小后再组合','小数跳跃'],
+  '小数除法':['🔁','把除数变成整数，整条算式一起换单位','换单位机器'],
+  '因数和倍数':['🧩','一块数板能被哪些小块正好拼满','整除拼图'],
+  '235的倍数特征':['🔍','观察个位和数字和，像用筛子筛出倍数','倍数筛子'],
+  '循环小数':['♻️','除法走廊里不断重复出现同一段图案','循环轨道'],
+  '观察物体':['👁️','从前、上、左三束光照出同一个立体的影子','三视图'],
+  '质数与合数':['💎','质数像不可再拆的原子块，合数能继续分解','数字原子'],
+  '简易方程':['⚖️','未知数藏在天平一侧，通过平衡一步步找出来','未知天平'],
+  '长方体和正方体':['📦','六个面围成盒子，棱和顶点撑起空间','空间盒子'],
+  '平行四边形面积':['✂️','剪下三角形平移过去，歪形变成长方形','剪拼转化'],
+  '体积和体积单位':['🧊','用小立方体填满空间，体积就是填了多少块','空间填充'],
+  '长方体体积':['🧱','一层格子乘以层数，长宽高共同计数','层层堆叠'],
+  '三角形面积':['🔺','两个一样的三角形拼成平行四边形，一个只占一半','双拼一半'],
+  '容积和容积单位':['🥛','容器里面能装多少空间，外壳不是重点','内部空间'],
+  '梯形面积':['🪁','两个一样的梯形倒扣拼成平行四边形','双梯拼合'],
+  '组合图形面积':['🧩','把复杂形状切成已知图形，再加减拼回整体','分割添补'],
+  '分数的意义':['🥧','蛋糕、分数条、一组球都能成为单位1','单位1'],
+  '真分数和假分数':['🍰','一块以内是真分数，超过一整块就是假分数','超过整体'],
+  '可能性':['🎲','骰子和转盘上，每种结果占一块可能区域','机会区域'],
+  '植树问题':['🌳','路上先数间隔，再决定端点有没有树','间隔端点'],
+  '分数的基本性质':['🪄','同一段长度切得更细，取的份数也同比变多','等值切分'],
+  '约分':['🧹','把共同倍数清扫掉，保留最简的同等大小','清扫公因数'],
+  '通分':['🔧','把不同分数单位调成同一种单位再比较计算','统一单位'],
+  '分数加减法':['🧮','分数单位相同才能直接数份数，不同先通分','同单位相加'],
+  '分数与小数互化':['🔄','同一个数在分数尺和小数尺之间来回翻译','双语数字'],
+  '折线统计图':['📈','把一串数据点连起来，看趋势怎样升降','趋势山脊'],
+  '找次品':['⚖️','用天平每次把可能性切成几组，最快缩小范围','策略分组']
+};
+function visualFor(node){
+  const meta = VISUAL_METAPHORS[node.name] || ['✨','把抽象概念变成一个可观察的数学物件','可视化模型'];
+  return {icon:meta[0],metaphor:meta[1],label:meta[2],image:EXPERIENCE_IMAGES[node.name]};
+}
 
 // Node map for quick lookup
 const nodeMap = Object.fromEntries(nodes.map(n=>[n.id,n]));
+const graphEdges = edges.map(e=>({...e,source:e.from,target:e.to}));
+let activeCat = 'all', activeSem = 'all', selectedNodeId = null;
+
+const relationMap = new Map(nodes.map(n=>[n.id,new Set([n.id])]));
+edges.forEach(e=>{
+  relationMap.get(e.from)?.add(e.to);
+  relationMap.get(e.to)?.add(e.from);
+});
+
+function passesSemester(d){
+  if(activeSem==='all')return true;
+  if(activeSem==='0')return d.semester===0;
+  return d.semester===0 || d.semester===parseInt(activeSem);
+}
+function passesNodeFilter(d){
+  return (activeCat==='all'||d.category===activeCat) && passesSemester(d);
+}
+function passesEdgeFilter(e){
+  return passesNodeFilter(nodeMap[e.from]) && passesNodeFilter(nodeMap[e.to]);
+}
+function edgeTouches(e,id){
+  return e.from===id || e.to===id;
+}
 
 // Initialize D3
 const container = document.getElementById('graph');
@@ -112,9 +333,19 @@ const tooltip = d3.select('#tooltip');
 
 // Legend
 const legend = d3.select('#legend');
-Object.entries(CAT_COLORS).forEach(([cat,color])=>{
-  legend.append('div').attr('class','legend-item')
-    .html(`<span class="legend-dot" style="background:${color}"></span>${CAT_NAMES[cat]}`);
+[['all','#9aa6b2','全部'],...Object.entries(CAT_COLORS).map(([cat,color])=>[cat,color,CAT_NAMES[cat]])].forEach(([cat,color,label])=>{
+  legend.append('button').attr('class','legend-item').attr('data-cat',cat).attr('type','button')
+    .html(`<span class="legend-dot" style="background:${color}"></span>${label}`)
+    .on('click',()=>setCategory(cat));
+});
+const spotlight = d3.select('#spotlight');
+['位置值','分数的意义','平行四边形面积','简易方程','体积和体积单位','折线统计图','找次品'].forEach(name=>{
+  const concept = nodes.find(n=>n.name===name);
+  if(!concept)return;
+  const visual = visualFor(concept);
+  spotlight.append('button')
+    .html(`${visual.icon} ${name}`)
+    .on('click',()=>focusNode(concept));
 });
 
 // Arrow markers
@@ -130,15 +361,19 @@ Object.entries(CAT_COLORS).forEach(([cat,color])=>{
 
 // Force simulation
 const simulation = d3.forceSimulation(nodes)
-  .force('link',d3.forceLink(edges).id(d=>d.id).distance(120))
-  .force('charge',d3.forceManyBody().strength(-400))
+  .force('link',d3.forceLink(graphEdges).id(d=>d.id).distance(d=>d.type==='related_to'?66:78))
+  .force('charge',d3.forceManyBody().strength(-155))
   .force('center',d3.forceCenter(W/2,H/2))
-  .force('collision',d3.forceCollide().radius(28))
+  .force('x',d3.forceX(W/2).strength(0.08))
+  .force('y',d3.forceY(H/2).strength(0.08))
+  .force('collision',d3.forceCollide().radius(25))
   .alphaDecay(0.02);
+simulation.stop();
+for(let i=0;i<260;i++)simulation.tick();
 
 // Draw edges
 const link = g.append('g').selectAll('line')
-  .data(edges).join('line')
+  .data(graphEdges).join('line')
   .attr('class',d=>'edge'+(d.type==='related_to'?' related':''))
   .attr('marker-end',d=>'url(#arrow-'+(nodeMap[d.from]?.category||'number_ops')+')');
 
@@ -153,11 +388,21 @@ const node = g.append('g').selectAll('g')
   );
 
 node.append('circle')
+  .attr('class','node-core')
   .attr('r',d=>8+d.difficulty*2)
   .attr('fill',d=>CAT_COLORS[d.category])
   .attr('stroke','rgba(255,255,255,.15)')
   .attr('stroke-width',1.5)
   .attr('opacity',0.9);
+
+node.append('circle')
+  .attr('class','node-ring')
+  .attr('r',d=>18+d.difficulty*2);
+
+node.append('text')
+  .attr('class','node-icon')
+  .attr('dy','0.02em')
+  .text(d=>visualFor(d).icon);
 
 node.append('text')
   .attr('class','node-label')
@@ -168,82 +413,155 @@ node.append('text')
 node.on('mouseenter',function(e,d){
   const cat = CAT_NAMES[d.category];
   const sem = SEM_NAMES[d.semester];
+  const visual = visualFor(d);
   tooltip.style('opacity',1)
-    .html(`<div class="tt-cat">${cat} · ${sem}</div><strong>${d.name}</strong><div class="tt-desc">${d.desc}</div>`);
+    .html(`<div class="tt-cat">${cat} · ${sem} · ${visual.label}</div><strong>${visual.icon} ${d.name}</strong><div class="tt-desc">${visual.metaphor}</div>`);
 }).on('mousemove',function(e){tooltip.style('left',(e.offsetX+16)+'px').style('top',(e.offsetY-10)+'px')})
-  .on('mouseleave',function(){tooltip.style('opacity',0);link.attr('class',d=>'edge'+(d.type==='related_to'?' related':''))});
+  .on('mouseleave',function(){tooltip.style('opacity',0)});
 
-node.on('click',function(e,d){showCard(d)});
+node.on('click',function(e,d){selectNode(d)});
+
+function focusNode(d){
+  const scale = 1.65;
+  const x = Number.isFinite(d.x) ? d.x : W/2;
+  const y = Number.isFinite(d.y) ? d.y : H/2;
+  svg.transition().duration(650).call(zoom.transform,d3.zoomIdentity.translate(W/2-scale*x,H/2-scale*y).scale(scale));
+  selectNode(d);
+}
 
 link.on('mouseenter',function(e,d){
-  link.attr('class',ld=>ld===d?'edge highlighted':ld.type==='related_to'?'edge related':'edge');
+  d3.select(this).classed('hovered',true);
   tooltip.style('opacity',1)
     .html(`<strong>${nodeMap[d.from].name} → ${nodeMap[d.to].name}</strong><div class="tt-edge">${d.exp}</div>`);
 }).on('mousemove',function(e){tooltip.style('left',(e.offsetX+16)+'px').style('top',(e.offsetY-10)+'px')})
-  .on('mouseleave',function(){tooltip.style('opacity',0);link.attr('class',d=>'edge'+(d.type==='related_to'?' related':''))});
+  .on('mouseleave',function(){tooltip.style('opacity',0);d3.select(this).classed('hovered',false)});
 
 // Card
+function selectNode(d){
+  selectedNodeId = d.id;
+  showCard(d);
+  applyGraphState();
+}
+
 function showCard(d){
   const cat = CAT_NAMES[d.category];
   const sem = SEM_NAMES[d.semester];
   const color = CAT_COLORS[d.category];
+  const visual = visualFor(d);
   const prereqs = edges.filter(e=>e.to===d.id).map(e=>({name:nodeMap[e.from].name,exp:e.exp,cat:nodeMap[e.from].category}));
   const nexts = edges.filter(e=>e.from===d.id).map(e=>({name:nodeMap[e.to].name,exp:e.exp,cat:nodeMap[e.to].category}));
+  const relationEdges = edges.filter(e=>edgeTouches(e,d.id));
+  const relatedConcepts = [...new Set(relationEdges.map(e=>e.from===d.id?e.to:e.from))].map(id=>nodeMap[id]);
 
   let html = `<button class="close-btn" onclick="closeCard()">✕</button>`;
-  html += `<h2>${d.name}</h2><span class="badge" style="background:${color}">${cat} · ${sem}</span>`;
-  html += `<p style="margin-top:8px;color:var(--text-dim);font-size:.88em">${d.desc}</p>`;
-  html += `<p style="margin-top:4px;font-size:.78em;color:var(--text-dim)">难度：${'⭐'.repeat(d.difficulty)}</p>`;
+  html += `<h2>${visual.icon} ${d.name}</h2><span class="badge" style="background:${color}">${cat} · ${sem} · ${visual.label}</span>`;
+  if(visual.image){
+    html += `<img class="visual-hero" src="${visual.image}" alt="${d.name}的视觉隐喻">`;
+  }else{
+    html += `<div class="visual-fallback"><div class="visual-symbol" style="color:${color}">${visual.icon}</div><div class="visual-copy"><strong>${visual.label}</strong><span>${visual.metaphor}</span></div></div>`;
+  }
+  html += `<p class="core-line"><strong>核心理解：</strong>${d.desc}</p>`;
+  html += `<p class="core-line"><strong>视觉模型：</strong>${visual.metaphor}</p>`;
+  html += `<div class="focus-summary">
+    <div class="focus-stat"><strong>${relatedConcepts.length}</strong>个相关概念</div>
+    <div class="focus-stat"><strong>${relationEdges.length}</strong>条直接关系</div>
+  </div>`;
+  html += `<p class="core-line">难度：${'⭐'.repeat(d.difficulty)}</p>`;
+  html += `<div class="mentor-row">
+    <div class="mentor"><img src="assets/portraits/einstein-avatar.png" alt=""><div><b>对抗式思考</b><span>这句话少了什么条件？能不能举反例？</span></div></div>
+    <div class="mentor"><img src="assets/portraits/feynman-avatar.png" alt=""><div><b>费曼输出</b><span>用一句话讲给低年级同学听。</span></div></div>
+  </div>`;
 
+  if(relationEdges.length>0){
+    html += `<div class="section"><h4>高亮关系 (${relationEdges.length})</h4>`;
+    relationEdges.slice(0,6).forEach(e=>{
+      const isOut = e.from===d.id;
+      const other = nodeMap[isOut?e.to:e.from];
+      const arrow = isOut ? '→' : '←';
+      html += `<div class="item"><span style="color:${CAT_COLORS[other.category]}">${arrow} ${other.name}</span><span class="exp">${e.exp}</span></div>`;
+    });
+    html += `</div>`;
+  }
   if(prereqs.length>0){
     html += `<div class="section"><h4>前置依赖 (${prereqs.length})</h4>`;
-    prereqs.forEach(p=>{html+=`<div class="item"><span style="color:${CAT_COLORS[p.cat]}">${p.name}</span><span class="exp">${p.exp}</span></div>`});
+    prereqs.slice(0,4).forEach(p=>{html+=`<div class="item"><span style="color:${CAT_COLORS[p.cat]}">${p.name}</span><span class="exp">${p.exp}</span></div>`});
     html += `</div>`;
   }
   if(nexts.length>0){
     html += `<div class="section"><h4>后继概念 (${nexts.length})</h4>`;
-    nexts.forEach(p=>{html+=`<div class="item"><span class="arrow">→</span><span style="color:${CAT_COLORS[p.cat]}">${p.name}</span><span class="exp">${p.exp}</span></div>`});
+    nexts.slice(0,4).forEach(p=>{html+=`<div class="item"><span class="arrow">→</span><span style="color:${CAT_COLORS[p.cat]}">${p.name}</span><span class="exp">${p.exp}</span></div>`});
     html += `</div>`;
   }
 
-  document.getElementById('card').innerHTML = html;
-  document.getElementById('card-overlay').classList.add('open');
-  document.getElementById('card-overlay').onclick = function(e){if(e.target===this)closeCard()};
+  const panel = document.getElementById('detail-panel');
+  panel.innerHTML = html;
+  panel.classList.add('open');
 }
-function closeCard(){document.getElementById('card-overlay').classList.remove('open')}
+function closeCard(){
+  selectedNodeId = null;
+  document.getElementById('detail-panel').classList.remove('open');
+  applyGraphState();
+}
 
 // Filters
-let activeCat = 'all', activeSem = 'all';
 document.querySelectorAll('#category-filters button').forEach(btn=>{
-  btn.addEventListener('click',function(){
-    document.querySelectorAll('#category-filters button').forEach(b=>b.classList.remove('active'));
-    this.classList.add('active');
-    activeCat = this.dataset.cat;
-    applyFilters();
-  });
+  btn.addEventListener('click',()=>setCategory(btn.dataset.cat));
 });
 document.querySelectorAll('#semester-toggle button').forEach(btn=>{
-  btn.addEventListener('click',function(){
-    document.querySelectorAll('#semester-toggle button').forEach(b=>b.classList.remove('active'));
-    this.classList.add('active');
-    activeSem = this.dataset.sem;
-    applyFilters();
-  });
+  btn.addEventListener('click',()=>setSemester(btn.dataset.sem));
 });
 
-function applyFilters(){
-  node.each(function(d){
-    const catMatch = activeCat==='all' || d.category===activeCat;
-    const semMatch = activeSem==='all' || d.semester===0 || d.semester===parseInt(activeSem);
-    d3.select(this).style('opacity',catMatch&&semMatch?1:0.15);
+function setCategory(cat){
+  activeCat = cat;
+  selectedNodeId = null;
+  document.getElementById('detail-panel').classList.remove('open');
+  syncControls();
+  applyGraphState();
+}
+function setSemester(sem){
+  activeSem = sem;
+  selectedNodeId = null;
+  document.getElementById('detail-panel').classList.remove('open');
+  syncControls();
+  applyGraphState();
+}
+function syncControls(){
+  document.querySelectorAll('#category-filters button').forEach(b=>b.classList.toggle('active',b.dataset.cat===activeCat));
+  document.querySelectorAll('#semester-toggle button').forEach(b=>b.classList.toggle('active',b.dataset.sem===activeSem));
+  document.querySelectorAll('#legend .legend-item').forEach(b=>b.classList.toggle('active',b.dataset.cat===activeCat));
+}
+function applyGraphState(){
+  const focusIds = selectedNodeId ? relationMap.get(selectedNodeId) : null;
+  node.attr('class',d=>{
+    const visible = passesNodeFilter(d);
+    const selected = d.id===selectedNodeId;
+    const related = !!focusIds?.has(d.id) && !selected;
+    const dimmed = selectedNodeId && !focusIds.has(d.id);
+    return ['node-g',selected?'selected':'',related?'related-focus':'',dimmed?'dimmed':'',!visible?'filtered':''].filter(Boolean).join(' ');
+  }).style('opacity',d=>{
+    const visible = passesNodeFilter(d);
+    if(selectedNodeId){
+      if(d.id===selectedNodeId)return 1;
+      if(focusIds.has(d.id))return visible?0.98:0.45;
+      return visible?0.12:0.05;
+    }
+    return visible?1:0.08;
   });
-  link.style('opacity',d=>{
-    const from = nodeMap[d.from], to = nodeMap[d.to];
-    const fromMatch = activeCat==='all'||from.category===activeCat;
-    const toMatch = activeCat==='all'||to.category===activeCat;
-    const fromSem = activeSem==='all'||from.semester===0||from.semester===parseInt(activeSem);
-    const toSem = activeSem==='all'||to.semester===0||to.semester===parseInt(activeSem);
-    return (fromMatch&&toMatch&&fromSem&&toSem)?1:0.05;
+
+  link.attr('class',d=>{
+    const base = ['edge',d.type==='related_to'?'related':''];
+    if(selectedNodeId){
+      base.push(edgeTouches(d,selectedNodeId)?'highlighted':'dimmed');
+    }
+    if(!passesEdgeFilter(d))base.push('filtered');
+    return base.filter(Boolean).join(' ');
+  }).style('opacity',d=>{
+    const visible = passesEdgeFilter(d);
+    if(selectedNodeId){
+      if(edgeTouches(d,selectedNodeId))return visible?1:0.35;
+      return visible?0.07:0.03;
+    }
+    return visible?1:0.04;
   });
   updateInfo();
 }
@@ -251,46 +569,66 @@ function applyFilters(){
 function updateInfo(){
   const visibleNodes = nodes.filter(n=>{
     const cm = activeCat==='all'||n.category===activeCat;
-    const sm = activeSem==='all'||n.semester===0||n.semester===parseInt(activeSem);
-    return cm&&sm;
+    return passesNodeFilter(n);
   }).length;
   const visibleEdges = edges.filter(e=>{
-    const fn=nodeMap[e.from],tn=nodeMap[e.to];
-    const fcm=activeCat==='all'||fn.category===activeCat, tcm=activeCat==='all'||tn.category===activeCat;
-    const fsm=activeSem==='all'||fn.semester===0||fn.semester===parseInt(activeSem);
-    const tsm=activeSem==='all'||tn.semester===0||tn.semester===parseInt(activeSem);
-    return fcm&&tcm&&fsm&&tsm;
+    return passesEdgeFilter(e);
   }).length;
-  document.getElementById('info-bar').textContent = `${visibleNodes} 个概念 · ${visibleEdges} 条依赖`;
+  if(selectedNodeId){
+    const selected = nodeMap[selectedNodeId];
+    const relationCount = edges.filter(e=>edgeTouches(e,selectedNodeId)).length;
+    const relatedCount = Math.max((relationMap.get(selectedNodeId)?.size||1)-1,0);
+    document.getElementById('info-bar').textContent = `已聚焦：${selected.name} · ${relatedCount} 个相关概念 · ${relationCount} 条关系`;
+  }else{
+    document.getElementById('info-bar').textContent = `${visibleNodes} 个概念 · ${visibleEdges} 条依赖`;
+  }
 }
 
-// Simulation tick
-simulation.on('tick',()=>{
+function renderGraph(){
   link.attr('x1',d=>d.source.x).attr('y1',d=>d.source.y)
       .attr('x2',d=>d.target.x).attr('y2',d=>d.target.y);
   node.attr('transform',d=>`translate(${d.x},${d.y})`);
-});
+}
+simulation.on('tick',renderGraph);
+renderGraph();
 
-// Initial zoom to fit: wait for simulation to settle first
-let settledCount = 0;
-simulation.on('end',()=>{
+function fitGraph(duration=800){
   const bounds = g.node().getBBox();
-  if(!bounds.width||!bounds.height) return;
+  if(!bounds.width||!bounds.height)return;
   const dx = bounds.width, dy = bounds.height, cx = bounds.x+dx/2, cy = bounds.y+dy/2;
-  const scale = Math.min(W/dx,H/dy)*0.85;
-  svg.transition().duration(800).call(zoom.transform,d3.zoomIdentity.translate(W/2-scale*cx,H/2-scale*cy).scale(scale));
-});
-// Also try after a fixed timeout as fallback
-setTimeout(()=>{
-  const bounds = g.node().getBBox();
-  if(bounds.width&&bounds.height){
-    const dx = bounds.width, dy = bounds.height, cx = bounds.x+dx/2, cy = bounds.y+dy/2;
-    const scale = Math.min(W/dx,H/dy)*0.85;
-    svg.transition().duration(800).call(zoom.transform,d3.zoomIdentity.translate(W/2-scale*cx,H/2-scale*cy).scale(scale));
-  }
-},3000);
+  const w = container.clientWidth || W;
+  const h = container.clientHeight || H;
+  const compact = w < 720;
+  const leftPad = compact ? 24 : 150;
+  const rightPad = compact ? 24 : 92;
+  const topPad = compact ? 126 : 118;
+  const bottomPad = compact ? 84 : 66;
+  const innerW = Math.max(260,w-leftPad-rightPad);
+  const innerH = Math.max(260,h-topPad-bottomPad);
+  const scale = Math.min(innerW/dx,innerH/dy,2.7)*0.94;
+  const targetX = leftPad + innerW/2 - scale*cx;
+  const targetY = topPad + innerH/2 - scale*cy;
+  svg.transition().duration(duration).call(zoom.transform,d3.zoomIdentity.translate(targetX,targetY).scale(scale));
+}
 
-updateInfo();
+simulation.on('end',()=>fitGraph());
+// Also try after a fixed timeout as fallback
+setTimeout(()=>fitGraph(0),0);
+setTimeout(()=>fitGraph(),3000);
+
+d3.select('#zoom-in').on('click',()=>svg.transition().duration(240).call(zoom.scaleBy,1.22));
+d3.select('#zoom-out').on('click',()=>svg.transition().duration(240).call(zoom.scaleBy,0.82));
+d3.select('#zoom-reset').on('click',()=>fitGraph(500));
+
+document.getElementById('total-nodes').textContent = nodes.length;
+document.getElementById('total-edges').textContent = edges.length;
+syncControls();
+applyGraphState();
+const initialFocusName = decodeURIComponent(location.hash.slice(1));
+if(initialFocusName){
+  const initialNode = nodes.find(n=>n.name===initialFocusName);
+  if(initialNode)setTimeout(()=>selectNode(initialNode),120);
+}
 
 // Resize
 window.addEventListener('resize',()=>{
