@@ -353,6 +353,17 @@ const CONCEPT_LIBRARY = window.MathGrade5Concepts || {};
 Object.assign(EXPERIENCE_IMAGES, CONCEPT_LIBRARY.images || {});
 Object.assign(COURSEWARE_LINKS, CONCEPT_LIBRARY.lessons || {});
 Object.assign(VISUAL_METAPHORS, CONCEPT_LIBRARY.visuals || {});
+// Build reverse map: lesson URL -> [concept names] for companion detection
+const LESSON_CONCEPTS = {};
+Object.entries(COURSEWARE_LINKS).forEach(([name,info]) => {
+  const url = info.href || info;
+  if(!LESSON_CONCEPTS[url]) LESSON_CONCEPTS[url] = [];
+  LESSON_CONCEPTS[url].push(name);
+});
+// Match a concept name against comma-separated courseware data-concept (Scheme C)
+function conceptMatches(name, dataConceptStr){
+  return (dataConceptStr||'').split(/[,，]/).some(c=>c.trim()===name);
+}
 function visualFor(node){
   const shared = CONCEPT_LIBRARY.get?.(node.name);
   if(shared)return {icon:shared.icon,metaphor:shared.metaphor,label:shared.label,image:shared.image};
@@ -588,6 +599,7 @@ function showCard(d){
   const color = CAT_COLORS[d.category];
   const visual = visualFor(d);
   const lesson = COURSEWARE_LINKS[d.name];
+  const companions = lesson ? (LESSON_CONCEPTS[lesson.href]||[]).filter(n=>n!==d.name) : [];
   const prereqs = edges.filter(e=>e.to===d.id).map(e=>({name:nodeMap[e.from].name,exp:e.exp,cat:nodeMap[e.from].category}));
   const nexts = edges.filter(e=>e.from===d.id).map(e=>({name:nodeMap[e.to].name,exp:e.exp,cat:nodeMap[e.to].category}));
   const relationEdges = edges.filter(e=>edgeTouches(e,d.id));
@@ -596,6 +608,9 @@ function showCard(d){
   let header = `<div class="detail-title"><div><h2>${visual.icon} ${d.name}</h2><span class="badge" style="background:${color}">${cat} · ${sem} · ${visual.label}</span></div><button class="close-btn" onclick="closeCard()" aria-label="关闭详情">✕</button></div>`;
   if(lesson){
     header += `<a class="lesson-link" href="${lesson.href}">${lesson.label}<span>${lesson.meta} →</span></a>`;
+    if(companions.length){
+      header += `<div class="lesson-note"><b>📌 本篇也覆盖</b><div class="priority-row">${companions.map(n=>`<span class="priority-pill mid">${n}</span>`).join('')}</div><small>多个概念在同一篇课件中关联讲解</small></div>`;
+    }
   }
   let html = `<div class="detail-header">${header}</div><div class="detail-scroll">`;
   if(visual.image){

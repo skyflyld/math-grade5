@@ -147,15 +147,18 @@ console.log("  Pass: "+(pass-p6pass)+" in this phase");
 // === Phase 7: Cross-concept consistency ===
 let p7pass=pass;
 console.log("\n=== Phase 7: Cross-concept consistency ===");
+let difficultyIssues=0;
 nodes.forEach(n=>{
   const prereqIds = edges.filter(e=>e.to===n.id && e.type==="prerequisite_of").map(e=>e.from);
   prereqIds.forEach(pid=>{
     const pn=nodeMap.get(pid);
     if(pn && pn.difficulty > n.difficulty){
+      difficultyIssues++;
       check(false, n.name+"(d="+n.difficulty+") has harder prereq "+pn.name+"(d="+pn.difficulty+")");
     }
   });
 });
+if(difficultyIssues===0) console.log("  DAG difficulty constraint: ALL CLEAR (prereq <= successor)");
 console.log("  Pass: "+(pass-p7pass)+" in this phase");
 
 // === Phase 8: Mobile CSS check ===
