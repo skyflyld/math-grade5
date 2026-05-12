@@ -449,17 +449,37 @@ Object.entries(CAT_COLORS).forEach(([cat,color])=>{
     .attr('orient','auto').append('path').attr('d','M0,-5L10,0L0,5').attr('fill','#5ba0f5');
 });
 
-// Force simulation
+// 黑塞式层级布局：按前置依赖计算层级深度
+const _prereqEdges = edges.filter(e=>e.type==='prerequisite_of');
+const _inDeg = new Map, _outDeg = new Map;
+nodes.forEach(n=>{_inDeg.set(n.id,new Set);_outDeg.set(n.id,new Set);});
+_prereqEdges.forEach(e=>{_inDeg.get(e.to).add(e.from);_outDeg.get(e.from).add(e.to);});
+const _depthMap = new Map, _q = nodes.filter(n=>!_inDeg.get(n.id).size);
+_q.forEach(n=>_depthMap.set(n.id,0));
+for(let _i=0;_i<_q.length;_i++){
+  const d = _depthMap.get(_q[_i].id);
+  for(const s of _outDeg.get(_q[_i].id)){
+    if(!_depthMap.has(s)||_depthMap.get(s)<d+1){_depthMap.set(s,d+1);_q.push(nodes.find(n=>n.id===s));}
+  }
+}
+nodes.forEach(n=>{if(!_depthMap.has(n.id))_depthMap.set(n.id,0);});
+const _maxDepth = Math.max(..._depthMap.values());
+
+// 黑塞式力导向：纵向按深度分层，横向在同层内按类别散开
+const _layerH = H / (_maxDepth + 2);
 const simulation = d3.forceSimulation(nodes)
-  .force('link',d3.forceLink(graphEdges).id(d=>d.id).distance(d=>d.type==='related_to'?66:78))
-  .force('charge',d3.forceManyBody().strength(-155))
-  .force('center',d3.forceCenter(W/2,H/2))
-  .force('x',d3.forceX(W/2).strength(0.08))
-  .force('y',d3.forceY(H/2).strength(0.08))
-  .force('collision',d3.forceCollide().radius(25))
-  .alphaDecay(0.02);
+  .force('link',d3.forceLink(graphEdges).id(d=>d.id).distance(d=>d.type==='related_to'?72:82).strength(0.35))
+  .force('charge',d3.forceManyBody().strength(d=>-100-d.difficulty*15))
+  .force('y',d3.forceY(d=>(_depthMap.get(d.id)+1)*_layerH).strength(0.22))
+  .force('x',d3.forceX(d=>{
+    const same = nodes.filter(n=>_depthMap.get(n.id)===_depthMap.get(d.id)&&n.category===d.category);
+    const idx = same.indexOf(d);
+    return same.length>1?(W/(same.length+1))*(idx+1):W/2;
+  }).strength(0.06))
+  .force('collision',d3.forceCollide().radius(d=>18+d.difficulty*2))
+  .alphaDecay(0.025);
 simulation.stop();
-for(let i=0;i<260;i++)simulation.tick();
+for(let i=0;i<300;i++)simulation.tick();
 
 // Draw edges
 const link = g.append('g').selectAll('line')
@@ -752,7 +772,13 @@ if(initialFocusName){
 window.addEventListener('resize',()=>{
   const w=container.clientWidth, h=container.clientHeight;
   svg.attr('width',w).attr('height',h);
-  simulation.force('center',d3.forceCenter(w/2,h/2)).restart();
+  const _ly = h / (_maxDepth+2);
+  simulation.force('y',d3.forceY(d=>(_depthMap.get(d.id)+1)*_ly).strength(0.22))
+    .force('x',d3.forceX(d=>{
+      const same=nodes.filter(n=>_depthMap.get(n.id)===_depthMap.get(d.id)&&n.category===d.category);
+      const idx=same.indexOf(d);
+      return same.length>1?(w/(same.length+1))*(idx+1):w/2;
+    }).strength(0.06)).restart();
 });
 </script>
 </body>
