@@ -5,24 +5,29 @@
 <div class="section"><div class="section-header"><span class="emoji">🧱</span>拆到公理</div>
 <div class="visual-step"><span class="step-label">第 1 步</span><h4>同一个物体，不同角度看不同</h4><div class="thought-bubble">圆柱正面看是长方形，上面看是圆形。球从任何方向看都是圆形。</div></div>
 <div class="visual-step"><span class="step-label">第 2 步</span><h4>三视图</h4><div style="display:flex;gap:12px;justify-content:center;"><div style="padding:12px;background:#dbeafe;border-radius:8px;text-align:center;"><strong>正视图</strong><br>前面看</div><div style="padding:12px;background:#fef3c7;border-radius:8px;text-align:center;"><strong>俯视图</strong><br>上面看</div><div style="padding:12px;background:#dcfce7;border-radius:8px;text-align:center;"><strong>侧视图</strong><br>左面看</div></div></div>
-<div class="visual-step"><span class="step-label">动态投影</span><h4>换一个积木，三张投影图也跟着变</h4><div id="three-view-demo"></div></div>
+<div class="visual-step"><span class="step-label">动态投影</span><h4>换一个积木，三张投影图也跟着变</h4><div id="three-view-demo"></div><div id="observe-core-hint"></div></div>
 <div class="concept-highlight"><div class="big-idea">🔑 <span class="highlight">每个方向的视图=在这个方向"看到的投影形状"</span></div></div></div>
-<div class="section"><div class="section-header"><span class="emoji">🎯</span>典例精讲</div><div class="visual-step"><h4>🎯 球从上面看是什么形？</h4>✏️ <input class="input-field" id="ex1" style="width:40px;"><button class="btn btn-primary btn-sm" onclick="checkE(1,'圆形',ex1,fb1)">提交</button><div class="feedback" id="fb1"></div></div></div>
+<div class="section"><div class="section-header"><span class="emoji">🎯</span>典例精讲</div><div class="visual-step"><h4>🎯 球从上面看是什么形？</h4>✏️ <input class="input-field" id="ex1" style="width:40px;"><button class="btn btn-primary btn-sm" onclick="checkE(1,'圆形',ex1,fb1)">提交</button><div class="feedback" id="fb1"></div><div id="observe-explain-1"></div></div></div>
 <div class="section"><div class="section-header"><span class="emoji">⚡</span>对抗挑战</div><div id="adversary-root"></div></div>
 <div class="section"><div class="section-header"><span class="emoji">🦜</span>费曼输出</div><div id="feynman-root"></div></div>
 <div class="section"><div class="section-header"><span class="emoji">📝</span>练习</div>
 <div class="exercise-tier"><h3><span class="tier-badge basic">基础</span></h3><div id="ex-basic"></div></div>
 <div class="exercise-tier" id="tier-adv" style="display:none;"><h3><span class="tier-badge advanced">提升</span></h3><div id="ex-adv"></div></div>
 <div id="done" style="display:none;text-align:center;padding:24px;font-size:24px;">🎉 通关！</div></div>
+<div id="course-summary"></div>
+<div class="next-lesson-card" id="next-lesson" style="display:none;"></div>
 <script src="../../shared/concepts.js"></script><script src="../../shared/concept-sync.js"></script><script src="../../shared/components.js"></script>
 <script>
 createGate({containerId:'gate-root',questions:[{label:'不同方向看相同物体，形状一定一样吗？',inputs:[{key:'a',width:30}],check:u=>u.a==='不一定'||u.a==='不同'||u.a==='否'}],onPass:()=>document.getElementById('gate-root').innerHTML='✅'});
 createThreeViewDemo({containerId:'three-view-demo'});
+addHintButton('observe-core-hint','先固定观察方向，再把看不见的深度压扁成平面图。三视图不是画立体本身，而是画“投影”。','三视图怎么想');
+addExplanation('observe-explain-1','球没有棱和面，从上面、前面、左面看轮廓都一样，所以看到的是圆形。');
+createCourseSummary({containerId:'course-summary'});
 function checkE(n,ans,i,f){const ok=i.value.trim()===ans;f.className='feedback show '+(ok?'success':'error');f.innerHTML=ok?'✅':`❌ ${ans}`;}
 createAdversarialChallenge({containerId:'adversary-root',challenges:[{tag:'三视图',statement:'圆柱从任何方向看都是长方形。',answer:'refute',hint:'从上面看呢？',explanation:'从上面看是圆形（不是长方形）。',counterexample:'正面□，上面○'}],onComplete:()=>saveProgress({'geo':{'observe':{'adversary':'complete'}}})});
 createFeynmanFill({containerId:'feynman-root',template:'三视图：从___面看为正视图，从___面看为俯视图，从___面看为侧视图。不同方向看到的形状可能___。',answer:['前','上','左','不同'],onComplete:()=>saveProgress({'geo':{'observe':{'feynman':'complete'}}})});
 createExerciseSet({containerId:'ex-basic',exercises:[{question:'球从任何方向看是？',inputs:[{key:'a',width:40}],check:a=>a.a==='圆形'},{question:'正方体从正面看是？',inputs:[{key:'a',width:40}],check:a=>a.a==='正方形'}],passThreshold:0.5,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}});
-function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[{question:'圆柱从上面看是？',inputs:[{key:'a',width:40}],check:a=>a.a==='圆形'}],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'geo':{'observe':{'completed':true}}});}});}
+function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[{question:'圆柱从上面看是？',inputs:[{key:'a',width:40}],check:a=>a.a==='圆形'}],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'geo':{'observe':{'completed':true}}});createNextLessonSuggestion({containerId:'next-lesson'});}});}
 </script>
 </body>
 </html>

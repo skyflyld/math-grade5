@@ -21,6 +21,7 @@
     1/3+1/4 = 4/12+3/12 = 7/12</div>
   <div class="thought-bubble">分数单位不同不能直接相加——通分成12后再加。7/12不能再约分。</div></div>
   <div class="concept-highlight"><div class="big-idea">🔑 <span class="highlight">分数加减 = 统一单位 → 加分子 → 化简</span></div><p>三步走：①分母相同？②是→直接加分子，否→通分再加 ③结果约分至最简。</p></div>
+  <div id="frac-add-core-hint"></div>
 </div>
 <div class="section"><div class="section-header"><span class="emoji">🎮</span>交互 · 分数加法器</div>
   <div class="interactive-area" style="text-align:center;">
@@ -37,7 +38,7 @@
     📖 <b>教材：</b>"同分母分数相加，分母不变，分子相加。异分母分数相加，先通分。计算结果能约分的要约分。" <i>（点击）</i></div></div>
 <div class="section"><div class="section-header"><span class="emoji">🎯</span>典例精讲</div>
   <div class="visual-step"><h4>🎯 2/7+3/7=5/7</h4>✏️ 5/12+1/12=<input class="input-field" id="ex1" style="width:50px;"><button class="btn btn-primary btn-sm" onclick="checkE(1,'6/12',ex1,fb1)">验证</button>要约分→<input class="input-field" id="ex1b" style="width:40px;"><button class="btn btn-primary btn-sm" onclick="checkE(1b,'1/2',ex1b,fb1b)">最简</button><div class="feedback" id="fb1"></div><div class="feedback" id="fb1b"></div></div>
-  <div class="visual-step"><h4>🎯 1/2+1/3=3/6+2/6=5/6</h4>✏️ 1/4+2/5=<input class="input-field" id="ex2" style="width:50px;"><button class="btn btn-primary btn-sm" onclick="checkE(2,'13/20',ex2,fb2)">提交</button><div class="feedback" id="fb2"></div></div>
+  <div class="visual-step"><h4>🎯 1/2+1/3=3/6+2/6=5/6</h4>✏️ 1/4+2/5=<input class="input-field" id="ex2" style="width:50px;"><button class="btn btn-primary btn-sm" onclick="checkE(2,'13/20',ex2,fb2)">提交</button><div class="feedback" id="fb2"></div><div id="frac-add-explain-2"></div></div>
 </div>
 <div class="section"><div class="section-header"><span class="emoji">⚠️</span>踩坑</div>
   <div class="pitfall"><div class="pitfall-title">🕳️ 分母也相加了</div><p><b>症状：</b>1/3+1/4=2/7（分子加分子，分母加分母）</p><p><b>根因：</b>把分数加法当成了普通数字加法。分数加法是"单位不变，数量相加"——分母是单位，不能加。</p></div></div>
@@ -47,9 +48,14 @@
   <div class="exercise-tier"><h3><span class="tier-badge basic">基础</span></h3><div id="ex-basic"></div></div>
   <div class="exercise-tier" id="tier-adv" style="display:none;"><h3><span class="tier-badge advanced">提升</span></h3><div id="ex-adv"></div></div>
   <div id="done" style="display:none;text-align:center;padding:24px;font-size:24px;">🎉 分数加减法 — 通关！</div></div>
+<div id="course-summary"></div>
+<div class="next-lesson-card" id="next-lesson" style="display:none;"></div>
 <script src="../../shared/concepts.js"></script><script src="../../shared/concept-sync.js"></script><script src="../../shared/components.js"></script>
 <script>
 createGate({containerId:'gate-root',questions:[{label:'1/5+2/5=?',inputs:[{key:'a',width:40}],check:u=>u.a==='3/5'}],onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅</div>'});
+addHintButton('frac-add-core-hint','先看“分数单位”是否相同。1/5 和 2/5 都是在数五分之一，所以可以直接数份数；1/3 和 1/4 单位不同，必须先通分。','先统一单位');
+addExplanation('frac-add-explain-2','1/4 和 2/5 的最小公分母是 20：1/4=5/20，2/5=8/20，所以相加是 13/20。');
+createCourseSummary({containerId:'course-summary'});
 function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){[a,b]=[b,a%b];}return a;}
 function addFrac(){const n1=parseInt(document.getElementById('f1-n').value),d1=parseInt(document.getElementById('f1-d').value),n2=parseInt(document.getElementById('f2-n').value),d2=parseInt(document.getElementById('f2-d').value);if(!d1||!d2)return;const num=n1*d2+n2*d1,den=d1*d2,g=gcd(num,den);document.getElementById('frac-r').textContent=`${n1}/${d1} + ${n2}/${d2} = ${num}/${den} = ${num/g}/${den/g}`;}
 function checkE(n,ans,input,fb){const ok=input.value.trim()===ans;fb.className='feedback show '+(ok?'success':'error');fb.innerHTML=ok?'✅ 正确！':`❌ 答案是 ${ans}`;}
@@ -59,13 +65,13 @@ createAdversarialChallenge({containerId:'adversary-root',challenges:[
 createFeynmanFill({containerId:'feynman-root',template:'分数加减法：同分母直接___分子，分母___。异分母先___，再计算。最后的结果要___。减法也是一样的规则——1/2-1/3=3/6-2/6=___。',answer:['加减','不变','通分','约分','1/6'],onComplete:()=>saveProgress({'fractions':{'add-sub':{'feynman':'complete'}}})});
 createExerciseSet({containerId:'ex-basic',exercises:[
   {question:'3/8+1/8=?',inputs:[{key:'a',width:40}],check:a=>a.a==='4/8'||a.a==='1/2'},
-  {question:'2/5+1/5=?',inputs:[{key:'a',width:40}],check:a=>a.a==='2/3'},
+  {question:'2/5+1/5=?',inputs:[{key:'a',width:40}],check:a=>a.a==='3/5'},
   {question:'5/12-1/12=?',inputs:[{key:'a',width:40}],check:a=>a.a==='4/12'||a.a==='1/3'}
 ].filter(Boolean),passThreshold:0.67,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}});
 function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[
   {question:'1/2+1/4=?',inputs:[{key:'a',width:40}],check:a=>a.a==='3/4',hint:'2/4+1/4=3/4'},
   {question:'2/3-1/4=?',inputs:[{key:'a',width:40}],check:a=>a.a==='5/12',hint:'8/12-3/12=5/12'}
-],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'fractions':{'add-sub':{'completed':true}}});}});}
+],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'fractions':{'add-sub':{'completed':true}}});createNextLessonSuggestion({containerId:'next-lesson'});}});}
 </script>
 </body>
 </html>

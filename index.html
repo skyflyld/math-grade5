@@ -136,6 +136,7 @@ line.edge.hovered{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
 .detail-panel .relation-name{display:inline-flex;align-items:center;gap:4px;font-weight:800;transition:color .16s}
 .detail-panel .relation-name::after{content:"›";color:var(--accent);font-weight:900}
 .detail-panel .relation-exp{display:block;color:var(--text-dim);font-size:.78em;line-height:1.45;margin-top:2px}
+.detail-overlay{display:none}
 .legend{position:absolute;bottom:16px;left:16px;display:grid;gap:9px;z-index:5;background:rgba(255,253,249,.94);border:1px solid var(--border);border-radius:14px;padding:14px 16px;box-shadow:var(--soft-shadow)}
 .legend::before{content:"知识分类";font-size:.86em;font-weight:800;color:#2f3a4a;margin-bottom:2px}
 .legend-item{display:flex;align-items:center;gap:8px;font-size:.78em;color:var(--text-dim);border:0;background:transparent;text-align:left;cursor:pointer;padding:3px 4px;border-radius:8px}
@@ -206,7 +207,9 @@ line.edge.hovered{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
   #graph.detail-open .spotlight{display:none}
   #graph.detail-open .graph-hint{display:none}
   .legend{display:none}
-  .detail-panel{position:fixed;left:0;right:auto;top:auto;bottom:0;width:100vw;max-width:100vw;max-height:none;height:min(88dvh,760px);border-radius:20px 20px 0 0;transform:translateY(100%);z-index:30}
+  .detail-overlay{display:block;position:fixed;inset:0;background:rgba(15,23,42,.28);opacity:0;pointer-events:none;transition:opacity .18s;z-index:29}
+  .detail-overlay.open{opacity:1;pointer-events:auto}
+  .detail-panel{position:fixed;left:0;right:auto;top:auto;bottom:0;width:100vw;max-width:100vw;max-height:min(76dvh,720px);height:min(76dvh,720px);border-radius:20px 20px 0 0;transform:translateY(100%);z-index:30;overscroll-behavior:contain}
   .detail-panel.open{transform:translateY(0)}
   .detail-panel .detail-header{width:100%;min-width:0;overflow-x:hidden;padding:16px 18px 12px}
   .detail-panel .detail-header::before{content:"";display:block;width:42px;height:4px;border-radius:999px;background:#d7dce2;margin:0 auto 12px}
@@ -283,6 +286,7 @@ line.edge.hovered{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
   </div>
   <div class="path-panel" id="path-panel"></div>
   <div class="info-bar" id="info-bar"></div>
+  <div class="detail-overlay" id="detail-overlay" aria-hidden="true"></div>
   <div class="detail-panel" id="detail-panel"></div>
 </div>
 <div id="tooltip"></div>
@@ -531,6 +535,8 @@ function lessonPlanFor(d){
 
 // Initialize D3
 const container = document.getElementById('graph');
+const detailPanel = document.getElementById('detail-panel');
+const detailOverlay = document.getElementById('detail-overlay');
 const W = Math.max(container.clientWidth,800);
 const H = Math.max(container.clientHeight,600);
 const svg = d3.select('#graph').append('svg')
@@ -765,18 +771,30 @@ function showCard(d){
   }
 
   html += `</div>`;
-  const panel = document.getElementById('detail-panel');
-  panel.innerHTML = html;
-  panel.classList.add('open');
+  detailPanel.innerHTML = html;
+  detailPanel.querySelector('.detail-scroll')?.scrollTo({top:0});
+  openDetailPanel();
+}
+function openDetailPanel(){
+  detailPanel.classList.add('open');
   container.classList.add('detail-open');
+  detailOverlay?.classList.add('open');
+  detailOverlay?.setAttribute('aria-hidden','false');
+}
+function closeDetailPanel(){
+  detailPanel.classList.remove('open');
+  container.classList.remove('detail-open');
+  detailOverlay?.classList.remove('open');
+  detailOverlay?.setAttribute('aria-hidden','true');
 }
 function closeCard(){
   selectedNodeId = null;
   history.replaceState(null,'',location.pathname+location.search);
-  document.getElementById('detail-panel').classList.remove('open');
-  container.classList.remove('detail-open');
+  closeDetailPanel();
   applyGraphState();
 }
+detailOverlay?.addEventListener('click',closeCard);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&selectedNodeId)closeCard();});
 
 // Filters
 document.querySelectorAll('#category-filters button').forEach(btn=>{
@@ -831,8 +849,7 @@ function renderSearchResults(){
 function setCategory(cat){
   activeCat = cat;
   selectedNodeId = null;
-  document.getElementById('detail-panel').classList.remove('open');
-  container.classList.remove('detail-open');
+  closeDetailPanel();
   syncControls();
   renderSearchResults();
   applyGraphState();
@@ -840,8 +857,7 @@ function setCategory(cat){
 function setSemester(sem){
   activeSem = sem;
   selectedNodeId = null;
-  document.getElementById('detail-panel').classList.remove('open');
-  container.classList.remove('detail-open');
+  closeDetailPanel();
   syncControls();
   renderSearchResults();
   applyGraphState();
@@ -849,8 +865,7 @@ function setSemester(sem){
 function setSearch(value){
   activeSearch = normalizeSearch(value);
   selectedNodeId = null;
-  document.getElementById('detail-panel').classList.remove('open');
-  container.classList.remove('detail-open');
+  closeDetailPanel();
   renderSearchResults();
   applyGraphState();
 }

@@ -30,6 +30,7 @@
     </div>
     <p style="margin-top:12px;font-size:16px;">天平两边同时加/减/乘/除一个数，平衡不变——这就是等式的性质。</p>
   </div>
+  <div id="eq-core-hint"></div>
 </div>
 
 <div class="section">
@@ -46,7 +47,7 @@
 <div class="section">
   <div class="section-header"><span class="emoji">🎯</span>典例精讲</div>
   <div class="visual-step"><h4>🎯 例1：x+5=12</h4>两边同时−5 → x+5−5=12−5 → x=7<br>
-  ✏️ x+8=20 → x=<input class="input-field" id="ex1" style="width:60px;"><button class="btn btn-primary btn-sm" onclick="checkE(1,'12',ex1,fb1)">提交</button><div class="feedback" id="fb1"></div></div>
+  ✏️ x+8=20 → x=<input class="input-field" id="ex1" style="width:60px;"><button class="btn btn-primary btn-sm" onclick="checkE(1,'12',ex1,fb1)">提交</button><div class="feedback" id="fb1"></div><div id="eq-explain-1"></div></div>
   <div class="visual-step"><h4>🎯 例2：3x=18</h4>两边同时÷3 → 3x÷3=18÷3 → x=6<br>
   ✏️ 5x=35 → x=<input class="input-field" id="ex2" style="width:60px;"><button class="btn btn-primary btn-sm" onclick="checkE(2,'7',ex2,fb2)">提交</button><div class="feedback" id="fb2"></div></div>
 </div>
@@ -67,6 +68,8 @@
   <div class="exercise-tier"><h3><span class="tier-badge basic">基础</span></h3><div id="ex-basic"></div></div>
   <div class="exercise-tier" id="tier-adv" style="display:none;"><h3><span class="tier-badge advanced">提升</span></h3><div id="ex-adv"></div></div>
   <div id="done" style="display:none;text-align:center;padding:24px;font-size:24px;">🎉 简易方程 — 通关！</div></div>
+<div id="course-summary"></div>
+<div class="next-lesson-card" id="next-lesson" style="display:none;"></div>
 
 <script src="../../shared/concepts.js"></script>
 <script src="../../shared/concept-sync.js"></script>
@@ -74,6 +77,9 @@
 <script>
 createGate({containerId:'gate-root',questions:[{label:'3+4=7中，等号表示什么？',inputs:[{key:'a',width:80}],check:u=>u.a.includes('相等')||u.a.includes('等于')}],onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅ 好！</div>'});
 createBalance({containerId:'bal-root',leftLabel:'x+3',rightLabel:'8',leftValue:1,rightValue:8,target:'5',onSolve:ans=>{document.getElementById('bal-fb').innerHTML='✅ x=5！';celebrate(document.getElementById('bal-fb'));}});
+addHintButton('eq-core-hint','不要把“移项”当魔法。每一步都可以翻译成：天平两边同时做同一件事。','把方程想成天平');
+addExplanation('eq-explain-1','x+8=20 要让 x 单独留下，就要把左边的 +8 抵消掉；为保持等式成立，右边也同时 -8，所以 x=20-8=12。');
+createCourseSummary({containerId:'course-summary'});
 function checkE(n,ans,input,fb){const ok=input.value.trim()===ans;fb.className='feedback show '+(ok?'success':'error');fb.innerHTML=ok?'✅ 正确！':`❌ 正确答案是 ${ans}`;}
 createAdversarialChallenge({containerId:'adversary-root',challenges:[
   {tag:'等号意义',statement:'方程 x+5=12 的解是 x=12-5=7。',answer:'agree',hint:'两边同时做什么？',explanation:'两边同时-5，得到x=7。',counterexample:'正确做法：x+5-5=12-5，x=7。'},
@@ -88,7 +94,7 @@ createExerciseSet({containerId:'ex-basic',exercises:[
 function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[
   {question:'x÷6=5 → x=?',inputs:[{key:'a',width:40}],check:a=>a.a==='30',hint:'5×6=30'},
   {question:'小明买了3本同样的书用了36元，设每本x元→方程3x=36,x=?',inputs:[{key:'a',width:40}],check:a=>a.a==='12',hint:'36÷3=12'}
-],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'equations':{'intro':{'completed':true}}});}});}
+],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'equations':{'intro':{'completed':true}}});createNextLessonSuggestion({containerId:'next-lesson'});}});}
 </script>
 </body>
 </html>

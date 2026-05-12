@@ -188,7 +188,7 @@ createExerciseSet({containerId:'ex-basic',
 function initAdv(){
   createExerciseSet({containerId:'ex-adv',
     exercises:[
-      {question:'在560中，5×? + 6×? + 0×?',inputs:[{key:'a',width:40},{key:'b',width:40}],check:a=>a.a==='100'&&a.b==='10',hint:'5在百位=5×100，6在十位=6×10'},
+      {question:'在560中，5×? + 6×? + 0×?',inputs:[{key:'a',width:40},{key:'b',width:40},{key:'c',width:40}],check:a=>a.a==='100'&&a.b==='10'&&a.c==='1',hint:'5在百位=5×100，6在十位=6×10，个位是0×1'},
       {question:'7080中0的个数和位置',inputs:[{key:'a',width:50}],check:a=>a.a==='百位和个位',hint:'7080=7000+0+80+0'}
     ],
     passThreshold:0.5,

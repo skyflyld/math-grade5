@@ -293,6 +293,88 @@ body {
   border: 1px solid rgba(148,163,184,0.22);
   box-shadow: var(--shadow-sm);
 }
+.component-card {
+  background: linear-gradient(145deg, #ffffff, #f8fbff);
+  border: 1px solid rgba(226,232,240,.95);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  padding: 18px 20px;
+  margin: 14px auto;
+  text-align: left;
+}
+.component-card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+.component-card h4 {
+  font-size: 18px;
+  line-height: 1.35;
+  margin-bottom: 4px;
+}
+.component-card p {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+.area-model-card {
+  max-width: 720px;
+}
+.area-model-stage {
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+}
+.area-model-canvas {
+  width: 100%;
+  max-width: 100%;
+  display: block;
+  border-radius: var(--radius-md);
+  background: #fff;
+  border: 1px solid rgba(148,163,184,.22);
+  box-shadow: var(--shadow-sm);
+  cursor: crosshair;
+  touch-action: none;
+}
+.area-model-info {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: #f8fafc;
+  border: 1px solid rgba(226,232,240,.9);
+  color: var(--text-muted);
+  font-size: 14px;
+}
+.area-model-info strong {
+  color: var(--accent-deep);
+  font-size: 22px;
+  line-height: 1;
+}
+.area-model-info b {
+  color: var(--text);
+  font-size: 14px;
+}
+.area-model-info em {
+  justify-self: end;
+  font-style: normal;
+  color: #92400e;
+  background: var(--warning-light);
+  border-radius: 999px;
+  padding: 3px 9px;
+  font-weight: 800;
+}
+.area-model-controls {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
 
 /* ========== 公理框 ========== */
 .axiom-box {
@@ -932,6 +1014,10 @@ body {
   .section-header .avatar-icon { width: 26px; height: 26px; }
   .axiom-box { font-size: 15px; padding: 16px 18px; }
   .interactive-area { padding: 18px 14px; }
+  .component-card { padding: 16px 14px; }
+  .component-card-head { display: block; }
+  .area-model-info { grid-template-columns: auto 1fr; }
+  .area-model-info b, .area-model-info em { grid-column: 1 / -1; justify-self: start; }
   .concept-card { padding: 18px 16px; }
   .gate { padding: 20px 16px; }
 }

@@ -57,6 +57,7 @@
       面积没变——所以 <strong>平行四边形面积 = 底 × 高</strong>。
     </p>
   </div>
+  <div id="pg-core-hint"></div>
 </div>
 
 <!-- 交互演示 -->
@@ -70,6 +71,11 @@
     <canvas id="demo-canvas" style="margin:0 auto;"></canvas>
     <div style="margin-top:8px;font-weight:700;">面积 = <span id="area-result" style="color:var(--accent);">15</span></div>
   </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">▦</span>数学操作台 · 单位格面积</div>
+  <div id="pg-area-model"></div>
 </div>
 
 <div class="section">
@@ -89,6 +95,7 @@
   <div class="visual-step">
     <h4>🎯 例1：底8cm，高5cm → S=8×5=40cm²</h4>
     ✏️ 自测：底12cm，高4cm，S=<input class="input-field" id="ex1" style="width:60px;"> cm² <button class="btn btn-primary btn-sm" onclick="checkEx1()">提交</button><div class="feedback" id="fb1"></div>
+    <div id="pg-explain-1"></div>
   </div>
   <div class="visual-step" style="margin-top:12px;">
     <h4>🎯 例2：S=54cm²，底=9cm，高=？</h4>
@@ -127,6 +134,8 @@
   <div class="exercise-tier" id="tier-adv" style="display:none;"><h3><span class="tier-badge advanced">提升</span></h3><div id="ex-adv"></div></div>
   <div id="done" style="display:none;text-align:center;padding:24px;font-size:24px;">🎉 平行四边形 — 通关！</div>
 </div>
+<div id="course-summary"></div>
+<div class="next-lesson-card" id="next-lesson" style="display:none;"></div>
 
 <script src="../../shared/concepts.js"></script>
 <script src="../../shared/concept-sync.js"></script>
@@ -138,6 +147,19 @@ createGate({containerId:'gate-root',
 });
 
 createParallelogramCutDemo({containerId:'pg-cut-demo'});
+createAreaModel({
+  containerId:'pg-area-model',
+  title:'底 × 高就是单位格总数',
+  description:'拖动选择一个长方形区域：选中的列数就是底，行数就是高，面积就是单位格数量。',
+  cols:8,
+  rows:5,
+  highlightCols:5,
+  highlightRows:3,
+  color:'#3b82f6'
+});
+addHintButton('pg-core-hint','不要用斜边代替高。面积模型只数“垂直方向上有几行单位格”，所以公式里的高必须垂直于底。','看懂底和高');
+addExplanation('pg-explain-1','12cm 是底，4cm 是高。面积不是把边都相加，而是数 12 列、4 行单位格，所以 12×4=48cm²。');
+createCourseSummary({containerId:'course-summary'});
 
 // ===== 交互演示 =====
 const dc=document.getElementById('demo-canvas');
@@ -201,7 +223,7 @@ function initAdv(){
       {question:'一块平行四边形花坛，底18m，高10m。种花每平方米5棵，共种几棵？',inputs:[{key:'a',width:60}],answer:'900',hint:'S=18×10=180m²，180×5=900棵',check:a=>a.a==='900'}
     ],
     passThreshold:0.5,
-    onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'polygon-area':{'parallelogram':{'completed':true}}});}
+    onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'polygon-area':{'parallelogram':{'completed':true}}});createNextLessonSuggestion({containerId:'next-lesson'});}
   });
 }
 </script>

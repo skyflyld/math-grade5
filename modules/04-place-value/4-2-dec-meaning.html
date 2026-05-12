@@ -62,7 +62,7 @@
 <script src="../../shared/concepts.js"></script><script src="../../shared/concept-sync.js"></script><script src="../../shared/components.js"></script>
 <script>
 createGate({containerId:'gate-root',questions:[{label:'个位右边第一位叫什么？',inputs:[{key:'a',width:60}],check:u=>u.a.includes('十分位')}],onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅</div>'});
-function updateDec(){const v=parseInt(document.getElementById('frac-in').value)||0;document.getElementById('dec-out').textContent='0.'+v;}
+function updateDec(){const v=parseInt(document.getElementById('frac-in').value)||0;document.getElementById('dec-out').textContent=String(v/10).replace(/\.0$/,'');}
 function checkE(n,ans,input,fb){const ok=input.value.trim()===ans;fb.className='feedback show '+(ok?'success':'error');fb.innerHTML=ok?'✅ 正确！':`❌ 答案是 ${ans}`;}
 createAdversarialChallenge({containerId:'adversary-root',challenges:[
   {tag:'位值',statement:'0.3中的3和0.03中的3都在小数点右边，一样大。',answer:'refute',hint:'3在什么位上？',explanation:'0.3的3在十分位=3/10；0.03的3在百分位=3/100，大小不同。',counterexample:'0.3=0.30，0.3≠0.03'},

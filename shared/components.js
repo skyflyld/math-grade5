@@ -436,56 +436,126 @@ function createNumberLine(opts){
 function createAreaModel(opts){
   const c=document.getElementById(opts.containerId);
   if(!c)return;
-  const cols=opts.cols||5, rows=opts.rows||3, cell=opts.cellSize||40;
-  let highlightCols=opts.highlightCols||0, highlightRows=opts.highlightRows||0;
+  const cols=Math.max(1,opts.cols||5), rows=Math.max(1,opts.rows||3);
+  let highlightCols=opts.highlightCols==null?Math.min(cols,2):Math.max(0,Math.min(cols,opts.highlightCols));
+  let highlightRows=opts.highlightRows==null?Math.min(rows,2):Math.max(0,Math.min(rows,opts.highlightRows));
+  const title=opts.title||'面积模型';
+  const description=opts.description||'拖动或点击方格，观察面积如何由“单位格”累积而成。';
+  const fillColor=opts.color||'#3b82f6';
   const canvas=document.createElement('canvas');
-  const pad=16;
-  canvas.width=Math.min(cols*cell+2*pad,c.clientWidth-24||600);
-  canvas.height=rows*cell+2*pad+30;
-  canvas.style.cssText='max-width:100%;border-radius:8px;background:#f8fafc;cursor:pointer;';
+  canvas.className='area-model-canvas';
+  canvas.setAttribute('aria-label',title);
   const info=document.createElement('div');
-  info.style.cssText='text-align:center;font-size:18px;font-weight:800;margin:6px 0;color:var(--accent-deep);';
-  c.innerHTML='';c.append(canvas,info);
+  info.className='area-model-info';
+  const controls=document.createElement('div');
+  controls.className='area-model-controls';
+  controls.innerHTML='<button class="btn btn-outline btn-sm" type="button" data-area-action="full">选满</button><button class="btn btn-outline btn-sm" type="button" data-area-action="clear">清空</button>';
+  c.innerHTML=`<div class="component-card area-model-card">
+    <div class="component-card-head">
+      <div><h4>${escapeHTML(title)}</h4><p>${escapeHTML(description)}</p></div>
+    </div>
+    <div class="area-model-stage"></div>
+  </div>`;
+  const stage=c.querySelector('.area-model-stage');
+  stage.append(canvas,info,controls);
+
+  const gcd=(a,b)=>{a=Math.abs(a);b=Math.abs(b);while(b){const t=b;b=a%b;a=t;}return a||1;};
+  function fractionText(part,total){
+    if(total<=0)return '';
+    const g=gcd(part,total);
+    return `${part/g}/${total/g}`;
+  }
+  function emit(){
+    const selected=highlightCols*highlightRows;
+    const total=cols*rows;
+    if(opts.onChange)opts.onChange({cols:highlightCols,rows:highlightRows,total:selected,all:total,fraction:fractionText(selected,total)});
+  }
 
   function draw(){
     const ctx=canvas.getContext('2d'), w=canvas.width, h=canvas.height;
-    const ox=pad, oy=pad;
+    const pad=36;
+    const gridW=w-pad*2, gridH=h-pad*2-24;
+    const cell=Math.max(18,Math.min(gridW/cols,gridH/rows));
+    const totalW=cell*cols, totalH=cell*rows;
+    const ox=(w-totalW)/2, oy=28;
     ctx.clearRect(0,0,w,h);
-    const total=cols*rows, shown=(highlightCols||cols)*(highlightRows||rows);
-    info.textContent=`${shown} 个格子 (${highlightCols||cols}×${highlightRows||rows} = ${shown})`;
-    // Grid
+    ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);
+    ctx.fillStyle='#1e293b';ctx.font='800 14px sans-serif';ctx.textAlign='center';
+    ctx.fillText(`${cols} 列 × ${rows} 行`,w/2,18);
     for(let r=0;r<rows;r++){
       for(let ct=0;ct<cols;ct++){
         const x=ox+ct*cell, y=oy+r*cell, hl=ct<highlightCols&&r<highlightRows;
-        ctx.fillStyle=hl?'rgba(59,130,246,0.35)':'rgba(148,163,184,0.1)';
+        ctx.fillStyle=hl?hexToRGBA(fillColor,.32):'rgba(148,163,184,0.10)';
         ctx.fillRect(x,y,cell,cell);
-        ctx.strokeStyle=hl?'#3b82f6':'#cbd5e1';
+        ctx.strokeStyle=hl?fillColor:'#cbd5e1';
         ctx.lineWidth=hl?2:1;
         ctx.strokeRect(x,y,cell,cell);
-        if(hl){ctx.fillStyle='#1e40af';ctx.font='14px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('■',x+cell/2,y+cell/2);}
+        if(hl&&cell>28){
+          ctx.fillStyle=fillColor;ctx.globalAlpha=.95;
+          ctx.beginPath();ctx.arc(x+cell/2,y+cell/2,Math.min(4,cell*.13),0,Math.PI*2);ctx.fill();
+          ctx.globalAlpha=1;
+        }
       }
     }
-    // Highlight border
     if(highlightCols>0&&highlightRows>0){
-      ctx.strokeStyle='#f59e0b';ctx.lineWidth=3;ctx.setLineDash([6,4]);
+      ctx.strokeStyle='#f59e0b';ctx.lineWidth=3;ctx.setLineDash([8,5]);
       ctx.strokeRect(ox,oy,highlightCols*cell,highlightRows*cell);
       ctx.setLineDash([]);
+      ctx.fillStyle='#92400e';ctx.font='800 13px sans-serif';ctx.textAlign='left';
+      ctx.fillText(`${highlightCols} × ${highlightRows}`,ox+8,oy+Math.min(22,highlightRows*cell-6));
     }
-    ctx.fillStyle='#64748b';ctx.font='12px sans-serif';ctx.textAlign='center';
-    ctx.fillText(`${cols} 列`,ox+cols*cell/2,oy+rows*cell+18);
+    const selected=highlightCols*highlightRows;
+    const total=cols*rows;
+    info.innerHTML=`<strong>${selected}</strong><span>/ ${total} 个单位格</span><b>${highlightCols} × ${highlightRows} = ${selected}</b><em>占整体 ${fractionText(selected,total)}</em>`;
   }
 
-  canvas.addEventListener('click',e=>{
+  function hexToRGBA(hex,alpha){
+    const v=String(hex).replace('#','');
+    if(!/^[0-9a-fA-F]{6}$/.test(v))return `rgba(59,130,246,${alpha})`;
+    const r=parseInt(v.slice(0,2),16), g=parseInt(v.slice(2,4),16), b=parseInt(v.slice(4,6),16);
+    return `rgba(${r},${g},${b},${alpha})`;
+  }
+  function setFromPoint(clientX,clientY){
     const rect=canvas.getBoundingClientRect();
-    const x=e.clientX-rect.left-ox, y=e.clientY-rect.top-oy;
-    if(x<0||y<0||x>cols*cell||y>rows*cell)return;
-    const ct=Math.floor(x/cell), rw=Math.floor(y/cell);
+    const scaleX=canvas.width/rect.width, scaleY=canvas.height/rect.height;
+    const x=(clientX-rect.left)*scaleX, y=(clientY-rect.top)*scaleY;
+    const pad=36;
+    const gridW=canvas.width-pad*2, gridH=canvas.height-pad*2-24;
+    const cell=Math.max(18,Math.min(gridW/cols,gridH/rows));
+    const ox=(canvas.width-cell*cols)/2, oy=28;
+    if(x<ox||y<oy||x>ox+cols*cell||y>oy+rows*cell)return;
+    const ct=Math.min(cols-1,Math.floor((x-ox)/cell)), rw=Math.min(rows-1,Math.floor((y-oy)/cell));
     highlightCols=ct+1;highlightRows=rw+1;
     draw();
-    if(opts.onChange)opts.onChange({cols:highlightCols,rows:highlightRows,total:highlightCols*highlightRows});
+    emit();
+  }
+  let dragging=false;
+  canvas.addEventListener('pointerdown',e=>{dragging=true;canvas.setPointerCapture?.(e.pointerId);setFromPoint(e.clientX,e.clientY);});
+  canvas.addEventListener('pointermove',e=>{if(dragging)setFromPoint(e.clientX,e.clientY);});
+  canvas.addEventListener('pointerup',()=>{dragging=false;});
+  canvas.addEventListener('pointercancel',()=>{dragging=false;});
+  controls.addEventListener('click',e=>{
+    const action=e.target?.dataset?.areaAction;
+    if(!action)return;
+    if(action==='full'){highlightCols=cols;highlightRows=rows;}
+    if(action==='clear'){highlightCols=0;highlightRows=0;}
+    draw();emit();
   });
-  draw();
-  return {getDimensions:()=>({cols:highlightCols,rows:highlightRows,total:highlightCols*highlightRows}),reset:(cl,rw)=>{highlightCols=cl||0;highlightRows=rw||0;draw();}};
+  function resize(){
+    const width=Math.max(280,Math.min(680,c.clientWidth-32||620));
+    canvas.width=width;
+    canvas.height=Math.max(220,Math.min(420,rows*44+92));
+    draw();
+  }
+  resize();
+  window.addEventListener('resize',resize);
+  emit();
+  return {
+    getDimensions:()=>({cols:highlightCols,rows:highlightRows,total:highlightCols*highlightRows,all:cols*rows,fraction:fractionText(highlightCols*highlightRows,cols*rows)}),
+    reset:(cl,rw)=>{highlightCols=Math.max(0,Math.min(cols,cl||0));highlightRows=Math.max(0,Math.min(rows,rw||0));draw();emit();},
+    setSelection:(cl,rw)=>{highlightCols=Math.max(0,Math.min(cols,cl||0));highlightRows=Math.max(0,Math.min(rows,rw||0));draw();emit();},
+    draw
+  };
 }
 
 // === 分数条组件 ===

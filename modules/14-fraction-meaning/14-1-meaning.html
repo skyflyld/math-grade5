@@ -55,6 +55,7 @@
       没有整体 → 分数没有意义
     </p>
   </div>
+  <div id="fraction-core-hint"></div>
 </div>
 
 <!-- 交互实验室 -->
@@ -75,6 +76,11 @@
       <span id="fraction-result">取 2/4 个"1苹果"</span>
     </div>
   </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">▦</span>数学操作台 · 分数面积模型</div>
+  <div id="fraction-area-model"></div>
 </div>
 
 <div class="section">
@@ -99,6 +105,7 @@
     ✏️ 把20颗糖平均分成5份：每份是___，3份是___颗。<br>
     <input class="input-field" id="ex1" style="width:50px;"> / <input class="input-field" id="ex1b" style="width:50px;"> <button class="btn btn-primary btn-sm" onclick="checkEx1()">提交</button>
     <div class="feedback" id="fb1"></div>
+    <div id="fraction-explain-1"></div>
   </div>
   <div class="visual-step" style="margin-top:12px;">
     <h4>🎯 例2：能比较两个分数的"大小"吗？</h4>
@@ -127,6 +134,8 @@
   <div class="exercise-tier" id="tier-adv" style="display:none;"><h3><span class="tier-badge advanced">提升</span></h3><div id="ex-adv"></div></div>
   <div id="done" style="display:none;text-align:center;padding:24px;font-size:24px;">🎉 分数的意义 — 通关！</div>
 </div>
+<div id="course-summary"></div>
+<div class="next-lesson-card" id="next-lesson" style="display:none;"></div>
 
 <script src="../../shared/concepts.js"></script>
 <script src="../../shared/concept-sync.js"></script>
@@ -157,6 +166,19 @@ function renderFractionBars(){
   }).join('');
 }
 renderFractionBars();
+createAreaModel({
+  containerId:'fraction-area-model',
+  title:'用面积看分数',
+  description:'整体被平均分成 12 个单位格，拖动选择其中几格，观察“部分/整体”怎样变成分数。',
+  cols:4,
+  rows:3,
+  highlightCols:2,
+  highlightRows:2,
+  color:'#8b5cf6'
+});
+addHintButton('fraction-core-hint','先问“单位1是谁”，再问“平均分成几份”。如果单位1变了，同一个分数对应的具体数量也会变。','抓住单位1');
+addExplanation('fraction-explain-1','20 颗糖平均分成 5 份，每份是整体的 1/5；3 份就是 3/5，对应数量是 20÷5×3=12 颗。');
+createCourseSummary({containerId:'course-summary'});
 
 // ===== 交互演示 =====
 function updateFractionDemo(){
@@ -222,7 +244,7 @@ function initAdv(){
       {question:'一捆绳子15m，用去2/5，剩下几米？',inputs:[{key:'a',width:40}],answer:'9',hint:'15÷5×3=9（或用去6m，剩9m）',check:a=>a.a==='9'}
     ],
     passThreshold:0.5,
-    onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'fraction-meaning':{'meaning':{'completed':true}}});}
+    onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'fraction-meaning':{'meaning':{'completed':true}}});createNextLessonSuggestion({containerId:'next-lesson'});}
   });
 }
 </script>

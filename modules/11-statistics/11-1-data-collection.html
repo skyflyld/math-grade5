@@ -16,7 +16,7 @@
 createGate({containerId:'gate-root',questions:[{label:'数据整理后放在哪里？',inputs:[{key:'a',width:40}],check:u=>u.a==='表格'||u.a==='统计表'||u.a==='表'}],onPass:()=>document.getElementById('gate-root').innerHTML='✅'});
 function checkE(n,ans,i,f){const ok=i.value.trim()===ans;f.className='feedback show '+(ok?'success':'error');f.innerHTML=ok?'✅':`❌ ${ans}`;}
 createAdversarialChallenge({containerId:'adversary-root',challenges:[{tag:'目的',statement:'收集数据只是为了记录。',answer:'refute',hint:'记录之后做什么？',explanation:'收集是为了整理和分析，不是为记录而记录。',counterexample:'记录身高后要分组看分布规律。'}],onComplete:()=>saveProgress({'stats':{'collect':{'adversary':'complete'}}})});
-createFeynmanFill({containerId:'feynman-root',template:'数据收集就是___信息，放进___里面。整理数据的目的是为了发现___。',answer:['收集','表格（统计表）','规律'],onComplete:()=>saveProgress({'stats':{'collect':{'feynman':'complete'}}})});
+createFeynmanFill({containerId:'feynman-root',template:'数据收集就是___信息，放进___里面。整理数据的目的是为了发现___。',answer:['收集','表格','规律'],onComplete:()=>saveProgress({'stats':{'collect':{'feynman':'complete'}}})});
 createExerciseSet({containerId:'ex-basic',exercises:[{question:'统计表有哪两种？',inputs:[{key:'a',width:60}],check:a=>a.a==='单式和复式'||a.a==='单式复式'}],passThreshold:0.5,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}});
 function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[{question:'班级兴趣小组统计表的"合计"意义？',inputs:[{key:'a',width:60}],check:a=>a.a.includes('总')||a.a.includes('和')}],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'stats':{'collect':{'completed':true}}});}});}
 </script>
