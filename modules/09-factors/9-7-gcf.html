@@ -15,12 +15,34 @@
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:12px 0;}
 .card{background:#f8fafc;border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;}
 .card h4{font-size:14px;margin-bottom:6px;}
+
+.concept-hero{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(180px,.8fr);gap:18px;align-items:center;margin:18px 0 24px;padding:20px;border:1px solid rgba(148,163,184,.28);border-radius:var(--radius);background:linear-gradient(135deg,#fff 0%,#f8fbff 58%,#fff7ed 100%);box-shadow:var(--shadow-md);overflow:hidden;}
+.concept-hero h2{margin:0 0 8px;font-size:22px;line-height:1.25;color:var(--text);}
+.concept-hero p{margin:0;color:var(--text-muted);font-size:14px;line-height:1.7;}
+.concept-hero-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.concept-hero-meta span{display:inline-flex;align-items:center;min-height:28px;padding:4px 10px;border-radius:999px;background:#fff;border:1px solid var(--border);font-size:12px;font-weight:800;color:var(--text-muted);}
+.concept-hero-visual{min-height:150px;border-radius:var(--radius-md);background:radial-gradient(circle at 28% 24%,rgba(59,130,246,.18),transparent 34%),radial-gradient(circle at 76% 66%,rgba(245,158,11,.22),transparent 36%),linear-gradient(145deg,#eff6ff,#fff);display:grid;place-items:center;position:relative;}
+.concept-hero-visual strong{font-size:48px;filter:drop-shadow(0 10px 18px rgba(15,23,42,.16));}
+.concept-hero-visual small{position:absolute;left:14px;right:14px;bottom:12px;text-align:center;color:var(--text-muted);font-weight:800;font-size:12px;}
+.upgrade-lab-note{margin:10px 0 0;color:var(--text-muted);font-size:13px;line-height:1.6;}
+@media(max-width:640px){.concept-hero{grid-template-columns:1fr;padding:16px;gap:12px}.concept-hero h2{font-size:19px}.concept-hero-visual{min-height:112px}.concept-hero-visual strong{font-size:38px}}
+
 </style>
 </head>
 <body data-concept="公因数和最大公因数">
 <div class="top-nav"><a href="../../index.html#公因数和最大公因数">🏠</a><span class="breadcrumb-sep">›</span><span>因数与倍数 · 最大公因数</span></div>
 <h1 class="module-title">🔗 公因数和最大公因数 — 共享的因子</h1>
 <p class="module-subtitle">两个数公有的因数中，最大的那个就是最大公因数。</p>
+<!-- upgrade-boundary: no-shared-files; reference=约分 · 面积模型; component=createAreaModel; acceptance=concept-hero+interactive-component+4-adversary+4-exercises+enhanced-feynman -->
+<div class="concept-hero" data-reference="约分 · 面积模型" data-component="createAreaModel">
+  <div>
+    <h2>最大公因数是共同的最大积木块</h2>
+    <p>最大公因数不是列表游戏，而是在两个数里找“共同拥有的最大因数”。它解释约分为什么能一步到位。</p>
+    <div class="concept-hero-meta"><span>视觉模型</span><span>对抗挑战</span><span>费曼输出</span></div>
+  </div>
+  <div class="concept-hero-visual"><strong>🧱</strong><small>12 和 18 → 6</small></div>
+</div>
+
 
 <div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
 
@@ -58,6 +80,7 @@
   </div>
 </div>
 
+<div class="section"><div class="section-header"><span class="emoji">🎮</span>交互模型 · 因数格子</div><div id="upgrade-area-model"></div><p class="upgrade-lab-note">把数看成可分组的格子，公因数就是两边都能整齐分出的块大小。</p></div><div class="section"><div class="section-header"><span class="emoji">📝</span>练习集</div><div id="ex-basic"></div></div>
 <div class="section">
   <div class="section-header"><span class="emoji">⚡</span>对抗验证</div>
   <div id="adversary-root"></div>
@@ -71,6 +94,7 @@
 
 <script src="../../shared/components.js"></script>
 <script src="../../shared/concepts.js"></script>
+<script src="../../shared/concept-sync.js"></script>
 <script>
 (function(){
   // Gate
@@ -97,6 +121,22 @@
 
   // Completion
   setupCompletionButton('summary-root');
+// ===== visual depth upgrade for 11 new lessons =====
+createGate({containerId:'gate-root',questions:[{label:'12的因数中最大的是？',inputs:[{key:'a',width:90}],check:u=>String(u.a).trim()==='12'}],onPass:()=>{document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅ 任何数最大因数是它本身。</div>';}});
+createAreaModel({containerId:'upgrade-area-model',title:'公因数格子模型',description:'用单位格理解“共同能整除”的含义。',cols:6,rows:4,highlightCols:3,highlightRows:2,color:'#3b82f6'});
+createAdversarialChallenge({containerId:'adversary-root',challenges:[
+    {tag:'定义',statement:'最大公因数是两个数共同因数中最大的一个。',answer:'agree',hint:'既共同又最大。',explanation:'先找公因数，再选最大。',counterexample:'12和18的公因数有1,2,3,6，最大是6。'},
+    {tag:'倍数混淆',statement:'最大公因数一定比两个数都大。',answer:'refute',hint:'因数能超过原数吗？',explanation:'因数不可能大于原数本身。',counterexample:'12和18的GCF是6。'},
+    {tag:'互质',statement:'两个数只有公因数1，它们的最大公因数是1。',answer:'agree',hint:'还有别的共同因数吗？',explanation:'只有1共同，就最大也是1。',counterexample:'8和15的GCF是1。'},
+    {tag:'约分',statement:'约分常用最大公因数。',answer:'agree',hint:'一次除尽。',explanation:'分子分母同时除以最大公因数，可直接到最简分数。',counterexample:'12/18同时除以6得2/3。'}
+  ],onComplete:()=>saveProgress({'new-lesson-visual-depth':{'9-7-gcf':{'adversary':'complete'}}})});
+createFeynmanFill({containerId:'feynman-root',template:'最大公因数要先找两个数共同的___，再选其中___的。它不会比原来的数更___。如果两个数只有公因数1，它们叫___；约分时用最大公因数可以直接变成___分数。',answer:["因数","最大","大","互质","最简"],onComplete:()=>saveProgress({'new-lesson-visual-depth':{'9-7-gcf':{'feynman':'complete'}}})});
+createExerciseSet({containerId:'ex-basic',exercises:[
+    {question:'12和18的最大公因数',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='6',hint:'公因数1,2,3,6'},
+    {question:'8和12的最大公因数',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='4',hint:'公因数1,2,4'},
+    {question:'7和9的最大公因数',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='1',hint:'互质'},
+    {question:'18/24约分先除以',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='6',hint:'GCF=6'}
+  ],passThreshold:0.75,onPass:()=>{saveProgress({'new-lesson-visual-depth':{'9-7-gcf':{'practice':'complete'}}});}});
 })();
 </script>
 </body>

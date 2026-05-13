@@ -15,12 +15,34 @@
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:12px 0;}
 .card{background:#f8fafc;border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;}
 .card h4{font-size:14px;margin-bottom:6px;}
+
+.concept-hero{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(180px,.8fr);gap:18px;align-items:center;margin:18px 0 24px;padding:20px;border:1px solid rgba(148,163,184,.28);border-radius:var(--radius);background:linear-gradient(135deg,#fff 0%,#f8fbff 58%,#fff7ed 100%);box-shadow:var(--shadow-md);overflow:hidden;}
+.concept-hero h2{margin:0 0 8px;font-size:22px;line-height:1.25;color:var(--text);}
+.concept-hero p{margin:0;color:var(--text-muted);font-size:14px;line-height:1.7;}
+.concept-hero-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.concept-hero-meta span{display:inline-flex;align-items:center;min-height:28px;padding:4px 10px;border-radius:999px;background:#fff;border:1px solid var(--border);font-size:12px;font-weight:800;color:var(--text-muted);}
+.concept-hero-visual{min-height:150px;border-radius:var(--radius-md);background:radial-gradient(circle at 28% 24%,rgba(59,130,246,.18),transparent 34%),radial-gradient(circle at 76% 66%,rgba(245,158,11,.22),transparent 36%),linear-gradient(145deg,#eff6ff,#fff);display:grid;place-items:center;position:relative;}
+.concept-hero-visual strong{font-size:48px;filter:drop-shadow(0 10px 18px rgba(15,23,42,.16));}
+.concept-hero-visual small{position:absolute;left:14px;right:14px;bottom:12px;text-align:center;color:var(--text-muted);font-weight:800;font-size:12px;}
+.upgrade-lab-note{margin:10px 0 0;color:var(--text-muted);font-size:13px;line-height:1.6;}
+@media(max-width:640px){.concept-hero{grid-template-columns:1fr;padding:16px;gap:12px}.concept-hero h2{font-size:19px}.concept-hero-visual{min-height:112px}.concept-hero-visual strong{font-size:38px}}
+
 </style>
 </head>
 <body data-concept="长方体正方体表面积">
 <div class="top-nav"><a href="../../index.html#长方体正方体表面积">🏠</a><span class="breadcrumb-sep">›</span><span>立体几何 · 表面积</span></div>
 <h1 class="module-title">📦 长方体正方体表面积 — 展开图</h1>
 <p class="module-subtitle">长方体 6 个面的总面积 = 表面积。展开图一看就懂。</p>
+<!-- upgrade-boundary: no-shared-files; reference=长方体和正方体 · 三视图; component=createThreeViewDemo; acceptance=concept-hero+interactive-component+4-adversary+4-exercises+enhanced-feynman -->
+<div class="concept-hero" data-reference="长方体和正方体 · 三视图" data-component="createThreeViewDemo">
+  <div>
+    <h2>表面积就是所有外表面的面积和</h2>
+    <p>长方体表面积不是体积；它只数外壳。展开成六个面，每个面都是熟悉的长方形面积。</p>
+    <div class="concept-hero-meta"><span>视觉模型</span><span>对抗挑战</span><span>费曼输出</span></div>
+  </div>
+  <div class="concept-hero-visual"><strong>🎁</strong><small>6个面相加</small></div>
+</div>
+
 
 <div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
 
@@ -61,6 +83,7 @@
   </div>
 </div>
 
+<div class="section"><div class="section-header"><span class="emoji">🎮</span>交互模型 · 观察六个面</div><div id="upgrade-three-view"></div><p class="upgrade-lab-note">切换观察方向，区分“看到的面”和“所有外表面”。</p></div><div class="section"><div class="section-header"><span class="emoji">📝</span>练习集</div><div id="ex-basic"></div></div>
 <div class="section">
   <div class="section-header"><span class="emoji">⚡</span>对抗验证</div>
   <div id="adversary-root"></div>
@@ -74,6 +97,7 @@
 
 <script src="../../shared/components.js"></script>
 <script src="../../shared/concepts.js"></script>
+<script src="../../shared/concept-sync.js"></script>
 <script>
 (function(){
   // Gate
@@ -100,6 +124,22 @@
 
   // Completion
   setupCompletionButton('summary-root');
+// ===== visual depth upgrade for 11 new lessons =====
+createGate({containerId:'gate-root',questions:[{label:'长方形面积公式是什么？',inputs:[{key:'a',width:90}],check:u=>String(u.a).trim()==='长×宽'}],onPass:()=>{document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅ 每个面都是长方形。</div>';}});
+createThreeViewDemo({containerId:'upgrade-three-view'});
+createAdversarialChallenge({containerId:'adversary-root',challenges:[
+    {tag:'概念',statement:'表面积就是物体占空间的大小。',answer:'refute',hint:'占空间是哪个概念？',explanation:'占空间大小是体积；表面积是外表面总面积。',counterexample:'给盒子贴纸看表面积，装水看体积。'},
+    {tag:'六个面',statement:'长方体有6个面。',answer:'agree',hint:'前后左右上下。',explanation:'表面积就是这6个面的面积总和。',counterexample:'相对的两个面面积相等。'},
+    {tag:'单位',statement:'表面积单位是平方单位。',answer:'agree',hint:'面积是二维量。',explanation:'表面积仍然是面积，所以用cm²、dm²。',counterexample:'不是cm³。'},
+    {tag:'正方体',statement:'正方体表面积=6a²。',answer:'agree',hint:'6个全等正方形。',explanation:'每个面面积a²，共6个面。',counterexample:'棱长3，表面积54。'}
+  ],onComplete:()=>saveProgress({'new-lesson-visual-depth':{'7-5-surface-area':{'adversary':'complete'}}})});
+createFeynmanFill({containerId:'feynman-root',template:'表面积数的是物体___所有面的面积总和，不是内部空间。长方体有___个面，相对的面面积___。正方体每个面都是边长a的___形，所以表面积公式是___。',answer:["外面","6","相等","正方","6a²"],onComplete:()=>saveProgress({'new-lesson-visual-depth':{'7-5-surface-area':{'feynman':'complete'}}})});
+createExerciseSet({containerId:'ex-basic',exercises:[
+    {question:'长方体有几个面？',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='6',hint:'上下前后左右'},
+    {question:'正方体棱长3，表面积',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='54',hint:'6×3×3'},
+    {question:'表面积单位是cm²还是cm³？',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='cm²',hint:'表面是面积'},
+    {question:'长4宽3高2，表面积',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='52',hint:'2×(12+8+6)'}
+  ],passThreshold:0.75,onPass:()=>{saveProgress({'new-lesson-visual-depth':{'7-5-surface-area':{'practice':'complete'}}});}});
 })();
 </script>
 </body>

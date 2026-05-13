@@ -15,12 +15,34 @@
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:12px 0;}
 .card{background:#f8fafc;border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;}
 .card h4{font-size:14px;margin-bottom:6px;}
+
+.concept-hero{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(180px,.8fr);gap:18px;align-items:center;margin:18px 0 24px;padding:20px;border:1px solid rgba(148,163,184,.28);border-radius:var(--radius);background:linear-gradient(135deg,#fff 0%,#f8fbff 58%,#fff7ed 100%);box-shadow:var(--shadow-md);overflow:hidden;}
+.concept-hero h2{margin:0 0 8px;font-size:22px;line-height:1.25;color:var(--text);}
+.concept-hero p{margin:0;color:var(--text-muted);font-size:14px;line-height:1.7;}
+.concept-hero-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.concept-hero-meta span{display:inline-flex;align-items:center;min-height:28px;padding:4px 10px;border-radius:999px;background:#fff;border:1px solid var(--border);font-size:12px;font-weight:800;color:var(--text-muted);}
+.concept-hero-visual{min-height:150px;border-radius:var(--radius-md);background:radial-gradient(circle at 28% 24%,rgba(59,130,246,.18),transparent 34%),radial-gradient(circle at 76% 66%,rgba(245,158,11,.22),transparent 36%),linear-gradient(145deg,#eff6ff,#fff);display:grid;place-items:center;position:relative;}
+.concept-hero-visual strong{font-size:48px;filter:drop-shadow(0 10px 18px rgba(15,23,42,.16));}
+.concept-hero-visual small{position:absolute;left:14px;right:14px;bottom:12px;text-align:center;color:var(--text-muted);font-weight:800;font-size:12px;}
+.upgrade-lab-note{margin:10px 0 0;color:var(--text-muted);font-size:13px;line-height:1.6;}
+@media(max-width:640px){.concept-hero{grid-template-columns:1fr;padding:16px;gap:12px}.concept-hero h2{font-size:19px}.concept-hero-visual{min-height:112px}.concept-hero-visual strong{font-size:38px}}
+
 </style>
 </head>
 <body data-concept="公倍数和最小公倍数">
 <div class="top-nav"><a href="../../index.html#公倍数和最小公倍数">🏠</a><span class="breadcrumb-sep">›</span><span>因数与倍数 · 最小公倍数</span></div>
 <h1 class="module-title">🔗 公倍数和最小公倍数 — 共享的倍数</h1>
 <p class="module-subtitle">两个数公有的倍数中，最小的那个就是最小公倍数。</p>
+<!-- upgrade-boundary: no-shared-files; reference=通分 · 数轴; component=createNumberLine; acceptance=concept-hero+interactive-component+4-adversary+4-exercises+enhanced-feynman -->
+<div class="concept-hero" data-reference="通分 · 数轴" data-component="createNumberLine">
+  <div>
+    <h2>最小公倍数是第一次共同踩点</h2>
+    <p>最小公倍数是在两个数的倍数序列里找第一个共同出现的数，它是通分的最小共同单位。</p>
+    <div class="concept-hero-meta"><span>视觉模型</span><span>对抗挑战</span><span>费曼输出</span></div>
+  </div>
+  <div class="concept-hero-visual"><strong>🪜</strong><small>4 和 6 → 12</small></div>
+</div>
+
 
 <div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
 
@@ -58,6 +80,7 @@
   </div>
 </div>
 
+<div class="section"><div class="section-header"><span class="emoji">🎮</span>交互模型 · 倍数数轴</div><div id="upgrade-number-line"></div><p class="upgrade-lab-note">在数轴上看倍数“踩点”，第一个共同踩点就是最小公倍数。</p></div><div class="section"><div class="section-header"><span class="emoji">📝</span>练习集</div><div id="ex-basic"></div></div>
 <div class="section">
   <div class="section-header"><span class="emoji">⚡</span>对抗验证</div>
   <div id="adversary-root"></div>
@@ -71,6 +94,7 @@
 
 <script src="../../shared/components.js"></script>
 <script src="../../shared/concepts.js"></script>
+<script src="../../shared/concept-sync.js"></script>
 <script>
 (function(){
   // Gate
@@ -97,6 +121,22 @@
 
   // Completion
   setupCompletionButton('summary-root');
+// ===== visual depth upgrade for 11 new lessons =====
+createGate({containerId:'gate-root',questions:[{label:'4和6的第一个共同倍数是？',inputs:[{key:'a',width:90}],check:u=>String(u.a).trim()==='12'}],onPass:()=>{document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅ 4,8,12；6,12。</div>';}});
+createNumberLine({containerId:'upgrade-number-line',title:'倍数数轴：找共同踩点',description:'4和6的倍数第一次共同出现的位置是12。',min:0,max:36,step:2,initial:12,unit:'',color:'#f59e0b'});
+createAdversarialChallenge({containerId:'adversary-root',challenges:[
+    {tag:'定义',statement:'最小公倍数是共同倍数中最小的正数。',answer:'agree',hint:'先共同，再最小。',explanation:'两个数都能整除它，且是正共同倍数中最小的。',counterexample:'4和6的LCM是12。'},
+    {tag:'混淆',statement:'最小公倍数一定小于两个数。',answer:'refute',hint:'倍数通常怎样？',explanation:'公倍数是两个数的倍数，通常不小于它们。',counterexample:'4和6的LCM是12。'},
+    {tag:'通分',statement:'通分常找分母的最小公倍数。',answer:'agree',hint:'要统一分母。',explanation:'最小公倍数能让共同分母尽量小。',counterexample:'1/4和1/6通分用12。'},
+    {tag:'倍数',statement:'两个数的乘积一定是公倍数，但不一定是最小公倍数。',answer:'agree',hint:'有没有更小？',explanation:'乘积能被两数整除，但可能不是最小。',counterexample:'4和6乘积24，但LCM是12。'}
+  ],onComplete:()=>saveProgress({'new-lesson-visual-depth':{'9-8-lcm':{'adversary':'complete'}}})});
+createFeynmanFill({containerId:'feynman-root',template:'最小公倍数是两个数共同___中最小的___数。它通常用于___，让不同分母变成共同分母。两个数的乘积一定是公倍数，但不一定是___公倍数。4和6的最小公倍数是___。',answer:["倍数","正","通分","最小","12"],onComplete:()=>saveProgress({'new-lesson-visual-depth':{'9-8-lcm':{'feynman':'complete'}}})});
+createExerciseSet({containerId:'ex-basic',exercises:[
+    {question:'3和5的最小公倍数',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='15',hint:'互质时乘积'},
+    {question:'4和10的最小公倍数',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='20',hint:'20能同时整除'},
+    {question:'6和8的最小公倍数',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='24',hint:'6,12,18,24；8,16,24'},
+    {question:'1/4和1/6通分用分母',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='12',hint:'LCM=12'}
+  ],passThreshold:0.75,onPass:()=>{saveProgress({'new-lesson-visual-depth':{'9-8-lcm':{'practice':'complete'}}});}});
 })();
 </script>
 </body>

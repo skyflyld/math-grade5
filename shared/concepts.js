@@ -161,8 +161,8 @@ const lessonByConcept = {
   '公倍数和最小公倍数':{href:withHash('modules/09-factors/9-8-lcm.html','公倍数和最小公倍数'),label:'进入公倍数课件',meta:'公倍数'},
   '长方体正方体表面积':{href:withHash('modules/07-volume/7-5-surface-area.html','长方体正方体表面积'),label:'进入表面积课件',meta:'展开图'},
   '分数与除法的关系':{href:withHash('modules/14-fraction-meaning/14-5-fraction-division.html','分数与除法的关系'),label:'进入分数与除法课件',meta:'分数线'},
-  '分数加减混合运算':{href:withHash('modules/10-fraction-ops/10-3-mixed-ops.html','分数加减混合运算'),label:'进入混合运算课件',meta:'混合运算'},,
-  '旋转三要素':{href:withHash('modules/08-geometry-intro/8-4-rotation.html','旋转三要素'),label:'进入旋转课件',meta:'中心·方向·角度'},,
+  '分数加减混合运算':{href:withHash('modules/10-fraction-ops/10-3-mixed-ops.html','分数加减混合运算'),label:'进入混合运算课件',meta:'混合运算'},
+  '旋转三要素':{href:withHash('modules/08-geometry-intro/8-4-rotation.html','旋转三要素'),label:'进入旋转课件',meta:'中心·方向·角度'},
   '复式折线统计图':{href:withHash('modules/11-statistics/11-4-dual-line.html','复式折线统计图'),label:'进入复式折线课件',meta:'多线对比'},
   '植树问题':{href:withHash('modules/12-applications/12-1-tree-planting.html','植树问题'),label:'进入植树问题课件',meta:'间隔端点'},
   '找次品':{href:withHash('modules/12-applications/12-2-find-faulty.html','找次品'),label:'进入找次品课件',meta:'三等分策略'}

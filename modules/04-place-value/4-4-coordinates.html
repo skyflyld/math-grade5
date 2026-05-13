@@ -15,12 +15,34 @@
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:12px 0;}
 .card{background:#f8fafc;border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;}
 .card h4{font-size:14px;margin-bottom:6px;}
+
+.concept-hero{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(180px,.8fr);gap:18px;align-items:center;margin:18px 0 24px;padding:20px;border:1px solid rgba(148,163,184,.28);border-radius:var(--radius);background:linear-gradient(135deg,#fff 0%,#f8fbff 58%,#fff7ed 100%);box-shadow:var(--shadow-md);overflow:hidden;}
+.concept-hero h2{margin:0 0 8px;font-size:22px;line-height:1.25;color:var(--text);}
+.concept-hero p{margin:0;color:var(--text-muted);font-size:14px;line-height:1.7;}
+.concept-hero-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.concept-hero-meta span{display:inline-flex;align-items:center;min-height:28px;padding:4px 10px;border-radius:999px;background:#fff;border:1px solid var(--border);font-size:12px;font-weight:800;color:var(--text-muted);}
+.concept-hero-visual{min-height:150px;border-radius:var(--radius-md);background:radial-gradient(circle at 28% 24%,rgba(59,130,246,.18),transparent 34%),radial-gradient(circle at 76% 66%,rgba(245,158,11,.22),transparent 36%),linear-gradient(145deg,#eff6ff,#fff);display:grid;place-items:center;position:relative;}
+.concept-hero-visual strong{font-size:48px;filter:drop-shadow(0 10px 18px rgba(15,23,42,.16));}
+.concept-hero-visual small{position:absolute;left:14px;right:14px;bottom:12px;text-align:center;color:var(--text-muted);font-weight:800;font-size:12px;}
+.upgrade-lab-note{margin:10px 0 0;color:var(--text-muted);font-size:13px;line-height:1.6;}
+@media(max-width:640px){.concept-hero{grid-template-columns:1fr;padding:16px;gap:12px}.concept-hero h2{font-size:19px}.concept-hero-visual{min-height:112px}.concept-hero-visual strong{font-size:38px}}
+
 </style>
 </head>
 <body data-concept="用数对确定位置">
 <div class="top-nav"><a href="../../index.html#用数对确定位置">🏠</a><span class="breadcrumb-sep">›</span><span>位置与坐标 · 用数对确定位置</span></div>
 <h1 class="module-title">📍 用数对确定位置 — 坐标思想入门</h1>
 <p class="module-subtitle">方格纸上，(列,行) 唯一确定一个点——这就是坐标的雏形。</p>
+<!-- upgrade-boundary: no-shared-files; reference=位置值 · 数轴; component=createAreaModel; acceptance=concept-hero+interactive-component+4-adversary+4-exercises+enhanced-feynman -->
+<div class="concept-hero" data-reference="位置值 · 数轴" data-component="createAreaModel">
+  <div>
+    <h2>两个方向确定一个点</h2>
+    <p>数对把平面位置拆成横向读数和纵向读数；顺序一变，位置就变。</p>
+    <div class="concept-hero-meta"><span>视觉模型</span><span>对抗挑战</span><span>费曼输出</span></div>
+  </div>
+  <div class="concept-hero-visual"><strong>📍</strong><small>(列, 行)</small></div>
+</div>
+
 
 <div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
 
@@ -61,6 +83,7 @@
   </div>
 </div>
 
+<div class="section"><div class="section-header"><span class="emoji">🎮</span>交互模型 · 方格坐标</div><div id="upgrade-grid-model"></div><p class="upgrade-lab-note">把方格看成列与行的组合，先读列，再读行。</p></div><div class="section"><div class="section-header"><span class="emoji">📝</span>练习集</div><div id="ex-basic"></div></div>
 <div class="section">
   <div class="section-header"><span class="emoji">⚡</span>对抗验证</div>
   <div id="adversary-root"></div>
@@ -74,6 +97,7 @@
 
 <script src="../../shared/components.js"></script>
 <script src="../../shared/concepts.js"></script>
+<script src="../../shared/concept-sync.js"></script>
 <script>
 (function(){
   // Gate
@@ -100,6 +124,22 @@
 
   // Completion
   setupCompletionButton('summary-root');
+// ===== visual depth upgrade for 11 new lessons =====
+createGate({containerId:'gate-root',questions:[{label:'数对 (3,2) 中的 3 表示什么？',inputs:[{key:'a',width:90}],check:u=>String(u.a).trim()==='列'}],onPass:()=>{document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅ 第一个数表示列。</div>';}});
+createAreaModel({containerId:'upgrade-grid-model',title:'坐标方格：列 × 行',description:'拖动选区，体会一个位置需要横向和纵向两个读数共同确定。',cols:6,rows:6,highlightCols:3,highlightRows:2,color:'#3b82f6'});
+createAdversarialChallenge({containerId:'adversary-root',challenges:[
+    {tag:'顺序',statement:'(2,3) 和 (3,2) 表示同一个位置。',answer:'refute',hint:'列和行能交换吗？',explanation:'第一个数是列，第二个数是行，交换后位置不同。',counterexample:'电影院3排2座和2排3座不是同座位。'},
+    {tag:'唯一性',statement:'一个数对能唯一确定一个点。',answer:'agree',hint:'两个方向都给了吗？',explanation:'列和行都确定后，交点唯一。',counterexample:'第4列第2行只有一个格点。'},
+    {tag:'约定',statement:'只说第3列就能确定一个点。',answer:'refute',hint:'还缺哪个方向？',explanation:'只有列还不够，还需要行。',counterexample:'第3列上有很多点。'},
+    {tag:'生活',statement:'棋盘、座位、地图都用类似坐标的思想。',answer:'agree',hint:'都要定位。',explanation:'这些场景都用两个方向或两个标签确定位置。',counterexample:'A排3座就是一组定位信息。'}
+  ],onComplete:()=>saveProgress({'new-lesson-visual-depth':{'4-4-coordinates':{'adversary':'complete'}}})});
+createFeynmanFill({containerId:'feynman-root',template:'数对由___个数构成，通常第一个表示___，第二个表示___。(3,2) 表示第___列第___行。数对的顺序___随便交换，因为交换后位置会变。',answer:["两","列","行","3","2","不能"],onComplete:()=>saveProgress({'new-lesson-visual-depth':{'4-4-coordinates':{'feynman':'complete'}}})});
+createExerciseSet({containerId:'ex-basic',exercises:[
+    {question:'(5,3) 表示第几列？',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='5',hint:'第一个数是列'},
+    {question:'(5,3) 表示第几行？',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='3',hint:'第二个数是行'},
+    {question:'(2,4)和(4,2)一样吗？',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='不一样',hint:'顺序不同'},
+    {question:'只给第6列够定位吗？',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='不够',hint:'还缺行'}
+  ],passThreshold:0.75,onPass:()=>{saveProgress({'new-lesson-visual-depth':{'4-4-coordinates':{'practice':'complete'}}});}});
 })();
 </script>
 </body>

@@ -14,10 +14,12 @@ if(!nm||!em){console.log("FATAL: cannot parse graph data");process.exit(1);}
 const nodes=JSON.parse(nm[1]), edges=JSON.parse(em[1]);
 const nodeMap=new Map(nodes.map(n=>[n.id,n]));
 const nodeNameSet=new Set(nodes.map(n=>n.name));
+const baselineConceptCount=40;
+const baselineEdgeCount=57;
 
 // === Phase 1: Node data integrity ===
 console.log("=== Phase 1: Node data integrity ===");
-check(nodes.length===40, "Concept node count: "+nodes.length+" (expected 40)");
+check(nodes.length>=baselineConceptCount, "Concept node count: "+nodes.length+" (expected at least "+baselineConceptCount+")");
 nodes.forEach(n=>{
   check(n.id && n.id.length>=6, "Node missing ID: "+n.name);
   check(n.name && n.name.length>0, "Node missing name: "+n.id);
@@ -36,7 +38,7 @@ console.log("  Pass: "+pass+" current (nodes done)");
 // === Phase 2: Edge data integrity ===
 let p2pass=pass;
 console.log("\n=== Phase 2: Edge data integrity ===");
-check(edges.length===57, "Edge count: "+edges.length+" (expected 57)");
+check(edges.length>=baselineEdgeCount, "Edge count: "+edges.length+" (expected at least "+baselineEdgeCount+")");
 edges.forEach((e,i)=>{
   check(nodeMap.has(e.from), "Edge "+i+': from="'+e.from+'" bad');
   check(nodeMap.has(e.to), "Edge "+i+': to="'+e.to+'" bad');
@@ -93,7 +95,7 @@ if(lcMatch){
     }
   }
 }
-check(fileCount===40, "lessonByConcept entries: "+fileCount+" (expected 40)");
+check(fileCount===nodes.length, "lessonByConcept entries: "+fileCount+" (expected "+nodes.length+")");
 check(missingFiles===0, "Missing files: "+missingFiles);
 console.log("  Entries: "+fileCount+", Missing: "+missingFiles);
 console.log("  Pass: "+(pass-p4pass)+" in this phase");
@@ -125,7 +127,7 @@ fs.readdirSync("modules",{recursive:true}).filter(f=>f.endsWith(".html")).forEac
     });
   }
 });
-check(totalCW===40, "Total courseware: "+totalCW+" (expected 40)");
+check(totalCW===fileCount, "Total courseware: "+totalCW+" (expected "+fileCount+")");
 check(noGate===0, "Missing createGate: "+noGate);
 check(noAdv===0, "Missing AdversarialChallenge: "+noAdv);
 check(noFeyn===0, "Missing FeynmanFill: "+noFeyn);

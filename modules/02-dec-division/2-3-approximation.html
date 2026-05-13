@@ -15,12 +15,34 @@
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:12px 0;}
 .card{background:#f8fafc;border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;}
 .card h4{font-size:14px;margin-bottom:6px;}
+
+.concept-hero{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(180px,.8fr);gap:18px;align-items:center;margin:18px 0 24px;padding:20px;border:1px solid rgba(148,163,184,.28);border-radius:var(--radius);background:linear-gradient(135deg,#fff 0%,#f8fbff 58%,#fff7ed 100%);box-shadow:var(--shadow-md);overflow:hidden;}
+.concept-hero h2{margin:0 0 8px;font-size:22px;line-height:1.25;color:var(--text);}
+.concept-hero p{margin:0;color:var(--text-muted);font-size:14px;line-height:1.7;}
+.concept-hero-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.concept-hero-meta span{display:inline-flex;align-items:center;min-height:28px;padding:4px 10px;border-radius:999px;background:#fff;border:1px solid var(--border);font-size:12px;font-weight:800;color:var(--text-muted);}
+.concept-hero-visual{min-height:150px;border-radius:var(--radius-md);background:radial-gradient(circle at 28% 24%,rgba(59,130,246,.18),transparent 34%),radial-gradient(circle at 76% 66%,rgba(245,158,11,.22),transparent 36%),linear-gradient(145deg,#eff6ff,#fff);display:grid;place-items:center;position:relative;}
+.concept-hero-visual strong{font-size:48px;filter:drop-shadow(0 10px 18px rgba(15,23,42,.16));}
+.concept-hero-visual small{position:absolute;left:14px;right:14px;bottom:12px;text-align:center;color:var(--text-muted);font-weight:800;font-size:12px;}
+.upgrade-lab-note{margin:10px 0 0;color:var(--text-muted);font-size:13px;line-height:1.6;}
+@media(max-width:640px){.concept-hero{grid-template-columns:1fr;padding:16px;gap:12px}.concept-hero h2{font-size:19px}.concept-hero-visual{min-height:112px}.concept-hero-visual strong{font-size:38px}}
+
 </style>
 </head>
 <body data-concept="小数近似数">
 <div class="top-nav"><a href="../../index.html#小数近似数">🏠</a><span class="breadcrumb-sep">›</span><span>小数运算 · 近似数</span></div>
 <h1 class="module-title">🎯 小数近似数 — 四舍五入取接近值</h1>
 <p class="module-subtitle">小数太多位数时，用四舍五入法取一个接近的数代替。</p>
+<!-- upgrade-boundary: no-shared-files; reference=小数除法 · 数轴; component=createNumberLine; acceptance=concept-hero+interactive-component+4-adversary+4-exercises+enhanced-feynman -->
+<div class="concept-hero" data-reference="小数除法 · 数轴" data-component="createNumberLine">
+  <div>
+    <h2>近似数就是最近刻度</h2>
+    <p>四舍五入不是随便改数，而是在指定精度下选择最近的刻度。</p>
+    <div class="concept-hero-meta"><span>视觉模型</span><span>对抗挑战</span><span>费曼输出</span></div>
+  </div>
+  <div class="concept-hero-visual"><strong>🎯</strong><small>3.1416 → 3.14</small></div>
+</div>
+
 
 <div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
 
@@ -64,6 +86,7 @@
   </div>
 </div>
 
+<div class="section"><div class="section-header"><span class="emoji">🎮</span>交互模型 · 近似数轴</div><div id="upgrade-number-line"></div><p class="upgrade-lab-note">拖动数轴，观察一个小数离哪个保留刻度更近。</p></div><div class="section"><div class="section-header"><span class="emoji">📝</span>练习集</div><div id="ex-basic"></div></div>
 <div class="section">
   <div class="section-header"><span class="emoji">⚡</span>对抗验证</div>
   <div id="adversary-root"></div>
@@ -77,6 +100,7 @@
 
 <script src="../../shared/components.js"></script>
 <script src="../../shared/concepts.js"></script>
+<script src="../../shared/concept-sync.js"></script>
 <script>
 (function(){
   // Gate
@@ -103,6 +127,22 @@
 
   // Completion
   setupCompletionButton('summary-root');
+// ===== visual depth upgrade for 11 new lessons =====
+createGate({containerId:'gate-root',questions:[{label:'3.1416 保留两位小数是？',inputs:[{key:'a',width:90}],check:u=>String(u.a).trim()==='3.14'}],onPass:()=>{document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅ 看第三位是1，舍去。</div>';}});
+createNumberLine({containerId:'upgrade-number-line',title:'近似数轴：找最近的百分位',description:'把 3.1416 放在 3.14 与 3.15 之间，距离更近的一边就是近似值。',min:3.10,max:3.20,step:0.01,initial:3.14,unit:'',color:'#f59e0b'});
+createAdversarialChallenge({containerId:'adversary-root',challenges:[
+    {tag:'进位',statement:'4.999 保留一位小数是 4.9。',answer:'refute',hint:'下一位是几？',explanation:'看十分位后一位是9，要进位，结果是5.0。',counterexample:'4.999 离 5.0 比 4.9 更近。'},
+    {tag:'大小',statement:'近似数一定比原数小。',answer:'refute',hint:'五入会怎样？',explanation:'五入时近似数会变大。',counterexample:'3.8≈4。'},
+    {tag:'精度',statement:'保留位数越多，通常越接近原数。',answer:'agree',hint:'刻度更细还是更粗？',explanation:'精度越高，刻度越细，误差通常更小。',counterexample:'3.142 比 3.14 更接近 3.1416。'},
+    {tag:'本质',statement:'四舍五入是在指定刻度上找最近值。',answer:'agree',hint:'数轴上怎么理解？',explanation:'保留到某位就是限定刻度，再找离原数最近的刻度。',counterexample:'3.146保留两位离3.15更近。'}
+  ],onComplete:()=>saveProgress({'new-lesson-visual-depth':{'2-3-approximation':{'adversary':'complete'}}})});
+createFeynmanFill({containerId:'feynman-root',template:'近似数是在指定___下找最接近的数。保留到某一位时，看它的下___位；小于5就___，大于等于5就___。近似数不是错误，而是带有___的估计。',answer:["精度","一","舍去","进位","误差"],onComplete:()=>saveProgress({'new-lesson-visual-depth':{'2-3-approximation':{'feynman':'complete'}}})});
+createExerciseSet({containerId:'ex-basic',exercises:[
+    {question:'5.6789保留两位小数',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='5.68',hint:'第三位是8，进位'},
+    {question:'2.341保留一位小数',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='2.3',hint:'百分位是4，舍去'},
+    {question:'7.95保留一位小数',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='8.0',hint:'百分位5，十分位进位'},
+    {question:'近似数一定等于原数吗？',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='不一定',hint:'它有误差'}
+  ],passThreshold:0.75,onPass:()=>{saveProgress({'new-lesson-visual-depth':{'2-3-approximation':{'practice':'complete'}}});}});
 })();
 </script>
 </body>

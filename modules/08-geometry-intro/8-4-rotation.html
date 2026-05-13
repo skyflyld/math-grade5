@@ -15,12 +15,34 @@
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:12px 0;}
 .card{background:#f8fafc;border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;}
 .card h4{font-size:14px;margin-bottom:6px;}
+
+.concept-hero{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(180px,.8fr);gap:18px;align-items:center;margin:18px 0 24px;padding:20px;border:1px solid rgba(148,163,184,.28);border-radius:var(--radius);background:linear-gradient(135deg,#fff 0%,#f8fbff 58%,#fff7ed 100%);box-shadow:var(--shadow-md);overflow:hidden;}
+.concept-hero h2{margin:0 0 8px;font-size:22px;line-height:1.25;color:var(--text);}
+.concept-hero p{margin:0;color:var(--text-muted);font-size:14px;line-height:1.7;}
+.concept-hero-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.concept-hero-meta span{display:inline-flex;align-items:center;min-height:28px;padding:4px 10px;border-radius:999px;background:#fff;border:1px solid var(--border);font-size:12px;font-weight:800;color:var(--text-muted);}
+.concept-hero-visual{min-height:150px;border-radius:var(--radius-md);background:radial-gradient(circle at 28% 24%,rgba(59,130,246,.18),transparent 34%),radial-gradient(circle at 76% 66%,rgba(245,158,11,.22),transparent 36%),linear-gradient(145deg,#eff6ff,#fff);display:grid;place-items:center;position:relative;}
+.concept-hero-visual strong{font-size:48px;filter:drop-shadow(0 10px 18px rgba(15,23,42,.16));}
+.concept-hero-visual small{position:absolute;left:14px;right:14px;bottom:12px;text-align:center;color:var(--text-muted);font-weight:800;font-size:12px;}
+.upgrade-lab-note{margin:10px 0 0;color:var(--text-muted);font-size:13px;line-height:1.6;}
+@media(max-width:640px){.concept-hero{grid-template-columns:1fr;padding:16px;gap:12px}.concept-hero h2{font-size:19px}.concept-hero-visual{min-height:112px}.concept-hero-visual strong{font-size:38px}}
+
 </style>
 </head>
 <body data-concept="旋转三要素">
 <div class="top-nav"><a href="../../index.html#旋转三要素">🏠</a><span class="breadcrumb-sep">›</span><span>几何变换 · 旋转</span></div>
 <h1 class="module-title">🔄 旋转三要素 — 中心·方向·角度</h1>
 <p class="module-subtitle">图形绕着中心点顺时针或逆时针转一定角度——这就是旋转。</p>
+<!-- upgrade-boundary: no-shared-files; reference=轴对称与旋转 · 变换演示; component=createTransformDemo; acceptance=concept-hero+interactive-component+4-adversary+4-exercises+enhanced-feynman -->
+<div class="concept-hero" data-reference="轴对称与旋转 · 变换演示" data-component="createTransformDemo">
+  <div>
+    <h2>旋转改变方向，不改变形状</h2>
+    <p>旋转是一种刚性变换：图形绕中心转过角度，大小和形状保持不变。</p>
+    <div class="concept-hero-meta"><span>视觉模型</span><span>对抗挑战</span><span>费曼输出</span></div>
+  </div>
+  <div class="concept-hero-visual"><strong>🔄</strong><small>中心 / 方向 / 角度</small></div>
+</div>
+
 
 <div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
 
@@ -57,6 +79,7 @@
   </div>
 </div>
 
+<div class="section"><div class="section-header"><span class="emoji">🎮</span>交互模型 · 旋转与翻折</div><div id="upgrade-transform"></div><p class="upgrade-lab-note">拖动角度，观察旋转只改变位置和方向，不改变图形本身。</p></div><div class="section"><div class="section-header"><span class="emoji">📝</span>练习集</div><div id="ex-basic"></div></div>
 <div class="section">
   <div class="section-header"><span class="emoji">⚡</span>对抗验证</div>
   <div id="adversary-root"></div>
@@ -70,6 +93,7 @@
 
 <script src="../../shared/components.js"></script>
 <script src="../../shared/concepts.js"></script>
+<script src="../../shared/concept-sync.js"></script>
 <script>
 (function(){
   // Gate
@@ -96,6 +120,22 @@
 
   // Completion
   setupCompletionButton('summary-root');
+// ===== visual depth upgrade for 11 new lessons =====
+createGate({containerId:'gate-root',questions:[{label:'旋转90°后图形大小会变吗？',inputs:[{key:'a',width:90}],check:u=>String(u.a).trim()==='不会'}],onPass:()=>{document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅ 刚性变换不改变大小。</div>';}});
+createTransformDemo({containerId:'upgrade-transform'});
+createAdversarialChallenge({containerId:'adversary-root',challenges:[
+    {tag:'大小',statement:'旋转会改变图形大小。',answer:'refute',hint:'有没有拉伸？',explanation:'旋转只改变方向和位置，不改变大小。',counterexample:'正方形旋转90°边长不变。'},
+    {tag:'三要素',statement:'旋转需要中心、方向、角度。',answer:'agree',hint:'少一个能确定吗？',explanation:'三要素共同确定一次旋转。',counterexample:'绕不同中心旋转结果不同。'},
+    {tag:'角度',statement:'顺时针90°和逆时针90°一定相同。',answer:'refute',hint:'方向一样吗？',explanation:'方向不同，最终位置通常不同。',counterexample:'指针向上顺时针90°到右，逆时针90°到左。'},
+    {tag:'对称',statement:'旋转180°等于转半圈。',answer:'agree',hint:'360°是一整圈。',explanation:'180°是一整圈的一半。',counterexample:'中心对称可看作旋转180°。'}
+  ],onComplete:()=>saveProgress({'new-lesson-visual-depth':{'8-4-rotation':{'adversary':'complete'}}})});
+createFeynmanFill({containerId:'feynman-root',template:'旋转有三个要素：旋转___、旋转___和旋转___。旋转后图形的大小和形状___，改变的是位置和___。顺时针90°和逆时针90°通常___。',answer:["中心","方向","角度","不变","方向","不同"],onComplete:()=>saveProgress({'new-lesson-visual-depth':{'8-4-rotation':{'feynman':'complete'}}})});
+createExerciseSet({containerId:'ex-basic',exercises:[
+    {question:'360°表示几圈？',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='1',hint:'一整圈'},
+    {question:'180°表示几圈？',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='半圈',hint:'一半'},
+    {question:'旋转后面积变吗？',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='不变',hint:'刚性变换'},
+    {question:'指针从12顺时针90°到几？',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='3',hint:'钟面右侧'}
+  ],passThreshold:0.75,onPass:()=>{saveProgress({'new-lesson-visual-depth':{'8-4-rotation':{'practice':'complete'}}});}});
 })();
 </script>
 </body>

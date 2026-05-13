@@ -15,12 +15,34 @@
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:12px 0;}
 .card{background:#f8fafc;border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;}
 .card h4{font-size:14px;margin-bottom:6px;}
+
+.concept-hero{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(180px,.8fr);gap:18px;align-items:center;margin:18px 0 24px;padding:20px;border:1px solid rgba(148,163,184,.28);border-radius:var(--radius);background:linear-gradient(135deg,#fff 0%,#f8fbff 58%,#fff7ed 100%);box-shadow:var(--shadow-md);overflow:hidden;}
+.concept-hero h2{margin:0 0 8px;font-size:22px;line-height:1.25;color:var(--text);}
+.concept-hero p{margin:0;color:var(--text-muted);font-size:14px;line-height:1.7;}
+.concept-hero-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.concept-hero-meta span{display:inline-flex;align-items:center;min-height:28px;padding:4px 10px;border-radius:999px;background:#fff;border:1px solid var(--border);font-size:12px;font-weight:800;color:var(--text-muted);}
+.concept-hero-visual{min-height:150px;border-radius:var(--radius-md);background:radial-gradient(circle at 28% 24%,rgba(59,130,246,.18),transparent 34%),radial-gradient(circle at 76% 66%,rgba(245,158,11,.22),transparent 36%),linear-gradient(145deg,#eff6ff,#fff);display:grid;place-items:center;position:relative;}
+.concept-hero-visual strong{font-size:48px;filter:drop-shadow(0 10px 18px rgba(15,23,42,.16));}
+.concept-hero-visual small{position:absolute;left:14px;right:14px;bottom:12px;text-align:center;color:var(--text-muted);font-weight:800;font-size:12px;}
+.upgrade-lab-note{margin:10px 0 0;color:var(--text-muted);font-size:13px;line-height:1.6;}
+@media(max-width:640px){.concept-hero{grid-template-columns:1fr;padding:16px;gap:12px}.concept-hero h2{font-size:19px}.concept-hero-visual{min-height:112px}.concept-hero-visual strong{font-size:38px}}
+
 </style>
 </head>
 <body data-concept="不规则图形面积估算">
 <div class="top-nav"><a href="../../index.html#不规则图形面积估算">🏠</a><span class="breadcrumb-sep">›</span><span>多边形面积 · 不规则图形估算</span></div>
 <h1 class="module-title">📐 不规则图形面积估算 — 数方格</h1>
 <p class="module-subtitle">没有公式的图形怎么算面积？一格一格数。</p>
+<!-- upgrade-boundary: no-shared-files; reference=平行四边形面积 · 面积模型; component=createAreaModel; acceptance=concept-hero+interactive-component+4-adversary+4-exercises+enhanced-feynman -->
+<div class="concept-hero" data-reference="平行四边形面积 · 面积模型" data-component="createAreaModel">
+  <div>
+    <h2>不规则图形先变成熟悉图形</h2>
+    <p>组合图形面积的第一性原理是“面积可加可减”：拆成会算的，或补成会算的。</p>
+    <div class="concept-hero-meta"><span>视觉模型</span><span>对抗挑战</span><span>费曼输出</span></div>
+  </div>
+  <div class="concept-hero-visual"><strong>🧩</strong><small>分割 / 添补</small></div>
+</div>
+
 
 <div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
 
@@ -59,6 +81,7 @@
   </div>
 </div>
 
+<div class="section"><div class="section-header"><span class="emoji">🎮</span>交互模型 · 分割面积</div><div id="upgrade-area-model"></div><p class="upgrade-lab-note">拖动选区，观察面积可以由一个个单位格累积，也可以拆分后相加。</p></div><div class="section"><div class="section-header"><span class="emoji">📝</span>练习集</div><div id="ex-basic"></div></div>
 <div class="section">
   <div class="section-header"><span class="emoji">⚡</span>对抗验证</div>
   <div id="adversary-root"></div>
@@ -72,6 +95,7 @@
 
 <script src="../../shared/components.js"></script>
 <script src="../../shared/concepts.js"></script>
+<script src="../../shared/concept-sync.js"></script>
 <script>
 (function(){
   // Gate
@@ -98,6 +122,22 @@
 
   // Completion
   setupCompletionButton('summary-root');
+// ===== visual depth upgrade for 11 new lessons =====
+createGate({containerId:'gate-root',questions:[{label:'长方形面积公式是什么？',inputs:[{key:'a',width:90}],check:u=>String(u.a).trim()==='长×宽'}],onPass:()=>{document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅ 组合图形最终要回到基本图形。</div>';}});
+createAreaModel({containerId:'upgrade-area-model',title:'组合图形面积：单位格累积',description:'用格子理解“分割法”和“添补法”背后的面积守恒。',cols:8,rows:6,highlightCols:5,highlightRows:3,color:'#16a34a'});
+createAdversarialChallenge({containerId:'adversary-root',challenges:[
+    {tag:'可加性',statement:'组合图形面积可以拆成几个简单图形面积相加。',answer:'agree',hint:'有没有重叠？',explanation:'只要分割不重叠不遗漏，面积可以相加。',counterexample:'L形可以拆成两个长方形。'},
+    {tag:'添补法',statement:'添补法求面积时，只补不减。',answer:'refute',hint:'补上的部分属于原图吗？',explanation:'补成大图形后，必须减去补上的空白部分。',counterexample:'大长方形面积-缺角面积。'},
+    {tag:'单位',statement:'面积单位和长度单位一样。',answer:'refute',hint:'二维还是一维？',explanation:'面积是二维量，用平方单位。',counterexample:'cm和cm²不同。'},
+    {tag:'策略',statement:'分割线越复杂越好。',answer:'refute',hint:'目标是简化。',explanation:'好的分割应让图形变成已知公式的基本图形。',counterexample:'拆成长方形/三角形比乱切更清楚。'}
+  ],onComplete:()=>saveProgress({'new-lesson-visual-depth':{'6-4-irregular':{'adversary':'complete'}}})});
+createFeynmanFill({containerId:'feynman-root',template:'组合图形面积的核心是面积可以___和___。分割法把图形拆成几个不重叠的___图形再相加；添补法先补成大图形，再减去___部分。计算后要写___单位。',answer:["相加","相减","基本","补上","平方"],onComplete:()=>saveProgress({'new-lesson-visual-depth':{'6-4-irregular':{'feynman':'complete'}}})});
+createExerciseSet({containerId:'ex-basic',exercises:[
+    {question:'6×4的长方形面积',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='24',hint:'长×宽'},
+    {question:'大矩形30，挖去小矩形6，剩下',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='24',hint:'30-6'},
+    {question:'两个面积分别8和12的图形拼合面积',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='20',hint:'不重叠相加'},
+    {question:'面积单位写cm还是cm²？',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='cm²',hint:'面积是平方单位'}
+  ],passThreshold:0.75,onPass:()=>{saveProgress({'new-lesson-visual-depth':{'6-4-irregular':{'practice':'complete'}}});}});
 })();
 </script>
 </body>

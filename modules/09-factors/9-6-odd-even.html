@@ -15,12 +15,34 @@
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:12px 0;}
 .card{background:#f8fafc;border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;}
 .card h4{font-size:14px;margin-bottom:6px;}
+
+.concept-hero{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(180px,.8fr);gap:18px;align-items:center;margin:18px 0 24px;padding:20px;border:1px solid rgba(148,163,184,.28);border-radius:var(--radius);background:linear-gradient(135deg,#fff 0%,#f8fbff 58%,#fff7ed 100%);box-shadow:var(--shadow-md);overflow:hidden;}
+.concept-hero h2{margin:0 0 8px;font-size:22px;line-height:1.25;color:var(--text);}
+.concept-hero p{margin:0;color:var(--text-muted);font-size:14px;line-height:1.7;}
+.concept-hero-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.concept-hero-meta span{display:inline-flex;align-items:center;min-height:28px;padding:4px 10px;border-radius:999px;background:#fff;border:1px solid var(--border);font-size:12px;font-weight:800;color:var(--text-muted);}
+.concept-hero-visual{min-height:150px;border-radius:var(--radius-md);background:radial-gradient(circle at 28% 24%,rgba(59,130,246,.18),transparent 34%),radial-gradient(circle at 76% 66%,rgba(245,158,11,.22),transparent 36%),linear-gradient(145deg,#eff6ff,#fff);display:grid;place-items:center;position:relative;}
+.concept-hero-visual strong{font-size:48px;filter:drop-shadow(0 10px 18px rgba(15,23,42,.16));}
+.concept-hero-visual small{position:absolute;left:14px;right:14px;bottom:12px;text-align:center;color:var(--text-muted);font-weight:800;font-size:12px;}
+.upgrade-lab-note{margin:10px 0 0;color:var(--text-muted);font-size:13px;line-height:1.6;}
+@media(max-width:640px){.concept-hero{grid-template-columns:1fr;padding:16px;gap:12px}.concept-hero h2{font-size:19px}.concept-hero-visual{min-height:112px}.concept-hero-visual strong{font-size:38px}}
+
 </style>
 </head>
 <body data-concept="奇数和偶数">
 <div class="top-nav"><a href="../../index.html#奇数和偶数">🏠</a><span class="breadcrumb-sep">›</span><span>因数与倍数 · 奇偶</span></div>
 <h1 class="module-title">🔢 奇数和偶数 — 看个位就够了</h1>
 <p class="module-subtitle">能被 2 整除的是偶数，不能的是奇数。决定权在个位。</p>
+<!-- upgrade-boundary: no-shared-files; reference=235倍数特征 · 数轴; component=createNumberLine; acceptance=concept-hero+interactive-component+4-adversary+4-exercises+enhanced-feynman -->
+<div class="concept-hero" data-reference="235倍数特征 · 数轴" data-component="createNumberLine">
+  <div>
+    <h2>奇偶看能否两两配对</h2>
+    <p>偶数不是背“个位0、2、4、6、8”，本质是能被2整除，也就是能两两配对没有剩余。</p>
+    <div class="concept-hero-meta"><span>视觉模型</span><span>对抗挑战</span><span>费曼输出</span></div>
+  </div>
+  <div class="concept-hero-visual"><strong>🧮</strong><small>偶数=2的倍数</small></div>
+</div>
+
 
 <div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
 
@@ -53,6 +75,7 @@
   </div>
 </div>
 
+<div class="section"><div class="section-header"><span class="emoji">🎮</span>交互模型 · 奇偶数轴</div><div id="upgrade-number-line"></div><p class="upgrade-lab-note">在数轴上移动，观察奇偶交替出现。</p></div><div class="section"><div class="section-header"><span class="emoji">📝</span>练习集</div><div id="ex-basic"></div></div>
 <div class="section">
   <div class="section-header"><span class="emoji">⚡</span>对抗验证</div>
   <div id="adversary-root"></div>
@@ -66,6 +89,7 @@
 
 <script src="../../shared/components.js"></script>
 <script src="../../shared/concepts.js"></script>
+<script src="../../shared/concept-sync.js"></script>
 <script>
 (function(){
   // Gate
@@ -92,6 +116,22 @@
 
   // Completion
   setupCompletionButton('summary-root');
+// ===== visual depth upgrade for 11 new lessons =====
+createGate({containerId:'gate-root',questions:[{label:'12是奇数还是偶数？',inputs:[{key:'a',width:90}],check:u=>String(u.a).trim()==='偶数'}],onPass:()=>{document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅ 12能被2整除。</div>';}});
+createNumberLine({containerId:'upgrade-number-line',title:'奇偶交替数轴',description:'相邻整数奇偶交替，偶数都是2的倍数。',min:0,max:20,step:1,initial:8,unit:'',color:'#8b5cf6'});
+createAdversarialChallenge({containerId:'adversary-root',challenges:[
+    {tag:'定义',statement:'偶数就是能被2整除的整数。',answer:'agree',hint:'有没有余数？',explanation:'偶数除以2余数为0。',counterexample:'12÷2=6。'},
+    {tag:'奇数',statement:'奇数两两配对后会剩1个。',answer:'agree',hint:'不能整除2。',explanation:'奇数除以2余1。',counterexample:'7个苹果两两分剩1个。'},
+    {tag:'0',statement:'0不是偶数。',answer:'refute',hint:'0能被2整除吗？',explanation:'0÷2=0，没有余数，所以0是偶数。',counterexample:'数轴上0也在偶数位置。'},
+    {tag:'相邻',statement:'相邻两个整数奇偶性相同。',answer:'refute',hint:'数轴上怎么走？',explanation:'相邻整数奇偶交替。',counterexample:'8是偶数，9是奇数。'}
+  ],onComplete:()=>saveProgress({'new-lesson-visual-depth':{'9-6-odd-even':{'adversary':'complete'}}})});
+createFeynmanFill({containerId:'feynman-root',template:'偶数是能被___整除的整数，也就是两两配对后没有___。奇数除以2会剩___个。整数在数轴上奇偶___出现，0也是___数。',answer:["2","剩余","1","交替","偶"],onComplete:()=>saveProgress({'new-lesson-visual-depth':{'9-6-odd-even':{'feynman':'complete'}}})});
+createExerciseSet({containerId:'ex-basic',exercises:[
+    {question:'19是奇数还是偶数？',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='奇数',hint:'个位9'},
+    {question:'28是奇数还是偶数？',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='偶数',hint:'能被2整除'},
+    {question:'0是奇数还是偶数？',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='偶数',hint:'0÷2=0'},
+    {question:'偶数+偶数结果是奇还是偶？',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='偶数',hint:'2的倍数相加仍是2的倍数'}
+  ],passThreshold:0.75,onPass:()=>{saveProgress({'new-lesson-visual-depth':{'9-6-odd-even':{'practice':'complete'}}});}});
 })();
 </script>
 </body>
