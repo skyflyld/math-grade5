@@ -57,15 +57,22 @@ header h1{font-size:1.18em;font-weight:760;white-space:nowrap;letter-spacing:0}
 .filters button:hover,.semester-toggle button:hover{transform:translateY(-1px);border-color:#d6c8b2;box-shadow:var(--soft-shadow)}
 .filters button.active{background:#8e8e8e;color:#fff;border-color:#8e8e8e}
 .semester-toggle button.active{background:var(--green);color:#fff;border-color:var(--green)}
+.mode-switch{position:absolute;top:16px;left:50%;transform:translateX(-50%);z-index:7;display:flex;gap:6px;padding:5px;border:1px solid var(--border);border-radius:18px;background:rgba(255,253,249,.94);box-shadow:var(--soft-shadow)}
+.mode-switch button{min-height:32px;border:0;border-radius:13px;background:transparent;color:#526070;font:inherit;font-size:.78em;font-weight:850;padding:0 12px;cursor:pointer;white-space:nowrap}
+.mode-switch button:hover{background:#fff8e8;color:#8a5a00}
+.mode-switch button.active{background:#1f2937;color:#fff;box-shadow:0 5px 14px rgba(31,41,55,.18)}
 #graph{flex:1;position:relative;cursor:grab;min-height:0;background:radial-gradient(circle at 52% 48%,#ffffff 0,#f8fbfc 46%,#f2f6f7 100%);overflow:hidden}
 #graph::before{content:"";position:absolute;inset:0;background:url("assets/concepts/knowledge-atlas.webp") center/cover no-repeat;opacity:.055;mix-blend-mode:multiply;pointer-events:none;z-index:0}
 #graph:active{cursor:grabbing}
 #graph svg{width:100%;height:100%;display:block;position:relative;z-index:1}
 .node-label{font-size:11.5px;fill:#2f3a4a;pointer-events:none;text-anchor:middle;font-weight:850;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}
+.depth-guide line{stroke:#d9e1ea;stroke-width:1;stroke-dasharray:4 8;opacity:.58}
+.depth-guide text{font-size:10px;fill:#8a96a6;font-weight:850;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}
 line.edge{stroke:#8191a6;stroke-width:1.5;stroke-opacity:.68}
 line.edge.related{stroke-dasharray:5 4;stroke-opacity:.55}
 line.edge.highlighted{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
 line.edge.dimmed{stroke-opacity:.08}
+line.edge.hidden{stroke-opacity:0;pointer-events:none}
 line.edge.hovered{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
 #tooltip{position:absolute;padding:12px 16px;background:#fff;border:1px solid var(--border);border-radius:14px;font-size:.82em;max-width:320px;pointer-events:none;opacity:0;transition:opacity .15s;z-index:20;line-height:1.6;box-shadow:var(--shadow-md)}
 #tooltip .tt-cat{font-size:.72em;color:var(--text-dim);letter-spacing:.04em;font-weight:700}
@@ -199,8 +206,11 @@ line.edge.hovered{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
   .filters,.semester-toggle{width:100%;min-width:0;max-width:100%;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;padding-bottom:3px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
   .filters::-webkit-scrollbar,.semester-toggle::-webkit-scrollbar{display:none}
   .filters button,.semester-toggle button{flex:0 0 auto;padding:7px 12px;border-radius:15px;font-size:.82em}
-  .graph-hint{left:12px;right:68px;top:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.73em;padding:6px 10px}
-  .spotlight{top:46px;left:12px;right:68px;max-width:none;max-height:none;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;padding-bottom:4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .mode-switch{left:12px;right:68px;top:10px;transform:none;overflow-x:auto;scrollbar-width:none;justify-content:flex-start}
+  .mode-switch::-webkit-scrollbar{display:none}
+  .mode-switch button{flex:0 0 auto;min-height:30px;font-size:.72em;padding:0 10px}
+  .graph-hint{left:12px;right:68px;top:52px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.73em;padding:6px 10px}
+  .spotlight{top:88px;left:12px;right:68px;max-width:none;max-height:none;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;padding-bottom:4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
   .spotlight::-webkit-scrollbar{display:none}
   .spotlight button{flex:0 0 auto;padding:7px 10px;font-size:.74em}
   .zoom-controls{right:12px;top:12px;gap:8px}
@@ -329,6 +339,11 @@ line.edge.hovered{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
 </section>
 <div id="graph">
   <div class="legend" id="legend"></div>
+  <div class="mode-switch" id="mode-switch" aria-label="图谱模式">
+    <button type="button" data-mode="learning" class="active">学习路径</button>
+    <button type="button" data-mode="neighborhood">概念邻域</button>
+    <button type="button" data-mode="explore">全图探索</button>
+  </div>
   <div class="graph-hint">↔ 拖拽节点 · 滚轮缩放 · 点击查看详情</div>
   <div class="spotlight" id="spotlight"></div>
   <div class="zoom-controls">
@@ -771,6 +786,14 @@ function visualFor(node){
 const nodeMap = Object.fromEntries(nodes.map(n=>[n.id,n]));
 const graphEdges = edges.map(e=>({...e,source:e.from,target:e.to}));
 let activeCat = 'all', activeSem = 'all', activeSearch = '', selectedNodeId = null;
+let activeGraphMode = 'learning';
+const GRAPH_MODES = {
+  learning:{label:'学习路径',hint:'学习路径：只显示关键路径骨架，点击任一节点查看完整邻域。'},
+  neighborhood:{label:'概念邻域',hint:'概念邻域：只看当前概念的一跳前置、后继和横向相关。'},
+  explore:{label:'全图探索',hint:'全图探索：显示全部概念和关系，适合高级浏览与查漏。'}
+};
+function endpointId(value){return value && typeof value==='object' ? value.id : value;}
+function edgeKey(e){return `${endpointId(e.from)}->${endpointId(e.to)}|${e.type}`;}
 
 const relationMap = new Map(nodes.map(n=>[n.id,new Set([n.id])]));
 edges.forEach(e=>{
@@ -975,22 +998,87 @@ for(let _i=0;_i<_q.length;_i++){
 }
 nodes.forEach(n=>{if(!_depthMap.has(n.id))_depthMap.set(n.id,0);});
 const _maxDepth = Math.max(..._depthMap.values());
+nodes.forEach(n=>{n.depth=_depthMap.get(n.id);});
+function hasAlternatePrereqPath(from,to,skipEdge){
+  const queue=[from], seen=new Set([from]);
+  while(queue.length){
+    const id = queue.shift();
+    for(const next of _outDeg.get(id) || []){
+      if(skipEdge && skipEdge.from===id && skipEdge.to===next)continue;
+      if(next===to)return true;
+      if(!seen.has(next)){seen.add(next);queue.push(next);}
+    }
+  }
+  return false;
+}
+const learningEdgeKeys = new Set(
+  _prereqEdges
+    .filter(e=>!hasAlternatePrereqPath(e.from,e.to,e))
+    .map(edgeKey)
+);
+const rootNodeIds = new Set(nodes.filter(n=>!_inDeg.get(n.id).size).map(n=>n.id));
+const spotlightNames = new Set(['位置值','分数的意义','平行四边形面积','简易方程','体积和体积单位','折线统计图','找次品']);
+const anchorLabelIds = new Set([
+  ...nodes.filter(n=>rootNodeIds.has(n.id)).map(n=>n.id),
+  ...nodes.filter(n=>spotlightNames.has(n.name)).map(n=>n.id),
+  ...nodes.filter(n=>(degreeRank[n.id]||99)<=10).map(n=>n.id)
+]);
+const learningSkeletonEdgeKeys = new Set(
+  _prereqEdges
+    .filter(e=>learningEdgeKeys.has(edgeKey(e)) && anchorLabelIds.has(e.from) && anchorLabelIds.has(e.to))
+    .map(edgeKey)
+);
+const categoryOrder = ['number_ops','geometry','algebra','statistics','applications'];
+function assignLayerTargets(width){
+  const targets = new Map();
+  const margin = Math.min(150,Math.max(46,width*0.08));
+  const usable = Math.max(300,width-margin*2);
+  for(let depth=0; depth<=_maxDepth; depth++){
+    const layer = nodes
+      .filter(n=>_depthMap.get(n.id)===depth)
+      .sort((a,b)=>
+        categoryOrder.indexOf(a.category)-categoryOrder.indexOf(b.category) ||
+        a.semester-b.semester ||
+        (degreeRank[a.id]||99)-(degreeRank[b.id]||99) ||
+        a.name.localeCompare(b.name,'zh-CN')
+      );
+    layer.forEach((n,i)=>{
+      targets.set(n.id, margin + usable*(i+1)/(layer.length+1));
+    });
+  }
+  return targets;
+}
+let xTargets = assignLayerTargets(W);
 
 // 黑塞式力导向：纵向按深度分层，横向在同层内按类别散开
 const _layerH = H / (_maxDepth + 2);
 const simulation = d3.forceSimulation(nodes)
-  .force('link',d3.forceLink(graphEdges).id(d=>d.id).distance(d=>d.type==='related_to'?72:82).strength(0.35))
-  .force('charge',d3.forceManyBody().strength(d=>-100-d.difficulty*15))
-  .force('y',d3.forceY(d=>(_depthMap.get(d.id)+1)*_layerH).strength(0.22))
-  .force('x',d3.forceX(d=>{
-    const same = nodes.filter(n=>_depthMap.get(n.id)===_depthMap.get(d.id)&&n.category===d.category);
-    const idx = same.indexOf(d);
-    return same.length>1?(W/(same.length+1))*(idx+1):W/2;
-  }).strength(0.06))
-  .force('collision',d3.forceCollide().radius(d=>18+d.difficulty*2))
+  .force('link',d3.forceLink(graphEdges).id(d=>d.id).distance(d=>learningEdgeKeys.has(edgeKey(d))?98:122).strength(d=>learningEdgeKeys.has(edgeKey(d))?0.22:0.02))
+  .force('charge',d3.forceManyBody().strength(d=>-135-d.difficulty*18))
+  .force('y',d3.forceY(d=>(_depthMap.get(d.id)+1)*_layerH).strength(0.62))
+  .force('x',d3.forceX(d=>xTargets.get(d.id) || W/2).strength(0.34))
+  .force('collision',d3.forceCollide().radius(d=>28+d.difficulty*2).strength(0.9))
   .alphaDecay(0.025);
 simulation.stop();
 for(let i=0;i<300;i++)simulation.tick();
+
+const depthGuide = g.append('g').attr('class','depth-guides');
+function renderDepthGuides(width=W,layerH=_layerH){
+  const rows = d3.range(_maxDepth+1);
+  const guides = depthGuide.selectAll('g.depth-guide').data(rows);
+  const enter = guides.enter().append('g').attr('class','depth-guide');
+  enter.append('line');
+  enter.append('text');
+  guides.merge(enter)
+    .attr('transform',d=>`translate(0,${(d+1)*layerH})`)
+    .each(function(d){
+      const row = d3.select(this);
+      row.select('line').attr('x1',-80).attr('x2',width+80).attr('y1',0).attr('y2',0);
+      row.select('text').attr('x',18).attr('y',-8).text(d===0?'基础入口':`第 ${d+1} 层`);
+    });
+  guides.exit().remove();
+}
+renderDepthGuides(W,_layerH);
 
 // Draw edges
 const link = g.append('g').selectAll('line')
@@ -1062,9 +1150,58 @@ link.on('mouseenter',function(e,d){
 }).on('mousemove',function(e){tooltip.style('left',(e.offsetX+16)+'px').style('top',(e.offsetY-10)+'px')})
   .on('mouseleave',function(){tooltip.style('opacity',0);d3.select(this).classed('hovered',false)});
 
+function modeFocusIds(){
+  return selectedNodeId ? relationMap.get(selectedNodeId) : null;
+}
+function edgeVisibleInMode(e){
+  if(activeGraphMode==='explore')return true;
+  if(activeGraphMode==='neighborhood'){
+    return selectedNodeId ? edgeTouches(e,selectedNodeId) : learningSkeletonEdgeKeys.has(edgeKey(e));
+  }
+  return learningSkeletonEdgeKeys.has(edgeKey(e));
+}
+function nodeVisibleInMode(d){
+  if(activeGraphMode==='neighborhood' && selectedNodeId){
+    return modeFocusIds()?.has(d.id);
+  }
+  return true;
+}
+function shouldShowLabel(d,visible,modeVisible){
+  if(!visible || !modeVisible)return false;
+  if(activeSearch && matchesSearch(d))return true;
+  if(selectedNodeId && modeFocusIds()?.has(d.id))return true;
+  if(activeGraphMode==='explore')return true;
+  return anchorLabelIds.has(d.id);
+}
+function renderModeControls(){
+  document.querySelectorAll('#mode-switch button').forEach(btn=>{
+    btn.classList.toggle('active',btn.dataset.mode===activeGraphMode);
+  });
+  const hint = document.querySelector('.graph-hint');
+  if(hint)hint.textContent = GRAPH_MODES[activeGraphMode]?.hint || GRAPH_MODES.learning.hint;
+}
+function setGraphMode(mode,options={}){
+  if(!GRAPH_MODES[mode])return;
+  activeGraphMode = mode;
+  if(!options.keepSelection && mode!=='neighborhood'){
+    selectedNodeId = null;
+    history.replaceState(null,'',location.pathname+location.search);
+    closeDetailPanel();
+  }
+  renderModeControls();
+  applyGraphState();
+  setTimeout(()=>fitGraph(260),30);
+}
+document.querySelectorAll('#mode-switch button').forEach(btn=>{
+  btn.addEventListener('click',()=>setGraphMode(btn.dataset.mode));
+});
+
 // Card
 function selectNode(d){
   selectedNodeId = d.id;
+  activeGraphMode = 'neighborhood';
+  renderModeControls();
+  tooltip.style('opacity',0);
   if(location.hash!==`#${encodeURIComponent(d.name)}`){
     history.replaceState(null,'',`#${encodeURIComponent(d.name)}`);
   }
@@ -1176,8 +1313,10 @@ function closeDetailPanel(){
 }
 function closeCard(){
   selectedNodeId = null;
+  if(activeGraphMode==='neighborhood')activeGraphMode='learning';
   history.replaceState(null,'',location.pathname+location.search);
   closeDetailPanel();
+  renderModeControls();
   applyGraphState();
 }
 detailOverlay?.addEventListener('click',closeCard);
@@ -1236,23 +1375,29 @@ function renderSearchResults(){
 function setCategory(cat){
   activeCat = cat;
   selectedNodeId = null;
+  if(activeGraphMode==='neighborhood')activeGraphMode='learning';
   closeDetailPanel();
   syncControls();
+  renderModeControls();
   renderSearchResults();
   applyGraphState();
 }
 function setSemester(sem){
   activeSem = sem;
   selectedNodeId = null;
+  if(activeGraphMode==='neighborhood')activeGraphMode='learning';
   closeDetailPanel();
   syncControls();
+  renderModeControls();
   renderSearchResults();
   applyGraphState();
 }
 function setSearch(value){
   activeSearch = normalizeSearch(value);
   selectedNodeId = null;
+  if(activeGraphMode==='neighborhood')activeGraphMode='learning';
   closeDetailPanel();
+  renderModeControls();
   renderSearchResults();
   applyGraphState();
 }
@@ -1267,7 +1412,7 @@ function renderPathPanel(){
   const rows = selected ? recommendedNextFor(selected,3) : starterPath(3);
   if(!rows.length){panel.innerHTML='';panel.style.display='none';return;}
   panel.style.display='';
-  const title = selected ? `从“${selected.name}”继续学` : '推荐学习起点';
+  const title = selected ? `从“${selected.name}”继续学` : (activeGraphMode==='explore' ? '全图探索入口' : '推荐学习起点');
   panel.innerHTML = `<h3>${title}</h3><div class="path-actions">${rows.map(row=>{
     const v = visualFor(row.node);
     return `<button type="button" data-id="${row.node.id}">${pathKindLabel(row.kind)} · ${v.icon} ${row.node.name}<span>${row.exp}</span></button>`;
@@ -1280,34 +1425,48 @@ function applyGraphState(){
   const focusIds = selectedNodeId ? relationMap.get(selectedNodeId) : null;
   node.attr('class',d=>{
     const visible = passesNodeFilter(d);
+    const modeVisible = nodeVisibleInMode(d);
     const selected = d.id===selectedNodeId;
     const related = !!focusIds?.has(d.id) && !selected;
     const dimmed = selectedNodeId && !focusIds.has(d.id);
-    return ['node-g',selected?'selected':'',related?'related-focus':'',dimmed?'dimmed':'',!visible?'filtered':''].filter(Boolean).join(' ');
+    return ['node-g',selected?'selected':'',related?'related-focus':'',dimmed?'dimmed':'',(!visible||!modeVisible)?'filtered':''].filter(Boolean).join(' ');
   }).style('opacity',d=>{
     const visible = passesNodeFilter(d);
+    const modeVisible = nodeVisibleInMode(d);
+    if(!modeVisible)return activeGraphMode==='neighborhood'?0.02:0.06;
     if(selectedNodeId){
       if(d.id===selectedNodeId)return 1;
       if(focusIds.has(d.id))return visible?0.98:0.45;
       return visible?0.12:0.05;
     }
     return visible?1:0.08;
+  }).style('pointer-events',d=>{
+    return passesNodeFilter(d) && nodeVisibleInMode(d) ? 'auto' : 'none';
+  });
+  node.select('.node-label').style('display',d=>{
+    return shouldShowLabel(d,passesNodeFilter(d),nodeVisibleInMode(d)) ? null : 'none';
   });
 
   link.attr('class',d=>{
     const base = ['edge',d.type==='related_to'?'related':''];
+    const modeEdge = edgeVisibleInMode(d);
     if(selectedNodeId){
       base.push(edgeTouches(d,selectedNodeId)?'highlighted':'dimmed');
     }
     if(!passesEdgeFilter(d))base.push('filtered');
+    if(!modeEdge)base.push('hidden');
     return base.filter(Boolean).join(' ');
   }).style('opacity',d=>{
     const visible = passesEdgeFilter(d);
+    const modeEdge = edgeVisibleInMode(d);
+    if(!modeEdge)return 0;
     if(selectedNodeId){
       if(edgeTouches(d,selectedNodeId))return visible?1:0.35;
-      return visible?0.07:0.03;
+      return activeGraphMode==='explore' ? (visible?0.08:0.03) : 0;
     }
-    return visible?1:0.04;
+    return visible ? (activeGraphMode==='learning'?0.82:1) : 0.04;
+  }).style('pointer-events',d=>{
+    return passesEdgeFilter(d) && edgeVisibleInMode(d) ? 'auto' : 'none';
   });
   updateInfo();
   renderPathPanel();
@@ -1315,19 +1474,19 @@ function applyGraphState(){
 
 function updateInfo(){
   const visibleNodes = nodes.filter(n=>{
-    const cm = activeCat==='all'||n.category===activeCat;
-    return passesNodeFilter(n);
+    return passesNodeFilter(n) && nodeVisibleInMode(n);
   }).length;
   const visibleEdges = edges.filter(e=>{
-    return passesEdgeFilter(e);
+    return passesEdgeFilter(e) && edgeVisibleInMode(e);
   }).length;
+  const modeLabel = GRAPH_MODES[activeGraphMode]?.label || '学习路径';
   if(selectedNodeId){
     const selected = nodeMap[selectedNodeId];
     const relationCount = edges.filter(e=>edgeTouches(e,selectedNodeId)).length;
     const relatedCount = Math.max((relationMap.get(selectedNodeId)?.size||1)-1,0);
-    document.getElementById('info-bar').textContent = `已聚焦：${selected.name} · ${relatedCount} 个相关概念 · ${relationCount} 条关系`;
+    document.getElementById('info-bar').textContent = `${modeLabel} · ${selected.name} · ${relatedCount} 个相关概念 · ${relationCount} 条关系`;
   }else{
-    document.getElementById('info-bar').textContent = `${visibleNodes} 个概念 · ${visibleEdges} 条依赖`;
+    document.getElementById('info-bar').textContent = `${modeLabel} · ${visibleNodes} 个概念 · ${visibleEdges} 条关系`;
   }
 }
 
@@ -1370,6 +1529,7 @@ d3.select('#zoom-reset').on('click',()=>fitGraph(500));
 document.getElementById('total-nodes').textContent = nodes.length;
 document.getElementById('total-edges').textContent = edges.length;
 syncControls();
+renderModeControls();
 applyGraphState();
 const initialFocusName = decodeURIComponent(location.hash.slice(1));
 if(initialFocusName){
@@ -1382,12 +1542,10 @@ window.addEventListener('resize',()=>{
   const w=container.clientWidth, h=container.clientHeight;
   svg.attr('width',w).attr('height',h);
   const _ly = h / (_maxDepth+2);
-  simulation.force('y',d3.forceY(d=>(_depthMap.get(d.id)+1)*_ly).strength(0.22))
-    .force('x',d3.forceX(d=>{
-      const same=nodes.filter(n=>_depthMap.get(n.id)===_depthMap.get(d.id)&&n.category===d.category);
-      const idx=same.indexOf(d);
-      return same.length>1?(w/(same.length+1))*(idx+1):w/2;
-    }).strength(0.06)).restart();
+  xTargets = assignLayerTargets(w);
+  renderDepthGuides(w,_ly);
+  simulation.force('y',d3.forceY(d=>(_depthMap.get(d.id)+1)*_ly).strength(0.62))
+    .force('x',d3.forceX(d=>xTargets.get(d.id) || w/2).strength(0.34)).alpha(0.45).restart();
 });
 // Apply saved diagnostic results on load
 setTimeout(updateNodeUI,200);
