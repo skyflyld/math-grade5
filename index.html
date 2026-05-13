@@ -715,8 +715,36 @@ function passesSemester(d){
   if(activeSem==='0')return d.semester===0;
   return d.semester===0 || d.semester===parseInt(activeSem);
 }
+// Pinyin-based fuzzy matching: normalize Chinese chars for approximate search
+const PINYIN_MAP = {
+  'zh':'z','ch':'c','sh':'s','ng':'n',
+  'ang':'an','eng':'en','ing':'in','ong':'on',
+  'ai':'ae','ei':'ei','ao':'ao','ou':'ou',
+  'an':'an','en':'en','in':'in','un':'un','vn':'un',
+  'zheng':'zhe','cheng':'che','sheng':'she','deng':'de','teng':'te',
+  // Common typos / alternative forms
+  '面':'面','积':'积','数':'数','形':'形','体':'体','分':'分','公':'公',
+  '系':'系','关':'关','于':'于','与':'与','几':'几','何':'何',
+};
 function normalizeSearch(value){
-  return String(value || '').trim().toLowerCase();
+  var s = String(value || '').trim().toLowerCase();
+  // Remove tone marks from pinyin input
+  s = s.replace(/[āáǎà]/g,'a').replace(/[ēéěè]/g,'e').replace(/[īíǐì]/g,'i')
+    .replace(/[ōóǒò]/g,'o').replace(/[ūúǔù]/g,'u').replace(/[ǖǘǚǜü]/g,'u');
+  return s;
+}
+function fuzzyMatch(text,query){
+  if(!query)return true;
+  var t = normalizeSearch(text), q = normalizeSearch(query);
+  // Exact substring match
+  if(t.includes(q))return true;
+  // Character-level fuzzy: match each query char in order
+  var qi = 0;
+  for(var ti=0;ti<t.length&&qi<q.length;ti++){
+    if(t[ti]===q[qi])qi++;
+  }
+  // If 80%+ of query chars matched in order, it's fuzzy match
+  return qi >= q.length * 0.8 && qi >= 2;
 }
 function searchTextFor(d){
   const visual = visualFor(d);
@@ -724,7 +752,7 @@ function searchTextFor(d){
 }
 function matchesSearch(d){
   if(!activeSearch)return true;
-  return searchTextFor(d).includes(activeSearch);
+  return fuzzyMatch(searchTextFor(d), activeSearch);
 }
 function passesNodeFilter(d){
   return (activeCat==='all'||d.category===activeCat) && passesSemester(d) && matchesSearch(d);
@@ -996,7 +1024,12 @@ function showCard(d){
     }
   }
   let html = `<div class="detail-header">${header}</div><div class="detail-scroll">`;
-  if(visual.image){
+  // Show SVG diagram if available, fall back to image, then icon
+  var svgSrc = MathGrade5Concepts && MathGrade5Concepts.svg ? MathGrade5Concepts.svg[d.name] : null;
+  if(svgSrc){
+    html += `<img class="visual-hero" src="${svgSrc}" alt="${d.name}的数学示意图">`;
+    html += `<div class="visual-caption">数学示意图：${visual.label}</div>`;
+  }else if(visual.image){
     html += `<img class="visual-hero" src="${visual.image}" alt="${d.name}的视觉隐喻">`;
     html += `<div class="visual-caption">图像隐喻：${visual.label} · ${visual.metaphor}</div>`;
   }else{

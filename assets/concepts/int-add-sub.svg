@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" style="background:#f8f9fa;border-radius:12px">
+  <text x="200" y="30" text-anchor="middle" font-size="14" font-family="sans-serif" fill="#555">整数加减法</text>
+  <line x1="30" y1="120" x2="370" y2="120" stroke="#333" stroke-width="2"/>
+  <polygon points="370,115 380,120 370,125" fill="#333"/>
+  
+  
+  <text x="200" y="200" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#333" font-weight="bold">3+5=8</text>
+</svg>

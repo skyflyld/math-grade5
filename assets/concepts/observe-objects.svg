@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" style="background:#f8f9fa;border-radius:12px">
+  <text x="200" y="14" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#555">观察物体</text>
+  <polygon points="120,80 200,60 280,80 200,100" fill="#cce5ff" stroke="#333" stroke-width="1.5"/><polygon points="120,80 120,170 200,190 200,100" fill="#e8f4f8" stroke="#333" stroke-width="1.5"/><polygon points="200,100 200,190 280,170 280,80" fill="#d4edda" stroke="#333" stroke-width="1.5"/>
+  <text x="200" y="225" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#333" font-weight="bold">三视图</text>
+</svg>

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" style="background:#f8f9fa;border-radius:12px">
+  <text x="200" y="14" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#555">容积和容积单位</text>
+  <rect x="120" y="50" width="160" height="130" fill="#e8f4f8" stroke="#333" stroke-width="2" rx="4"/><line x1="140" y1="110" x2="260" y2="110" stroke="#4a90d9" stroke-width="2"/><text x="200" y="105" text-anchor="middle" font-size="11" fill="#4a90d9">1L</text>
+  <text x="200" y="225" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#333" font-weight="bold">1L=1dm³</text>
+</svg>

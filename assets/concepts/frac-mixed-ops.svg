@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" style="background:#f8f9fa;border-radius:12px">
+  <text x="200" y="18" text-anchor="middle" font-size="14" font-family="sans-serif" fill="#555">分数加减混合运算</text>
+  <line x1="50" y1="200" x2="350" y2="200" stroke="#333" stroke-width="1.5"/>
+  <line x1="50" y1="40" x2="50" y2="200" stroke="#333" stroke-width="1.5"/>
+  <rect x="60" y="80" width="35" height="120" fill="#4a90d9" rx="2"/><rect x="110" y="120" width="35" height="80" fill="#e85d75" rx="2"/><rect x="160" y="40" width="35" height="160" fill="#45c77a" rx="2"/><rect x="210" y="100" width="35" height="100" fill="#f0a050" rx="2"/><rect x="260" y="60" width="35" height="140" fill="#7b68ee" rx="2"/><rect x="310" y="140" width="35" height="60" fill="#4a90d9" rx="2"/>
+  <text x="200" y="225" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#333" font-weight="bold">通分→计算→化简</text>
+</svg>

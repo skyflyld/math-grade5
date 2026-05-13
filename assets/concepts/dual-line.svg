@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" style="background:#f8f9fa;border-radius:12px">
+  <text x="200" y="18" text-anchor="middle" font-size="14" font-family="sans-serif" fill="#555">复式折线统计图</text>
+  <line x1="40" y1="200" x2="360" y2="200" stroke="#333" stroke-width="1"/>
+  <line x1="40" y1="40" x2="40" y2="200" stroke="#333" stroke-width="1"/>
+  <polyline points="60,160 135,130 210,90 285,120 350,100" fill="none" stroke="#4a90d9" stroke-width="2.5"/>
+  <circle cx="60" cy="160" r="3.5" fill="#4a90d9"/><circle cx="135" cy="130" r="3.5" fill="#4a90d9"/><circle cx="210" cy="90" r="3.5" fill="#4a90d9"/><circle cx="285" cy="120" r="3.5" fill="#4a90d9"/><circle cx="350" cy="100" r="3.5" fill="#4a90d9"/>
+  <polyline points="60,120 135,100 210,140 285,80 350,160" fill="none" stroke="#e85d75" stroke-width="2.5" stroke-dasharray="5,3"/>
+  <circle cx="60" cy="120" r="3.5" fill="#e85d75"/><circle cx="135" cy="100" r="3.5" fill="#e85d75"/><circle cx="210" cy="140" r="3.5" fill="#e85d75"/><circle cx="285" cy="80" r="3.5" fill="#e85d75"/><circle cx="350" cy="160" r="3.5" fill="#e85d75"/>
+  <text x="100" y="215" font-size="9" fill="#4a90d9">甲组</text>
+  <text x="150" y="215" font-size="9" fill="#e85d75">乙组</text>
+  <text x="200" y="225" text-anchor="middle" font-size="12" font-family="sans-serif" fill="#333" font-weight="bold">多组数据对比</text>
+</svg>

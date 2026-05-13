@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" style="background:#f8f9fa;border-radius:12px">
+  <text x="200" y="18" text-anchor="middle" font-size="14" font-family="sans-serif" fill="#555">公因数和最大公因数</text>
+  <ellipse cx="160" cy="120" rx="80" ry="70" fill="#cce5ff" opacity="0.6" stroke="#4a90d9" stroke-width="1.5"/>
+  <ellipse cx="240" cy="120" rx="80" ry="70" fill="#d4edda" opacity="0.6" stroke="#45c77a" stroke-width="1.5"/>
+  <text x="110" y="60" font-size="10" fill="#4a90d9">A</text>
+  <text x="280" y="60" font-size="10" fill="#45c77a">B</text>
+  <text x="140" y="115" text-anchor="middle" font-size="9" fill="#555">3,6</text>
+  <text x="200" y="115" text-anchor="middle" font-size="9" fill="#e85d75">1,2</text>
+  <text x="260" y="115" text-anchor="middle" font-size="9" fill="#555">4,8</text>
+  <text x="200" y="225" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#333" font-weight="bold">GCF=2</text>
+</svg>

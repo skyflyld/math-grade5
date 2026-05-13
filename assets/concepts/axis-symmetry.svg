@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" style="background:#f8f9fa;border-radius:12px">
+  <text x="200" y="18" text-anchor="middle" font-size="14" font-family="sans-serif" fill="#555">轴对称与旋转</text>
+  <line x1="200" y1="30" x2="200" y2="200" stroke="#e85d75" stroke-dasharray="6,3" stroke-width="2"/>
+  <polygon points="140,80 180,180 100,180" fill="#cce5ff" stroke="#4a90d9" stroke-width="1.5"/>
+  <polygon points="260,80 220,180 300,180" fill="#d4edda" stroke="#45c77a" stroke-width="1.5"/>
+  <text x="120" y="215" text-anchor="middle" font-size="9" fill="#4a90d9">左</text>
+  <text x="280" y="215" text-anchor="middle" font-size="9" fill="#45c77a">右(对称)</text>
+  <text x="200" y="225" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#333" font-weight="bold">轴对称图形 — 沿轴对折完全重合</text>
+</svg>

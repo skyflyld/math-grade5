@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" style="background:#f8f9fa;border-radius:12px">
+  <text x="200" y="18" text-anchor="middle" font-size="14" font-family="sans-serif" fill="#555">真分数和假分数</text>
+  <path d="M200,115 L200.0,185.0 A70,70 0 0,1 270.0,115.0 Z" fill="#d4edda" stroke="#aaa" stroke-width="0.5"/><path d="M200,115 L270.0,115.0 A70,70 0 0,1 200.0,45.0 Z" fill="#d4edda" stroke="#aaa" stroke-width="0.5"/><path d="M200,115 L200.0,45.0 A70,70 0 0,1 130.0,114.99999999999999 Z" fill="#d4edda" stroke="#aaa" stroke-width="0.5"/><path d="M200,115 L130.0,114.99999999999999 A70,70 0 0,1 199.99999999999997,185.0 Z" fill="#d4edda" stroke="#aaa" stroke-width="0.5"/>
+  <text x="200" y="225" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#333" font-weight="bold">5/4>1 假分数</text>
+</svg>

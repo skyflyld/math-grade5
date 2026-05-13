@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" style="background:#f8f9fa;border-radius:12px">
+  <text x="200" y="14" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#555">三角形面积</text>
+  <polygon points="100,80 300,80 200,190" fill="#e8f4f8" stroke="#333" stroke-width="1.5"/><polygon points="100,80 300,80 200,-30" fill="#d4edda" opacity="0.5" stroke="#333" stroke-width="1" stroke-dasharray="4,2"/><text x="200" y="140" text-anchor="middle" font-size="11" fill="#555">底×高÷2</text>
+  <text x="200" y="225" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#333" font-weight="bold">底×高÷2</text>
+</svg>

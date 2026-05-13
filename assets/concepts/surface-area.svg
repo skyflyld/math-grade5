@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" style="background:#f8f9fa;border-radius:12px">
+  <text x="200" y="14" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#555">长方体正方体表面积</text>
+  <rect x="140" y="20" width="80" height="50" fill="#d4edda" stroke="#333" stroke-width="1"/><rect x="140" y="70" width="80" height="50" fill="#e8f4f8" stroke="#333" stroke-width="1"/><rect x="60" y="70" width="80" height="50" fill="#cce5ff" stroke="#333" stroke-width="1"/><rect x="220" y="70" width="80" height="50" fill="#cce5ff" stroke="#333" stroke-width="1"/><rect x="140" y="120" width="80" height="50" fill="#e8f4f8" stroke="#333" stroke-width="1"/><rect x="140" y="170" width="80" height="50" fill="#d4edda" stroke="#333" stroke-width="1"/><text x="180" y="52" text-anchor="middle" font-size="8" fill="#555">上</text><text x="180" y="95" text-anchor="middle" font-size="8" fill="#555">前/后展开</text>
+  <text x="200" y="225" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#333" font-weight="bold">6面展开→2(lw+lh+wh)</text>
+</svg>
