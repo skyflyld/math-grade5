@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>不规则图形面积估算 · 五年级</title>
+<link rel="stylesheet" href="../../shared/layout.css">
+<style>
+.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;}
+.visual-step h4{font-size:17px;margin-bottom:12px;}
+.visual-step .step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:700;background:var(--accent-light);color:var(--accent-deep);margin-bottom:10px;}
+.concept-highlight{background:linear-gradient(145deg,#fefce8,#fff);border:2px solid #fde68a;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}
+.concept-highlight .big-idea{font-size:22px;font-weight:800;color:#92400e;line-height:1.6;}
+.concept-highlight .big-idea .highlight{color:var(--accent-deep);background:var(--accent-light);padding:2px 8px;border-radius:4px;}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:12px 0;}
+.card{background:#f8fafc;border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;}
+.card h4{font-size:14px;margin-bottom:6px;}
+</style>
+</head>
+<body data-concept="不规则图形面积估算">
+<div class="top-nav"><a href="../../index.html#不规则图形面积估算">🏠</a><span class="breadcrumb-sep">›</span><span>多边形面积 · 不规则图形估算</span></div>
+<h1 class="module-title">📐 不规则图形面积估算 — 数方格</h1>
+<p class="module-subtitle">没有公式的图形怎么算面积？一格一格数。</p>
+
+<div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🧱</span>拆到公理 · 数格法</div>
+  <div class="visual-step">
+    <span class="step-label">方法</span>
+    <h4>满格 + 半格以上 = 差不多</h4>
+    <p>把不规则图形放在方格纸上：<br>
+    <strong>满格计 1</strong>（完全覆盖整格）<br>
+    <strong>半格以上计 1</strong>（超过一半的格子）<br>
+    <strong>不满半格不计</strong>（只擦了一点边的格子不算）</p>
+  </div>
+  <div class="visual-step">
+    <span class="step-label">为什么这样算</span>
+    <h4>误差互补</h4>
+    <p>有的格子多算了（半格以上算 1），有的格子少算了（不满半格算 0），<br>
+    这种"有舍有入"的方式让误差互相抵消，结果接近真实面积。</p>
+    <div class="concept-highlight">
+      <div class="big-idea">没有公式时，<span class="highlight">数方格</span>是最直观的估算方法</div>
+    </div>
+  </div>
+  <div class="visual-step">
+    <span class="step-label">方格越小越准</span>
+    <h4>精度与付出的天平</h4>
+    <p>把方格从 1cm² 细分到 0.25cm² 甚至更小，估算会更精确，但工作量也更大。<br>
+    用多大的格子 = 在精度和效率之间做选择。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">✏️</span>练一练</div>
+  <div class="cards">
+    <div class="card"><h4>🍃 树叶面积</h4><p>一片树叶放在 1cm² 方格纸上，满格 8 个，半格以上 6 个。面积大约多少？<br><em>≈ 14cm²</em></p></div>
+    <div class="card"><h4>🧩 不规则多边形</h4><p>手画一个不规则形状，用数格法估算它的面积。这样算的结果是精确值还是近似值？</p></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">⚡</span>对抗验证</div>
+  <div id="adversary-root"></div>
+  <div id="feynman-root"></div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">📖</span>复习</div>
+  <div id="summary-root"></div>
+</div>
+
+<script src="../../shared/components.js"></script>
+<script src="../../shared/concepts.js"></script>
+<script>
+(function(){
+  // Gate
+  var gate = createGate({
+    containerId:'gate-root',
+    questions:[{"q": "数格法估算面积时，超过一半的方格怎么处理？", "o": ["不计", "计 1", "计 0.5", "计 2"], "a": 1}]
+  });
+
+  // Summary
+  createCourseSummary({containerId:'summary-root',lesson:'不规则图形面积估算',concepts:['不规则图形面积估算']});
+
+  // Adversarial
+  createAdversarialChallenge({
+    containerId:'adversary-root',
+    challenges:[{"statement": "数格法估算的面积一定是精确值。", "correct": false, "reason": "数格法是估算，不是精确测量。格子越细越准，但永远有误差。"}, {"statement": "大于半格的格子计为 1 格，所以最终结果肯定比实际大。", "correct": false, "reason": "不满半格不计，两种误差互相抵消，结果可能偏大也可能偏小。"}]
+  });
+
+  // Feynman
+  createFeynmanFill({
+    containerId:'feynman-root',
+    template:'估算不规则图形面积时，放在___纸上数格子。满格计___，半格以上计___，不满半格___。',
+    answer:["方格", "1", "1", "不计"]
+  });
+
+  // Completion
+  setupCompletionButton('summary-root');
+})();
+</script>
+</body>
+</html>

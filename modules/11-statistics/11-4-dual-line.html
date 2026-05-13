@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>复式折线统计图 · 五年级</title>
+<link rel="stylesheet" href="../../shared/layout.css">
+<style>
+.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;}
+.visual-step h4{font-size:17px;margin-bottom:12px;}
+.visual-step .step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:700;background:var(--accent-light);color:var(--accent-deep);margin-bottom:10px;}
+.concept-highlight{background:linear-gradient(145deg,#fefce8,#fff);border:2px solid #fde68a;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}
+.concept-highlight .big-idea{font-size:22px;font-weight:800;color:#92400e;line-height:1.6;}
+.concept-highlight .big-idea .highlight{color:var(--accent-deep);background:var(--accent-light);padding:2px 8px;border-radius:4px;}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:12px 0;}
+.card{background:#f8fafc;border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;}
+.card h4{font-size:14px;margin-bottom:6px;}
+</style>
+</head>
+<body data-concept="复式折线统计图">
+<div class="top-nav"><a href="../../index.html#复式折线统计图">🏠</a><span class="breadcrumb-sep">›</span><span>统计 · 复式折线图</span></div>
+<h1 class="module-title">📊 复式折线统计图 — 多组数据对比</h1>
+<p class="module-subtitle">同一张图上画多条折线，不同组的变化趋势一目了然。</p>
+
+<div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🧱</span>拆到公理 · 多折线对比</div>
+  <div class="visual-step">
+    <span class="step-label">结构</span>
+    <h4>一条折线 = 一组数据</h4>
+    <p>单式折线图只有一条线，只能看到一个量的变化。<br>
+    复式折线图有<strong>两条或以上</strong>的线，不同组用不同颜色/线型区分。<br>
+    需要图例（legend）告诉读者哪条线代表什么。</p>
+  </div>
+  <div class="visual-step">
+    <span class="step-label">核心优势</span>
+    <h4>并排看，看出差异</h4>
+    <p>一条折线上升、另一条下降 → 一组增长、另一组缩减<br>
+    两条都在上升但斜率不同 → 增速不同<br>
+    两条交叉 → 某时刻两组数值相等</p>
+  </div>
+  <div class="visual-step">
+    <span class="step-label">生活应用</span>
+    <h4>比比看就知道</h4>
+    <p>今年降水 vs 去年降水、本班成绩 vs 年级平均、两种药品疗效对比——<br>
+    放在一张图上比较，远比两张独立图直观。</p>
+    <div class="concept-highlight">
+      <div class="big-idea">复式折线图 = <span class="highlight">把对比对象放在同一个坐标系里</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">✏️</span>练一练</div>
+  <div class="cards">
+    <div class="card"><h4>📊 解读</h4><p>一条实线（A队）持续上升，一条虚线（B队）先升后降。哪个队更有潜力？</p></div>
+    <div class="card"><h4>🎯 设计</h4><p>要比较两个城市同月降雨量，用什么统计图？需要哪些元素？<br><em>复式折线图。需要：标题、图例、横轴（月份）、纵轴（雨量）、两条折线</em></p></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">⚡</span>对抗验证</div>
+  <div id="adversary-root"></div>
+  <div id="feynman-root"></div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">📖</span>复习</div>
+  <div id="summary-root"></div>
+</div>
+
+<script src="../../shared/components.js"></script>
+<script src="../../shared/concepts.js"></script>
+<script>
+(function(){
+  // Gate
+  var gate = createGate({
+    containerId:'gate-root',
+    questions:[{"q": "复式折线图和单式的最大区别是？", "o": ["颜色不同", "多条折线", "横轴更多", "图更小"], "a": 1}]
+  });
+
+  // Summary
+  createCourseSummary({containerId:'summary-root',lesson:'复式折线统计图',concepts:['复式折线统计图']});
+
+  // Adversarial
+  createAdversarialChallenge({
+    containerId:'adversary-root',
+    challenges:[{"statement": "复式折线图可以不用图例。", "correct": false, "reason": "多条线不用图例区分，读者无法知道每条线代表什么。图例是必需的。"}, {"statement": "复式折线图只能画两条线。", "correct": false, "reason": "可以画任意多条折线，只要用不同颜色/线型区分即可。但太多会影响可读性。"}]
+  });
+
+  // Feynman
+  createFeynmanFill({
+    containerId:'feynman-root',
+    template:'复式折线图有___条或以上折线。不同组用不同___或___区分。必须要有___告诉读者每条线代表什么。',
+    answer:["两", "颜色", "线型", "图例"]
+  });
+
+  // Completion
+  setupCompletionButton('summary-root');
+})();
+</script>
+</body>
+</html>

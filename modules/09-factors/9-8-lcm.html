@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>公倍数和最小公倍数 · 五年级</title>
+<link rel="stylesheet" href="../../shared/layout.css">
+<style>
+.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;}
+.visual-step h4{font-size:17px;margin-bottom:12px;}
+.visual-step .step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:700;background:var(--accent-light);color:var(--accent-deep);margin-bottom:10px;}
+.concept-highlight{background:linear-gradient(145deg,#fefce8,#fff);border:2px solid #fde68a;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}
+.concept-highlight .big-idea{font-size:22px;font-weight:800;color:#92400e;line-height:1.6;}
+.concept-highlight .big-idea .highlight{color:var(--accent-deep);background:var(--accent-light);padding:2px 8px;border-radius:4px;}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:12px 0;}
+.card{background:#f8fafc;border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;}
+.card h4{font-size:14px;margin-bottom:6px;}
+</style>
+</head>
+<body data-concept="公倍数和最小公倍数">
+<div class="top-nav"><a href="../../index.html#公倍数和最小公倍数">🏠</a><span class="breadcrumb-sep">›</span><span>因数与倍数 · 最小公倍数</span></div>
+<h1 class="module-title">🔗 公倍数和最小公倍数 — 共享的倍数</h1>
+<p class="module-subtitle">两个数公有的倍数中，最小的那个就是最小公倍数。</p>
+
+<div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🧱</span>拆到公理 · 最小公倍数</div>
+  <div class="visual-step">
+    <span class="step-label">定义</span>
+    <h4>两个倍数集的最小交集（不含 0）</h4>
+    <p>4 的倍数：4, 8, <strong>12</strong>, 16, 20, <strong>24</strong>…<br>
+    6 的倍数：6, <strong>12</strong>, 18, <strong>24</strong>, 30…<br>
+    公倍数：12, 24, 36… → 最小的是 <strong>12</strong></p>
+  </div>
+  <div class="visual-step">
+    <span class="step-label">快速求法</span>
+    <h4>分解质因数 + 取最大指数</h4>
+    <p>4 = 2²<br>6 = 2 × 3<br>
+    每个质因数取最大指数：2²（指数 2 > 1）和 3¹ → LCM = 4 × 3 = 12</p>
+  </div>
+  <div class="visual-step">
+    <span class="step-label">进阶方法</span>
+    <h4>GCF 捷径</h4>
+    <p>LCM(a, b) = a × b ÷ GCF(a, b)<br>
+    LCM(4, 6) = 4 × 6 ÷ 2 = 24 ÷ 2 = 12</p>
+    <div class="concept-highlight">
+      <div class="big-idea">通分的本质就是找到两个分母的<span class="highlight">最小公倍数</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">✏️</span>练一练</div>
+  <div class="cards">
+    <div class="card"><h4>🧮 求 LCM</h4><p>6 和 8 的最小公倍数是多少？<br><em>LCM = 24</em></p></div>
+    <div class="card"><h4>🔗 通分练习</h4><p>1/6 + 1/8 先找分母的 LCM，再通分相加。结果是？<br><em>4/24 + 3/24 = 7/24</em></p></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">⚡</span>对抗验证</div>
+  <div id="adversary-root"></div>
+  <div id="feynman-root"></div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">📖</span>复习</div>
+  <div id="summary-root"></div>
+</div>
+
+<script src="../../shared/components.js"></script>
+<script src="../../shared/concepts.js"></script>
+<script>
+(function(){
+  // Gate
+  var gate = createGate({
+    containerId:'gate-root',
+    questions:[{"q": "4 和 6 的最小公倍数是？", "o": ["12", "24", "48", "2"], "a": 0}]
+  });
+
+  // Summary
+  createCourseSummary({containerId:'summary-root',lesson:'公倍数和最小公倍数',concepts:['公倍数和最小公倍数']});
+
+  // Adversarial
+  createAdversarialChallenge({
+    containerId:'adversary-root',
+    challenges:[{"statement": "两个数的乘积就是它们的最小公倍数。", "correct": false, "reason": "4×6=24，但 LCM(4,6)=12，不是 24。这是互质数才成立的特例。"}, {"statement": "两个数的公倍数有无限多个。", "correct": true, "reason": "倍数集是无限的，所以公倍数集也是无限的。这道是对的。"}]
+  });
+
+  // Feynman
+  createFeynmanFill({
+    containerId:'feynman-root',
+    template:'4的倍数有4,8,12,16,20,24…，6的倍数有6,12,18,24…，公倍数有___，最小公倍数是___。',
+    answer:["12,24…", "12"]
+  });
+
+  // Completion
+  setupCompletionButton('summary-root');
+})();
+</script>
+</body>
+</html>

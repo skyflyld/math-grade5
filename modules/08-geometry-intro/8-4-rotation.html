@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>旋转三要素 · 五年级</title>
+<link rel="stylesheet" href="../../shared/layout.css">
+<style>
+.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;}
+.visual-step h4{font-size:17px;margin-bottom:12px;}
+.visual-step .step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:700;background:var(--accent-light);color:var(--accent-deep);margin-bottom:10px;}
+.concept-highlight{background:linear-gradient(145deg,#fefce8,#fff);border:2px solid #fde68a;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}
+.concept-highlight .big-idea{font-size:22px;font-weight:800;color:#92400e;line-height:1.6;}
+.concept-highlight .big-idea .highlight{color:var(--accent-deep);background:var(--accent-light);padding:2px 8px;border-radius:4px;}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:12px 0;}
+.card{background:#f8fafc;border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;}
+.card h4{font-size:14px;margin-bottom:6px;}
+</style>
+</head>
+<body data-concept="旋转三要素">
+<div class="top-nav"><a href="../../index.html#旋转三要素">🏠</a><span class="breadcrumb-sep">›</span><span>几何变换 · 旋转</span></div>
+<h1 class="module-title">🔄 旋转三要素 — 中心·方向·角度</h1>
+<p class="module-subtitle">图形绕着中心点顺时针或逆时针转一定角度——这就是旋转。</p>
+
+<div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🧱</span>拆到公理 · 旋转三要素</div>
+  <div class="visual-step">
+    <span class="step-label">要素一</span>
+    <h4>旋转中心</h4>
+    <p>整个图形绕哪个点转？中心点不动，其他点绕它画弧。<br>
+    绕不同中心，同一图形会转到不同位置。</p>
+  </div>
+  <div class="visual-step">
+    <span class="step-label">要素二</span>
+    <h4>旋转方向</h4>
+    <p><strong>顺时针：</strong>和钟表指针一个方向（向右转）<br>
+    <strong>逆时针：</strong>和钟表指针相反方向（向左转）</p>
+  </div>
+  <div class="visual-step">
+    <span class="step-label">要素三</span>
+    <h4>旋转角度</h4>
+    <p>转多少？常见：90°（直角）、180°（半圈）、270°（三圈直角）、360°（一整圈回到原位）<br>
+    旋转 90° 后，图形从"横着放"变成"竖着放"。</p>
+    <div class="concept-highlight">
+      <div class="big-idea">三要素缺一不可：<span class="highlight">绕谁转？往哪转？转多少？</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">✏️</span>练一练</div>
+  <div class="cards">
+    <div class="card"><h4>🧩 方向练习</h4><p>一个箭头朝上，顺时针转 90° 指向哪？逆时针转 90° 呢？<br><em>顺时针→右，逆时针→左</em></p></div>
+    <div class="card"><h4>🔍 时钟</h4><p>分针从 3 走到 6，绕中心___转___度。<br><em>顺时针，90°</em></p></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">⚡</span>对抗验证</div>
+  <div id="adversary-root"></div>
+  <div id="feynman-root"></div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">📖</span>复习</div>
+  <div id="summary-root"></div>
+</div>
+
+<script src="../../shared/components.js"></script>
+<script src="../../shared/concepts.js"></script>
+<script>
+(function(){
+  // Gate
+  var gate = createGate({
+    containerId:'gate-root',
+    questions:[{"q": "旋转三要素包括中心、方向和？", "o": ["速度", "距离", "角度", "半径"], "a": 2}]
+  });
+
+  // Summary
+  createCourseSummary({containerId:'summary-root',lesson:'旋转三要素',concepts:['旋转三要素']});
+
+  // Adversarial
+  createAdversarialChallenge({
+    containerId:'adversary-root',
+    challenges:[{"statement": "图形旋转后大小不变。", "correct": true, "reason": "旋转是刚体变换，图形大小形状都不变，只有位置和方向变。这道是对的。"}, {"statement": "图形绕不同中心旋转 90°，结果一样。", "correct": false, "reason": "绕不同点旋转，图形最终落在不同位置。中心决定\"转完之后在哪\"。"}]
+  });
+
+  // Feynman
+  createFeynmanFill({
+    containerId:'feynman-root',
+    template:'旋转的三个要素是：①旋转___，②旋转___，③旋转___。图形旋转后大小___（变/不变）。',
+    answer:["中心", "方向", "角度", "不变"]
+  });
+
+  // Completion
+  setupCompletionButton('summary-root');
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>分数加减混合运算 · 五年级</title>
+<link rel="stylesheet" href="../../shared/layout.css">
+<style>
+.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;}
+.visual-step h4{font-size:17px;margin-bottom:12px;}
+.visual-step .step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:700;background:var(--accent-light);color:var(--accent-deep);margin-bottom:10px;}
+.concept-highlight{background:linear-gradient(145deg,#fefce8,#fff);border:2px solid #fde68a;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}
+.concept-highlight .big-idea{font-size:22px;font-weight:800;color:#92400e;line-height:1.6;}
+.concept-highlight .big-idea .highlight{color:var(--accent-deep);background:var(--accent-light);padding:2px 8px;border-radius:4px;}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:12px 0;}
+.card{background:#f8fafc;border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;}
+.card h4{font-size:14px;margin-bottom:6px;}
+</style>
+</head>
+<body data-concept="分数加减混合运算">
+<div class="top-nav"><a href="../../index.html#分数加减混合运算">🏠</a><span class="breadcrumb-sep">›</span><span>分数运算 · 加减混合</span></div>
+<h1 class="module-title">➕ 分数加减混合运算 — 规则同整数</h1>
+<p class="module-subtitle">加减混合运算的顺序和整数一样，先通分再计算。</p>
+
+<div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🧱</span>拆到公理 · 分数混合运算</div>
+  <div class="visual-step">
+    <span class="step-label">规则</span>
+    <h4>和整数完全一样</h4>
+    <p><strong>从左到右：</strong>1/2 + 1/3 − 1/4<br>
+    <strong>先乘除后加减：</strong>1/2 + 2/3 × 3/4（不过五年级主要学同级运算）<br>
+    <strong>括号优先：</strong>1/2 − (1/3 + 1/6)</p>
+  </div>
+  <div class="visual-step">
+    <span class="step-label">关键技巧</span>
+    <h4>可以省略通分步骤吗？</h4>
+    <p>不能。每次加减前必须保证分母相同。<br>
+    但可以一次通分所有项：<br>
+    1/2 + 1/3 − 1/4 = 6/12 + 4/12 − 3/12 = 7/12</p>
+  </div>
+  <div class="visual-step">
+    <span class="step-label">运算律也适用</span>
+    <h4>交换律、结合律对分数同样有效</h4>
+    <p>2/5 + 3/7 + 3/5 = (2/5 + 3/5) + 3/7 = 1 + 3/7 = 1 3/7<br>
+    交换律可以帮你创造"同分母配对"，简化计算。</p>
+    <div class="concept-highlight">
+      <div class="big-idea">分数的运算法则 = <span class="highlight">整数的运算法则 + 通分</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">✏️</span>练一练</div>
+  <div class="cards">
+    <div class="card"><h4>🧮 计算</h4><p>3/4 + 1/6 − 1/3 = ？<br><em>9/12 + 2/12 − 4/12 = 7/12</em></p></div>
+    <div class="card"><h4>🎯 巧算</h4><p>用交换律简化：1/3 + 2/7 + 2/3 = ？<br><em>(1/3 + 2/3) + 2/7 = 1 + 2/7 = 1 2/7</em></p></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">⚡</span>对抗验证</div>
+  <div id="adversary-root"></div>
+  <div id="feynman-root"></div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">📖</span>复习</div>
+  <div id="summary-root"></div>
+</div>
+
+<script src="../../shared/components.js"></script>
+<script src="../../shared/concepts.js"></script>
+<script>
+(function(){
+  // Gate
+  var gate = createGate({
+    containerId:'gate-root',
+    questions:[{"q": "分数加减混合运算的第一步是？", "o": ["直接加减", "通分", "去括号", "乘分母"], "a": 1}]
+  });
+
+  // Summary
+  createCourseSummary({containerId:'summary-root',lesson:'分数加减混合运算',concepts:['分数加减混合运算']});
+
+  // Adversarial
+  createAdversarialChallenge({
+    containerId:'adversary-root',
+    challenges:[{"statement": "分数混合运算的顺序和整数不同。", "correct": false, "reason": "顺序完全相同：从左到右，括号优先，先乘除后加减。"}, {"statement": "2/5 + 1/3 − 2/5 = 1/3。", "correct": true, "reason": "利用交换律 2/5−2/5+1/3=0+1/3=1/3。这道是对的。"}]
+  });
+
+  // Feynman
+  createFeynmanFill({
+    containerId:'feynman-root',
+    template:'分数加减混合运算的顺序和___运算相同。每次计算前先___。可以用___律、___律简化计算。',
+    answer:["整数", "通分", "交换", "结合"]
+  });
+
+  // Completion
+  setupCompletionButton('summary-root');
+})();
+</script>
+</body>
+</html>

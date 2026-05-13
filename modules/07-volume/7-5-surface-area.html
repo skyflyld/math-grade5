@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>长方体正方体表面积 · 五年级</title>
+<link rel="stylesheet" href="../../shared/layout.css">
+<style>
+.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;}
+.visual-step h4{font-size:17px;margin-bottom:12px;}
+.visual-step .step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:700;background:var(--accent-light);color:var(--accent-deep);margin-bottom:10px;}
+.concept-highlight{background:linear-gradient(145deg,#fefce8,#fff);border:2px solid #fde68a;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}
+.concept-highlight .big-idea{font-size:22px;font-weight:800;color:#92400e;line-height:1.6;}
+.concept-highlight .big-idea .highlight{color:var(--accent-deep);background:var(--accent-light);padding:2px 8px;border-radius:4px;}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:12px 0;}
+.card{background:#f8fafc;border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;}
+.card h4{font-size:14px;margin-bottom:6px;}
+</style>
+</head>
+<body data-concept="长方体正方体表面积">
+<div class="top-nav"><a href="../../index.html#长方体正方体表面积">🏠</a><span class="breadcrumb-sep">›</span><span>立体几何 · 表面积</span></div>
+<h1 class="module-title">📦 长方体正方体表面积 — 展开图</h1>
+<p class="module-subtitle">长方体 6 个面的总面积 = 表面积。展开图一看就懂。</p>
+
+<div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🧱</span>拆到公理 · 表面积</div>
+  <div class="visual-step">
+    <span class="step-label">定义</span>
+    <h4>展开图 = 全部面的和</h4>
+    <p>长方体有 6 个面：<br>
+    <strong>上下面</strong>：长 × 宽 × 2<br>
+    <strong>前后面</strong>：长 × 高 × 2<br>
+    <strong>左右面</strong>：宽 × 高 × 2<br><br>
+    公式：<strong>S = 2(lw + lh + wh)</strong></p>
+  </div>
+  <div class="visual-step">
+    <span class="step-label">正方体特例</span>
+    <h4>6 个一模一样的面</h4>
+    <p>正方体的长 = 宽 = 高 = a<br>
+    S = 6 × a²（一个面面积 × 6）</p>
+  </div>
+  <div class="visual-step">
+    <span class="step-label">无盖箱子</span>
+    <h4>生活中不是总有 6 个面</h4>
+    <p>鱼缸没有上盖 → 只算 5 个面<br>
+    排水管没有上下底 → 只算 4 个侧面<br>
+    包装盒封住 6 面 → 算全部 6 个面</p>
+    <div class="concept-highlight">
+      <div class="big-idea">表面积 = 6 个矩形面积之和。<span class="highlight">没有新公式，只有加法</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">✏️</span>练一练</div>
+  <div class="cards">
+    <div class="card"><h4>📦 计算</h4><p>长 5cm、宽 3cm、高 4cm 的长方体，表面积是多少？<br><em>2×(15+20+12) = 94cm²</em></p></div>
+    <div class="card"><h4>🔍 无盖计算</h4><p>一个长 8cm 宽 6cm 高 5cm 的无盖玻璃鱼缸，需要多少玻璃？<br><em>8×6 + 2×(8×5 + 6×5) = 48 + 2×70 = 188cm²</em></p></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">⚡</span>对抗验证</div>
+  <div id="adversary-root"></div>
+  <div id="feynman-root"></div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">📖</span>复习</div>
+  <div id="summary-root"></div>
+</div>
+
+<script src="../../shared/components.js"></script>
+<script src="../../shared/concepts.js"></script>
+<script>
+(function(){
+  // Gate
+  var gate = createGate({
+    containerId:'gate-root',
+    questions:[{"q": "长方体有几个面？", "o": ["4 个", "8 个", "6 个", "12 个"], "a": 2}]
+  });
+
+  // Summary
+  createCourseSummary({containerId:'summary-root',lesson:'长方体正方体表面积',concepts:['长方体正方体表面积']});
+
+  // Adversarial
+  createAdversarialChallenge({
+    containerId:'adversary-root',
+    challenges:[{"statement": "正方体的表面积是 6a²，所以棱长 2cm 的正方体表面积 = 24cm²。", "correct": true, "reason": "6×2²=6×4=24cm²。这道是对的。"}, {"statement": "长方体的表面积公式和正方体一样。", "correct": false, "reason": "正方体 6 个面一样大，公式 6a²。长方体 3 组对面面积不同，公式 2(lw+lh+wh)。"}]
+  });
+
+  // Feynman
+  createFeynmanFill({
+    containerId:'feynman-root',
+    template:'长方体有___个面。表面积公式S = 2(___+___+___)。对正方体，S = ___a²。',
+    answer:["6", "lw", "lh", "wh", "6"]
+  });
+
+  // Completion
+  setupCompletionButton('summary-root');
+})();
+</script>
+</body>
+</html>

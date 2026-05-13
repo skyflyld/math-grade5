@@ -319,6 +319,11 @@ line.edge.hovered{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
   </div>
   <div style="padding:4px 28px 6px;display:flex;gap:14px;font-size:.76em;color:var(--text-dim)">
     <span id="completion-count">✅ 0/51 已完成</span>
+    <span style="margin-left:auto">
+      <button onclick="exportProgress()" style="min-height:24px;border:1px solid var(--border);border-radius:10px;background:#fff;font-size:.72em;padding:0 8px;cursor:pointer;color:var(--text-dim)">📤 导出进度</button>
+      <button onclick="document.getElementById('import-file').click()" style="min-height:24px;border:1px solid var(--border);border-radius:10px;background:#fff;font-size:.72em;padding:0 8px;cursor:pointer;color:var(--text-dim);margin-left:6px">📥 导入进度</button>
+      <input type="file" id="import-file" accept=".json" style="display:none" onchange="importProgress(event)">
+    </span>
   </div>
 </section>
 <div id="graph">
@@ -543,6 +548,47 @@ function updateNodeUI(){
     }
   });
   updateCompletionCount();
+}
+
+// === LocalStorage Export/Import ===
+function exportProgress(){
+  const data = {
+    version:1,
+    exportedAt:new Date().toISOString(),
+    math5_progress:JSON.parse(localStorage.getItem('math5_progress')||'{}'),
+    math5_concept_progress:JSON.parse(localStorage.getItem('math5_concept_progress')||'{}'),
+    math5_diag_results:JSON.parse(localStorage.getItem('math5_diag_results')||'{}')
+  };
+  const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'math5-progress-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function importProgress(event){
+  const file = event.target.files[0];
+  if(!file)return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const data = JSON.parse(e.target.result);
+      if(!data.version)throw new Error('Invalid format');
+      if(data.math5_progress) localStorage.setItem('math5_progress', JSON.stringify(data.math5_progress));
+      if(data.math5_concept_progress) localStorage.setItem('math5_concept_progress', JSON.stringify(data.math5_concept_progress));
+      if(data.math5_diag_results) localStorage.setItem('math5_diag_results', JSON.stringify(data.math5_diag_results));
+      updateNodeUI();
+      alert('✅ 进度导入成功！共导入 ' +
+        Object.keys(data.math5_progress||{}).length + ' 课件 + ' +
+        Object.keys(data.math5_concept_progress||{}).length + ' 概念 + ' +
+        Object.keys(data.math5_diag_results||{}).length + ' 诊断记录。');
+    }catch(err){
+      alert('❌ 导入失败：文件格式不正确 (' + err.message + ')');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
 }
 
 

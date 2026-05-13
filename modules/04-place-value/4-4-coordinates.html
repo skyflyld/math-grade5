@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>用数对确定位置 · 五年级</title>
+<link rel="stylesheet" href="../../shared/layout.css">
+<style>
+.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;}
+.visual-step h4{font-size:17px;margin-bottom:12px;}
+.visual-step .step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:700;background:var(--accent-light);color:var(--accent-deep);margin-bottom:10px;}
+.concept-highlight{background:linear-gradient(145deg,#fefce8,#fff);border:2px solid #fde68a;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}
+.concept-highlight .big-idea{font-size:22px;font-weight:800;color:#92400e;line-height:1.6;}
+.concept-highlight .big-idea .highlight{color:var(--accent-deep);background:var(--accent-light);padding:2px 8px;border-radius:4px;}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:12px 0;}
+.card{background:#f8fafc;border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;}
+.card h4{font-size:14px;margin-bottom:6px;}
+</style>
+</head>
+<body data-concept="用数对确定位置">
+<div class="top-nav"><a href="../../index.html#用数对确定位置">🏠</a><span class="breadcrumb-sep">›</span><span>位置与坐标 · 用数对确定位置</span></div>
+<h1 class="module-title">📍 用数对确定位置 — 坐标思想入门</h1>
+<p class="module-subtitle">方格纸上，(列,行) 唯一确定一个点——这就是坐标的雏形。</p>
+
+<div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🧱</span>拆到公理 · 定位的逻辑</div>
+  <div class="visual-step">
+    <span class="step-label">问题</span>
+    <h4>怎么告诉别人一个点的准确位置？</h4>
+    <p>只说"左边一点"或"右上角"太模糊。我们需要两个数来确定。</p>
+  </div>
+  <div class="visual-step">
+    <span class="step-label">约定</span>
+    <h4>列在前，行在后</h4>
+    <p>数对 <strong>(3, 2)</strong> 表示第 3 列、第 2 行。先从左到右数列，再从下到上数行。<br>
+    这个约定让所有人都用同一种语言描述位置。</p>
+  </div>
+  <div class="visual-step">
+    <span class="step-label">扩展</span>
+    <h4>负数也能定位</h4>
+    <p>在真正的坐标系中，向左/向下可以走负数。数对 <strong>(−3, 2)</strong> 表示第 −3 列（原点左边 3 格）第 2 行。</p>
+    <div class="concept-highlight">
+      <div class="big-idea">数对 = 两个方向上的"刻度"读数，<span class="highlight">顺序不可颠倒</span></div>
+    </div>
+  </div>
+  <div class="visual-step">
+    <span class="step-label">生活链接</span>
+    <h4>地图上的网格</h4>
+    <p>电影院座位（A排3座）、棋盘（e4格）、地图上的经纬度——都是用一对数来定位。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">✏️</span>练一练</div>
+  <div class="cards">
+    <div class="card"><h4>🏛️ 地图</h4><p>公园地图上，熊猫馆在 (4, 2)，大象馆在 (6, 3)。哪个离大门更近？</p><p><em>提示：数对中每个数的绝对值越小越近。</em></p></div>
+    <div class="card"><h4>🎯 找规律</h4><p>(1, 1), (2, 2), (3, 3), ___ 下一个数对是什么？</p></div>
+    <div class="card"><h4>🔍 反推位置</h4><p>如果 (列, 行) = (3, 5)，那么第几列第几行？交换后 (5, 3) 是同一个位置吗？</p></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">⚡</span>对抗验证</div>
+  <div id="adversary-root"></div>
+  <div id="feynman-root"></div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">📖</span>复习</div>
+  <div id="summary-root"></div>
+</div>
+
+<script src="../../shared/components.js"></script>
+<script src="../../shared/concepts.js"></script>
+<script>
+(function(){
+  // Gate
+  var gate = createGate({
+    containerId:'gate-root',
+    questions:[{"q": "数对 (3, 2) 中的 3 表示什么？", "o": ["第 3 行", "第 3 列", "第 3 格", "3 个点"], "a": 1}]
+  });
+
+  // Summary
+  createCourseSummary({containerId:'summary-root',lesson:'用数对确定位置',concepts:['用数对确定位置']});
+
+  // Adversarial
+  createAdversarialChallenge({
+    containerId:'adversary-root',
+    challenges:[{"statement": "数对 (2, 3) 和 (3, 2) 表示同一个位置。", "correct": false, "reason": "数对中列和行的顺序是固定的。(2,3)是第2列第3行，(3,2)是第3列第2行，不是同一个位置。"}, {"statement": "数对 (a, b) 中 a 和 b 都是正整数就够了。", "correct": false, "reason": "坐标可以是任何实数。如商场在 3 楼半，位置可以写成 (3.5, 2)。"}]
+  });
+
+  // Feynman
+  createFeynmanFill({
+    containerId:'feynman-root',
+    template:'数对由___个数字组成，第一个表示___，第二个表示___。数对(3, 2)表示第___列第___行。数对中的顺序___（可以/不可以）互换。',
+    answer:["两", "列", "行", "3", "2", "不可以"]
+  });
+
+  // Completion
+  setupCompletionButton('summary-root');
+})();
+</script>
+</body>
+</html>
