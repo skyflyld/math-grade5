@@ -320,8 +320,9 @@ line.edge.hovered{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
   <div style="padding:4px 28px 6px;display:flex;gap:14px;font-size:.76em;color:var(--text-dim)">
     <span id="completion-count">✅ 0/51 已完成</span>
     <span style="margin-left:auto">
-      <button onclick="exportProgress()" style="min-height:24px;border:1px solid var(--border);border-radius:10px;background:#fff;font-size:.72em;padding:0 8px;cursor:pointer;color:var(--text-dim)">📤 导出进度</button>
-      <button onclick="document.getElementById('import-file').click()" style="min-height:24px;border:1px solid var(--border);border-radius:10px;background:#fff;font-size:.72em;padding:0 8px;cursor:pointer;color:var(--text-dim);margin-left:6px">📥 导入进度</button>
+      <button onclick="exportProgress()" style="min-height:24px;border:1px solid var(--border);border-radius:10px;background:#fff;font-size:.72em;padding:0 8px;cursor:pointer;color:var(--text-dim)">📤 导出文件</button>
+      <button onclick="syncToURL()" style="min-height:24px;border:1px solid var(--border);border-radius:10px;background:#fff;font-size:.72em;padding:0 8px;cursor:pointer;color:var(--text-dim);margin-left:6px">📎 生成同步链接</button>
+      <button onclick="document.getElementById('import-file').click()" style="min-height:24px;border:1px solid var(--border);border-radius:10px;background:#fff;font-size:.72em;padding:0 8px;cursor:pointer;color:var(--text-dim);margin-left:6px">📥 导入文件</button>
       <input type="file" id="import-file" accept=".json" style="display:none" onchange="importProgress(event)">
     </span>
   </div>
@@ -575,6 +576,73 @@ function importProgress(event){
   event.target.value = '';
 }
 
+// === URL-based cross-device sync (zero-server) ===
+function gatherProgressData(){
+  return {
+    version:1,
+    exportedAt:new Date().toISOString(),
+    math5_progress:JSON.parse(localStorage.getItem('math5_progress')||'{}'),
+    math5_concept_progress:JSON.parse(localStorage.getItem('math5_concept_progress')||'{}'),
+    math5_diag_results:JSON.parse(localStorage.getItem('math5_diag_results')||'{}')
+  };
+}
+function applyProgressData(data){
+  if(!data||!data.version)return false;
+  if(data.math5_progress) localStorage.setItem('math5_progress', JSON.stringify(data.math5_progress));
+  if(data.math5_concept_progress) localStorage.setItem('math5_concept_progress', JSON.stringify(data.math5_concept_progress));
+  if(data.math5_diag_results) localStorage.setItem('math5_diag_results', JSON.stringify(data.math5_diag_results));
+  updateNodeUI();
+  return true;
+}
+function syncToURL(){
+  var json = JSON.stringify(gatherProgressData());
+  // Compress with encodeURIComponent + btoa for URL safety
+  // For very large data, this may exceed URL length limits; 51 concepts ~5KB fits easily
+  var encoded = btoa(unescape(encodeURIComponent(json)));
+  var url = location.href.split('#')[0].split('?')[0] + '?sync=' + encoded;
+  // Copy to clipboard
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(url).then(function(){
+      alert('✅ 同步链接已复制到剪贴板！\n\n在另一台设备上打开此链接即可自动恢复进度。\n\n链接长度：' + encoded.length + ' 字符');
+    }).catch(function(){
+      fallbackCopy(url);
+    });
+  }else{
+    fallbackCopy(url);
+  }
+}
+function fallbackCopy(url){
+  var ta = document.createElement('textarea');
+  ta.value = url; ta.style.position = 'fixed'; ta.style.left = '-9999px';
+  document.body.appendChild(ta); ta.select();
+  try{
+    document.execCommand('copy');
+    alert('✅ 同步链接已复制！\n\n链接长度：' + url.length + ' 字符');
+  }catch(e){
+    alert('📋 请手动复制此链接到另一设备打开：\n\n' + url);
+  }
+  document.body.removeChild(ta);
+}
+// Auto-import from URL on page load
+function checkSyncURL(){
+  var params = new URLSearchParams(location.search);
+  var syncData = params.get('sync');
+  if(!syncData)return;
+  try{
+    var json = decodeURIComponent(escape(atob(syncData)));
+    var data = JSON.parse(json);
+    if(applyProgressData(data)){
+      var count = Object.keys(data.math5_concept_progress||{}).length;
+      // Clear the sync param from URL without reloading
+      history.replaceState(null, '', location.pathname + location.hash);
+      alert('✅ 跨设备同步成功！已导入 ' + count + ' 个概念的进度数据。');
+    }
+  }catch(e){
+    console.warn('Sync URL parse failed:', e);
+  }
+}
+// Check on page load
+setTimeout(checkSyncURL, 100);
 
 // === CONSTANTS ===
 const CAT_COLORS = {number_ops:'#4A90D9',geometry:'#E85D75',algebra:'#7B68EE',statistics:'#F0A050',applications:'#50B87A'};
