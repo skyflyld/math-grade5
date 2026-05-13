@@ -33,7 +33,7 @@
   --font-weight-heavy: 800;
   --font-weight-bold: 700;
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-cn: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', '苹方', sans-serif;
+  --font-cn: 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', '苹方', sans-serif;
   --font-mono: 'SF Mono', 'JetBrains Mono', 'Consolas', monospace;
   --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -59,10 +59,11 @@ body {
   background: var(--bg);
   color: var(--text);
   line-height: 1.8;
-  max-width: 860px;
+  max-width: 920px;
   margin: 0 auto;
   padding: 20px 20px 100px;
   font-size: 16px;
+  letter-spacing: 0;
   -webkit-font-smoothing: antialiased;
   position: relative;
   z-index: 1;
@@ -101,7 +102,7 @@ body {
   font-size: 36px;
   font-weight: 800;
   margin-bottom: 6px;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
   background: linear-gradient(135deg, #1e293b, #3b82f6);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -1183,10 +1184,32 @@ body {
   body { padding: 12px 12px 60px; font-size: 15px; }
   .section { padding: 20px 16px; }
   .module-title { font-size: 26px; }
-  .concept-sync-card { grid-template-columns: 1fr; padding: 14px; margin: -8px 0 22px; }
-  .concept-sync-visual { min-height: 148px; }
-  .concept-sync-image { min-height: 148px; }
-  .concept-sync-copy h2 { font-size: 19px; }
+  .concept-sync-card {
+    grid-template-columns: 82px minmax(0,1fr);
+    gap: 10px;
+    padding: 10px;
+    margin: -4px 0 22px;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+  }
+  .concept-sync-visual { min-height: 84px; align-self: stretch; }
+  .concept-sync-image { min-height: 84px; }
+  .concept-sync-copy { gap: 5px; min-width: 0; }
+  .concept-sync-kicker { font-size: 10px; letter-spacing: .04em; }
+  .concept-sync-copy h2 { min-width: 0; font-size: 16px; overflow-wrap: anywhere; }
+  .concept-sync-copy h2 span { margin-left: 3px; padding: 2px 6px; font-size: 10px; }
+  .concept-sync-copy p {
+    min-width: 0;
+    font-size: 12px;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .concept-sync-link { min-height: 28px; padding: 4px 9px; font-size: 12px; }
   .hero-section h1 { font-size: 28px; }
   .hero-section { padding: 28px 16px 20px; }
   .textbook-compare { grid-template-columns: 1fr; }
@@ -1201,6 +1224,26 @@ body {
   .section-header .avatar-icon { width: 26px; height: 26px; }
   .axiom-box { font-size: 15px; padding: 16px 18px; }
   .interactive-area { padding: 18px 14px; }
+  .visual-step,
+  .interactive-area,
+  .gate { overflow-x: hidden; }
+  .gate-questions > div {
+    justify-content: flex-start !important;
+    align-items: flex-start !important;
+  }
+  .gate-questions > div > span:first-child {
+    flex: 1 1 100%;
+    line-height: 1.55;
+  }
+  .gate-questions > div > span:not(:first-child) {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 6px;
+    max-width: 100%;
+  }
+  .gate .input-field {
+    max-width: 76px;
+  }
   .component-card { padding: 16px 14px; }
   .component-card-head { display: block; }
   .area-model-info { grid-template-columns: auto 1fr; }
