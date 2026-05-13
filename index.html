@@ -233,6 +233,41 @@ line.edge.hovered{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
   #card{padding:18px}
   #card .mentor-row{grid-template-columns:1fr}
 }
+
+.diag-btn{min-height:38px;border:1.5px solid var(--accent);border-radius:16px;background:rgba(245,164,0,.12);color:#9a6400;font-weight:800;padding:0 14px;cursor:pointer;font-size:.82em;white-space:nowrap}
+.diag-btn:hover{background:rgba(245,164,0,.22);border-color:#e09600}
+.diag-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+#diag-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,.45);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+#diag-overlay.open{display:flex}
+#diag-panel{background:var(--surface);border-radius:20px;box-shadow:var(--shadow);width:min(480px,92vw);max-height:88vh;display:flex;flex-direction:column;overflow:hidden;animation:diagFadeIn .2s ease}
+@keyframes diagFadeIn{from{opacity:0;transform:translateY(16px) scale(.96)}}
+.diag-header{display:flex;align-items:center;justify-content:space-between;padding:18px 22px 0;font-weight:760;font-size:.96em}
+.diag-close{background:none;border:none;font-size:1.3em;cursor:pointer;color:var(--text-dim);padding:4px;line-height:1}
+.diag-progress{display:flex;align-items:center;gap:12px;padding:8px 22px 0}
+.diag-bar{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.diag-bar-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .3s ease}
+.diag-count{font-size:.76em;color:var(--text-dim);font-weight:800;white-space:nowrap}
+.diag-score{padding:0 22px 4px;font-size:.76em;color:var(--text-dim)}
+#diag-body{overflow-y:auto;padding:12px 22px 16px}
+.diag-card{padding:18px;background:var(--bg);border-radius:16px;margin-bottom:12px}
+.diag-concept-tag{display:inline-block;font-size:.72em;font-weight:800;padding:4px 12px;border-radius:20px;margin-bottom:12px;opacity:.85}
+.diag-q{font-size:1.02em;font-weight:700;line-height:1.5;margin-bottom:16px}
+.diag-opts{display:flex;flex-direction:column;gap:8px}
+.diag-opt{width:100%;text-align:left;padding:12px 16px;border:1.5px solid var(--border);border-radius:14px;background:#fff;font:inherit;font-size:.92em;font-weight:700;cursor:pointer;transition:all .15s;color:var(--text)}
+.diag-opt:hover{border-color:var(--accent);background:rgba(245,164,0,.06)}
+.diag-opt.correct{border-color:#45c77a;background:rgba(69,199,122,.1);color:#1f7a48}
+.diag-opt.wrong{border-color:#e85d75;background:rgba(232,93,117,.08);color:#b33a52}
+.diag-opt:disabled{opacity:.6;cursor:default}
+.diag-feedback{padding:14px;border-radius:12px;font-size:.88em;line-height:1.5;margin-top:10px;font-weight:700}
+.diag-feedback.correct{background:rgba(69,199,122,.12);color:#1f7a48}
+.diag-feedback.wrong{background:rgba(232,93,117,.1);color:#b33a52}
+.diag-nav{display:flex;justify-content:space-between;gap:10px}
+.diag-nav button{min-height:42px;border:1.5px solid var(--border);border-radius:16px;background:#fff;font:inherit;font-size:.86em;font-weight:800;cursor:pointer;padding:0 18px;color:var(--text)}
+.diag-nav button:last-child{background:var(--accent);border-color:var(--accent);color:#fff}
+.diag-nav button:hover{opacity:.85}
+.diag-nav .small{font-weight:600;opacity:.6}
+.diag-reset{background:none;border:none;color:var(--text-dim);font-size:.72em;cursor:pointer;padding:6px 22px 14px;text-decoration:underline;opacity:.5}
+.diag-reset:hover{opacity:1}
 </style>
 </head>
 <body>
@@ -246,12 +281,12 @@ line.edge.hovered{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
     </div>
   </div>
   <div class="stats">
-    <strong id="total-nodes">40</strong><span>个概念</span>
-    <strong id="total-edges">57</strong><span>条关系</span>
+    <strong id="total-nodes">51</strong><span>个概念</span>
+    <strong id="total-edges">78</strong><span>条关系</span>
   </div>
 </header>
 <section class="filter-panel" id="filter-panel">
-  <div class="filter-title"><span>🔍</span>筛选知识 <button id="filter-toggle" type="button" aria-expanded="false">展开</button></div>
+  <div class="filter-title"><span>🔍</span>筛选知识 <button class="diag-btn" onclick="enterDiagMode()" style="margin-left:auto;margin-right:8px;min-height:32px;font-size:.78em;padding:0 12px">📋 前置检查</button><button id="filter-toggle" type="button" aria-expanded="false">展开</button></div>
   <div class="filter-grid">
     <div class="search-block">
       <label>搜索</label>
@@ -318,6 +353,151 @@ const nodes = [{"id":"e65c5d65","name":"整数加减法","category":"number_ops"
 
 const edges = [{"from":"e65c5d65","to":"ea935433","type":"prerequisite_of","exp":"乘法是同数连加的简便表示——理解乘法必须建立在加法之上"},{"from":"e65c5d65","to":"ada6e1e6","type":"prerequisite_of","exp":"加减法是四则运算的基础运算"},{"from":"e65c5d65","to":"87a251c8","type":"related_to","exp":"除法是连续减同一个数，试商和验算依赖减法"},{"from":"e65c5d65","to":"23ed6846","type":"prerequisite_of","exp":"计数单位相同才能直接计算——这是整数和分数的共同锚点"},{"from":"ea935433","to":"87a251c8","type":"related_to","exp":"乘除法互为逆运算：3×5=15推15÷5=3"},{"from":"ea935433","to":"c99fc85f","type":"prerequisite_of","exp":"进率换算本质是乘法：大单位→小单位用进率×数量"},{"from":"ea935433","to":"1449aff7","type":"related_to","exp":"乘法是加法累积，面积是乘法在空间上的应用"},{"from":"ea935433","to":"7b80a791","type":"prerequisite_of","exp":"小数乘法建立在整数乘法基础上，只是多了小数点处理"},{"from":"ea935433","to":"39b823e4","type":"prerequisite_of","exp":"因数是从乘法的逆向角度理解整除关系"},{"from":"ea935433","to":"64f85488","type":"prerequisite_of","exp":"体积=单位立方体个数，本质是多层乘法计数"},{"from":"87a251c8","to":"39b823e4","type":"prerequisite_of","exp":"整除是判断因数和倍数的前提"},{"from":"87a251c8","to":"5c5b1d29","type":"prerequisite_of","exp":"分数是除法的另一种表达，除不尽时产生分数"},{"from":"87a251c8","to":"9724b491","type":"prerequisite_of","exp":"植树问题本质上是一个除法问题"},{"from":"87a251c8","to":"3787e5ae","type":"prerequisite_of","exp":"找次品需要除法思维和最优策略"},{"from":"d9ed4cc5","to":"ab2f17ee","type":"prerequisite_of","exp":"小数是十进制位置值向右延伸"},{"from":"d9ed4cc5","to":"ada6e1e6","type":"prerequisite_of","exp":"列竖式计算的数位对齐以位置值理解为基础"},{"from":"d9ed4cc5","to":"7b80a791","type":"prerequisite_of","exp":"小数点移动规则的根在位置值"},{"from":"d9ed4cc5","to":"972d2981","type":"prerequisite_of","exp":"商的小数点定位取决于位置值关系"},{"from":"ab2f17ee","to":"ca7b8697","type":"related_to","exp":"小数和分数是同一个数的两种不同表达"},{"from":"ab2f17ee","to":"7b80a791","type":"prerequisite_of","exp":"理解小数的意义才能做小数运算"},{"from":"ab2f17ee","to":"972d2981","type":"prerequisite_of","exp":"理解小数除法商的意义必须先理解小数"},{"from":"ab2f17ee","to":"b1805809","type":"prerequisite_of","exp":"分数小数互化建立在理解两者意义之上"},{"from":"ada6e1e6","to":"9aeeb7d4","type":"prerequisite_of","exp":"方程建立在四则运算和等式性质之上"},{"from":"1449aff7","to":"e7839062","type":"prerequisite_of","exp":"矩形面积（单位正方形计数）是一切面积推导的基础"},{"from":"1449aff7","to":"64f85488","type":"prerequisite_of","exp":"体积 = 面积 × 高度，面积是体积的一维降级"},{"from":"1449aff7","to":"3e85004a","type":"related_to","exp":"面积和体积都源于单位计数：平方单位 vs 立方单位"},{"from":"e2d70d40","to":"9aeeb7d4","type":"prerequisite_of","exp":"等式的性质是解方程的基础"},{"from":"d6aedde0","to":"3d143a12","type":"prerequisite_of","exp":"认识基本图形是图形变换的前提"},{"from":"d6aedde0","to":"480cc030","type":"prerequisite_of","exp":"认识平面图形是辨认三视图投影形状的前提"},{"from":"d6aedde0","to":"8938c8aa","type":"prerequisite_of","exp":"长方体和正方体建立在平面图形认知之上"},{"from":"d6aedde0","to":"e7839062","type":"prerequisite_of","exp":"不理解平行四边形特征就无法理解高和剪拼法"},{"from":"ca7b8697","to":"5c5b1d29","type":"prerequisite_of","exp":"深化分数基础概念"},{"from":"ca7b8697","to":"9e90fb97","type":"prerequisite_of","exp":"可能性用分数来表达"},{"from":"60d47092","to":"961714c5","type":"prerequisite_of","exp":"折线统计图需要数据收集和整理的基础"},{"from":"c99fc85f","to":"64f85488","type":"prerequisite_of","exp":"体积单位进率换算建立在长度单位换算思维迁移之上"},{"from":"c99fc85f","to":"c9e183fc","type":"prerequisite_of","exp":"容积单位换算建立在体积单位换算基础上"},{"from":"7b80a791","to":"972d2981","type":"prerequisite_of","exp":"小数除法依赖小数乘法进行商的验证"},{"from":"972d2981","to":"f5ab1e67","type":"prerequisite_of","exp":"循环小数是除不尽的自然结果"},{"from":"39b823e4","to":"e6e8bcff","type":"prerequisite_of","exp":"在理解因数和倍数后学习倍数特征"},{"from":"39b823e4","to":"7ec9ac40","type":"prerequisite_of","exp":"质数合数的分类基于因数的个数"},{"from":"39b823e4","to":"3a4535d4","type":"prerequisite_of","exp":"约分需要找到分子分母的最大公因数"},{"from":"39b823e4","to":"fa0737eb","type":"prerequisite_of","exp":"通分需要找到分母的最小公倍数"},{"from":"480cc030","to":"8938c8aa","type":"prerequisite_of","exp":"多角度观察立体是全面认识长方体特征的基础"},{"from":"9aeeb7d4","to":"e7839062","type":"related_to","exp":"简易方程中的字母和几何公式中的字母表示未知量"},{"from":"64f85488","to":"3e85004a","type":"prerequisite_of","exp":"理解体积概念后才能推导体积公式"},{"from":"3e85004a","to":"c9e183fc","type":"prerequisite_of","exp":"容积是体积概念在容器上的应用"},{"from":"e7839062","to":"95450fcd","type":"prerequisite_of","exp":"三角形面积 = 平行四边形面积 ÷ 2"},{"from":"e7839062","to":"24ea32b7","type":"prerequisite_of","exp":"梯形面积推导同样依赖平行四边形"},{"from":"95450fcd","to":"9a067133","type":"prerequisite_of","exp":"组合图形面积需要先掌握各基本图形的面积公式"},{"from":"24ea32b7","to":"9a067133","type":"prerequisite_of","exp":"组合多边形常包含梯形元素"},{"from":"5c5b1d29","to":"5a92476e","type":"prerequisite_of","exp":"理解分数的意义后区分真分数和假分数"},{"from":"5c5b1d29","to":"3896ab4f","type":"prerequisite_of","exp":"分数的基本性质是约分和通分的理论基础"},{"from":"5c5b1d29","to":"23ed6846","type":"prerequisite_of","exp":"同分母分数加减直接基于分数单位理解"},{"from":"5c5b1d29","to":"b1805809","type":"prerequisite_of","exp":"分数小数互化需要分数基础"},{"from":"3896ab4f","to":"3a4535d4","type":"prerequisite_of","exp":"约分依赖分数的基本性质"},{"from":"3896ab4f","to":"fa0737eb","type":"prerequisite_of","exp":"通分依赖分数的基本性质"},{"from":"fa0737eb","to":"23ed6846","type":"prerequisite_of","exp":"异分母分数加减必须先通分"}, {"from":"d6aedde0","to":"9b41000d","type":"prerequisite_of","exp":"在方格纸上用列和行定位需要先认识平面图形的位置关系"}, {"from":"9b41000d","to":"480cc030","type":"related_to","exp":"位置坐标和观察物体的方位感都来自空间定位能力"}, {"from":"7b80a791","to":"94ec1598","type":"prerequisite_of","exp":"求积的近似数需要小数乘法基础"}, {"from":"972d2981","to":"94ec1598","type":"prerequisite_of","exp":"求商的近似数需要小数除法基础"}, {"from":"1449aff7","to":"9daab7a6","type":"prerequisite_of","exp":"估算不规则图形面积需要先理解面积的概念"}, {"from":"9a067133","to":"9daab7a6","type":"related_to","exp":"组合图形面积和不规则图形估算都涉及对图形的分割与转化"}, {"from":"e6e8bcff","to":"7d99ade2","type":"prerequisite_of","exp":"2的倍数特征引出偶数概念，在此基础上区分奇偶"}, {"from":"7d99ade2","to":"7ec9ac40","type":"prerequisite_of","exp":"奇数不一定是质数，偶数不一定是合数——奇偶与质合是两种不同分类"}, {"from":"39b823e4","to":"c0b153df","type":"prerequisite_of","exp":"求两个数的公因数需要先理解单个数的因数"}, {"from":"39b823e4","to":"26f9b6c6","type":"prerequisite_of","exp":"求两个数的公倍数需要先理解单个数的倍数"}, {"from":"c0b153df","to":"3a4535d4","type":"prerequisite_of","exp":"约分的实质是找到分子分母的最大公因数"}, {"from":"26f9b6c6","to":"fa0737eb","type":"prerequisite_of","exp":"通分的实质是找到分母的最小公倍数"}, {"from":"8938c8aa","to":"6c6ddb99","type":"prerequisite_of","exp":"认识立体图形的结构后才能计算表面积"}, {"from":"87a251c8","to":"cc1ff78f","type":"prerequisite_of","exp":"分数是除法的另一种表示形式，a÷b=a/b"}, {"from":"ca7b8697","to":"cc1ff78f","type":"prerequisite_of","exp":"理解分数含义后才能建立分数与除法的联系"}, {"from":"cc1ff78f","to":"5c5b1d29","type":"prerequisite_of","exp":"分数与除法的关系是建立分数单位1概念的关键"}, {"from":"23ed6846","to":"8971a2fa","type":"prerequisite_of","exp":"同分母/异分母加减法是加减混合运算的基础"}, {"from":"ada6e1e6","to":"8971a2fa","type":"related_to","exp":"分数加减混合运算顺序与整数四则运算一致"}, {"from":"3d143a12","to":"ca3909a2","type":"prerequisite_of","exp":"先整体认识旋转现象，再精确学习三要素"}, {"from":"ca3909a2","to":"480cc030","type":"related_to","exp":"旋转的空间想象能力和观察立体时的空间感知相通"}, {"from":"961714c5","to":"38643493","type":"prerequisite_of","exp":"学习单式折线统计图后才能扩展到复式比较"}
 ];
+
+
+// === DIAGNOSTIC QUESTIONS (Phase B) ===
+const DIAG_QUESTIONS = {
+  "1449aff7":[{q:"\u4e00\u4e2a\u957f\u65b9\u5f62\u957f8cm\uff0c\u5bbd5cm\uff0c\u9762\u79ef\u662f\u591a\u5c11\uff1f",o:["26cm\u00b2", "40cm\u00b2", "13cm\u00b2", "40cm"],a:1,e:"\u957f\u65b9\u5f62\u9762\u79ef=\u957f\u00d7\u5bbd=8\u00d75=40cm\u00b2"}],
+  "23ed6846":[{q:"1/4 + 1/2 = ?",o:["2/6", "1/3", "3/4", "2/4"],a:2,e:"\u5148\u901a\u5206\uff1a1/4+2/4=3/4"}],
+  "24ea32b7":[{q:"\u68af\u5f62\u4e0a\u5e953cm\u3001\u4e0b\u5e957cm\u3001\u9ad84cm\uff0c\u9762\u79ef\u662f\u591a\u5c11\uff1f",o:["20cm\u00b2", "40cm\u00b2", "14cm\u00b2", "28cm\u00b2"],a:0,e:"S=(a+b)\u00d7h\u00f72=(3+7)\u00d74\u00f72=20cm\u00b2"}],
+  "26f9b6c6":[{q:"4 \u548c 6 \u7684\u6700\u5c0f\u516c\u500d\u6570\u662f\u591a\u5c11\uff1f",o:["12", "24", "2", "48"],a:0,e:"4\u7684\u500d\u6570\uff1a4\u30018\u300112\u300116...\uff1b6\u7684\u500d\u6570\uff1a6\u300112\u300118...\uff1b\u6700\u5c0f\u516c\u500d\u6570\u662f12"}],
+  "3787e5ae":[{q:"\u4ece3\u4e2a\u96f6\u4ef6\u4e2d\u627e1\u4e2a\u6b21\u54c1\uff08\u7a0d\u91cd\uff09\uff0c\u6700\u5c11\u79f0\u51e0\u6b21\uff1f",o:["1\u6b21", "2\u6b21", "3\u6b21", "4\u6b21"],a:0,e:"\u5929\u5e73\u4e24\u8fb9\u5404\u653e1\u4e2a\uff0c\u5e73\u8861\u5219\u5269\u4f59\u7684\u662f\u6b21\u54c1\uff0c\u4e0d\u5e73\u8861\u5219\u91cd\u7684\u662f\u6b21\u54c1\uff0c1\u6b21\u5373\u591f"}],
+  "38643493":[{q:"\u590d\u5f0f\u6298\u7ebf\u7edf\u8ba1\u56fe\u76f8\u6bd4\u5355\u5f0f\u6298\u7ebf\u7edf\u8ba1\u56fe\u7684\u4f18\u52bf\u662f\uff1f",o:["\u66f4\u7f8e\u89c2", "\u53ef\u5bf9\u6bd4\u591a\u7ec4\u6570\u636e", "\u6570\u636e\u66f4\u51c6\u786e", "\u8ba1\u7b97\u66f4\u65b9\u4fbf"],a:1,e:"\u590d\u5f0f\u6298\u7ebf\u7edf\u8ba1\u56fe\u5728\u540c\u5e45\u56fe\u4e2d\u663e\u793a\u591a\u7ec4\u6570\u636e\uff0c\u4fbf\u4e8e\u6bd4\u8f83\u53d8\u5316\u8d8b\u52bf\u7684\u5dee\u5f02"}],
+  "3896ab4f":[{q:"\u5c06 2/5 \u5316\u6210\u5206\u6bcd\u4e3a20\u4e14\u5927\u5c0f\u4e0d\u53d8\u7684\u5206\u6570\uff0c\u5206\u5b50\u5e94\u53d8\u4e3a\uff1f",o:["4", "6", "8", "10"],a:2,e:"\u5206\u6bcd5\u00d74=20\uff0c\u5206\u5b50\u4e5f\u00d74\uff0c2\u00d74=8\uff0c\u5f978/20"}],
+  "39b823e4":[{q:"18 \u7684\u56e0\u6570\u4e00\u5171\u6709\u51e0\u4e2a\uff1f",o:["4", "5", "6", "7"],a:2,e:"18\u7684\u56e0\u6570\u67091,2,3,6,9,18\u51716\u4e2a"}],
+  "3a4535d4":[{q:"\u5c06 8/12 \u7ea6\u5206\u540e\u662f\uff1f",o:["4/6", "3/4", "2/3", "1/2"],a:2,e:"8\u548c12\u7684\u6700\u5927\u516c\u56e0\u6570\u662f4\uff0c\u5206\u5b50\u5206\u6bcd\u540c\u9664\u4ee54\u5f972/3"}],
+  "3d143a12":[{q:"\u4e00\u4e2a\u56fe\u5f62\u6cbf\u4e00\u6761\u76f4\u7ebf\u5bf9\u6298\u540e\u4e24\u4fa7\u5b8c\u5168\u91cd\u5408\uff0c\u8fd9\u6761\u76f4\u7ebf\u53eb\u505a\uff1f",o:["\u5bf9\u79f0\u8f74", "\u4e2d\u5fc3\u7ebf", "\u5e73\u5206\u7ebf", "\u5782\u7ebf"],a:0,e:"\u4f7f\u56fe\u5f62\u5bf9\u6298\u540e\u5b8c\u5168\u91cd\u5408\u7684\u76f4\u7ebf\u53eb\u505a\u5bf9\u79f0\u8f74\uff0c\u8be5\u56fe\u5f62\u662f\u8f74\u5bf9\u79f0\u56fe\u5f62"}],
+  "3e85004a":[{q:"\u957f\u65b9\u4f53\u957f5cm\u3001\u5bbd3cm\u3001\u9ad82cm\uff0c\u4f53\u79ef\u662f\u591a\u5c11\uff1f",o:["10cm\u00b3", "15cm\u00b3", "30cm\u00b3", "60cm\u00b3"],a:2,e:"V=abh=5\u00d73\u00d72=30cm\u00b3"}],
+  "480cc030":[{q:"\u4ece\u4e0a\u9762\u770b\u4e00\u4e2a\u6b63\u65b9\u4f53\uff0c\u770b\u5230\u7684\u5f62\u72b6\u662f\uff1f",o:["\u6b63\u65b9\u5f62", "\u957f\u65b9\u5f62", "\u4e09\u89d2\u5f62", "\u5706\u5f62"],a:0,e:"\u4ece\u4efb\u4f55\u65b9\u5411\u770b\u4e00\u4e2a\u6b63\u65b9\u4f53\uff0c\u770b\u5230\u7684\u90fd\u662f\u6b63\u65b9\u5f62"}],
+  "5a92476e":[{q:"\u4e0b\u9762\u54ea\u4e2a\u5206\u6570\u662f\u5047\u5206\u6570\uff1f",o:["3/5", "7/8", "5/4", "1/2"],a:2,e:"\u5047\u5206\u6570\u7684\u5206\u5b50\u5927\u4e8e\u6216\u7b49\u4e8e\u5206\u6bcd\uff0c5>4\u6240\u4ee55/4\u662f\u5047\u5206\u6570"}],
+  "5c5b1d29":[{q:"\u628a20\u4e2a\u82f9\u679c\u5e73\u5747\u5206\u7ed95\u4e2a\u5c0f\u670b\u53cb\uff0c\u6bcf\u4eba\u5f97\u5230\u8fd9\u4e9b\u82f9\u679c\u7684\u51e0\u5206\u4e4b\u51e0\uff1f",o:["4/20", "1/5", "5/20", "1/4"],a:1,e:"\u628a20\u4e2a\u82f9\u679c\u770b\u6210\u4e00\u4e2a\u6574\u4f53\uff08\u5355\u4f4d'1'\uff09\uff0c\u5e73\u5747\u52065\u4efd\uff0c\u6bcf\u4efd\u662f1/5"}],
+  "60d47092":[{q:"\u8981\u4e86\u89e3\u5168\u73ed\u540c\u5b66\u6700\u559c\u6b22\u7684\u989c\u8272\uff0c\u6700\u597d\u7684\u65b9\u6cd5\u662f\uff1f",o:["\u731c\u4e00\u731c", "\u8c03\u67e5\u7edf\u8ba1", "\u770b\u8c01\u8dd1\u5f97\u5feb", "\u753b\u4e00\u4e2a\u5706"],a:1,e:"\u6536\u96c6\u6570\u636e\u7684\u6700\u4f73\u65b9\u5f0f\u662f\u8fdb\u884c\u8c03\u67e5\u7edf\u8ba1"}],
+  "64f85488":[{q:"1\u7acb\u65b9\u5206\u7c73 = ___ \u7acb\u65b9\u5398\u7c73",o:["10", "100", "1000", "10000"],a:2,e:"1dm\u00b3=1000cm\u00b3\uff0c\u8fdb\u73871000"}],
+  "6c6ddb99":[{q:"\u6b63\u65b9\u4f53\u68f1\u957f3cm\uff0c\u8868\u9762\u79ef\u662f\u591a\u5c11\uff1f",o:["9cm\u00b2", "27cm\u00b2", "36cm\u00b2", "54cm\u00b2"],a:3,e:"S=6a\u00b2=6\u00d79=54cm\u00b2"}],
+  "7b80a791":[{q:"0.35 \u00d7 0.2 \u7684\u8ba1\u7b97\u7ed3\u679c\u662f\uff1f",o:["7.0", "0.70", "0.07", "7"],a:2,e:"35\u00d72=70\uff0c\u4e24\u4f4d\u5c0f\u6570\u00d7\u4e00\u4f4d\u5c0f\u6570=\u4e09\u4f4d\u5c0f\u6570\uff0c\u5f970.070=0.07"}],
+  "7d99ade2":[{q:"\u4e0b\u9762\u54ea\u4e2a\u6570\u662f\u5076\u6570\uff1f",o:["15", "23", "36", "47"],a:2,e:"\u5076\u6570\u662f2\u7684\u500d\u6570\uff0c\u4e2a\u4f4d0\u30012\u30014\u30016\u30018\u7684\u6570\u662f\u5076\u6570\uff0c36\u7684\u4e2a\u4f4d\u662f6"}],
+  "7ec9ac40":[{q:"\u4e0b\u9762\u54ea\u4e2a\u6570\u662f\u8d28\u6570\uff1f",o:["15", "21", "23", "27"],a:2,e:"23\u53ea\u6709\u56e0\u65701\u548c23\uff0c\u6240\u4ee5\u662f\u8d28\u6570"}],
+  "87a251c8":[{q:"\u628a 84 \u5757\u7cd6\u5e73\u5747\u5206\u7ed9 6 \u4e2a\u5c0f\u670b\u53cb\uff0c\u6bcf\u4eba\u5206\u5f97\u51e0\u5757\uff1f",o:["12", "13", "14", "16"],a:2,e:"84\u00f76=14\uff0c\u5747\u5206\u662f\u9664\u6cd5\u7684\u57fa\u672c\u542b\u4e49"}],
+  "8938c8aa":[{q:"\u4e00\u4e2a\u957f\u65b9\u4f53\u6709___\u6761\u68f1",o:["6", "8", "12", "16"],a:2,e:"\u957f\u65b9\u4f53\u670912\u6761\u68f1\uff0c\u5206\u62103\u7ec4\uff0c\u6bcf\u7ec44\u6761\u957f\u5ea6\u76f8\u7b49"}],
+  "8971a2fa":[{q:"1/3 + 1/2 + 1/6 = ?",o:["3/6", "1", "4/6", "1/2"],a:1,e:"\u901a\u5206\u540e=2/6+3/6+1/6=6/6=1"}],
+  "94ec1598":[{q:"3.456\u4fdd\u7559\u4e24\u4f4d\u5c0f\u6570\u662f\uff1f",o:["3.45", "3.46", "3.5", "3.4"],a:1,e:"\u4fdd\u7559\u4e24\u4f4d\u5c0f\u6570\u8981\u770b\u7b2c\u4e09\u4f4d\uff08\u5343\u5206\u4f4d\uff09\uff0c6\u22655\u6240\u4ee5\u5411\u524d\u8fdb1\u4f4d\uff1a3.46"}],
+  "95450fcd":[{q:"\u4e09\u89d2\u5f62\u5e956cm\u3001\u9ad84cm\uff0c\u9762\u79ef\u662f\u591a\u5c11\uff1f",o:["24cm\u00b2", "12cm\u00b2", "10cm\u00b2", "48cm\u00b2"],a:1,e:"S=\u5e95\u00d7\u9ad8\u00f72=6\u00d74\u00f72=12cm\u00b2"}],
+  "961714c5":[{q:"\u6298\u7ebf\u7edf\u8ba1\u56fe\u6700\u9002\u5408\u8868\u793a\u4ec0\u4e48\uff1f",o:["\u6570\u91cf\u591a\u5c11", "\u53d8\u5316\u8d8b\u52bf", "\u5404\u90e8\u5206\u6bd4\u4f8b", "\u6570\u636e\u5206\u5e03"],a:1,e:"\u6298\u7ebf\u7edf\u8ba1\u56fe\u7528\u6298\u7ebf\u7684\u8d77\u4f0f\u8868\u793a\u6570\u636e\u7684\u53d8\u5316\u8d8b\u52bf"}],
+  "9724b491":[{q:"\u5728\u4e00\u676120\u7c73\u7684\u5c0f\u8def\u4e00\u8fb9\u6bcf\u96945\u7c73\u683d\u4e00\u68f5\u6811\uff08\u4e24\u7aef\u90fd\u683d\uff09\uff0c\u5171\u683d\u51e0\u68f5\uff1f",o:["4\u68f5", "5\u68f5", "6\u68f5", "3\u68f5"],a:1,e:"\u95f4\u9694\u6570=20\u00f75=4\uff0c\u4e24\u7aef\u90fd\u683d\u65f6\u68f5\u6570=\u95f4\u9694\u6570+1=5"}],
+  "972d2981":[{q:"7.2 \u00f7 0.8 = ?",o:["0.9", "9", "90", "0.09"],a:1,e:"\u5229\u7528\u5546\u4e0d\u53d8\u6027\u8d28\uff1a7.2\u00f70.8=72\u00f78=9"}],
+  "9a067133":[{q:"\u6c42\u7ec4\u5408\u56fe\u5f62\u9762\u79ef\u65f6\uff0c\u5e38\u7528\u7684\u65b9\u6cd5\u662f\uff1f",o:["\u76f4\u63a5\u91cf\u5468\u957f", "\u5206\u5272\u6216\u6dfb\u8865", "\u753b\u5bf9\u89d2\u7ebf", "\u6570\u9876\u70b9"],a:1,e:"\u5c06\u7ec4\u5408\u56fe\u5f62\u5206\u5272\u6210\u5b66\u8fc7\u7684\u56fe\u5f62\u6216\u6dfb\u8865\u6210\u89c4\u5219\u56fe\u5f62\u6c42\u9762\u79ef"}],
+  "9aeeb7d4":[{q:"\u89e3\u65b9\u7a0b\uff1ax + 8 = 15\uff0cx = ?",o:["5", "7", "8", "23"],a:1,e:"x+8=15\uff0c\u4e24\u8fb9\u540c\u65f6\u51cf8\u5f97x=7"}],
+  "9b41000d":[{q:"\u5728\u65b9\u683c\u7eb8\u4e0a\uff0c\u70b9A\u5728\u7b2c3\u5217\u7b2c5\u884c\uff0c\u7528\u6570\u5bf9\u8868\u793a\u4e3a\uff1f",o:["(5,3)", "(3,5)", "(35)", "8"],a:1,e:"\u6570\u5bf9\u7684\u8868\u793a\u662f\uff08\u5217\uff0c\u884c\uff09\uff0c\u6240\u4ee5\u7b2c3\u5217\u7b2c5\u884c\u5199\u4f5c(3,5)"}],
+  "9daab7a6":[{q:"\u7528\u6570\u65b9\u683c\u4f30\u7b97\u4e0d\u89c4\u5219\u56fe\u5f62\u9762\u79ef\u65f6\uff0c\u4e0d\u6ee1\u534a\u683c\u548c\u534a\u683c\u53ca\u4ee5\u4e0a\u7684\u5206\u522b\u7b97\uff1f",o:["\u4e0d\u8ba1/\u8ba11\u683c", "\u8ba10\u683c/\u8ba11\u683c", "\u4e0d\u8ba1/\u8ba1\u534a\u683c", "\u8ba1\u534a\u683c/\u8ba11\u683c"],a:3,e:"\u4e0d\u6ee1\u534a\u683c\u7684\u5ffd\u7565\u4e0d\u8ba1\uff0c\u534a\u683c\u53ca\u4ee5\u4e0a\u7684\u7b971\u683c\uff0c\u8fd9\u662f\u5e38\u7528\u7684\u4f30\u7b97\u89c4\u5219"}],
+  "9e90fb97":[{q:"\u76d2\u5b50\u91cc\u67094\u4e2a\u7ea2\u7403\u548c1\u4e2a\u767d\u7403\uff0c\u6478\u5230\u7ea2\u7403\u7684\u53ef\u80fd\u6027\u662f\uff1f",o:["1/5", "4/5", "1/4", "1/2"],a:1,e:"\u603b\u5171\u67095\u4e2a\u7403\uff0c4\u4e2a\u7ea2\u7403\uff0c\u6240\u4ee5\u6478\u5230\u7ea2\u7403\u7684\u53ef\u80fd\u6027\u662f4/5"}],
+  "ab2f17ee":[{q:"0.7 \u8868\u793a\u4ec0\u4e48\uff1f",o:["\u5341\u5206\u4e4b\u4e03", "\u5341\u5206\u4e4b\u96f6\u70b9\u4e03", "\u767e\u5206\u4e4b\u4e03", "7\u4e2a\u4e00"],a:0,e:"0.7\u662f\u5341\u5206\u4e4b\u4e03\u7684\u53e6\u4e00\u79cd\u5199\u6cd5\uff0c7\u5728\u5341\u5206\u4f4d"}],
+  "ada6e1e6":[{q:"\u8ba1\u7b97 24 - 6 \u00d7 3 \u7684\u6b63\u786e\u7ed3\u679c\u662f\uff1f",o:["54", "6", "30", "18"],a:1,e:"\u5148\u4e58\u540e\u51cf\uff1a6\u00d73=18\uff0c24-18=6"}],
+  "b1805809":[{q:"\u5c06 3/4 \u5316\u6210\u5c0f\u6570\u662f\u591a\u5c11\uff1f",o:["0.34", "0.75", "0.25", "1.33"],a:1,e:"3\u00f74=0.75"}],
+  "c0b153df":[{q:"12 \u548c 18 \u7684\u6700\u5927\u516c\u56e0\u6570\u662f\u591a\u5c11\uff1f",o:["3", "6", "9", "12"],a:1,e:"12\u548c18\u7684\u516c\u56e0\u6570\u67091\u30012\u30013\u30016\uff0c\u6700\u5927\u516c\u56e0\u6570\u662f6"}],
+  "c99fc85f":[{q:"3\u5343\u7c73 = ___ \u7c73",o:["30", "300", "3000", "0.3"],a:2,e:"1\u5343\u7c73=1000\u7c73\uff0c3\u5343\u7c73=3\u00d71000=3000\u7c73"}],
+  "c9e183fc":[{q:"1\u5347 = ___ \u7acb\u65b9\u5206\u7c73",o:["0.1", "1", "10", "100"],a:1,e:"1L=1dm\u00b3\uff0c\u5bb9\u79ef\u5355\u4f4d\u548c\u4f53\u79ef\u5355\u4f4d\u5bf9\u5e94\u5173\u7cfb"}],
+  "ca3909a2":[{q:"\u56fe\u5f62\u65cb\u8f6c\u7684\u4e09\u8981\u7d20\u4e0d\u5305\u62ec\uff1f",o:["\u65cb\u8f6c\u4e2d\u5fc3", "\u65cb\u8f6c\u65b9\u5411", "\u65cb\u8f6c\u89d2\u5ea6", "\u65cb\u8f6c\u901f\u5ea6"],a:3,e:"\u65cb\u8f6c\u7684\u4e09\u8981\u7d20\u662f\u4e2d\u5fc3\u3001\u65b9\u5411\uff08\u987a/\u9006\u65f6\u9488\uff09\u548c\u89d2\u5ea6\uff0c\u901f\u5ea6\u4e0d\u662f\u8981\u7d20"}],
+  "ca7b8697":[{q:"\u628a\u4e00\u5f20\u997c\u5e73\u5747\u5206\u62108\u5757\uff0c\u5403\u4e863\u5757\uff0c\u5403\u4e86\u8fd9\u5f20\u997c\u7684\u51e0\u5206\u4e4b\u51e0\uff1f",o:["\u215c", "\u2153", "\u215d", "\u215b"],a:0,e:"3\u00f78=\u215c\uff0c\u5206\u5b50\u662f\u53d6\u7684\u4efd\u6570\uff0c\u5206\u6bcd\u662f\u603b\u4efd\u6570"}],
+  "cc1ff78f":[{q:"3\u00f75\u7528\u5206\u6570\u8868\u793a\u4e3a\uff1f",o:["3/5", "5/3", "3/8", "15/25"],a:0,e:"a\u00f7b=a/b(b\u22600)\uff0c\u6240\u4ee53\u00f75=3/5"}],
+  "d6aedde0":[{q:"\u4e0b\u9762\u54ea\u4e2a\u56fe\u5f62\u67094\u6761\u5bf9\u79f0\u8f74\uff1f",o:["\u957f\u65b9\u5f62", "\u6b63\u65b9\u5f62", "\u7b49\u8fb9\u4e09\u89d2\u5f62", "\u5706"],a:1,e:"\u6b63\u65b9\u5f62\u67094\u6761\u5bf9\u79f0\u8f74\uff082\u6761\u5bf9\u89d2\u7ebf+2\u6761\u5bf9\u8fb9\u4e2d\u7ebf\uff09"}],
+  "d9ed4cc5":[{q:"\u6570\u5b57 507 \u4e2d\uff0c\"0\"\u8868\u793a\u4ec0\u4e48\uff1f",o:["0\u4e2a\u4e00", "0\u4e2a\u5341", "\u6ca1\u6709\u610f\u4e49", "10"],a:1,e:"507\u4e2d0\u5728\u5341\u4f4d\uff0c\u8868\u793a0\u4e2a\u5341\uff0c\u5373\u6ca1\u6709\u5341"}],
+  "e2d70d40":[{q:"\u5982\u679c a = b\uff0c\u90a3\u4e48\u4e0b\u9762\u54ea\u4e2a\u662f\u6b63\u786e\u7684\uff1f",o:["a+3=b-3", "a\u00d73=b\u00d73", "a\u00f73=b\u00f72", "a-5=b+5"],a:1,e:"\u7b49\u5f0f\u4e24\u8fb9\u540c\u65f6\u4e58\u4ee5\u540c\u4e00\u4e2a\u6570\uff0c\u7b49\u5f0f\u4ecd\u7136\u6210\u7acb"}],
+  "e65c5d65":[{q:"\u8ba1\u7b97 345 + 267 = ?",o:["512", "602", "612", "622"],a:2,e:"\u4e2a\u4f4d5+7=12\u51992\u8fdb1\uff0c\u5341\u4f4d4+6+1=11\u51991\u8fdb1\uff0c\u767e\u4f4d3+2+1=6\uff0c\u5f97612"}],
+  "e6e8bcff":[{q:"\u4e0b\u9762\u54ea\u4e2a\u6570\u540c\u65f6\u662f2\u548c3\u7684\u500d\u6570\uff1f",o:["14", "18", "20", "25"],a:1,e:"18\u65e2\u662f2\u7684\u500d\u6570\uff08\u4e2a\u4f4d8\uff09\uff0c\u4e5f\u662f3\u7684\u500d\u6570\uff081+8=9\u662f3\u7684\u500d\u6570\uff09"}],
+  "e7839062":[{q:"\u5e73\u884c\u56db\u8fb9\u5f62\u9762\u79ef\u516c\u5f0f\u662f\u4ec0\u4e48\uff1f",o:["(\u5e95+\u9ad8)\u00d72", "\u5e95\u00d7\u9ad8", "\u5e95\u00d7\u9ad8\u00f72", "(\u5e95\u00d7\u9ad8)\u00d72"],a:1,e:"\u5e73\u884c\u56db\u8fb9\u5f62\u901a\u8fc7\u526a\u62fc\u8f6c\u5316\u4e3a\u957f\u65b9\u5f62\uff0c\u9762\u79ef=\u5e95\u00d7\u9ad8"}],
+  "ea935433":[{q:"25 \u00d7 72 \u7684\u7b80\u4fbf\u8ba1\u7b97\u65b9\u6cd5\u662f\uff1f",o:["25\u00d770+2", "25\u00d770+25\u00d72", "20\u00d772+5", "25\u00d78\u00d79"],a:3,e:"25\u00d772=25\u00d7(8\u00d79)=200\u00d79=1800\uff0c\u5229\u7528\u4e58\u6cd5\u7ed3\u5408\u5f8b"}],
+  "f5ab1e67":[{q:"1\u00f73\u7684\u7ed3\u679c\u662f\u4ec0\u4e48\uff1f",o:["0.333", "0.3(\u5faa\u73af)", "1.3", "3"],a:1,e:"1\u00f73=0.3333...\uff0c\u5c0f\u6570\u90e8\u5206\u4e0d\u65ad\u91cd\u590d3\uff0c\u662f\u5faa\u73af\u5c0f\u6570"}],
+  "fa0737eb":[{q:"\u5c06 1/2 \u548c 1/3 \u901a\u5206\u540e\u5206\u6bcd\u662f\u591a\u5c11\uff1f",o:["3", "4", "5", "6"],a:3,e:"2\u548c3\u7684\u6700\u5c0f\u516c\u500d\u6570\u662f6\uff0c\u901a\u5206\u540e\u4e3a3/6\u548c2/6"}],
+};
+
+// === DIAGNOSTIC UI (Phase B) ===
+let DIAG_MODE = false;
+let DIAG_RESULTS = loadDiagResults();
+const DIAG_ORDER = Object.keys(DIAG_QUESTIONS);
+let DIAG_IDX = 0, DIAG_ANSWERED = false;
+function loadDiagResults(){try{const d=JSON.parse(localStorage.getItem('math_diag_results'));if(d&&typeof d==='object')return d;}catch(e){}return{}}
+function saveDiagResults(){localStorage.setItem('math_diag_results',JSON.stringify(DIAG_RESULTS));}
+function enterDiagMode(){
+  DIAG_MODE=true;DIAG_IDX=0;DIAG_ANSWERED=false;
+  document.getElementById('diag-overlay').classList.add('open');
+  renderDiag();
+  diagUpdateNodeStatus();
+}
+function exitDiagMode(){
+  DIAG_MODE=false;
+  document.getElementById('diag-overlay').classList.remove('open');
+  diagUpdateNodeStatus();updateInfo();updateNodeUI();
+}
+function renderDiag(){
+  const ids=DIAG_ORDER;const nid=ids[DIAG_IDX];const q=DIAG_QUESTIONS[nid];const nd=nodeMap[nid];
+  const total=ids.length,done=DIAG_IDX;
+  const prevResult=DIAG_RESULTS[nid];DIAG_ANSWERED=prevResult!==undefined;
+  let h='<div class="diag-header"><button class="diag-close" onclick="exitDiagMode()">✕</button>前置检查 —— 找出薄弱概念</div>';
+  h+='<div class="diag-progress"><div class="diag-bar"><div class="diag-bar-fill" style="width:'+(total?(done/total*100)+'%':'0%')+'"></div></div>';
+  h+='<span class="diag-count">'+done+'/'+total+'</span></div>';
+  h+='<div class="diag-card"><div class="diag-concept-tag" style="background:'+(nd?CAT_COLORS[nd.category]||'#888':'#888')+'30;color:'+(nd?CAT_COLORS[nd.category]||'#888':'#888')+'">'+(nd?nd.name:'?')+'</div>';
+  h+='<div class="diag-q">'+(q?q.q:'')+'</div><div class="diag-opts">';
+  (q?q.o:[]).forEach((opt,i)=>{
+    let cls='';const answered=DIAG_ANSWERED;
+    if(answered){if(i===q.a)cls=' diag-correct';else if(prevResult&&prevResult.selected===i)cls=' diag-wrong';else cls=' diag-disabled';}
+    h+='<button class="diag-opt'+cls+'"'+(answered?' disabled':' onclick="diagAnswer('+i+')"')+'>'+String.fromCharCode(65+i)+'. '+opt+'</button>';
+  });
+  h+='</div>';
+  if(DIAG_ANSWERED){
+    if(prevResult.correct)h+='<div class="diag-feedback correct">✅ 正确！</div>';
+    else h+='<div class="diag-feedback wrong">❌ 正确答案是 '+String.fromCharCode(65+q.a)+'. '+(q?q.e:'')+'</div>';
+  }
+  h+='</div>';
+  h+='<div class="diag-nav"><button onclick="diagSkip()">跳过 <span class="small">(留空)</span></button>';
+  h+='<button onclick="diagNext()">'+(DIAG_IDX<total-1?'下一题':'完成')+' →</button></div>';
+  document.getElementById('diag-body').innerHTML=h;
+  diagUpdateNodeStatus();
+}
+function diagUpdateNodeStatus(){
+  const vals=Object.values(DIAG_RESULTS);
+  const cr=vals.filter(v=>v&&v.correct).length;
+  const wr=vals.filter(v=>v&&!v.correct).length;
+  const total=DIAG_ORDER.length;
+  document.getElementById('diag-score').textContent='✓'+cr+' ✗'+wr+' · 剩余'+(total-Object.keys(DIAG_RESULTS).length);
+}
+function diagAnswer(idx){
+  if(DIAG_ANSWERED)return;
+  const nid=DIAG_ORDER[DIAG_IDX];const q=DIAG_QUESTIONS[nid];
+  DIAG_RESULTS[nid]={correct:idx===q.a,selected:idx};DIAG_ANSWERED=true;
+  saveDiagResults();renderDiag();updateNodeUI();
+  if(idx===q.a)setTimeout(()=>{if(DIAG_MODE)diagNext();},800);
+}
+function diagSkip(){
+  DIAG_IDX++;if(DIAG_IDX>=DIAG_ORDER.length)DIAG_IDX=0;
+  renderDiag();
+}
+function diagNext(){
+  if(DIAG_IDX<DIAG_ORDER.length-1){DIAG_IDX++;DIAG_ANSWERED=false;renderDiag();}
+  else if(DIAG_IDX>=DIAG_ORDER.length-1){exitDiagMode();}
+}
+function diagGetStatus(nid){
+  const r=DIAG_RESULTS[nid];
+  if(!r)return 'untested';
+  return r.correct?'correct':'wrong';
+}
+function resetDiagResults(){
+  if(!confirm('确认清除所有诊断记录？'))return;
+  DIAG_RESULTS={};saveDiagResults();
+  if(DIAG_MODE)renderDiag();updateNodeUI();
+}
+// Node coloring handled in updateNodeUI()
+function updateNodeUI(){
+  document.querySelectorAll('.node-g').forEach((g,i)=>{
+    if(i>=nodes.length)return;
+    const d=nodes[i];const ring=g.querySelector('.node-ring');
+    if(!ring)return;
+    const s=diagGetStatus(d.id);
+    if(s==='correct'){ring.style.stroke='#45c77a';ring.style.strokeWidth='2.5';ring.style.strokeOpacity='0.9';}
+    else if(s==='wrong'){ring.style.stroke='#e85d75';ring.style.strokeWidth='2.5';ring.style.strokeOpacity='0.9';}
+    else if(s==='untested'){ring.style.stroke='';ring.style.strokeWidth='';ring.style.strokeOpacity='';}
+  });
+}
+
 
 // === CONSTANTS ===
 const CAT_COLORS = {number_ops:'#4A90D9',geometry:'#E85D75',algebra:'#7B68EE',statistics:'#F0A050',applications:'#50B87A'};
@@ -1031,6 +1211,8 @@ window.addEventListener('resize',()=>{
       return same.length>1?(w/(same.length+1))*(idx+1):w/2;
     }).strength(0.06)).restart();
 });
+// Apply saved diagnostic results on load
+setTimeout(updateNodeUI,200);
 </script>
 </body>
 </html>
