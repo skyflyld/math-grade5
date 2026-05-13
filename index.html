@@ -329,12 +329,6 @@ line.edge.hovered{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
   </div>
   <div style="padding:4px 28px 6px;display:flex;gap:14px;font-size:.76em;color:var(--text-dim)">
     <span id="completion-count">✅ 0/51 已完成</span>
-    <span style="margin-left:auto">
-      <button onclick="exportProgress()" style="min-height:24px;border:1px solid var(--border);border-radius:10px;background:#fff;font-size:.72em;padding:0 8px;cursor:pointer;color:var(--text-dim)">📤 导出文件</button>
-      <button onclick="syncToURL()" style="min-height:24px;border:1px solid var(--border);border-radius:10px;background:#fff;font-size:.72em;padding:0 8px;cursor:pointer;color:var(--text-dim);margin-left:6px">📎 生成同步链接</button>
-      <button onclick="document.getElementById('import-file').click()" style="min-height:24px;border:1px solid var(--border);border-radius:10px;background:#fff;font-size:.72em;padding:0 8px;cursor:pointer;color:var(--text-dim);margin-left:6px">📥 导入文件</button>
-      <input type="file" id="import-file" accept=".json" style="display:none" onchange="importProgress(event)">
-    </span>
   </div>
 </section>
 <div id="graph">
