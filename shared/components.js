@@ -1085,13 +1085,86 @@ window.createBalance=createBalance;
 window.createThreeViewDemo=createThreeViewDemo;
 window.createTransformDemo=createTransformDemo;
 window.createParallelogramCutDemo=createParallelogramCutDemo;
+// === 概念进度追踪（Phase C） ===
+function saveConceptProgress(conceptNames){
+  try{
+    const key='math5_concept_progress';
+    const cur=JSON.parse(localStorage.getItem(key)||'{}');
+    const names=Array.isArray(conceptNames)?conceptNames:[conceptNames];
+    names.forEach(name=>{if(name)cur[name]={completed:true,completedAt:Date.now()};});
+    localStorage.setItem(key,JSON.stringify(cur));
+    return cur;
+  }catch(e){console.warn('saveConceptProgress:',e);return{};}
+}
+function getConceptProgress(){
+  try{return JSON.parse(localStorage.getItem('math5_concept_progress')||'{}');}catch{return{};}
+}
+function isConceptCompleted(name){
+  const p=getConceptProgress();
+  return !!(p[name]&&p[name].completed);
+}
+function setupCompletionButton(containerId){
+  const c=document.getElementById(containerId);
+  if(!c)return;
+  const names=(document.body?.dataset?.concept||'').split(/[,，]/).map(s=>s.trim()).filter(Boolean);
+  if(!names.length){c.style.display='none';return;}
+  
+  // Check if any concept already completed
+  const anyDone=names.some(n=>isConceptCompleted(n));
+  const allDone=names.every(n=>isConceptCompleted(n));
+  
+  c.style.display='';
+  c.innerHTML='<div class="completion-card">'+
+    '<h3>📚 学习进度</h3>'+
+    '<p class="completion-concepts">涉及概念：'+names.map(n=>'<span class="completion-tag'+(isConceptCompleted(n)?' done':'')+'">'+(isConceptCompleted(n)?'✅':'📖')+' '+n+'</span>').join('')+'</p>'+
+    (allDone?'<button class="completion-btn done" disabled>✅ 已完成</button>':
+      '<button class="completion-btn" onclick="markConceptsComplete()">🎯 标记完成</button>')+
+    '<p class="completion-hint">标记完成后，知识星图上会显示掌握状态</p>'+
+  '</div>';
+}
+function markConceptsComplete(){
+  const names=(document.body?.dataset?.concept||'').split(/[,，]/).map(s=>s.trim()).filter(Boolean);
+  if(!names.length)return;
+  saveConceptProgress(names);
+  const c=document.querySelector('.completion-card');
+  if(c){
+    c.innerHTML='<h3>📚 学习进度</h3>'+
+      '<p class="completion-concepts">'+names.map(n=>'<span class="completion-tag done">✅ '+n+'</span>').join('')+'</p>'+
+      '<button class="completion-btn done" disabled>✅ 已完成</button>'+
+      '<p class="completion-hint">🎉 状态已同步到知识星图</p>';
+  }
+}
+
 window.addHintButton=addHintButton;
 window.createNextLessonSuggestion=createNextLessonSuggestion;
 window.createCourseSummary=createCourseSummary;
 window.addExplanation=addExplanation;
+window.saveConceptProgress=saveConceptProgress;
+window.getConceptProgress=getConceptProgress;
+window.isConceptCompleted=isConceptCompleted;
+window.setupCompletionButton=setupCompletionButton;
+window.markConceptsComplete=markConceptsComplete;
 
 // 自动初始化
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initScrollProgress);
-else initScrollProgress();
+function autoInit(){
+  initScrollProgress();
+  // Auto-create completion section on lesson pages (not star map)
+  const isStarMap=!document.body?.dataset?.concept && !location.hash;
+  const hasConcept=!!(document.body?.dataset?.concept||'').trim();
+  if(hasConcept && !document.getElementById('completion-section')){
+    const section=document.createElement('div');
+    section.id='completion-section';
+    section.style.cssText='margin:32px auto;max-width:min(680px,92vw);padding:0 16px';
+    // Insert after the last child or a good spot
+    const main=document.querySelector('main,article,.content,.lesson-body') || document.body;
+    main.appendChild(section);
+    setupCompletionButton('completion-section');
+  }else{
+    const cb=document.getElementById('completion-section');
+    if(cb)setupCompletionButton('completion-section');
+  }
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',autoInit);
+else autoInit();
 
 })();

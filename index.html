@@ -317,6 +317,9 @@ line.edge.hovered{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
   </div>
     </div>
   </div>
+  <div style="padding:4px 28px 6px;display:flex;gap:14px;font-size:.76em;color:var(--text-dim)">
+    <span id="completion-count">✅ 0/51 已完成</span>
+  </div>
 </section>
 <div id="graph">
   <div class="legend" id="legend"></div>
@@ -486,16 +489,56 @@ function resetDiagResults(){
   if(DIAG_MODE)renderDiag();updateNodeUI();
 }
 // Node coloring handled in updateNodeUI()
+function getConceptProgressMap(){
+  try{return JSON.parse(localStorage.getItem('math5_concept_progress')||'{}');}catch{return{};}
+}
+function getConceptNameById(nid){
+  const n=nodeMap[nid];
+  return n?n.name:'';
+}
+function updateCompletionCount(){
+  const p=getConceptProgressMap();
+  const done=Object.values(p).filter(v=>v&&v.completed).length;
+  const el=document.getElementById('completion-count');
+  if(el)el.textContent='✅ '+done+'/'+nodes.length+' 已完成';
+}
 function updateNodeUI(){
+  const cp=getConceptProgressMap();
   document.querySelectorAll('.node-g').forEach((g,i)=>{
     if(i>=nodes.length)return;
     const d=nodes[i];const ring=g.querySelector('.node-ring');
     if(!ring)return;
+    const name=d.name;
+    const completed=!!(cp[name]&&cp[name].completed);
+    // Show completion badge
+    let badge=g.querySelector('.node-complete');
+    if(completed){
+      if(!badge){
+        badge=document.createElementNS('http://www.w3.org/2000/svg','text');
+        badge.setAttribute('class','node-complete');
+        badge.setAttribute('font-size','11');
+        badge.setAttribute('dy','-6');
+        badge.setAttribute('text-anchor','middle');
+        badge.setAttribute('font-weight','bold');
+        g.insertBefore(badge,g.querySelector('text'));
+      }
+      badge.textContent='✅';
+    }else if(badge){
+      badge.remove();
+    }
+    // Set ring color based on priority: completion > diagnostic > default
     const s=diagGetStatus(d.id);
-    if(s==='correct'){ring.style.stroke='#45c77a';ring.style.strokeWidth='2.5';ring.style.strokeOpacity='0.9';}
-    else if(s==='wrong'){ring.style.stroke='#e85d75';ring.style.strokeWidth='2.5';ring.style.strokeOpacity='0.9';}
-    else if(s==='untested'){ring.style.stroke='';ring.style.strokeWidth='';ring.style.strokeOpacity='';}
+    if(completed){
+      ring.style.stroke='#22c55e';ring.style.strokeWidth='2.5';ring.style.strokeOpacity='0.8';
+    }else if(s==='correct'){
+      ring.style.stroke='#45c77a';ring.style.strokeWidth='2.5';ring.style.strokeOpacity='0.9';
+    }else if(s==='wrong'){
+      ring.style.stroke='#e85d75';ring.style.strokeWidth='2.5';ring.style.strokeOpacity='0.9';
+    }else{
+      ring.style.stroke='';ring.style.strokeWidth='';ring.style.strokeOpacity='';
+    }
   });
+  updateCompletionCount();
 }
 
 

@@ -1421,3 +1421,15 @@ body {
   animation: fadeIn .2s ease;
 }
 .explain-content.open { display: block; }
+
+/* === 完成标记卡（Phase C）=== */
+.completion-card{background:var(--card, #fff);border:1.5px solid #e2e8f0;border-radius:18px;padding:22px 26px;box-shadow:0 4px 16px rgba(0,0,0,.06);margin:0 0 20px}
+.completion-card h3{font-size:1em;font-weight:800;margin:0 0 12px;color:var(--text)}
+.completion-concepts{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px;font-size:.88em}
+.completion-tag{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;border-radius:20px;background:#f1f5f9;font-weight:700;color:var(--text-muted)}
+.completion-tag.done{background:rgba(34,197,94,.12);color:#16a34a}
+.completion-btn{display:inline-flex;align-items:center;gap:6px;padding:11px 22px;border:none;border-radius:14px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font:inherit;font-weight:800;font-size:.9em;cursor:pointer;transition:all .2s;box-shadow:0 2px 8px rgba(34,197,94,.3)}
+.completion-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(34,197,94,.4)}
+.completion-btn:active{transform:translateY(0)}
+.completion-btn.done{background:#e2e8f0;color:#94a3b8;cursor:default;box-shadow:none}
+.completion-hint{font-size:.78em;color:var(--text-dim);margin:10px 0 0;opacity:.7}
