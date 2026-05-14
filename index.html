@@ -55,9 +55,10 @@ header h1{font-size:1.18em;font-weight:760;white-space:nowrap;letter-spacing:0}
 .filters button[data-cat="statistics"]{--chip-color:var(--statistics)}
 .filters button[data-cat="applications"]{--chip-color:var(--applications)}
 .filters button:hover,.semester-toggle button:hover{transform:translateY(-1px);border-color:#d6c8b2;box-shadow:var(--soft-shadow)}
-.filters button.active{background:#8e8e8e;color:#fff;border-color:#8e8e8e}
+.filters button.active{background:#1f7ae0;color:#fff;border-color:#1f7ae0;box-shadow:0 7px 16px rgba(31,122,224,.22)}
+.filters button.active::before{background:#fff}
 .semester-toggle button.active{background:var(--green);color:#fff;border-color:var(--green)}
-.mode-switch{position:absolute;top:16px;left:50%;transform:translateX(-50%);z-index:7;display:flex;gap:6px;padding:5px;border:1px solid var(--border);border-radius:18px;background:rgba(255,253,249,.94);box-shadow:var(--soft-shadow)}
+.mode-switch{position:absolute;top:18px;left:50%;transform:translateX(-50%);z-index:7;display:flex;gap:6px;padding:5px;border:1px solid rgba(234,223,206,.92);border-radius:18px;background:rgba(255,253,249,.97);box-shadow:var(--soft-shadow)}
 .mode-switch button{min-height:32px;border:0;border-radius:13px;background:transparent;color:#526070;font:inherit;font-size:.78em;font-weight:850;padding:0 12px;cursor:pointer;white-space:nowrap}
 .mode-switch button:hover{background:#fff8e8;color:#8a5a00}
 .mode-switch button.active{background:#1f2937;color:#fff;box-shadow:0 5px 14px rgba(31,41,55,.18)}
@@ -68,12 +69,12 @@ header h1{font-size:1.18em;font-weight:760;white-space:nowrap;letter-spacing:0}
 .node-label{font-size:11.5px;fill:#2f3a4a;pointer-events:none;text-anchor:middle;font-weight:850;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}
 .depth-guide line{stroke:#d9e1ea;stroke-width:1;stroke-dasharray:4 8;opacity:.58}
 .depth-guide text{font-size:10px;fill:#8a96a6;font-weight:850;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}
-line.edge{stroke:#8191a6;stroke-width:1.5;stroke-opacity:.68}
-line.edge.related{stroke-dasharray:5 4;stroke-opacity:.55}
-line.edge.highlighted{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
-line.edge.dimmed{stroke-opacity:.08}
-line.edge.hidden{stroke-opacity:0;pointer-events:none}
-line.edge.hovered{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
+.edge{fill:none;stroke:#8fa2b7;stroke-width:1.25;stroke-opacity:.46;stroke-linecap:round;stroke-linejoin:round;transition:stroke-opacity .18s,stroke-width .18s}
+.edge.related{stroke-dasharray:2 7;stroke-opacity:.32}
+.edge.highlighted{stroke:var(--accent);stroke-width:3.1;stroke-opacity:.94;filter:drop-shadow(0 2px 4px rgba(245,164,0,.24))}
+.edge.dimmed{stroke-opacity:.06}
+.edge.hidden{stroke-opacity:0;pointer-events:none}
+.edge.hovered{stroke:var(--accent);stroke-width:3.2;stroke-opacity:1}
 #tooltip{position:absolute;padding:12px 16px;background:#fff;border:1px solid var(--border);border-radius:14px;font-size:.82em;max-width:320px;pointer-events:none;opacity:0;transition:opacity .15s;z-index:20;line-height:1.6;box-shadow:var(--shadow-md)}
 #tooltip .tt-cat{font-size:.72em;color:var(--text-dim);letter-spacing:.04em;font-weight:700}
 #tooltip .tt-meta{font-size:.72em;color:var(--text-muted);margin-top:2px}
@@ -131,6 +132,8 @@ line.edge.hovered{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
 .detail-panel .decision-primary{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:11px;background:linear-gradient(135deg,#f5a400,#fb923c);color:#fff;text-decoration:none;font-size:.82em;font-weight:900;box-shadow:0 8px 18px rgba(245,164,0,.20)}
 .detail-panel .decision-primary span{font-size:.82em;font-weight:750;opacity:.92}
 .detail-panel .decision-primary.disabled{background:#e5e7eb;color:#667085;box-shadow:none}
+.detail-panel .mistake-note{margin-top:8px;padding:8px 10px;border:1px solid rgba(232,93,117,.22);border-radius:10px;background:#fff6f7;color:#b33a52;font-size:.76em;line-height:1.45}
+.detail-panel .mistake-note b{display:block;margin-bottom:3px;color:#8f2438}
 .detail-panel .readiness-chips{display:flex;flex-wrap:wrap;gap:6px}
 .detail-panel .decision-chip{border:1px solid rgba(234,223,206,.9);border-radius:999px;background:#fff;color:#2f3a4a;font:inherit;font-size:.72em;font-weight:850;padding:5px 8px;cursor:pointer}
 .detail-panel .decision-chip.done{border-color:rgba(69,199,122,.42);background:#f0fdf4;color:#166534}
@@ -156,7 +159,7 @@ line.edge.hovered{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
 .detail-panel .mentor{display:grid;grid-template-columns:32px 1fr;gap:8px;align-items:center;padding:9px;border:1px solid var(--border);border-radius:11px;background:#fff}
 .detail-panel .mentor img{width:32px;height:32px;border-radius:50%;object-fit:cover}
 .detail-panel .mentor b{display:block;font-size:.76em}
-.detail-panel .mentor span{display:block;color:var(--text-dim);font-size:.72em;line-height:1.35}
+.detail-panel .mentor span{display:block;color:var(--text-dim);font-size:.74em;line-height:1.45}
 .detail-panel .section{margin-top:12px}
 .detail-panel .section h4{font-size:.76em;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
 .detail-panel .section .item{padding:6px 0;border-top:1px solid rgba(31,41,55,.07);font-size:.82em}
@@ -164,8 +167,12 @@ line.edge.hovered{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
 .detail-panel .relation-item{width:100%;border:0;border-top:1px solid rgba(31,41,55,.07);background:transparent;text-align:left;padding:8px 0;cursor:pointer;font:inherit;color:inherit}
 .detail-panel .relation-item:first-of-type{border-top:0}
 .detail-panel .relation-item:hover .relation-name{color:var(--accent)}
-.detail-panel .relation-name{display:inline-flex;align-items:center;gap:4px;font-weight:800;transition:color .16s}
-.detail-panel .relation-name::after{content:"›";color:var(--accent);font-weight:900}
+.detail-panel .relation-name{display:inline-flex;align-items:center;gap:7px;font-weight:800;transition:color .16s}
+.detail-panel .relation-name::after{content:"›";color:var(--accent);font-weight:900;margin-left:auto}
+.detail-panel .relation-arrow{display:inline-flex;align-items:center;justify-content:center;min-width:34px;min-height:20px;padding:0 6px;border-radius:999px;background:#eef6ff;color:#1d6fc7;font-size:.72em;font-weight:900;line-height:1}
+.detail-panel .relation-arrow.prev{background:#fff6df;color:#9a6400}
+.detail-panel .relation-arrow.next{background:#ecfdf3;color:#15803d}
+.detail-panel .relation-arrow.related{background:#f4f1ff;color:#6852c7}
 .detail-panel .relation-exp{display:block;color:var(--text-dim);font-size:.78em;line-height:1.45;margin-top:2px}
 .detail-overlay{display:none}
 .legend{position:absolute;bottom:16px;left:16px;display:grid;gap:9px;z-index:5;background:rgba(255,253,249,.94);border:1px solid var(--border);border-radius:14px;padding:14px 16px;box-shadow:var(--soft-shadow)}
@@ -175,13 +182,17 @@ line.edge.hovered{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
 .legend-dot{width:10px;height:10px;border-radius:50%}
 .info-bar{position:absolute;bottom:16px;right:16px;font-size:.78em;color:var(--text-dim);z-index:5;background:rgba(255,253,249,.94);border:1px solid var(--border);border-radius:18px;padding:8px 14px;box-shadow:var(--soft-shadow)}
 .path-panel{position:absolute;right:16px;bottom:62px;z-index:5;width:min(320px,calc(100% - 180px));background:rgba(255,253,249,.95);border:1px solid var(--border);border-radius:14px;box-shadow:var(--soft-shadow);padding:12px 14px}
+.path-panel.adaptive{border-color:rgba(245,164,0,.45);background:linear-gradient(145deg,rgba(255,253,249,.98),rgba(255,248,232,.96))}
 .path-panel h3{font-size:.82em;margin-bottom:8px;color:#2f3a4a}
 .path-panel .path-actions{display:grid;gap:7px}
 .path-panel button{border:1px solid rgba(234,223,206,.9);border-radius:10px;background:#fff;color:#2f3a4a;text-align:left;font:inherit;font-size:.76em;font-weight:800;line-height:1.35;padding:8px 9px;cursor:pointer}
 .path-panel button span{display:block;color:var(--text-dim);font-size:.9em;font-weight:600;margin-top:2px}
 .path-panel button:hover{border-color:var(--accent);background:#fff8e8}
+.path-panel button.mistake{border-color:rgba(232,93,117,.35);background:#fff6f7}
+.path-panel button.weak{border-color:rgba(232,93,117,.26)}
+.path-panel button.ready{border-color:rgba(69,199,122,.32);background:#f3fff8}
 .graph-hint{position:absolute;top:16px;left:16px;z-index:6;border:1px solid var(--border);background:rgba(255,253,249,.92);border-radius:18px;padding:7px 12px;color:var(--text-dim);font-size:.78em;box-shadow:var(--soft-shadow)}
-.spotlight{position:absolute;top:50px;left:16px;z-index:6;display:flex;gap:8px;flex-wrap:wrap;max-width:730px}
+.spotlight{position:absolute;top:62px;left:16px;z-index:6;display:flex;gap:8px;flex-wrap:wrap;max-width:690px}
 .spotlight button{display:flex;align-items:center;gap:6px;padding:7px 10px;border-radius:16px;border:1px solid var(--border);background:rgba(255,253,249,.92);color:#2f3a4a;font-weight:700;font-size:.76em;cursor:pointer;box-shadow:0 1px 6px rgba(31,41,55,.06)}
 .spotlight button:hover{border-color:var(--accent);background:#fff8e8;transform:translateY(-1px)}
 .zoom-controls{position:absolute;right:16px;top:16px;z-index:6;display:grid;gap:10px}
@@ -192,8 +203,9 @@ line.edge.hovered{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
 .node-g.filtered{opacity:.08}
 .node-g.selected .node-ring{stroke:var(--accent);stroke-width:3;fill:rgba(245,164,0,.10)}
 .node-g.related-focus .node-ring{stroke:rgba(245,164,0,.85);stroke-width:2}
-.node-core{filter:drop-shadow(0 7px 10px rgba(31,41,55,.2))}
-.node-ring{fill:none;stroke:rgba(31,41,55,.16);stroke-width:1.4}
+.node-shell{filter:drop-shadow(0 7px 12px rgba(31,41,55,.13))}
+.node-core{filter:drop-shadow(0 4px 7px rgba(31,41,55,.18))}
+.node-ring{fill:rgba(255,255,255,.28);stroke:rgba(31,41,55,.14);stroke-width:1.25}
 .node-icon{font-size:13px;text-anchor:middle;dominant-baseline:central;pointer-events:none}
 @media (max-width:720px){
   header{display:grid;grid-template-columns:42px minmax(0,1fr);align-items:start;gap:6px 10px;padding:8px 14px 7px}
@@ -354,7 +366,7 @@ line.edge.hovered{stroke:var(--accent);stroke-width:3;stroke-opacity:1}
   <div class="legend" id="legend"></div>
   <div class="mode-switch" id="mode-switch" aria-label="图谱模式">
     <button type="button" data-mode="learning" class="active">学习路径</button>
-    <button type="button" data-mode="neighborhood">概念邻域</button>
+    <button type="button" data-mode="neighborhood">概念探索</button>
     <button type="button" data-mode="explore">全图探索</button>
   </div>
   <div class="graph-hint">↔ 拖拽节点 · 滚轮缩放 · 点击查看详情</div>
@@ -514,6 +526,21 @@ function resetDiagResults(){
 function getConceptProgressMap(){
   try{return JSON.parse(localStorage.getItem('math5_concept_progress')||'{}');}catch{return{};}
 }
+function getMistakeBook(){
+  try{
+    const book=JSON.parse(localStorage.getItem('math5_mistake_book')||'{}');
+    return {items:Array.isArray(book.items)?book.items:[]};
+  }catch{return {items:[]};}
+}
+function unresolvedMistakes(){
+  return getMistakeBook().items.filter(item=>item&&!item.resolved);
+}
+function unresolvedMistakesForConcept(name){
+  return unresolvedMistakes().filter(item=>(item.concepts||[]).includes(name));
+}
+function mistakeCountForConcept(name){
+  return unresolvedMistakesForConcept(name).length;
+}
 function getConceptNameById(nid){
   const n=nodeMap[nid];
   return n?n.name:'';
@@ -521,8 +548,9 @@ function getConceptNameById(nid){
 function updateCompletionCount(){
   const p=getConceptProgressMap();
   const done=Object.values(p).filter(v=>v&&v.completed).length;
+  const mistakes=unresolvedMistakes().length;
   const el=document.getElementById('completion-count');
-  if(el)el.textContent='✅ '+done+'/'+nodes.length+' 已完成';
+  if(el)el.textContent='✅ '+done+'/'+nodes.length+' 已完成' + (mistakes ? ' · 📒 '+mistakes+' 条待复习' : ' · 📒 0 条待复习');
 }
 function updateNodeUI(){
   const cp=getConceptProgressMap();
@@ -532,6 +560,7 @@ function updateNodeUI(){
     if(!ring)return;
     const name=d.name;
     const completed=!!(cp[name]&&cp[name].completed);
+    const mistakeCount=mistakeCountForConcept(name);
     // Show completion badge
     let badge=g.querySelector('.node-complete');
     if(completed){
@@ -545,6 +574,17 @@ function updateNodeUI(){
         g.insertBefore(badge,g.querySelector('text'));
       }
       badge.textContent='✅';
+    }else if(mistakeCount){
+      if(!badge){
+        badge=document.createElementNS('http://www.w3.org/2000/svg','text');
+        badge.setAttribute('class','node-complete');
+        badge.setAttribute('font-size','11');
+        badge.setAttribute('dy','-6');
+        badge.setAttribute('text-anchor','middle');
+        badge.setAttribute('font-weight','bold');
+        g.insertBefore(badge,g.querySelector('text'));
+      }
+      badge.textContent='📒';
     }else if(badge){
       badge.remove();
     }
@@ -552,6 +592,8 @@ function updateNodeUI(){
     const s=diagGetStatus(d.id);
     if(completed){
       ring.style.stroke='#22c55e';ring.style.strokeWidth='2.5';ring.style.strokeOpacity='0.8';
+    }else if(mistakeCount){
+      ring.style.stroke='#e85d75';ring.style.strokeWidth='3';ring.style.strokeOpacity='0.95';
     }else if(s==='correct'){
       ring.style.stroke='#45c77a';ring.style.strokeWidth='2.5';ring.style.strokeOpacity='0.9';
     }else if(s==='wrong'){
@@ -570,7 +612,8 @@ function exportProgress(){
     exportedAt:new Date().toISOString(),
     math5_progress:JSON.parse(localStorage.getItem('math5_progress')||'{}'),
     math5_concept_progress:JSON.parse(localStorage.getItem('math5_concept_progress')||'{}'),
-    math5_diag_results:JSON.parse(localStorage.getItem('math5_diag_results')||'{}')
+    math5_diag_results:JSON.parse(localStorage.getItem('math5_diag_results')||'{}'),
+    math5_mistake_book:JSON.parse(localStorage.getItem('math5_mistake_book')||'{}')
   };
   const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a = document.createElement('a');
@@ -591,11 +634,13 @@ function importProgress(event){
       if(data.math5_progress) localStorage.setItem('math5_progress', JSON.stringify(data.math5_progress));
       if(data.math5_concept_progress) localStorage.setItem('math5_concept_progress', JSON.stringify(data.math5_concept_progress));
       if(data.math5_diag_results) localStorage.setItem('math5_diag_results', JSON.stringify(data.math5_diag_results));
+      if(data.math5_mistake_book) localStorage.setItem('math5_mistake_book', JSON.stringify(data.math5_mistake_book));
       updateNodeUI();
       alert('✅ 进度导入成功！共导入 ' +
         Object.keys(data.math5_progress||{}).length + ' 课件 + ' +
         Object.keys(data.math5_concept_progress||{}).length + ' 概念 + ' +
-        Object.keys(data.math5_diag_results||{}).length + ' 诊断记录。');
+        Object.keys(data.math5_diag_results||{}).length + ' 诊断记录 + ' +
+        ((data.math5_mistake_book&&data.math5_mistake_book.items)||[]).length + ' 条错题。');
     }catch(err){
       alert('❌ 导入失败：文件格式不正确 (' + err.message + ')');
     }
@@ -611,7 +656,8 @@ function gatherProgressData(){
     exportedAt:new Date().toISOString(),
     math5_progress:JSON.parse(localStorage.getItem('math5_progress')||'{}'),
     math5_concept_progress:JSON.parse(localStorage.getItem('math5_concept_progress')||'{}'),
-    math5_diag_results:JSON.parse(localStorage.getItem('math5_diag_results')||'{}')
+    math5_diag_results:JSON.parse(localStorage.getItem('math5_diag_results')||'{}'),
+    math5_mistake_book:JSON.parse(localStorage.getItem('math5_mistake_book')||'{}')
   };
 }
 function applyProgressData(data){
@@ -619,6 +665,7 @@ function applyProgressData(data){
   if(data.math5_progress) localStorage.setItem('math5_progress', JSON.stringify(data.math5_progress));
   if(data.math5_concept_progress) localStorage.setItem('math5_concept_progress', JSON.stringify(data.math5_concept_progress));
   if(data.math5_diag_results) localStorage.setItem('math5_diag_results', JSON.stringify(data.math5_diag_results));
+  if(data.math5_mistake_book) localStorage.setItem('math5_mistake_book', JSON.stringify(data.math5_mistake_book));
   updateNodeUI();
   return true;
 }
@@ -673,7 +720,8 @@ function checkSyncURL(){
 setTimeout(checkSyncURL, 100);
 
 // === CONSTANTS ===
-const CAT_COLORS = {number_ops:'#4A90D9',geometry:'#E85D75',algebra:'#7B68EE',statistics:'#F0A050',applications:'#50B87A'};
+const CAT_COLORS = {number_ops:'#3F8DD8',geometry:'#E95F7A',algebra:'#7B68D9',statistics:'#F2A34A',applications:'#46B979'};
+const CAT_SOFT = {number_ops:'#EAF4FF',geometry:'#FFF0F3',algebra:'#F3F0FF',statistics:'#FFF5E6',applications:'#ECFFF4'};
 const CAT_NAMES = {number_ops:'数与运算',geometry:'几何',algebra:'代数',statistics:'统计',applications:'应用'};
 const SEM_NAMES = {0:'全学年',1:'上册',2:'下册'};
 const EXPERIENCE_IMAGES = {
@@ -802,8 +850,8 @@ const graphEdges = edges.map(e=>({...e,source:nodeMap[e.from],target:nodeMap[e.t
 let activeCat = 'all', activeSem = 'all', activeSearch = '', selectedNodeId = null;
 let activeGraphMode = 'learning';
 const GRAPH_MODES = {
-  learning:{label:'学习路径',hint:'学习路径：黑塞分层，只看主干路径；点击节点进入概念邻域。'},
-  neighborhood:{label:'概念邻域',hint:'概念邻域：只看当前概念的一跳前置、后继和横向相关。'},
+  learning:{label:'学习路径',hint:'学习路径：只看主干概念和关键方向；点击节点进入概念探索。'},
+  neighborhood:{label:'概念探索',hint:'概念探索：只看当前概念的一跳前置、后继和横向相关。'},
   explore:{label:'全图探索',hint:'全图探索：显示全部概念和关系，适合高级浏览与查漏。'}
 };
 function endpointId(value){return value && typeof value==='object' ? value.id : value;}
@@ -930,8 +978,34 @@ function starterPath(limit=3){
     .slice(0,limit)
     .map(node=>({node,exp:'基础入口，先建立全局坐标',kind:'start'}));
 }
+function adaptiveStarterPath(limit=3){
+  const rows = [];
+  const seen = new Set();
+  const push = row=>{
+    if(!row.node || seen.has(row.node.id))return;
+    seen.add(row.node.id);
+    rows.push(row);
+  };
+  const mistakeGroups = new Map();
+  unresolvedMistakes().forEach(item=>{
+    (item.concepts||[]).forEach(name=>{
+      const id = nameToId[name];
+      if(!id)return;
+      mistakeGroups.set(id,(mistakeGroups.get(id)||0)+1);
+    });
+  });
+  [...mistakeGroups.entries()]
+    .sort((a,b)=>b[1]-a[1] || (degreeRank[a[0]]||99)-(degreeRank[b[0]]||99))
+    .forEach(([id,count])=>push({node:nodeMap[id],kind:'mistake',exp:`错题本有 ${count} 条待复习，先把卡住点讲顺`}));
+  nodes
+    .filter(n=>diagGetStatus(n.id)==='wrong')
+    .sort((a,b)=>(degreeRank[a.id]||99)-(degreeRank[b.id]||99) || a.difficulty-b.difficulty)
+    .forEach(node=>push({node,kind:'weak',exp:'诊断里答错过，建议先补这个薄弱点'}));
+  starterPath(limit + 3).forEach(row=>push({...row,kind:'ready'}));
+  return rows.slice(0,limit);
+}
 function pathKindLabel(kind){
-  return {next:'下一步',related:'横向连接',prereq:'补前置',start:'起点'}[kind] || '推荐';
+  return {next:'下一步',related:'横向连接',prereq:'补前置',start:'起点',ready:'起点',mistake:'错题复盘',weak:'薄弱点'}[kind] || '推荐';
 }
 function lessonPlanFor(d){
   const priority = lessonPriorityFor(d);
@@ -987,6 +1061,66 @@ function decisionCopyFor(d,readiness,nextRows){
   const first = readiness.rows.find(row=>!isConceptCompleted(row.node.name));
   return first ? `建议先确认“${first.node.name}”，再进入本课会更顺。` : '先补齐前置，再进入本课。';
 }
+const MENTOR_PROMPT_OVERRIDES = {
+  '小数乘法':{
+    adversary:'乘小数时，结果一定变小吗？先说清乘数是大于 1、等于 1 还是小于 1，再拿 0.8×5 试反例。',
+    feynman:'把 0.3×4 讲成“4 份 0.3 合起来是 12 个十分之一”，最后把 12 个十分之一换成 1.2。'
+  },
+  '小数除法':{
+    adversary:'除以小数一定会变小吗？试试 3÷0.5，再说明“除数小于 1”为什么会让份数变多。',
+    feynman:'把除数先变成整数讲给同学听：3÷0.5 就是在问 3 里面有几个 0.5。'
+  },
+  '分数的意义':{
+    adversary:'只写 3/4 就够了吗？追问“谁被平均分成 4 份”，没有单位整体就不能判断大小。',
+    feynman:'用切蛋糕说清楚：分母告诉蛋糕切几份，分子告诉拿几份，整体必须先说清。'
+  },
+  '平行四边形面积':{
+    adversary:'底边乘斜边可以求面积吗？剪开再拼成长方形，检查真正不变的是底和高。',
+    feynman:'把左边三角形搬到右边，讲成“斜着的图形站直了”，面积就变成底乘高。'
+  },
+  '简易方程':{
+    adversary:'等式两边随便改还相等吗？必须两边做同一件事，用天平失衡作反例。',
+    feynman:'把方程讲成天平：未知数是盒子，左右一样重，所以两边同步拿走或加上。'
+  },
+  '体积和体积单位':{
+    adversary:'面积大就一定体积大吗？追问有几层，用 1 立方厘米小方块数一数。',
+    feynman:'把体积讲成“能装多少个同样的小正方体”，长、宽、高分别在数排、列、层。'
+  },
+  '位置值':{
+    adversary:'数字 5 的大小只看它本身吗？换到十位和百分位，价值完全不同。',
+    feynman:'把数位讲成电梯楼层：同一个数字站在不同楼层，表示的单位就不同。'
+  },
+  '找次品':{
+    adversary:'每次只称一边能最快吗？比较三等分和二等分，看看哪种一次排除更多可能。',
+    feynman:'把找次品讲成“每称一次都把可能性砍掉一大块”，最好先尽量分成三堆。'
+  }
+};
+function mentorPromptsFor(d,visual,prereqs,nexts){
+  if(MENTOR_PROMPT_OVERRIDES[d.name])return MENTOR_PROMPT_OVERRIDES[d.name];
+  const next = nexts[0]?.name;
+  if(d.category==='geometry'){
+    return {
+      adversary:`讨论“${d.name}”时，先追问哪些量保持不变，哪些只是形状变了；用${visual.label}找一个反例。`,
+      feynman:`不用公式，借“${visual.metaphor}”把${d.name}讲成一次看得见的移动、拼接或计数。`
+    };
+  }
+  if(d.category==='algebra'){
+    return {
+      adversary:`把“${d.name}”放到等号两边检查：如果只改一边，会不会立刻失衡？`,
+      feynman:`把${d.name}讲成天平或盒子故事：先说明未知量，再说明为什么两边必须同步变化。`
+    };
+  }
+  if(d.category==='statistics'){
+    return {
+      adversary:`看到“${d.name}”先问数据从哪里来、单位是否一致；换一组数据能不能推翻结论？`,
+      feynman:`把${d.name}讲成“用图看变化”：先说横轴代表什么，再说线条或点告诉我们什么。`
+    };
+  }
+  return {
+    adversary:`关于“${d.name}”，先补完整条件：单位、整体、顺序或数位变了，结论还成立吗？`,
+    feynman:`借“${visual.metaphor}”讲${d.name}：先说看得见的动作，再接到${next?`下一步“${next}”`:'一个小例子'}。`
+  };
+}
 
 // Initialize D3
 const container = document.getElementById('graph');
@@ -1034,15 +1168,15 @@ filterToggle?.addEventListener('click',()=>{
 // Arrow markers
 const defs = svg.append('defs');
 Object.entries(CAT_COLORS).forEach(([cat,color])=>{
-  defs.append('marker').attr('id','arrow-'+cat).attr('viewBox','0 -5 10 10')
-    .attr('refX',20).attr('refY',0).attr('markerWidth',6).attr('markerHeight',6)
-    .attr('orient','auto').append('path').attr('d','M0,-5L10,0L0,5').attr('fill',color).attr('opacity',0.5);
-  defs.append('marker').attr('id','arrow-hl-'+cat).attr('viewBox','0 -5 10 10')
-    .attr('refX',20).attr('refY',0).attr('markerWidth',6).attr('markerHeight',6)
-    .attr('orient','auto').append('path').attr('d','M0,-5L10,0L0,5').attr('fill','#5ba0f5');
+  defs.append('marker').attr('id','arrow-'+cat).attr('viewBox','0 -4 8 8')
+    .attr('refX',7).attr('refY',0).attr('markerWidth',5).attr('markerHeight',5)
+    .attr('orient','auto').append('path').attr('d','M0,-4L8,0L0,4').attr('fill',color).attr('opacity',0.42);
+  defs.append('marker').attr('id','arrow-hl-'+cat).attr('viewBox','0 -4 8 8')
+    .attr('refX',7).attr('refY',0).attr('markerWidth',5).attr('markerHeight',5)
+    .attr('orient','auto').append('path').attr('d','M0,-4L8,0L0,4').attr('fill','#f5a400');
 });
 
-// 黑塞式层级布局：按前置依赖计算层级深度
+// 按前置依赖计算层级深度，用于主路径和探索布局
 const _prereqEdges = edges.filter(e=>e.type==='prerequisite_of');
 const _inDeg = new Map, _outDeg = new Map;
 nodes.forEach(n=>{_inDeg.set(n.id,new Set);_outDeg.set(n.id,new Set);});
@@ -1215,8 +1349,8 @@ function graphPadding(width,height){
   return {
     left: compact ? 54 : 130,
     right: compact ? 52 : 120,
-    top: compact ? 160 : 126,
-    bottom: compact ? 118 : 86
+    top: compact ? 176 : 150,
+    bottom: compact ? 122 : 92
   };
 }
 function stageX(stage,width,stageCount){
@@ -1295,8 +1429,9 @@ function renderDepthGuides(width=W,height=H){
     .each(function(d){
       const row = d3.select(this);
       const x = stageX(d,width,stageCount);
+      const labelY = Math.max(78,graphPadding(width,height).top - 34);
       row.select('line').attr('x1',x).attr('x2',x).attr('y1',-80).attr('y2',height+80);
-      row.select('text').attr('x',x+8).attr('y',activeGraphMode==='neighborhood'?36:24).text(d===0?'基础入口':`第 ${d+1} 层`);
+      row.select('text').attr('x',x+8).attr('y',labelY).text(d===0?'基础入口':`第 ${d+1} 层`);
     });
   guides.exit().remove();
 }
@@ -1314,10 +1449,10 @@ function applyLayout(duration=0){
 renderDepthGuides(W,H);
 
 // Draw edges
-const link = g.append('g').selectAll('line')
-  .data(graphEdges).join('line')
+const link = g.append('g').selectAll('path')
+  .data(graphEdges).join('path')
   .attr('class',d=>'edge'+(d.type==='related_to'?' related':''))
-  .attr('marker-end',d=>'url(#arrow-'+(nodeMap[d.from]?.category||'number_ops')+')');
+  .attr('marker-end',d=>d.type==='related_to'?null:'url(#arrow-'+(nodeMap[d.from]?.category||'number_ops')+')');
 
 // Draw nodes
 const node = g.append('g').selectAll('g')
@@ -1328,6 +1463,12 @@ const node = g.append('g').selectAll('g')
     .on('drag',(e,d)=>{d.x=e.x;d.y=e.y;d.fx=e.x;d.fy=e.y;renderGraph()})
     .on('end',(e,d)=>{d.fx=null;d.fy=null})
   );
+
+node.append('circle')
+  .attr('class','node-shell')
+  .attr('r',d=>18+d.difficulty*2)
+  .attr('fill',d=>CAT_SOFT[d.category]||'#f4f7fb')
+  .attr('opacity',0.96);
 
 node.append('circle')
   .attr('class','node-core')
@@ -1469,6 +1610,7 @@ function showCard(d){
   const nexts = nextRows.map(row=>({name:row.node.name,exp:row.exp,cat:row.node.category}));
   const relationEdges = edges.filter(e=>edgeTouches(e,d.id));
   const relatedConcepts = [...new Set(relationEdges.map(e=>e.from===d.id?e.to:e.from))].map(id=>nodeMap[id]);
+  const mentorPrompts = mentorPromptsFor(d,visual,prereqs,nexts);
 
   let header = `<div class="detail-title"><div><h2>${visual.icon} ${d.name}</h2><span class="badge" style="background:${color}">${cat} · ${sem} · ${visual.label}</span></div><button class="close-btn" onclick="closeCard()" aria-label="关闭详情">✕</button></div>`;
   if(lesson){
@@ -1523,8 +1665,8 @@ function showCard(d){
   </div>`;
   html += `<p class="core-line">难度：${'⭐'.repeat(d.difficulty)}</p>`;
   html += `<div class="mentor-row">
-    <div class="mentor"><img src="assets/portraits/einstein-avatar.webp" alt=""><div><b>对抗式思考</b><span>这句话少了什么条件？能不能举反例？</span></div></div>
-    <div class="mentor"><img src="assets/portraits/feynman-avatar.webp" alt=""><div><b>费曼输出</b><span>用一句话讲给低年级同学听。</span></div></div>
+    <div class="mentor"><img src="assets/portraits/einstein-avatar.webp" alt=""><div><b>对抗式思考</b><span>${mentorPrompts.adversary}</span></div></div>
+    <div class="mentor"><img src="assets/portraits/feynman-avatar.webp" alt=""><div><b>费曼输出</b><span>${mentorPrompts.feynman}</span></div></div>
   </div>`;
 
   const pathRows = recommendedNextFor(d,3);
@@ -1537,26 +1679,29 @@ function showCard(d){
     html += `</div></div>`;
   }
 
-  const relationButton = (other,arrow,exp)=>`<button class="relation-item" type="button" onclick="focusNodeById('${other.id}')"><span class="relation-name" style="color:${CAT_COLORS[other.category]}">${arrow} ${other.name}</span><span class="relation-exp">${exp}</span></button>`;
+  const relationButton = (other,kind,exp)=>{
+    const label = kind==='next' ? '后继' : (kind==='prev' ? '前置' : '相关');
+    return `<button class="relation-item" type="button" onclick="focusNodeById('${other.id}')"><span class="relation-name" style="color:${CAT_COLORS[other.category]}"><span class="relation-arrow ${kind}">${label}</span>${other.name}</span><span class="relation-exp">${exp}</span></button>`;
+  };
 
   if(relationEdges.length>0){
     html += `<div class="section"><h4>高亮关系 (${relationEdges.length})</h4>`;
     relationEdges.slice(0,6).forEach(e=>{
       const isOut = e.from===d.id;
       const other = nodeMap[isOut?e.to:e.from];
-      const arrow = isOut ? '→' : '←';
-      html += relationButton(other,arrow,e.exp);
+      const kind = e.type==='related_to' ? 'related' : (isOut ? 'next' : 'prev');
+      html += relationButton(other,kind,e.exp);
     });
     html += `</div>`;
   }
   if(prereqs.length>0){
     html += `<div class="section"><h4>前置依赖 (${prereqs.length})</h4>`;
-    prereqs.slice(0,4).forEach(p=>{const other = nodes.find(n=>n.name===p.name);if(other)html+=relationButton(other,'←',p.exp)});
+    prereqs.slice(0,4).forEach(p=>{const other = nodes.find(n=>n.name===p.name);if(other)html+=relationButton(other,'prev',p.exp)});
     html += `</div>`;
   }
   if(nexts.length>0){
     html += `<div class="section"><h4>后继概念 (${nexts.length})</h4>`;
-    nexts.slice(0,4).forEach(p=>{const other = nodes.find(n=>n.name===p.name);if(other)html+=relationButton(other,'→',p.exp)});
+    nexts.slice(0,4).forEach(p=>{const other = nodes.find(n=>n.name===p.name);if(other)html+=relationButton(other,'next',p.exp)});
     html += `</div>`;
   }
 
@@ -1679,13 +1824,15 @@ function syncControls(){
 function renderPathPanel(){
   const panel = document.getElementById('path-panel');
   const selected = selectedNodeId ? nodeMap[selectedNodeId] : null;
-  const rows = selected ? recommendedNextFor(selected,3) : starterPath(3);
+  const rows = selected ? recommendedNextFor(selected,3) : adaptiveStarterPath(3);
   if(!rows.length){panel.innerHTML='';panel.style.display='none';return;}
   panel.style.display='';
-  const title = selected ? `从“${selected.name}”继续学` : (activeGraphMode==='explore' ? '全图探索入口' : '推荐学习起点');
+  const adaptive = !selected && rows.some(row=>row.kind==='mistake'||row.kind==='weak');
+  panel.classList.toggle('adaptive',adaptive);
+  const title = selected ? `从“${selected.name}”继续学` : (adaptive ? '优先补强路径' : (activeGraphMode==='explore' ? '全图探索入口' : '推荐学习起点'));
   panel.innerHTML = `<h3>${title}</h3><div class="path-actions">${rows.map(row=>{
     const v = visualFor(row.node);
-    return `<button type="button" data-id="${row.node.id}">${pathKindLabel(row.kind)} · ${v.icon} ${row.node.name}<span>${row.exp}</span></button>`;
+    return `<button type="button" class="${row.kind||''}" data-id="${row.node.id}">${pathKindLabel(row.kind)} · ${v.icon} ${row.node.name}<span>${row.exp}</span></button>`;
   }).join('')}</div>`;
   panel.querySelectorAll('button').forEach(btn=>{
     btn.addEventListener('click',()=>focusNodeById(btn.dataset.id));
@@ -1726,6 +1873,10 @@ function applyGraphState(){
     if(!passesEdgeFilter(d))base.push('filtered');
     if(!modeEdge)base.push('hidden');
     return base.filter(Boolean).join(' ');
+  }).attr('marker-end',d=>{
+    if(d.type==='related_to' || !edgeVisibleInMode(d) || !passesEdgeFilter(d))return null;
+    const cat = nodeMap[d.from]?.category || 'number_ops';
+    return selectedNodeId && edgeTouches(d,selectedNodeId) ? `url(#arrow-hl-${cat})` : `url(#arrow-${cat})`;
   }).style('opacity',d=>{
     const visible = passesEdgeFilter(d);
     const modeEdge = edgeVisibleInMode(d);
@@ -1760,11 +1911,29 @@ function updateInfo(){
   }
 }
 
+function edgePath(d){
+  const sx = d.source.x, sy = d.source.y, tx = d.target.x, ty = d.target.y;
+  const dx = tx - sx, dy = ty - sy;
+  const len = Math.max(1,Math.hypot(dx,dy));
+  const sr = 18 + d.source.difficulty * 2;
+  const tr = 20 + d.target.difficulty * 2;
+  const x1 = sx + dx / len * sr;
+  const y1 = sy + dy / len * sr;
+  const x2 = tx - dx / len * tr;
+  const y2 = ty - dy / len * tr;
+  const nx = -dy / len, ny = dx / len;
+  const curve = Math.min(52,Math.max(12,len * (d.type==='related_to' ? .08 : .06)));
+  const direction = d.type==='related_to' ? -1 : 1;
+  const c1x = x1 + (x2-x1) * .36 + nx * curve * direction;
+  const c1y = y1 + (y2-y1) * .36 + ny * curve * direction;
+  const c2x = x1 + (x2-x1) * .64 + nx * curve * direction;
+  const c2y = y1 + (y2-y1) * .64 + ny * curve * direction;
+  return `M${x1},${y1} C${c1x},${c1y} ${c2x},${c2y} ${x2},${y2}`;
+}
 function renderGraph(duration=0){
   const linkSel = duration ? link.transition().duration(duration) : link;
   const nodeSel = duration ? node.transition().duration(duration) : node;
-  linkSel.attr('x1',d=>d.source.x).attr('y1',d=>d.source.y)
-      .attr('x2',d=>d.target.x).attr('y2',d=>d.target.y);
+  linkSel.attr('d',edgePath);
   nodeSel.attr('transform',d=>`translate(${d.x},${d.y})`);
 }
 function visibleLayoutBounds(){
@@ -1789,8 +1958,8 @@ function fitGraph(duration=800){
   const compact = w < 720;
   const leftPad = compact ? 18 : 92;
   const rightPad = compact ? 18 : 78;
-  const topPad = compact ? 98 : 86;
-  const bottomPad = compact ? 88 : 54;
+  const topPad = compact ? 138 : 132;
+  const bottomPad = compact ? 94 : 62;
   const innerW = Math.max(260,w-leftPad-rightPad);
   const innerH = Math.max(260,h-topPad-bottomPad);
   const scale = Math.min(innerW/dx,innerH/dy,compact?3.1:2.9)*(compact?1.04:1.02);

@@ -57,6 +57,126 @@ function escapeHTML(value){
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
   }[ch]));
 }
+function stripHTML(value){
+  return String(value==null?'':value).replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
+}
+function getCurrentConceptNames(){
+  return (document.body?.dataset?.concept || '')
+    .split(/[,，]/)
+    .map(s=>s.trim())
+    .filter(Boolean);
+}
+
+// === 错题本（P2） ===
+const MISTAKE_KEY='math5_mistake_book';
+function hashText(value){
+  let h=2166136261;
+  const s=String(value||'');
+  for(let i=0;i<s.length;i++){
+    h^=s.charCodeAt(i);
+    h=Math.imul(h,16777619);
+  }
+  return (h>>>0).toString(36);
+}
+function normalizeMistakeBook(raw){
+  const book = raw && typeof raw==='object' ? raw : {};
+  const items = Array.isArray(book.items) ? book.items : [];
+  return {version:2,updatedAt:book.updatedAt||'',items};
+}
+function getMistakeBook(){
+  try{return normalizeMistakeBook(JSON.parse(localStorage.getItem(MISTAKE_KEY)||'{}'));}catch{return normalizeMistakeBook({});}
+}
+function saveMistakeBook(book){
+  const clean=normalizeMistakeBook(book);
+  clean.updatedAt=new Date().toISOString();
+  clean.items=clean.items.slice(-220);
+  localStorage.setItem(MISTAKE_KEY,JSON.stringify(clean));
+  window.dispatchEvent(new CustomEvent('math5MistakeBookChanged',{detail:clean}));
+  setTimeout(()=>{try{renderMistakeReviewSections();}catch(e){}},0);
+  return clean;
+}
+function mistakeIdFor(payload){
+  const concepts=(payload.concepts||getCurrentConceptNames()).join('|');
+  return hashText([concepts,payload.type||'练习',stripHTML(payload.question||'')].join('::'));
+}
+function recordMistake(payload){
+  const concepts=(payload.concepts||getCurrentConceptNames()).filter(Boolean);
+  if(!concepts.length)return null;
+  const question=stripHTML(payload.question||'');
+  if(!question)return null;
+  const book=getMistakeBook();
+  const id=payload.id||mistakeIdFor({...payload,concepts,question});
+  const now=new Date().toISOString();
+  let item=book.items.find(x=>x.id===id);
+  if(item){
+    item.resolved=false;
+    item.attempts=(item.attempts||0)+1;
+    item.lastAt=now;
+    item.userAnswer=stripHTML(payload.userAnswer||item.userAnswer||'');
+    item.expected=stripHTML(payload.expected||item.expected||'');
+    item.hint=stripHTML(payload.hint||item.hint||'');
+  }else{
+    item={
+      id,
+      concepts,
+      primary:concepts[0],
+      type:payload.type||'练习',
+      question,
+      userAnswer:stripHTML(payload.userAnswer||''),
+      expected:stripHTML(payload.expected||''),
+      hint:stripHTML(payload.hint||''),
+      source:payload.source||document.title||location.pathname,
+      attempts:1,
+      resolved:false,
+      firstAt:now,
+      lastAt:now
+    };
+    book.items.push(item);
+  }
+  saveMistakeBook(book);
+  return item;
+}
+function resolveMistake(payload){
+  const concepts=(payload.concepts||getCurrentConceptNames()).filter(Boolean);
+  const id=payload.id||mistakeIdFor({...payload,concepts});
+  const book=getMistakeBook();
+  const item=book.items.find(x=>x.id===id);
+  if(item && !item.resolved){
+    item.resolved=true;
+    item.resolvedAt=new Date().toISOString();
+    saveMistakeBook(book);
+  }
+}
+function getUnresolvedMistakes(concepts){
+  const names=new Set((concepts||getCurrentConceptNames()).filter(Boolean));
+  return getMistakeBook().items.filter(item=>{
+    if(item.resolved)return false;
+    return (item.concepts||[]).some(name=>names.has(name));
+  }).sort((a,b)=>(b.lastAt||'').localeCompare(a.lastAt||''));
+}
+function markMistakeResolved(id){
+  const book=getMistakeBook();
+  const item=book.items.find(x=>x.id===id);
+  if(!item)return;
+  item.resolved=true;
+  item.resolvedAt=new Date().toISOString();
+  saveMistakeBook(book);
+  renderMistakeReviewSections();
+}
+function clearConceptMistakes(concepts){
+  const names=new Set((concepts||getCurrentConceptNames()).filter(Boolean));
+  const book=getMistakeBook();
+  let changed=false;
+  book.items.forEach(item=>{
+    if(!item.resolved && (item.concepts||[]).some(name=>names.has(name))){
+      item.resolved=true;
+      item.resolvedAt=new Date().toISOString();
+      changed=true;
+    }
+  });
+  if(changed)saveMistakeBook(book);
+  renderMistakeReviewSections();
+}
 
 // 滚动进度条
 function initScrollProgress(){
@@ -120,6 +240,14 @@ function createGate(opts){
       const correct=qItem.check(answer);
       if(!correct){
         allCorrect=false;
+        recordMistake({
+          concepts:getCurrentConceptNames(),
+          type:'前置检查',
+          question:qItem.label||qItem.q||`前置检查 ${i+1}`,
+          userAnswer:Object.values(answer).join(', '),
+          expected:qItem.answer||qItem.expected||'回到前置知识再试',
+          hint:qItem.hint||'先确认进入本课必须具备的旧知识。'
+        });
         if(qItem.inputs){
           qItem.inputs.forEach(inp=>{
             const found=questionEl?questionEl.querySelector(`.input-field[data-key="${inp.key}"]`):null;
@@ -127,6 +255,11 @@ function createGate(opts){
           });
         }
       }else{
+        resolveMistake({
+          concepts:getCurrentConceptNames(),
+          type:'前置检查',
+          question:qItem.label||qItem.q||`前置检查 ${i+1}`
+        });
         if(qItem.inputs){
           qItem.inputs.forEach(inp=>{
             const found=questionEl?questionEl.querySelector(`.input-field[data-key="${inp.key}"]`):null;
@@ -151,7 +284,8 @@ function createGate(opts){
 function createExerciseSet(opts){
   const c=document.getElementById(opts.containerId);
   if(!c)return;
-  const exs=enrichPracticeExercises(opts.exercises||[], opts.conceptNames || getCurrentConceptNames(), opts.minExercises || 3);
+  const conceptNames = opts.conceptNames || getCurrentConceptNames();
+  const exs=enrichPracticeExercises(opts.exercises||[], conceptNames, opts.minExercises || 3);
   let state=exs.map(()=>({status:'pending',answer:''}));
   let attemptedCount=0,correctCount=0;
 
@@ -193,6 +327,19 @@ function createExerciseSet(opts){
         const correct=ex.check(userAnswer);
         state[i].status=correct?'correct':'wrong';
         state[i].answer=ex.inputs?ex.inputs.map(inp=>userAnswer[inp.key]||'').join(', '):userAnswer.a;
+        const question=stripHTML(ex.question||`练习 ${i+1}`);
+        if(correct){
+          resolveMistake({concepts:conceptNames,type:'练习',question});
+        }else{
+          recordMistake({
+            concepts:conceptNames,
+            type:'练习',
+            question,
+            userAnswer:state[i].answer,
+            expected:ex.expected||ex.answer||'查看提示并重新理解',
+            hint:ex.hint||'先回到概念模型，再判断单位和条件。'
+          });
+        }
         attemptedCount++;
         if(correct)correctCount++;
         render();
@@ -220,7 +367,8 @@ function createExerciseSet(opts){
 function createAdversarialChallenge(opts){
   const c=document.getElementById(opts.containerId);
   if(!c)return;
-  const challenges=enrichAdversarialChallenges(opts.challenges||[], opts.conceptNames || getCurrentConceptNames(), opts.minChallenges || 4);
+  const conceptNames = opts.conceptNames || getCurrentConceptNames();
+  const challenges=enrichAdversarialChallenges(opts.challenges||[], conceptNames, opts.minChallenges || 4);
   const state=challenges.map(()=>({correct:false,last:null}));
 
   function render(){
@@ -264,8 +412,17 @@ function createAdversarialChallenge(opts){
         if(choice===answer){
           state[i].correct=true;
           state[i].last=choice;
+          resolveMistake({concepts:conceptNames,type:'对抗挑战',question:challenges[i].statement});
         }else{
           state[i].last=choice;
+          recordMistake({
+            concepts:conceptNames,
+            type:'对抗挑战',
+            question:challenges[i].statement,
+            userAnswer:choice==='agree'?'同意':'反驳',
+            expected:answer==='agree'?'同意':'反驳',
+            hint:challenges[i].hint||'检查这句话是否少条件，或者能否举反例。'
+          });
         }
         render();
         if(state.every(s=>s.correct)){
@@ -294,6 +451,7 @@ function createAdversarialChallenge(opts){
 function createFeynmanFill(opts){
   const c=document.getElementById(opts.containerId);
   if(!c)return;
+  const conceptNames = opts.conceptNames || getCurrentConceptNames();
   const tpl=opts.template;
   const ans=opts.answer||[];
   let blanks=tpl.match(/___/g);
@@ -340,6 +498,7 @@ function createFeynmanFill(opts){
       }
       const r=document.getElementById('feyn-result');
       if(correct){
+        resolveMistake({concepts:conceptNames,type:'费曼输出',question:tpl});
         r.className='feedback show success';
         r.innerHTML='🎉 完美！你理解得很透彻！';
         const reflection=document.getElementById('feyn-reflection');
@@ -347,6 +506,14 @@ function createFeynmanFill(opts){
         celebrate(r);
         if(opts.onComplete)opts.onComplete();
       }else{
+        recordMistake({
+          concepts:conceptNames,
+          type:'费曼输出',
+          question:tpl,
+          userAnswer:userInputs.join(' / '),
+          expected:ans.join(' / '),
+          hint:'费曼输出卡住时，说明概念还需要回到图形或例子重新讲一遍。'
+        });
         r.className='feedback show error';
         const wrongCount=ans.filter((a,i)=>userInputs[i]!==a).length;
         r.innerHTML=`有${wrongCount}个填空不正确，再想想看。`;
@@ -1055,13 +1222,6 @@ const __conceptSummary = {
   '找次品':['🎯','分成3组最优；天平每次排除2/3'],
 };
 
-function getCurrentConceptNames(){
-  return (document.body?.dataset?.concept || '')
-    .split(/[,，]/)
-    .map(s=>s.trim())
-    .filter(Boolean);
-}
-
 function primaryConceptName(names){
   const list=Array.isArray(names) ? names.filter(Boolean) : getCurrentConceptNames();
   return list[0] || '本课概念';
@@ -1204,6 +1364,53 @@ function ensureNextLesson(){
     else insertAfterLastSection(target);
   }
   createNextLessonSuggestion({containerId:'next-lesson'});
+}
+
+function ensureMistakeReview(){
+  let target=document.getElementById('mistake-review');
+  if(!target){
+    target=document.createElement('div');
+    target.id='mistake-review';
+    const summary=document.getElementById('course-summary');
+    if(summary)summary.insertAdjacentElement('beforebegin',target);
+    else insertAfterLastSection(target);
+  }
+  renderMistakeReview('mistake-review');
+}
+
+function renderMistakeReview(containerId){
+  const c=document.getElementById(containerId);
+  if(!c)return;
+  const concepts=getCurrentConceptNames();
+  const mistakes=getUnresolvedMistakes(concepts);
+  const title=concepts.length>1?'本组概念错题本':'本课错题本';
+  c.className='mistake-review-card';
+  if(!mistakes.length){
+    c.innerHTML=`<div class="mistake-review-head"><div><span>📒</span><b>${title}</b></div><em>暂无待复习错题</em></div>
+      <p class="mistake-empty">后续练习、前置检查、对抗挑战或费曼输出答错时，会自动收集到这里。</p>`;
+    return;
+  }
+  c.innerHTML=`<div class="mistake-review-head"><div><span>📒</span><b>${title}</b></div><em>${mistakes.length} 条待复习</em></div>
+    <div class="mistake-list">${mistakes.slice(0,6).map(item=>`
+      <article class="mistake-item">
+        <div class="mistake-meta"><span>${escapeHTML(item.type||'练习')}</span><span>尝试 ${item.attempts||1} 次</span></div>
+        <b>${escapeHTML(item.question)}</b>
+        ${item.userAnswer?`<p>你的答案：${escapeHTML(item.userAnswer)}</p>`:''}
+        ${item.expected?`<p>目标方向：${escapeHTML(item.expected)}</p>`:''}
+        ${item.hint?`<p class="mistake-hint">提示：${escapeHTML(item.hint)}</p>`:''}
+        <button type="button" data-resolve-mistake="${escapeHTML(item.id)}">已理解，移出错题本</button>
+      </article>`).join('')}</div>
+    <div class="mistake-actions"><button type="button" data-clear-concept-mistakes>本课全部已掌握</button></div>`;
+  c.querySelectorAll('[data-resolve-mistake]').forEach(btn=>{
+    btn.addEventListener('click',()=>markMistakeResolved(btn.dataset.resolveMistake));
+  });
+  c.querySelector('[data-clear-concept-mistakes]')?.addEventListener('click',()=>clearConceptMistakes(concepts));
+}
+
+function renderMistakeReviewSections(){
+  document.querySelectorAll('#mistake-review,.mistake-review-card[id]').forEach(el=>{
+    if(el.id)renderMistakeReview(el.id);
+  });
 }
 
 function insertAfterLastSection(node){
@@ -1375,6 +1582,12 @@ window.setupCompletionButton=setupCompletionButton;
 window.markConceptsComplete=markConceptsComplete;
 window.createLessonRoadmap=createLessonRoadmap;
 window.mountConceptVisualLab=mountConceptVisualLab;
+window.getMistakeBook=getMistakeBook;
+window.recordMistake=recordMistake;
+window.resolveMistake=resolveMistake;
+window.markMistakeResolved=markMistakeResolved;
+window.clearConceptMistakes=clearConceptMistakes;
+window.renderMistakeReview=renderMistakeReview;
 
 // 自动初始化
 function autoInit(){
@@ -1386,6 +1599,7 @@ function autoInit(){
     createLessonRoadmap();
     ensureVisualLab();
     ensureCourseSummary();
+    ensureMistakeReview();
     ensureNextLesson();
   }
   if(hasConcept && !document.getElementById('completion-section')){

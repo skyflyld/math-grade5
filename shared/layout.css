@@ -768,6 +768,9 @@ body {
   font-size: 15px;
   font-family: var(--font-mono);
   width: 100px;
+  min-width: 72px;
+  max-width: 100%;
+  box-sizing: border-box;
   text-align: center;
   transition: all var(--transition);
   background: #fff;
@@ -1418,7 +1421,8 @@ body {
     max-width: 100%;
   }
   .gate .input-field {
-    max-width: 76px;
+    min-width: 76px;
+    max-width: 96px;
   }
   .component-card { padding: 16px 14px; }
   .component-card-head { display: block; }
@@ -1565,6 +1569,113 @@ body {
   font-size: .82em;
   color: var(--text-muted);
   line-height: 1.5;
+}
+
+/* ========== 错题本（P2） ========== */
+.mistake-review-card {
+  margin-top: 20px;
+  padding: 18px 20px;
+  border: 1px solid rgba(239,68,68,.18);
+  border-radius: var(--radius);
+  background: linear-gradient(145deg,#fff7f7,#fff);
+  box-shadow: var(--shadow-sm);
+}
+.mistake-review-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.mistake-review-head div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.mistake-review-head b {
+  color: var(--text);
+  font-size: .98em;
+}
+.mistake-review-head em {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  padding: 3px 9px;
+  background: #fee2e2;
+  color: #991b1b;
+  font-style: normal;
+  font-size: .76em;
+  font-weight: 900;
+}
+.mistake-empty {
+  color: var(--text-muted);
+  font-size: .84em;
+  line-height: 1.6;
+}
+.mistake-list {
+  display: grid;
+  gap: 10px;
+}
+.mistake-item {
+  padding: 12px 14px;
+  border: 1px solid rgba(254,202,202,.9);
+  border-radius: var(--radius-sm);
+  background: #fff;
+}
+.mistake-meta {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-bottom: 7px;
+}
+.mistake-meta span {
+  display: inline-flex;
+  min-height: 22px;
+  align-items: center;
+  border-radius: 999px;
+  padding: 2px 8px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: .72em;
+  font-weight: 900;
+}
+.mistake-item b {
+  display: block;
+  color: var(--text);
+  font-size: .9em;
+  line-height: 1.55;
+}
+.mistake-item p {
+  margin-top: 5px;
+  color: var(--text-muted);
+  font-size: .82em;
+  line-height: 1.55;
+}
+.mistake-item .mistake-hint {
+  color: #92400e;
+}
+.mistake-item button,
+.mistake-actions button {
+  margin-top: 9px;
+  border: 1px solid rgba(239,68,68,.22);
+  border-radius: 999px;
+  background: #fff;
+  color: #b91c1c;
+  font: inherit;
+  font-size: .78em;
+  font-weight: 900;
+  padding: 5px 11px;
+  cursor: pointer;
+}
+.mistake-item button:hover,
+.mistake-actions button:hover {
+  background: #fef2f2;
+  border-color: rgba(239,68,68,.45);
+}
+.mistake-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
 }
 
 /* ========== 解析按钮 ========== */
