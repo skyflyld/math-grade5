@@ -16,6 +16,7 @@ const nodeMap=new Map(nodes.map(n=>[n.id,n]));
 const nodeNameSet=new Set(nodes.map(n=>n.name));
 const baselineConceptCount=40;
 const baselineEdgeCount=57;
+const allowedEdgeGroups=new Set(["dependency","representation_bridge","spatial_structure","number_structure","data_reasoning","unit_transfer","application","cross_category"]);
 
 // === Phase 1: Node data integrity ===
 console.log("=== Phase 1: Node data integrity ===");
@@ -44,12 +45,22 @@ edges.forEach((e,i)=>{
   check(nodeMap.has(e.to), "Edge "+i+': to="'+e.to+'" bad');
   check(e.type==="prerequisite_of"||e.type==="related_to", "Edge "+i+': unknown type "'+e.type+'"');
   check(e.exp&&e.exp.length>5, "Edge "+i+': missing explanation');
+  check(allowedEdgeGroups.has(e.group), "Edge "+i+': missing/unknown group "'+e.group+'"');
+  check(typeof e.critical==="boolean", "Edge "+i+': critical must be boolean');
+  check(typeof e.source==="string"&&e.source.length>0, "Edge "+i+': missing source');
+  if(e.type==="prerequisite_of"){
+    check(e.group==="dependency", "Edge "+i+': prerequisite_of must use dependency group');
+    check(e.critical===true, "Edge "+i+': prerequisite_of should be critical');
+  }
 });
 const edgeSet=new Set(edges.map(e=>e.from+"->"+e.to));
 check(edgeSet.size===edges.length, "Duplicate edges: "+(edges.length - edgeSet.size));
 const prereqCount=edges.filter(e=>e.type==="prerequisite_of").length;
 const relCount=edges.filter(e=>e.type==="related_to").length;
-console.log("  prerequisite_of: "+prereqCount+", related_to: "+relCount);
+const criticalRelCount=edges.filter(e=>e.type==="related_to"&&e.critical).length;
+const groupCounts=edges.reduce((acc,e)=>{acc[e.group]=(acc[e.group]||0)+1;return acc;},{});
+console.log("  prerequisite_of: "+prereqCount+", related_to: "+relCount+", critical related_to: "+criticalRelCount);
+console.log("  groups: "+Object.entries(groupCounts).map(([k,v])=>k+"="+v).join(", "));
 console.log("  Pass: "+(pass-p2pass)+" in this phase");
 
 // === Phase 3: DAG check ===
