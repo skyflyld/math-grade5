@@ -225,6 +225,100 @@ body {
   font-weight: 800;
 }
 .concept-sync-link:hover { color: var(--accent-deep); }
+.concept-sync-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 4px;
+}
+.concept-sync-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+  color: #fff;
+  font-size: 13px;
+  font-weight: 900;
+  text-decoration: none;
+  box-shadow: 0 8px 18px rgba(59,130,246,.22);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.concept-sync-primary span {
+  color: rgba(255,255,255,.82);
+  font-size: 11px;
+  font-weight: 800;
+}
+.concept-sync-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(59,130,246,.28);
+}
+
+/* ========== 自动概念 Hero / 学习流程 ========== */
+.concept-hero {
+  position: relative;
+}
+.lesson-roadmap {
+  margin: -10px 0 22px;
+  padding: 12px 14px;
+  border: 1px solid rgba(226,232,240,.9);
+  border-radius: var(--radius);
+  background: rgba(255,255,255,.78);
+  box-shadow: var(--shadow);
+}
+.lesson-roadmap-title {
+  margin-bottom: 9px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+.lesson-roadmap-track {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: thin;
+}
+.lesson-roadmap a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex: 0 0 auto;
+  min-height: 34px;
+  padding: 5px 10px 5px 7px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 800;
+  transition: all var(--transition);
+}
+.lesson-roadmap a span {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #f1f5f9;
+  color: var(--text-muted);
+  font-size: 11px;
+}
+.lesson-roadmap a:hover,
+.lesson-roadmap a.active {
+  border-color: rgba(59,130,246,.42);
+  background: #eff6ff;
+  color: var(--accent-deep);
+}
+.lesson-roadmap a.active span {
+  background: var(--accent);
+  color: #fff;
+}
 
 /* ========== 段落卡片 ========== */
 .section {
@@ -518,6 +612,63 @@ body {
   color: var(--text-muted);
   font-size: 14px;
   font-weight: 700;
+}
+.auto-visual-lab {
+  border-color: rgba(59,130,246,.12);
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.98), rgba(248,251,255,.96));
+}
+.auto-lab-note {
+  margin-top: 10px;
+  color: var(--text-muted);
+  font-size: 13px;
+  text-align: center;
+}
+
+/* ========== 费曼输出增强 ========== */
+.feynman-card {
+  background: linear-gradient(145deg,#f0fdf4,#fff);
+  border: 2px solid #86efac;
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  text-align: left;
+  line-height: 2.2;
+}
+.feynman-kicker {
+  margin-bottom: 10px;
+  color: #15803d;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+.feynman-fill {
+  font-size: 16px;
+}
+.feynman-reflection {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px solid rgba(34,197,94,.24);
+  border-radius: var(--radius-sm);
+  background: rgba(240,253,244,.78);
+}
+.feynman-reflection label {
+  display: block;
+  margin-bottom: 6px;
+  color: #166534;
+  font-size: 13px;
+  font-weight: 900;
+}
+.feynman-reflection textarea {
+  width: 100%;
+  min-height: 68px;
+  resize: vertical;
+  border: 1px solid #bbf7d0;
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  color: var(--text);
+  font: inherit;
+  line-height: 1.55;
+  background: #fff;
 }
 .fraction-bar-controls input { width: 100%; }
 .fraction-bar-controls span {
@@ -1209,7 +1360,32 @@ body {
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
+  .concept-sync-actions { gap: 6px; }
+  .concept-sync-primary {
+    min-height: 32px;
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+  .concept-sync-primary span { display: none; }
   .concept-sync-link { min-height: 28px; padding: 4px 9px; font-size: 12px; }
+  .lesson-roadmap {
+    margin: -8px 0 18px;
+    padding: 10px;
+    border-radius: var(--radius-md);
+    position: sticky;
+    top: 10px;
+    z-index: 80;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .lesson-roadmap-title { display: none; }
+  .lesson-roadmap a {
+    max-width: 148px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 11px;
+  }
   .hero-section h1 { font-size: 28px; }
   .hero-section { padding: 28px 16px 20px; }
   .textbook-compare { grid-template-columns: 1fr; }
@@ -1255,6 +1431,9 @@ body {
   .fraction-bar-readout em { grid-column: 1 / -1; justify-self: start; }
   .fraction-bar-controls { grid-template-columns: 1fr; }
   .balance-controls { justify-content: flex-start; }
+  .feynman-card { padding: 16px 14px; line-height: 2; }
+  .feynman-fill { font-size: 15px; }
+  .feynman-reflection { padding: 10px; }
   .concept-card { padding: 18px 16px; }
   .gate { padding: 20px 16px; }
 }

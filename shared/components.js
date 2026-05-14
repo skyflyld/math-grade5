@@ -151,7 +151,7 @@ function createGate(opts){
 function createExerciseSet(opts){
   const c=document.getElementById(opts.containerId);
   if(!c)return;
-  const exs=opts.exercises||[];
+  const exs=enrichPracticeExercises(opts.exercises||[], opts.conceptNames || getCurrentConceptNames(), opts.minExercises || 3);
   let state=exs.map(()=>({status:'pending',answer:''}));
   let attemptedCount=0,correctCount=0;
 
@@ -220,7 +220,7 @@ function createExerciseSet(opts){
 function createAdversarialChallenge(opts){
   const c=document.getElementById(opts.containerId);
   if(!c)return;
-  const challenges=opts.challenges||[];
+  const challenges=enrichAdversarialChallenges(opts.challenges||[], opts.conceptNames || getCurrentConceptNames(), opts.minChallenges || 4);
   const state=challenges.map(()=>({correct:false,last:null}));
 
   function render(){
@@ -302,17 +302,23 @@ function createFeynmanFill(opts){
   let userInputs=new Array(blanks.length).fill('');
 
   function render(){
-    let html='<div style="background:linear-gradient(145deg,#f0fdf4,#fff);border:2px solid #86efac;border-radius:var(--radius);padding:20px 24px;text-align:left;line-height:2.2;">';
+    let html='<div class="feynman-card">';
+    html+='<div class="feynman-kicker">用自己的话复述，不背口诀</div><div class="feynman-fill">';
     parts.forEach((p,i)=>{
       html+=p;
       if(i<blanks.length){
         html+=`<input class="input-field" id="feyn-${i}" type="text" style="width:${Math.max(60,20+30*(ans[i]||'').length)}px;margin:0 2px;" value="${userInputs[i]}">`;
       }
     });
+    html+='</div>';
     html+=`<div style="text-align:center;margin-top:16px;">
       <button class="btn btn-success" id="feyn-submit">检查答案</button>
       <button class="btn btn-outline btn-sm" id="feyn-reset" style="margin-left:8px;">重置</button>
-    </div><div class="feedback" id="feyn-result"></div></div>`;
+    </div><div class="feedback" id="feyn-result"></div>
+    <div class="feynman-reflection" id="feyn-reflection" hidden>
+      <label>再用一句话讲给低年级同学听</label>
+      <textarea rows="2" placeholder="例如：我会先看单位是否相同，再决定能不能直接计算。"></textarea>
+    </div></div>`;
     c.innerHTML=html;
 
     // Enter key
@@ -336,6 +342,8 @@ function createFeynmanFill(opts){
       if(correct){
         r.className='feedback show success';
         r.innerHTML='🎉 完美！你理解得很透彻！';
+        const reflection=document.getElementById('feyn-reflection');
+        if(reflection)reflection.hidden=false;
         celebrate(r);
         if(opts.onComplete)opts.onComplete();
       }else{
@@ -971,12 +979,17 @@ function createNextLessonSuggestion(opts){
       allNext.push(r);
     });
   });
+  const rootPrefix = (function(){const s=Array.from(document.scripts).find(s=>/concept-sync/.test(s.getAttribute('src')||''));const src=s?.getAttribute('src')||'';const i=src.indexOf('shared/concept-sync.js');return i>=0?src.slice(0,i):'';})();
   if(!allNext.length){
-    c.style.display = 'none';
+    const name = names[0] || '';
+    const graphHref = rootPrefix + 'index.html' + (name ? '#' + encodeURIComponent(name) : '');
+    c.style.display = '';
+    c.innerHTML = '<h3>🎯 学完这篇，继续探索</h3><div class="next-lesson-grid">' +
+      '<a href="'+escapeHTML(graphHref)+'">🗺️ 回到知识图谱</a>' +
+    '</div>';
     return;
   }
   c.style.display = '';
-  const rootPrefix = (function(){const s=Array.from(document.scripts).find(s=>/concept-sync/.test(s.getAttribute('src')||''));const src=s?.getAttribute('src')||'';const i=src.indexOf('shared/concept-sync.js');return i>=0?src.slice(0,i):'';})();
   c.innerHTML = '<h3>🎯 学完这篇，继续探索</h3><div class="next-lesson-grid">' +
     allNext.map(r=>{
       const icon = r.data?.icon || '📘';
@@ -1002,15 +1015,19 @@ const __conceptSummary = {
   '数据收集':['📊','数据收集=问问题+做记录；整理后用图表更好看'],
   '单位换算':['🔢','大→小×进率，小→大÷进率；1m=100cm'],
   '轴对称与旋转':['📐','对称=左右完全一样；旋转=图形绕点转，大小形状不变'],
+  '用数对确定位置':['📐','数对=(列,行)；先横向找列，再纵向找行'],
   '小数乘法':['🔢','先按整数乘，再移动小数点；乘<1的数结果会变小'],
   '小数除法':['🔢','利用商不变性质转化为整数除法'],
   '因数和倍数':['🔢','因数×因数=积；倍数=这个数×自然数'],
   '235的倍数特征':['🔢','看个位（2/5）；各位数字和（3）'],
   '循环小数':['🔢','除不尽时小数重复出现；循环节表示'],
+  '小数近似数':['🔢','按指定精度取最近刻度；看下一位决定四舍或五入'],
   '观察物体':['📐','从正面/上面/左面看立体，三个视图各不相同'],
   '质数与合数':['🔢','只有两个因数=质数；多于两个=合数；1不是质数也不是合数'],
+  '奇数和偶数':['🔢','能被2整除是偶数，否则是奇数；只需看个位'],
   '简易方程':['⚖️','设未知数列等式；用等式的性质求解'],
   '长方体和正方体':['📐','6面/12棱/8顶点；表面积=6个面面积之和'],
+  '长方体正方体表面积':['📐','把6个外表面展开再求和；不能只算看得见的面'],
   '平行四边形面积':['📐','剪拼→矩形；面积=底×高'],
   '体积和体积单位':['📐','体积=空间大小；1cm³=棱长1cm的正方体'],
   '长方体体积':['📐','体积=长×宽×高=底面积×高'],
@@ -1023,13 +1040,225 @@ const __conceptSummary = {
   '可能性':['🎯','确定/不确定；可能性大小用分数表示'],
   '植树问题':['🎯','间隔数+1=两端都栽；-1=两端不栽'],
   '分数的基本性质':['🔢','分子分母同×÷相同非零数，分数大小不变'],
+  '分数与除法的关系':['🔢','a÷b可以写成a/b；分数线就是除号的另一种表示'],
   '约分':['🔢','最大公因数约到最简'],
+  '公因数和最大公因数':['🔢','两个数共有的因数叫公因数，最大的用于约分'],
   '通分':['🔢','最小公倍数化同分母'],
+  '公倍数和最小公倍数':['🔢','两个数共有的倍数叫公倍数，最小的用于通分'],
   '分数加减法':['🔢','同分母直接算；异分母先通分'],
+  '分数加减混合运算':['🔢','分数混合加减遵循从左到右和括号优先，先统一单位更稳'],
   '分数与小数互化':['🔢','10/100/1000直接写小数；其余分子÷分母'],
   '折线统计图':['📊','点=数据，线=变化趋势'],
+  '复式折线统计图':['📊','多条折线放在同一图里比较变化趋势和差距'],
+  '旋转三要素':['📐','旋转要说清中心、方向和角度；形状大小不变'],
+  '不规则图形面积估算':['📐','用数方格或拆补法估算；半格以上通常按一格计'],
   '找次品':['🎯','分成3组最优；天平每次排除2/3'],
 };
+
+function getCurrentConceptNames(){
+  return (document.body?.dataset?.concept || '')
+    .split(/[,，]/)
+    .map(s=>s.trim())
+    .filter(Boolean);
+}
+
+function primaryConceptName(names){
+  const list=Array.isArray(names) ? names.filter(Boolean) : getCurrentConceptNames();
+  return list[0] || '本课概念';
+}
+
+function conceptSummaryText(name){
+  return (__conceptSummary[name] && __conceptSummary[name][1]) || '先看对象、单位和不变量，再决定能否套用规则。';
+}
+
+function conceptFlavor(name){
+  if(/方程|等式|找次品/.test(name))return 'balance';
+  if(/分数|约分|通分|可能性/.test(name))return 'fraction';
+  if(/面积|图形|坐标|数对/.test(name))return 'area';
+  if(/观察|长方体|正方体|体积|容积|表面积/.test(name))return 'space';
+  if(/对称|旋转/.test(name))return 'transform';
+  if(/统计|数据|折线/.test(name))return 'stats';
+  return 'number';
+}
+
+function enrichAdversarialChallenges(base, conceptNames, minCount){
+  const challenges=[...base];
+  const name=primaryConceptName(conceptNames);
+  const flavor=conceptFlavor(name);
+  const bank=[
+    {tag:name,statement:`学习“${name}”时，只要记住公式，不需要知道公式从哪里来。`,answer:'refute',hint:'公式是结果，理解要回到定义和不变量。',explanation:'只背公式容易在条件变化时误用；要知道每一步为什么合法。',counterexample:'面积公式、分数通分、方程变形都依赖具体条件。'},
+    {tag:'条件',statement:`“${name}”的规则在任何题目里都可以直接套用。`,answer:'refute',hint:'找一找规则成立的前提。',explanation:'数学规则总有适用条件，先检查单位、对象、方向或等量关系。',counterexample:'异分母分数不能直接加分子；方程两边要做同一种操作。'},
+    {tag:'迁移',statement:'遇到新题，可以先问：它和我学过的哪个结构相同？',answer:'agree',hint:'这是把题目拆回底层模型。',explanation:'把新题还原成已学结构，能减少机械套题。',counterexample:'小数运算回到位置值，面积问题回到单位格计数。'},
+    {tag:'表达',statement:`如果能用自己的话解释“${name}”为什么成立，通常比只会算更可靠。`,answer:'agree',hint:'费曼输出检验的是理解。',explanation:'能讲清楚来源、条件和反例，说明不是只记住表面步骤。'}
+  ];
+  if(flavor==='fraction'){
+    bank.unshift({tag:'分数单位',statement:'所有分数都可以直接把分子相加、分母相加。',answer:'refute',hint:'先看分数单位是否相同。',explanation:'只有分数单位一致时才可以直接合并分子；异分母要先通分。',counterexample:'1/2+1/3 不等于 2/5。'});
+  }
+  if(flavor==='area'){
+    bank.unshift({tag:'单位格',statement:'图形看起来更长，面积就一定更大。',answer:'refute',hint:'面积看覆盖了多少单位格。',explanation:'面积由单位面积的个数决定，不能只看长度或外观。',counterexample:'细长图形可能面积小，短宽图形可能面积大。'});
+  }
+  if(flavor==='balance'){
+    bank.unshift({tag:'等量',statement:'方程两边只要随便改一边，也能保持相等。',answer:'refute',hint:'天平为什么会倾斜？',explanation:'等式两边必须做同一种合法操作，平衡关系才保留。',counterexample:'x+3=7，只有左边减3会破坏等式。'});
+  }
+  if(flavor==='space'){
+    bank.unshift({tag:'空间',statement:'看得见的面，就是这个立体的全部表面。',answer:'refute',hint:'还有背面、底面或内部空间。',explanation:'空间概念要区分可见面、全部外表面、占据空间和内部容量。',counterexample:'长方体正面只是一面，表面积要算6个面。'});
+  }
+  if(flavor==='stats'){
+    bank.unshift({tag:'趋势',statement:'折线统计图只看最高点，不需要看线的变化。',answer:'refute',hint:'折线的价值在变化过程。',explanation:'统计图不仅看大小，还要看趋势、增减和比较。',counterexample:'两个数据集最高点相同，变化趋势可能完全不同。'});
+  }
+  const seen=new Set(challenges.map(ch=>ch.statement));
+  for(const item of bank){
+    if(challenges.length>=minCount)break;
+    if(seen.has(item.statement))continue;
+    challenges.push(item);
+    seen.add(item.statement);
+  }
+  return challenges;
+}
+
+function enrichPracticeExercises(base, conceptNames, minCount){
+  const exercises=[...base];
+  const name=primaryConceptName(conceptNames);
+  const summary=conceptSummaryText(name);
+  const bank=[
+    {
+      question:`用一句话写出“${escapeHTML(name)}”的核心意思。`,
+      inputs:[{key:'a',width:180}],
+      check:a=>String(a.a||'').trim().length>=4,
+      hint:`可以围绕这句话改写：${summary}`
+    },
+    {
+      question:`写出学习“${escapeHTML(name)}”前必须先检查的一个条件。`,
+      inputs:[{key:'a',width:160}],
+      check:a=>String(a.a||'').trim().length>=2,
+      hint:'想一想：单位相同吗？对象相同吗？等式两边是否同操作？'
+    },
+    {
+      question:`举一个“${escapeHTML(name)}”容易误用的情况。`,
+      inputs:[{key:'a',width:180}],
+      check:a=>String(a.a||'').trim().length>=4,
+      hint:'写出一个反例或一个容易漏掉的条件。'
+    }
+  ];
+  for(const item of bank){
+    if(exercises.length>=minCount)break;
+    exercises.push(item);
+  }
+  return exercises;
+}
+
+function createLessonRoadmap(){
+  if(document.querySelector('.lesson-roadmap'))return;
+  const sections=[...document.querySelectorAll('.section')].filter(section=>section.querySelector('.section-header'));
+  if(sections.length<3)return;
+  sections.forEach((section,i)=>{
+    if(!section.id)section.id='lesson-step-'+(i+1);
+  });
+  const nav=document.createElement('nav');
+  nav.className='lesson-roadmap';
+  nav.setAttribute('aria-label','本课学习流程');
+  nav.innerHTML='<div class="lesson-roadmap-title">学习流程</div><div class="lesson-roadmap-track">'+sections.map((section,i)=>{
+    const title=section.querySelector('.section-header')?.textContent.trim().replace(/\s+/g,' ') || `步骤 ${i+1}`;
+    return `<a href="#${escapeHTML(section.id)}" data-step="${i}"><span>${i+1}</span>${escapeHTML(title)}</a>`;
+  }).join('')+'</div>';
+  const anchor=document.querySelector('.concept-sync-card') || document.querySelector('.module-subtitle') || document.querySelector('.module-title');
+  if(anchor)anchor.insertAdjacentElement('afterend',nav);
+  else document.body.prepend(nav);
+  nav.addEventListener('click',e=>{
+    const link=e.target.closest('a');
+    if(!link)return;
+    e.preventDefault();
+    const target=document.getElementById(link.getAttribute('href').slice(1));
+    if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+  if('IntersectionObserver' in window){
+    const links=[...nav.querySelectorAll('a')];
+    const observer=new IntersectionObserver(entries=>{
+      const visible=entries.filter(entry=>entry.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
+      if(!visible)return;
+      links.forEach(link=>link.classList.toggle('active', link.getAttribute('href')==='#'+visible.target.id));
+    },{rootMargin:'-20% 0px -60% 0px',threshold:[0.1,0.3,0.6]});
+    sections.forEach(section=>observer.observe(section));
+    links[0]?.classList.add('active');
+  }
+}
+
+function ensureCourseSummary(){
+  let target=document.getElementById('course-summary');
+  if(!target){
+    target=document.createElement('div');
+    target.id='course-summary';
+    insertAfterLastSection(target);
+  }
+  createCourseSummary({containerId:'course-summary'});
+}
+
+function ensureNextLesson(){
+  let target=document.getElementById('next-lesson');
+  if(!target){
+    target=document.createElement('div');
+    target.id='next-lesson';
+    target.className='next-lesson-card';
+    const summary=document.getElementById('course-summary');
+    if(summary)summary.insertAdjacentElement('afterend',target);
+    else insertAfterLastSection(target);
+  }
+  createNextLessonSuggestion({containerId:'next-lesson'});
+}
+
+function insertAfterLastSection(node){
+  const sections=[...document.querySelectorAll('.section')];
+  const last=sections[sections.length-1] || document.querySelector('.module-subtitle') || document.querySelector('.module-title');
+  if(last)last.insertAdjacentElement('afterend',node);
+  else document.body.appendChild(node);
+}
+
+function hasRichInteractive(){
+  return !!document.querySelector('.component-card,.number-line-card,.area-model-card,.fraction-bar-card,.balance-card,.interactive-area canvas,canvas.visual-canvas');
+}
+
+function ensureVisualLab(){
+  if(document.querySelector('.auto-visual-lab') || hasRichInteractive())return;
+  const names=getCurrentConceptNames();
+  if(!names.length)return;
+  const name=primaryConceptName(names);
+  const section=document.createElement('div');
+  section.className='section auto-visual-lab';
+  section.innerHTML='<div class="section-header"><span class="emoji">🎮</span>可视化操作台</div><div id="auto-visual-lab-root"></div><p class="auto-lab-note">先拖动或切换模型，再回到题目；把抽象规则落到可见结构上。</p>';
+  const firstMeaning=[...document.querySelectorAll('.section')].find(section=>/公理|实验|模型|交互/.test(section.textContent));
+  if(firstMeaning)firstMeaning.insertAdjacentElement('afterend',section);
+  else insertAfterLastSection(section);
+  mountConceptVisualLab('auto-visual-lab-root',name);
+}
+
+function mountConceptVisualLab(containerId,name){
+  const flavor=conceptFlavor(name);
+  if(flavor==='fraction'){
+    createFractionBar({containerId,title:`${name} · 分数条`,description:'拖动分子和分母，观察同一个整体被平均分成几份。',numerator:1,denominator:4,maxDenominator:12,color:'#3b82f6'});
+    return;
+  }
+  if(flavor==='area'){
+    createAreaModel({containerId,title:`${name} · 单位格模型`,description:'拖动选择区域，观察面积如何由单位格累积。',cols:6,rows:4,highlightCols:3,highlightRows:2,color:'#ef476f'});
+    return;
+  }
+  if(flavor==='balance'){
+    createBalance({containerId,title:`${name} · 天平模型`,description:'把等量关系看成天平，验证两边必须保持平衡。',leftLabel:'x+3',rightLabel:'9',leftValue:7,rightValue:9,target:'6'});
+    return;
+  }
+  if(flavor==='space'){
+    createThreeViewDemo({containerId});
+    return;
+  }
+  if(flavor==='transform'){
+    createTransformDemo({containerId});
+    return;
+  }
+  if(flavor==='stats'){
+    createNumberLine({containerId,title:`${name} · 趋势刻度`,description:'拖动点位，观察数据从小到大、从低到高的变化方向。',min:0,max:100,step:5,initial:40,unit:'%'});
+    return;
+  }
+  createNumberLine({containerId,title:`${name} · 数轴模型`,description:'拖动游标，观察数值、方向、距离和单位之间的关系。',min:0,max:10,step:0.5,initial:2.5});
+}
 
 function createCourseSummary(opts){
   const c = document.getElementById(opts.containerId);
@@ -1144,6 +1373,8 @@ window.getConceptProgress=getConceptProgress;
 window.isConceptCompleted=isConceptCompleted;
 window.setupCompletionButton=setupCompletionButton;
 window.markConceptsComplete=markConceptsComplete;
+window.createLessonRoadmap=createLessonRoadmap;
+window.mountConceptVisualLab=mountConceptVisualLab;
 
 // 自动初始化
 function autoInit(){
@@ -1151,6 +1382,12 @@ function autoInit(){
   // Auto-create completion section on lesson pages (not star map)
   const isStarMap=!document.body?.dataset?.concept && !location.hash;
   const hasConcept=!!(document.body?.dataset?.concept||'').trim();
+  if(hasConcept){
+    createLessonRoadmap();
+    ensureVisualLab();
+    ensureCourseSummary();
+    ensureNextLesson();
+  }
   if(hasConcept && !document.getElementById('completion-section')){
     const section=document.createElement('div');
     section.id='completion-section';

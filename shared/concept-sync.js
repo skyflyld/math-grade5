@@ -71,6 +71,9 @@ function renderConceptSyncCard(){
   const rootPrefix = inferRootPrefix();
   const image = api.assetUrl(concept.image,rootPrefix);
   const graphHref = `${rootPrefix}index.html#${encodeURIComponent(concept.name)}`;
+  const lessonHref = concept.lesson?.href ? `${rootPrefix}${concept.lesson.href}` : graphHref;
+  const lessonLabel = concept.lesson?.label || '查看图谱节点';
+  const lessonMeta = concept.lesson?.meta || concept.label;
   const graphLink = nav.querySelector('a:first-child');
   if(graphLink)graphLink.setAttribute('href',graphHref);
   const visual = image
@@ -78,7 +81,7 @@ function renderConceptSyncCard(){
     : `<div class="concept-sync-symbol">${escapeHTML(concept.icon)}</div>`;
 
   const card = document.createElement('section');
-  card.className = 'concept-sync-card';
+  card.className = 'concept-sync-card concept-hero';
   card.setAttribute('aria-label','概念卡同步区');
   card.innerHTML = `
     <div class="concept-sync-visual">${visual}</div>
@@ -87,7 +90,10 @@ function renderConceptSyncCard(){
       <h2>${escapeHTML(concept.icon)} ${escapeHTML(concept.name)} <span>${escapeHTML(concept.label)}</span></h2>
       <p><strong>视觉模型：</strong>${escapeHTML(concept.metaphor)}</p>
       ${renderConceptChips(concepts,concept.name)}
-      <a class="concept-sync-link" href="${escapeHTML(graphHref)}">回到图谱节点</a>
+      <div class="concept-sync-actions">
+        <a class="concept-sync-primary" href="${escapeHTML(lessonHref)}">${escapeHTML(lessonLabel)}<span>${escapeHTML(lessonMeta)}</span></a>
+        <a class="concept-sync-link" href="${escapeHTML(graphHref)}">回到图谱节点</a>
+      </div>
     </div>`;
   nav.insertAdjacentElement('afterend',card);
 }
