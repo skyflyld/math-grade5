@@ -159,8 +159,21 @@ if(fs.existsSync("shared/components.js")){
   const comp=fs.readFileSync("shared/components.js","utf-8");
   ["createGate","createAdversarialChallenge","createFeynmanFill","createExerciseSet",
    "createNumberLine","createAreaModel","createFractionBar","createBalance",
+   "createLongDivision","createLineChartInteract","createPolygonCut",
    "saveProgress","getProgress","celebrate"].forEach(fn=>{
     check(comp.includes("function "+fn), "Component MISSING: "+fn);
+  });
+  [
+    ["test/fraction-bar.html","createFractionBar"],
+    ["test/long-division.html","createLongDivision"],
+    ["test/line-chart-interact.html","createLineChartInteract"],
+    ["test/polygon-cut.html","createPolygonCut"]
+  ].forEach(([file,fn])=>{
+    check(fs.existsSync(file), "Component demo MISSING: "+file);
+    if(fs.existsSync(file)){
+      const demo=fs.readFileSync(file,"utf-8");
+      check(demo.includes(fn+"("), file+" does not call "+fn);
+    }
   });
 }
 console.log("  Pass: "+(pass-p6pass)+" in this phase");

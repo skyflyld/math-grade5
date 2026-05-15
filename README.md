@@ -66,6 +66,10 @@
 - `createExerciseSet`：分层练习
 - `createFeynmanFill`：费曼填空
 - `saveProgress` / `getProgress`：本地学习进度
+- `createFractionBar`：Canvas 分数条，支持等值放大、约分、通分到公分母
+- `createLongDivision`：竖式除法逐步推进，余数重复时高亮循环节
+- `createLineChartInteract`：折线统计图数据点拖拽与趋势观察
+- `createPolygonCut`：组合图形拖拽切割与面积可加验证
 
 ## 后续优先级
 

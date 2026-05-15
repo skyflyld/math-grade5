@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Long Division Demo</title>
+<link rel="stylesheet" href="../shared/layout.css">
+</head>
+<body>
+<div class="top-nav"><a href="../index.html">首页</a><span class="breadcrumb-sep">›</span><span>long-division demo</span></div>
+<h1 class="module-title">竖式除法组件 Demo</h1>
+<p class="module-subtitle">逐步推进 1 ÷ 7，观察余数重复后循环节出现。</p>
+<div id="division-demo"></div>
+<script src="../shared/components.js"></script>
+<script>
+createLongDivision({
+  containerId:'division-demo',
+  dividend:1,
+  divisor:7,
+  title:'1 ÷ 7 的循环节',
+  description:'每点一次下一步，就多做一位小数；余数重复时高亮循环段。'
+});
+</script>
+</body>
+</html>

@@ -483,7 +483,11 @@ body {
   justify-items: center;
 }
 .number-line-canvas,
-.balance-canvas {
+.balance-canvas,
+.fraction-bar-canvas,
+.long-division-canvas,
+.line-chart-canvas,
+.polygon-cut-canvas {
   width: 100%;
   max-width: 100%;
   display: block;
@@ -497,6 +501,80 @@ body {
   touch-action: none;
 }
 .number-line-canvas:active { cursor: grabbing; }
+.fraction-bar-canvas,
+.long-division-canvas {
+  cursor: default;
+}
+.line-chart-canvas,
+.polygon-cut-canvas {
+  cursor: grab;
+  touch-action: none;
+}
+.line-chart-canvas:active,
+.polygon-cut-canvas:active {
+  cursor: grabbing;
+}
+.component-toolbar {
+  width: 100%;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.component-toolbar button {
+  min-height: 34px;
+  border: 1px solid rgba(148,163,184,.32);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--text);
+  padding: 6px 12px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition);
+}
+.component-toolbar button:hover {
+  border-color: var(--accent);
+  background: #eff6ff;
+  color: var(--accent-deep);
+  transform: translateY(-1px);
+}
+.component-readout {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: #f8fafc;
+  border: 1px solid rgba(226,232,240,.9);
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-top: 10px;
+}
+.component-readout strong {
+  color: var(--accent-deep);
+  font-size: 18px;
+  line-height: 1.2;
+}
+.component-readout span {
+  min-width: 0;
+}
+.component-readout em {
+  justify-self: end;
+  font-style: normal;
+  color: #166534;
+  background: var(--success-light);
+  border-radius: 999px;
+  padding: 3px 9px;
+  font-weight: 800;
+  white-space: nowrap;
+}
 .number-line-info {
   width: 100%;
   display: grid;
@@ -572,7 +650,7 @@ body {
 .fraction-bar-readout {
   width: 100%;
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: repeat(auto-fit,minmax(150px,1fr));
   gap: 10px;
   align-items: center;
   padding: 10px 12px;
@@ -582,10 +660,13 @@ body {
 }
 .fraction-bar-readout strong {
   color: var(--accent-deep);
-  font-size: 24px;
+  font-size: 18px;
   line-height: 1;
 }
 .fraction-bar-readout span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   color: var(--text-muted);
   font-size: 14px;
 }
@@ -1426,6 +1507,9 @@ body {
   }
   .component-card { padding: 16px 14px; }
   .component-card-head { display: block; }
+  .component-readout { grid-template-columns: 1fr; }
+  .component-readout em { justify-self: start; }
+  .component-toolbar { justify-content: flex-start; }
   .area-model-info { grid-template-columns: auto 1fr; }
   .area-model-info b, .area-model-info em { grid-column: 1 / -1; justify-self: start; }
   .number-line-info,

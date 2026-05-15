@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Polygon Cut Demo</title>
+<link rel="stylesheet" href="../shared/layout.css">
+</head>
+<body>
+<div class="top-nav"><a href="../index.html">首页</a><span class="breadcrumb-sep">›</span><span>polygon-cut demo</span></div>
+<h1 class="module-title">组合图形切割组件 Demo</h1>
+<p class="module-subtitle">拖动红色切割线，把 L 形图拆成两块，验证面积可加。</p>
+<div id="polygon-demo"></div>
+<script src="../shared/components.js"></script>
+<script>
+createPolygonCut({
+  containerId:'polygon-demo',
+  title:'L 形组合图形',
+  description:'切割线左右移动时，左右面积变化，但总面积保持不变。',
+  vertices:[[0,0],[6,0],[6,2],[3,2],[3,5],[0,5]],
+  cutX:3
+});
+</script>
+</body>
+</html>

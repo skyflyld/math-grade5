@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Line Chart Demo</title>
+<link rel="stylesheet" href="../shared/layout.css">
+</head>
+<body>
+<div class="top-nav"><a href="../index.html">首页</a><span class="breadcrumb-sep">›</span><span>line-chart demo</span></div>
+<h1 class="module-title">折线统计图组件 Demo</h1>
+<p class="module-subtitle">拖拽任意数据点，观察折线的升降趋势和陡缓变化。</p>
+<div id="chart-demo"></div>
+<script src="../shared/components.js"></script>
+<script>
+createLineChartInteract({
+  containerId:'chart-demo',
+  title:'一周阅读页数',
+  description:'拖动数据点，讨论“趋势”而不是只读单个数。',
+  xLabel:'星期',
+  yLabel:'页数',
+  min:0,
+  max:40,
+  data:[
+    {label:'一',value:10},
+    {label:'二',value:16},
+    {label:'三',value:12},
+    {label:'四',value:24},
+    {label:'五',value:30}
+  ]
+});
+</script>
+</body>
+</html>

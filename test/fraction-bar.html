@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fraction Bar Demo</title>
+<link rel="stylesheet" href="../shared/layout.css">
+</head>
+<body>
+<div class="top-nav"><a href="../index.html">首页</a><span class="breadcrumb-sep">›</span><span>fraction-bar demo</span></div>
+<h1 class="module-title">分数条组件 Demo</h1>
+<p class="module-subtitle">验证等值放大、约分、通分到公分母，以及移动端 Canvas 自适应。</p>
+<div id="fraction-demo"></div>
+<script src="../shared/components.js"></script>
+<script>
+createFractionBar({
+  containerId:'fraction-demo',
+  title:'通分演示：2/3 和 3/4',
+  description:'点击“通分到公分母”，两条分数条会切到 12 等份，长度保持不变。',
+  maxDenominator:36,
+  bars:[
+    {label:'2/3',numerator:2,denominator:3,color:'#3b82f6'},
+    {label:'3/4',numerator:3,denominator:4,color:'#f59e0b'}
+  ]
+});
+</script>
+</body>
+</html>

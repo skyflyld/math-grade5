@@ -52,12 +52,30 @@ function clearFeedback(id){
   const el=document.getElementById(id);
   if(el)el.className='feedback';
 }
-function escapeHTML(value){
-  return String(value==null?'':value).replace(/[&<>"']/g,ch=>({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-  }[ch]));
-}
-function stripHTML(value){
+  function escapeHTML(value){
+    return String(value==null?'':value).replace(/[&<>"']/g,ch=>({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[ch]));
+  }
+  const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
+  const gcd=(a,b)=>{a=Math.abs(a);b=Math.abs(b);while(b){const t=b;b=a%b;a=t;}return a||1;};
+  const lcm=(a,b)=>Math.abs(a*b)/(gcd(a,b)||1);
+  const ratioText=(n,d)=>d?`${n}/${d}`:'0';
+  function roundedRect(ctx,x,y,w,h,r){
+    const radius=Math.min(r,w/2,h/2);
+    if(ctx.roundRect){ctx.roundRect(x,y,w,h,radius);ctx.closePath();return;}
+    ctx.moveTo(x+radius,y);
+    ctx.lineTo(x+w-radius,y);
+    ctx.quadraticCurveTo(x+w,y,x+w,y+radius);
+    ctx.lineTo(x+w,y+h-radius);
+    ctx.quadraticCurveTo(x+w,y+h,x+w-radius,y+h);
+    ctx.lineTo(x+radius,y+h);
+    ctx.quadraticCurveTo(x,y+h,x,y+h-radius);
+    ctx.lineTo(x,y+radius);
+    ctx.quadraticCurveTo(x,y,x+radius,y);
+    ctx.closePath();
+  }
+  function stripHTML(value){
   return String(value==null?'':value).replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
 }
 function getCurrentConceptNames(){
@@ -783,79 +801,516 @@ function createAreaModel(opts){
   };
 }
 
-// === 分数条组件 ===
+// === 分数条组件：Canvas 等值变形/通分/约分底座 ===
 function createFractionBar(opts){
   const c=document.getElementById(opts.containerId);
   if(!c)return;
-  const maxDen=Math.max(2,opts.maxDenominator||12);
+  const maxDen=Math.max(2,opts.maxDenominator||36);
   const title=opts.title||'分数条操作台';
-  const description=opts.description||'拖动分子和分母，观察“取几份 / 平均分成几份”的关系。';
-  const color=opts.color||'#3b82f6';
-  let denominator=Math.max(1,Math.min(maxDen,opts.denominator||4));
-  let numerator=Math.max(0,Math.min(denominator,opts.numerator??1));
-  c.innerHTML=`<div class="component-card fraction-bar-card">
+  const description=opts.description||'拖动分子和分母，观察分数值如何在等值变形中保持不变。';
+  const baseBars=(opts.bars&&opts.bars.length?opts.bars:[{
+    label:opts.label||'分数',
+    numerator:opts.numerator??1,
+    denominator:opts.denominator||4,
+    color:opts.color||'#3b82f6'
+  }]).map((bar,index)=>({
+    label:bar.label||`分数 ${index+1}`,
+    numerator:Math.max(0,Number(bar.numerator??1)),
+    denominator:Math.max(1,Number(bar.denominator||4)),
+    color:bar.color||['#3b82f6','#f59e0b','#16a34a','#8b5cf6'][index%4],
+    originalNumerator:Math.max(0,Number(bar.numerator??1)),
+    originalDenominator:Math.max(1,Number(bar.denominator||4))
+  }));
+  let bars=baseBars.map(bar=>({...bar,displayDenominator:bar.denominator}));
+  let activeIndex=0;
+  let showCommon=false;
+  c.innerHTML=`<div class="component-card fraction-bar-card fraction-canvas-card">
     <div class="component-card-head">
       <div><h4>${escapeHTML(title)}</h4><p>${escapeHTML(description)}</p></div>
     </div>
-    <div class="fraction-bar-stage">
-      <div class="fraction-bar-track" aria-label="${escapeHTML(title)}">
-        <div class="fraction-bar-fill"></div>
-        <div class="fraction-bar-segments"></div>
-      </div>
-      <div class="fraction-bar-readout"></div>
-      <div class="fraction-bar-controls">
-        <label>分子 <input class="fraction-num" type="range" min="0" max="${denominator}" value="${numerator}"><span data-fb-num>${numerator}</span></label>
-        <label>分母 <input class="fraction-den" type="range" min="1" max="${maxDen}" value="${denominator}"><span data-fb-den>${denominator}</span></label>
-      </div>
-      <div class="fraction-bar-equivalents"></div>
+    <canvas class="fraction-bar-canvas" aria-label="${escapeHTML(title)}"></canvas>
+    <div class="fraction-bar-readout"></div>
+    <div class="fraction-bar-controls">
+      <label>分子 <input class="fraction-num" type="range" min="0" max="${bars[0].denominator}" value="${bars[0].numerator}"><span data-fb-num>${bars[0].numerator}</span></label>
+      <label>分母 <input class="fraction-den" type="range" min="1" max="${maxDen}" value="${bars[0].denominator}"><span data-fb-den>${bars[0].denominator}</span></label>
     </div>
+    <div class="component-toolbar">
+      <button type="button" data-fraction-action="common">通分到公分母</button>
+      <button type="button" data-fraction-action="simplify">约成最简</button>
+      <button type="button" data-fraction-action="double">等值放大 ×2</button>
+      <button type="button" data-fraction-action="reset">还原</button>
+    </div>
+    <div class="fraction-bar-equivalents"></div>
   </div>`;
-  const fill=c.querySelector('.fraction-bar-fill');
-  const segments=c.querySelector('.fraction-bar-segments');
+  const canvas=c.querySelector('.fraction-bar-canvas');
+  const ctx=canvas.getContext('2d');
   const readout=c.querySelector('.fraction-bar-readout');
   const eqBar=c.querySelector('.fraction-bar-equivalents');
   const numInput=c.querySelector('.fraction-num');
   const denInput=c.querySelector('.fraction-den');
   const numText=c.querySelector('[data-fb-num]');
   const denText=c.querySelector('[data-fb-den]');
-  const gcd=(a,b)=>{a=Math.abs(a);b=Math.abs(b);while(b){const t=b;b=a%b;a=t;}return a||1;};
-  const ratioText=(n,d)=>d?`${n}/${d}`:'0';
 
-  function draw(){
-    const n=numerator, d=denominator;
-    fill.style.width=`${Math.min(100,(n/d)*100)}%`;
-    fill.style.background=color;
-    fill.textContent=n>0?ratioText(n,d):'0';
-    segments.innerHTML=Array.from({length:d},(_,i)=>`<span class="${i<n?'is-filled':''}"></span>`).join('');
-    numInput.max=d;numInput.value=n;denInput.value=d;numText.textContent=n;denText.textContent=d;
-    readout.innerHTML=`<strong>${ratioText(n,d)}</strong><span> = ${n} 份 / ${d} 份</span><em>${Math.round(n/d*100)}%</em>`;
-    if(opts.showEquivalents!==false){
-      const g=gcd(n,d), sn=n/g, sd=d/g;
-      const doubleD=d*2;
-      const scaled=doubleD<=maxDen?`<b>${n*2}/${doubleD}</b>`:'';
-      const simplified=sn===n&&sd===d?'<span>已是最简分数</span>':`<span>约分后 <b>${sn}/${sd}</b></span>`;
-      eqBar.innerHTML=`<span>等值观察</span>${simplified}${scaled?`<span>同样大小也可写作 ${scaled}</span>`:''}`;
-    }
+  function commonDenominator(){
+    return bars.reduce((acc,bar)=>lcm(acc,bar.denominator),1);
   }
-  function update(){
-    denominator=Math.max(1,Math.min(maxDen,parseInt(denInput.value)||1));
-    numerator=Math.max(0,Math.min(denominator,parseInt(numInput.value)||0));
-    draw();
+  function displayNumerator(bar){
+    return Math.round(bar.numerator*(bar.displayDenominator/bar.denominator));
+  }
+  function emit(){
     if(opts.onChange)opts.onChange({
-      numerator,
-      denominator,
-      value:numerator/denominator,
-      simplified:(()=>{const g=gcd(numerator,denominator);return {numerator:numerator/g,denominator:denominator/g};})()
+      bars:bars.map(bar=>({label:bar.label,numerator:bar.numerator,denominator:bar.denominator,displayNumerator:displayNumerator(bar),displayDenominator:bar.displayDenominator,value:bar.numerator/bar.denominator})),
+      commonDenominator:commonDenominator()
     });
   }
+  function resize(){
+    const width=Math.max(300,Math.min(720,c.clientWidth-32||640));
+    const height=Math.max(190,92+bars.length*58);
+    const ratio=window.devicePixelRatio||1;
+    canvas.style.width=width+'px';
+    canvas.style.height=height+'px';
+    canvas.width=Math.round(width*ratio);
+    canvas.height=Math.round(height*ratio);
+    ctx.setTransform(ratio,0,0,ratio,0,0);
+    draw();
+  }
+  function drawBar(bar,index,width){
+    const left=34, right=34;
+    const top=42+index*58;
+    const h=26;
+    const w=width-left-right;
+    const d=clamp(bar.displayDenominator,1,maxDen);
+    const n=clamp(displayNumerator(bar),0,d);
+    ctx.fillStyle='#f8fafc';
+    ctx.strokeStyle='#cbd5e1';
+    ctx.lineWidth=1.5;
+    ctx.beginPath();
+    roundedRect(ctx,left,top,w,h,8);
+    ctx.fill();
+    ctx.stroke();
+    ctx.save();
+    ctx.beginPath();
+    roundedRect(ctx,left,top,w,h,8);
+    ctx.clip();
+    ctx.fillStyle=bar.color;
+    ctx.globalAlpha=.88;
+    ctx.fillRect(left,top,w*(n/d),h);
+    ctx.globalAlpha=1;
+    ctx.strokeStyle='rgba(15,23,42,.22)';
+    ctx.lineWidth=1;
+    for(let i=1;i<d;i++){
+      const x=left+w*i/d;
+      ctx.beginPath();
+      ctx.moveTo(x,top);
+      ctx.lineTo(x,top+h);
+      ctx.stroke();
+    }
+    ctx.restore();
+    ctx.fillStyle='#1e293b';
+    ctx.font='800 13px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.fillText(`${bar.label}: ${ratioText(bar.numerator,bar.denominator)} → ${ratioText(n,d)}`,left,top-10);
+    ctx.fillStyle='#64748b';
+    ctx.font='12px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.fillText(`值保持 ${Math.round((bar.numerator/bar.denominator)*100)}%`,left+w-94,top-10);
+  }
+  function draw(){
+    const width=canvas.clientWidth||640;
+    const height=canvas.clientHeight||220;
+    ctx.clearRect(0,0,width,height);
+    ctx.fillStyle='#fff';
+    ctx.fillRect(0,0,width,height);
+    ctx.fillStyle='#64748b';
+    ctx.font='12px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.fillText(showCommon?'同一把尺子：所有分数都切到共同等份':'每条分数条长度代表分数值，刻度代表分母',34,22);
+    bars.forEach((bar,index)=>drawBar(bar,index,width));
+    const active=bars[activeIndex]||bars[0];
+    numInput.max=active.denominator;
+    numInput.value=active.numerator;
+    denInput.value=active.denominator;
+    numText.textContent=active.numerator;
+    denText.textContent=active.denominator;
+    const summaries=bars.map(bar=>{
+      const dn=displayNumerator(bar), dd=bar.displayDenominator;
+      return `<span><b>${escapeHTML(bar.label)}</b> ${ratioText(bar.numerator,bar.denominator)}${dd!==bar.denominator?` = ${ratioText(dn,dd)}`:''}</span>`;
+    }).join('');
+    readout.innerHTML=summaries;
+    if(opts.showEquivalents!==false){
+      const activeG=gcd(active.numerator,active.denominator);
+      const sn=active.numerator/activeG, sd=active.denominator/activeG;
+      const common=commonDenominator();
+      eqBar.innerHTML=`<span>等值观察</span><span>公分母 <b>${common}</b></span><span>当前最简 <b>${ratioText(sn,sd)}</b></span>`;
+    }
+  }
+  function setSingle(n,d){
+    const bar=bars[activeIndex]||bars[0];
+    bar.denominator=clamp(Number(d)||bar.denominator,1,maxDen);
+    bar.numerator=clamp(Number(n)||0,0,bar.denominator);
+    bar.displayDenominator=showCommon?commonDenominator():bar.denominator;
+    draw();emit();
+  }
+  function update(){
+    setSingle(parseInt(numInput.value)||0,parseInt(denInput.value)||1);
+  }
+  function applyCommon(value){
+    const common=Math.max(1,Math.min(maxDen,value||commonDenominator()));
+    bars.forEach(bar=>{bar.displayDenominator=common%bar.denominator===0?common:bar.denominator;});
+    showCommon=true;draw();emit();
+  }
+  function simplifyActive(){
+    const bar=bars[activeIndex]||bars[0];
+    const g=gcd(bar.numerator,bar.denominator);
+    bar.numerator/=g;bar.denominator/=g;bar.displayDenominator=bar.denominator;showCommon=false;draw();emit();
+  }
+  function reset(){
+    bars=baseBars.map(bar=>({...bar,displayDenominator:bar.denominator}));
+    showCommon=false;activeIndex=0;draw();emit();
+  }
   numInput.addEventListener('input',update);
-  denInput.addEventListener('input',update);
-  draw();
+  denInput.addEventListener('input',()=>setSingle(Math.min(parseInt(numInput.value)||0,parseInt(denInput.value)||1),parseInt(denInput.value)||1));
+  c.querySelector('.component-toolbar').addEventListener('click',event=>{
+    const action=event.target?.dataset?.fractionAction;
+    if(!action)return;
+    if(action==='common')applyCommon();
+    if(action==='simplify')simplifyActive();
+    if(action==='double'){
+      bars.forEach(bar=>{if(bar.denominator*2<=maxDen){bar.numerator*=2;bar.denominator*=2;bar.displayDenominator=bar.denominator;}});
+      showCommon=false;draw();emit();
+    }
+    if(action==='reset')reset();
+  });
+  resize();
+  window.addEventListener('resize',resize);
+  emit();
   return {
-    getValue:()=>({n:numerator,d:denominator,numerator,denominator,value:numerator/denominator}),
-    setValue:(n,d)=>{denominator=Math.max(1,Math.min(maxDen,d||denominator));numerator=Math.max(0,Math.min(denominator,n||0));draw();if(opts.onChange)opts.onChange({numerator,denominator,value:numerator/denominator});},
+    getValue:()=>{const bar=bars[activeIndex]||bars[0];return {n:bar.numerator,d:bar.denominator,numerator:bar.numerator,denominator:bar.denominator,value:bar.numerator/bar.denominator};},
+    getBars:()=>bars.map(bar=>({...bar,displayNumerator:displayNumerator(bar),value:bar.numerator/bar.denominator})),
+    setValue:(n,d)=>setSingle(n,d),
+    setBars:(nextBars)=>{bars=nextBars.map((bar,index)=>({label:bar.label||`分数 ${index+1}`,numerator:Math.max(0,Number(bar.numerator||0)),denominator:Math.max(1,Number(bar.denominator||1)),displayDenominator:Math.max(1,Number(bar.displayDenominator||bar.denominator||1)),color:bar.color||['#3b82f6','#f59e0b','#16a34a','#8b5cf6'][index%4],originalNumerator:Number(bar.numerator||0),originalDenominator:Number(bar.denominator||1)}));resize();emit();},
+    commonDenominator:applyCommon,
+    simplify:simplifyActive,
+    reset,
     draw
   };
+}
+
+// === 竖式除法组件：逐步推进 + 循环节高亮 ===
+function createLongDivision(opts){
+  const c=document.getElementById(opts.containerId);
+  if(!c)return;
+  let dividend=Number(opts.dividend||1);
+  let divisor=Math.max(1,Number(opts.divisor||3));
+  const maxSteps=Math.max(4,opts.maxSteps||14);
+  let stepIndex=0;
+  let steps=[], integerPart=0, cycleStart=-1, cycleEnd=-1, terminated=false;
+  c.innerHTML=`<div class="component-card long-division-card">
+    <div class="component-card-head"><div><h4>${escapeHTML(opts.title||'竖式除法：发现循环节')}</h4><p>${escapeHTML(opts.description||'逐步做除法：每次余数乘10，如果某个余数再次出现，小数就开始循环。')}</p></div></div>
+    <canvas class="long-division-canvas"></canvas>
+    <div class="component-readout"></div>
+    <div class="component-toolbar">
+      <button type="button" data-ld-action="prev">上一步</button>
+      <button type="button" data-ld-action="next">下一步</button>
+      <button type="button" data-ld-action="finish">看到循环</button>
+      <button type="button" data-ld-action="reset">重置</button>
+    </div>
+  </div>`;
+  const canvas=c.querySelector('canvas');
+  const ctx=canvas.getContext('2d');
+  const readout=c.querySelector('.component-readout');
+  function compute(){
+    integerPart=Math.floor(dividend/divisor);
+    let rem=dividend%divisor;
+    const seen=new Map();
+    steps=[];cycleStart=-1;cycleEnd=-1;terminated=false;
+    for(let i=0;i<maxSteps;i++){
+      if(rem===0){terminated=true;break;}
+      if(seen.has(rem)){cycleStart=seen.get(rem);cycleEnd=i;break;}
+      seen.set(rem,i);
+      const before=rem;
+      const work=before*10;
+      const digit=Math.floor(work/divisor);
+      const next=work%divisor;
+      steps.push({before,work,digit,next});
+      rem=next;
+    }
+    stepIndex=Math.min(stepIndex,steps.length);
+  }
+  function decimalText(limit=stepIndex){
+    const digits=steps.slice(0,limit).map(s=>s.digit).join('');
+    if(!digits)return String(integerPart);
+    if(cycleStart>=0 && limit>=cycleEnd){
+      return `${integerPart}.${digits.slice(0,cycleStart)}(${digits.slice(cycleStart,cycleEnd)})`;
+    }
+    return `${integerPart}.${digits}`;
+  }
+  function resize(){
+    const width=Math.max(300,Math.min(720,c.clientWidth-32||640));
+    const height=Math.max(330,126+Math.max(6,Math.min(maxSteps,steps.length))*32);
+    const ratio=window.devicePixelRatio||1;
+    canvas.style.width=width+'px';canvas.style.height=height+'px';
+    canvas.width=Math.round(width*ratio);canvas.height=Math.round(height*ratio);
+    ctx.setTransform(ratio,0,0,ratio,0,0);
+    draw();
+  }
+  function draw(){
+    const width=canvas.clientWidth||640;
+    const height=canvas.clientHeight||330;
+    ctx.clearRect(0,0,width,height);
+    ctx.fillStyle='#fff';ctx.fillRect(0,0,width,height);
+    ctx.fillStyle='#1e293b';ctx.font='800 22px var(--font-mono), monospace';
+    ctx.fillText(`${dividend} ÷ ${divisor} = ${decimalText()}`,28,42);
+    ctx.strokeStyle='#cbd5e1';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(90,82);ctx.lineTo(width-34,82);ctx.stroke();
+    ctx.fillStyle='#64748b';ctx.font='13px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.fillText('余数轨迹：相同余数再次出现 → 后面的商会重复',28,70);
+    const visible=steps.slice(0,stepIndex);
+    visible.forEach((s,i)=>{
+      const y=112+i*32;
+      const inCycle=cycleStart>=0 && i>=cycleStart && i<cycleEnd && stepIndex>=cycleEnd;
+      if(inCycle){
+        ctx.fillStyle='rgba(245,158,11,.16)';
+        ctx.fillRect(22,y-20,width-44,27);
+      }
+      ctx.fillStyle=inCycle?'#b45309':'#334155';
+      ctx.font='700 14px var(--font-mono), monospace';
+      ctx.fillText(`余数 ${s.before} × 10 = ${s.work}`,34,y);
+      ctx.fillText(`${s.work} ÷ ${divisor} = ${s.digit} 余 ${s.next}`,230,y);
+    });
+    if(cycleStart>=0 && stepIndex>=cycleEnd){
+      const noteY=height-46;
+      ctx.fillStyle='#fff7ed';ctx.strokeStyle='#f59e0b';
+      ctx.beginPath();roundedRect(ctx,28,noteY,width-56,34,10);ctx.fill();ctx.stroke();
+      ctx.fillStyle='#92400e';ctx.font='800 14px -apple-system, BlinkMacSystemFont, sans-serif';
+      ctx.fillText(`循环节：${steps.slice(cycleStart,cycleEnd).map(s=>s.digit).join('')}，因为余数 ${steps[cycleStart]?.before} 重复出现。`,44,noteY+22);
+    }
+    const next=steps[stepIndex];
+    readout.innerHTML=next
+      ? `<strong>下一步</strong><span>把余数 ${next.before} 乘 10，再除以 ${divisor}。</span>`
+      : `<strong>${cycleStart>=0?'发现循环':'除法结束'}</strong><span>${cycleStart>=0?'同一个余数重复，商的小数部分会循环。':'余数为 0，是有限小数。'}</span>`;
+  }
+  function next(){stepIndex=clamp(stepIndex+1,0,steps.length);draw();}
+  function prev(){stepIndex=clamp(stepIndex-1,0,steps.length);draw();}
+  function reset(){stepIndex=0;draw();}
+  function finish(){stepIndex=steps.length;draw();}
+  function setNumbers(nextDividend,nextDivisor){
+    dividend=Number(nextDividend||dividend);
+    divisor=Math.max(1,Number(nextDivisor||divisor));
+    stepIndex=0;compute();draw();
+  }
+  c.querySelector('.component-toolbar').addEventListener('click',event=>{
+    const action=event.target?.dataset?.ldAction;
+    if(action==='next')next();
+    if(action==='prev')prev();
+    if(action==='reset')reset();
+    if(action==='finish')finish();
+  });
+  compute();resize();window.addEventListener('resize',resize);
+  return {next,prev,reset,finish,setNumbers,getState:()=>({dividend,divisor,stepIndex,steps:[...steps],cycleStart,cycleEnd,terminated,result:decimalText(steps.length)}),draw};
+}
+
+// === 折线统计图组件：拖拽数据点 + 实时重绘 ===
+function createLineChartInteract(opts){
+  const c=document.getElementById(opts.containerId);
+  if(!c)return;
+  const title=opts.title||'折线统计图操作台';
+  const description=opts.description||'拖动数据点，观察折线的升降、陡缓和趋势。';
+  let data=(opts.data||[8,11,9,14,18,16]).map((v,i)=>typeof v==='number'?{label:String(i+1),value:v}:{label:String(v.label??i+1),value:Number(v.value||0)});
+  let min=Number.isFinite(opts.min)?opts.min:Math.min(0,...data.map(d=>d.value));
+  let max=Number.isFinite(opts.max)?opts.max:Math.max(10,...data.map(d=>d.value));
+  if(min===max){max=min+10;}
+  let dragging=-1;
+  c.innerHTML=`<div class="component-card line-chart-card">
+    <div class="component-card-head"><div><h4>${escapeHTML(title)}</h4><p>${escapeHTML(description)}</p></div></div>
+    <canvas class="line-chart-canvas"></canvas>
+    <div class="component-readout"></div>
+  </div>`;
+  const canvas=c.querySelector('canvas');
+  const ctx=canvas.getContext('2d');
+  const readout=c.querySelector('.component-readout');
+  function resize(){
+    const width=Math.max(300,Math.min(720,c.clientWidth-32||640));
+    const height=330;
+    const ratio=window.devicePixelRatio||1;
+    canvas.style.width=width+'px';canvas.style.height=height+'px';
+    canvas.width=Math.round(width*ratio);canvas.height=Math.round(height*ratio);
+    ctx.setTransform(ratio,0,0,ratio,0,0);
+    draw();
+  }
+  function bounds(){
+    const width=canvas.clientWidth||640, height=canvas.clientHeight||330;
+    return {left:54,right:24,top:26,bottom:50,width,height,plotW:width-78,plotH:height-76};
+  }
+  function pointFor(index){
+    const b=bounds();
+    const x=b.left+(data.length===1?0.5:index/(data.length-1))*b.plotW;
+    const y=b.top+(max-data[index].value)/(max-min)*b.plotH;
+    return {x,y};
+  }
+  function valueFromY(y){
+    const b=bounds();
+    const ratio=clamp((b.top+b.plotH-y)/b.plotH,0,1);
+    return Math.round((min+ratio*(max-min))*10)/10;
+  }
+  function draw(){
+    const b=bounds();
+    ctx.clearRect(0,0,b.width,b.height);
+    ctx.fillStyle='#fff';ctx.fillRect(0,0,b.width,b.height);
+    ctx.strokeStyle='#e2e8f0';ctx.lineWidth=1;
+    ctx.fillStyle='#64748b';ctx.font='12px -apple-system, BlinkMacSystemFont, sans-serif';
+    for(let i=0;i<=4;i++){
+      const y=b.top+b.plotH*i/4;
+      const value=max-(max-min)*i/4;
+      ctx.beginPath();ctx.moveTo(b.left,y);ctx.lineTo(b.left+b.plotW,y);ctx.stroke();
+      ctx.fillText(String(Math.round(value*10)/10),10,y+4);
+    }
+    ctx.strokeStyle='#334155';ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.moveTo(b.left,b.top);ctx.lineTo(b.left,b.top+b.plotH);ctx.lineTo(b.left+b.plotW,b.top+b.plotH);ctx.stroke();
+    ctx.strokeStyle='#3b82f6';ctx.lineWidth=3;ctx.beginPath();
+    data.forEach((_,i)=>{const p=pointFor(i);if(i)ctx.lineTo(p.x,p.y);else ctx.moveTo(p.x,p.y);});
+    ctx.stroke();
+    data.forEach((d,i)=>{
+      const p=pointFor(i);
+      ctx.fillStyle=i===dragging?'#f59e0b':'#3b82f6';
+      ctx.beginPath();ctx.arc(p.x,p.y,8,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#1e293b';ctx.font='800 12px -apple-system, BlinkMacSystemFont, sans-serif';
+      ctx.fillText(String(d.value),p.x-10,p.y-14);
+      ctx.fillStyle='#64748b';ctx.font='12px -apple-system, BlinkMacSystemFont, sans-serif';
+      ctx.fillText(d.label,p.x-8,b.top+b.plotH+24);
+    });
+    const diffs=data.slice(1).map((d,i)=>d.value-data[i].value);
+    const up=diffs.filter(v=>v>0).length, down=diffs.filter(v=>v<0).length;
+    readout.innerHTML=`<strong>${up>=down?'整体上升':'整体下降或波动'}</strong><span>${escapeHTML(opts.xLabel||'横轴')}：${data.map(d=>d.label).join('、')}</span><em>${escapeHTML(opts.yLabel||'数据')}：${data.map(d=>d.value).join('、')}</em>`;
+  }
+  function eventPoint(event){
+    const rect=canvas.getBoundingClientRect();
+    const p=event.touches?.[0]||event;
+    return {x:p.clientX-rect.left,y:p.clientY-rect.top};
+  }
+  function nearest(pt){
+    let best=-1,bestD=Infinity;
+    data.forEach((_,i)=>{const p=pointFor(i),d=Math.hypot(pt.x-p.x,pt.y-p.y);if(d<bestD){bestD=d;best=i;}});
+    return bestD<28?best:-1;
+  }
+  function emit(){if(opts.onChange)opts.onChange(data.map(d=>({...d})));}
+  canvas.addEventListener('pointerdown',event=>{dragging=nearest(eventPoint(event));if(dragging>=0){canvas.setPointerCapture?.(event.pointerId);draw();}});
+  canvas.addEventListener('pointermove',event=>{if(dragging<0)return;data[dragging].value=valueFromY(eventPoint(event).y);draw();emit();});
+  canvas.addEventListener('pointerup',()=>{dragging=-1;draw();});
+  canvas.addEventListener('pointercancel',()=>{dragging=-1;draw();});
+  resize();window.addEventListener('resize',resize);
+  return {getData:()=>data.map(d=>({...d})),setData:(next)=>{data=next.map((v,i)=>typeof v==='number'?{label:String(i+1),value:v}:{label:String(v.label??i+1),value:Number(v.value||0)});resize();emit();},draw};
+}
+
+// === 多边形切割组件：拖拽切割线 + 面积守恒 ===
+function createPolygonCut(opts){
+  const c=document.getElementById(opts.containerId);
+  if(!c)return;
+  const title=opts.title||'组合图形切割操作台';
+  const description=opts.description||'拖动切割线，把复杂图形拆成容易计算的部分，观察总面积不变。';
+  const vertices=(opts.vertices||[[0,0],[6,0],[6,2],[3,2],[3,5],[0,5]]).map(p=>({x:Number(p[0]??p.x),y:Number(p[1]??p.y)}));
+  const xs=vertices.map(p=>p.x), ys=vertices.map(p=>p.y);
+  const minX=Math.min(...xs), maxX=Math.max(...xs), minY=Math.min(...ys), maxY=Math.max(...ys);
+  let cutX=Number.isFinite(opts.cutX)?opts.cutX:(minX+maxX)/2;
+  let dragging=false;
+  c.innerHTML=`<div class="component-card polygon-cut-card">
+    <div class="component-card-head"><div><h4>${escapeHTML(title)}</h4><p>${escapeHTML(description)}</p></div></div>
+    <canvas class="polygon-cut-canvas"></canvas>
+    <div class="component-readout"></div>
+  </div>`;
+  const canvas=c.querySelector('canvas');
+  const ctx=canvas.getContext('2d');
+  const readout=c.querySelector('.component-readout');
+  function area(poly){
+    if(poly.length<3)return 0;
+    let sum=0;
+    for(let i=0;i<poly.length;i++){
+      const a=poly[i],b=poly[(i+1)%poly.length];
+      sum+=a.x*b.y-b.x*a.y;
+    }
+    return Math.abs(sum)/2;
+  }
+  function clip(poly,keepLeft){
+    const inside=p=>keepLeft?p.x<=cutX:p.x>=cutX;
+    const intersect=(a,b)=>{
+      const t=(cutX-a.x)/(b.x-a.x||1e-9);
+      return {x:cutX,y:a.y+(b.y-a.y)*t};
+    };
+    const out=[];
+    for(let i=0;i<poly.length;i++){
+      const cur=poly[i],prev=poly[(i+poly.length-1)%poly.length];
+      const curIn=inside(cur),prevIn=inside(prev);
+      if(curIn){
+        if(!prevIn)out.push(intersect(prev,cur));
+        out.push(cur);
+      }else if(prevIn){
+        out.push(intersect(prev,cur));
+      }
+    }
+    return out;
+  }
+  function resize(){
+    const width=Math.max(300,Math.min(720,c.clientWidth-32||640));
+    const height=360;
+    const ratio=window.devicePixelRatio||1;
+    canvas.style.width=width+'px';canvas.style.height=height+'px';
+    canvas.width=Math.round(width*ratio);canvas.height=Math.round(height*ratio);
+    ctx.setTransform(ratio,0,0,ratio,0,0);
+    draw();
+  }
+  function mapper(){
+    const width=canvas.clientWidth||640,height=canvas.clientHeight||360;
+    const pad=48;
+    const scale=Math.min((width-pad*2)/(maxX-minX),(height-pad*2)/(maxY-minY));
+    return {
+      width,height,scale,
+      x:x=>pad+(x-minX)*scale,
+      y:y=>pad+(y-minY)*scale,
+      mx:px=>minX+(px-pad)/scale
+    };
+  }
+  function drawPoly(poly,fill,stroke){
+    if(!poly.length)return;
+    const m=mapper();
+    ctx.beginPath();
+    poly.forEach((p,i)=>{const x=m.x(p.x),y=m.y(p.y);if(i)ctx.lineTo(x,y);else ctx.moveTo(x,y);});
+    ctx.closePath();
+    ctx.fillStyle=fill;ctx.strokeStyle=stroke;ctx.lineWidth=2;ctx.fill();ctx.stroke();
+  }
+  function draw(){
+    const m=mapper();
+    ctx.clearRect(0,0,m.width,m.height);
+    ctx.fillStyle='#fff';ctx.fillRect(0,0,m.width,m.height);
+    ctx.strokeStyle='#eef2f7';ctx.lineWidth=1;
+    for(let x=Math.ceil(minX);x<=maxX;x++){ctx.beginPath();ctx.moveTo(m.x(x),m.y(minY));ctx.lineTo(m.x(x),m.y(maxY));ctx.stroke();}
+    for(let y=Math.ceil(minY);y<=maxY;y++){ctx.beginPath();ctx.moveTo(m.x(minX),m.y(y));ctx.lineTo(m.x(maxX),m.y(y));ctx.stroke();}
+    const left=clip(vertices,true),right=clip(vertices,false);
+    drawPoly(left,'rgba(59,130,246,.28)','#3b82f6');
+    drawPoly(right,'rgba(245,158,11,.28)','#f59e0b');
+    const cx=m.x(cutX);
+    ctx.strokeStyle='#ef4444';ctx.lineWidth=3;ctx.setLineDash([7,6]);
+    ctx.beginPath();ctx.moveTo(cx,m.y(minY)-20);ctx.lineTo(cx,m.y(maxY)+20);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='#ef4444';ctx.beginPath();ctx.arc(cx,m.y(minY)-18,7,0,Math.PI*2);ctx.fill();
+    const aTotal=area(vertices),aLeft=area(left),aRight=area(right);
+    readout.innerHTML=`<strong>总面积 ${aTotal.toFixed(1)}</strong><span>左侧 ${aLeft.toFixed(1)} + 右侧 ${aRight.toFixed(1)}</span><em>差值 ${(Math.abs(aTotal-aLeft-aRight)).toFixed(2)}</em>`;
+  }
+  function eventPoint(event){
+    const rect=canvas.getBoundingClientRect();
+    const p=event.touches?.[0]||event;
+    return {x:p.clientX-rect.left,y:p.clientY-rect.top};
+  }
+  canvas.addEventListener('pointerdown',event=>{
+    const m=mapper();
+    if(Math.abs(eventPoint(event).x-m.x(cutX))<24){dragging=true;canvas.setPointerCapture?.(event.pointerId);}
+  });
+  canvas.addEventListener('pointermove',event=>{
+    if(!dragging)return;
+    const m=mapper();
+    cutX=clamp(m.mx(eventPoint(event).x),minX+.1,maxX-.1);
+    draw();
+    if(opts.onChange)opts.onChange({cutX,total:area(vertices),left:area(clip(vertices,true)),right:area(clip(vertices,false))});
+  });
+  canvas.addEventListener('pointerup',()=>{dragging=false;});
+  canvas.addEventListener('pointercancel',()=>{dragging=false;});
+  resize();window.addEventListener('resize',resize);
+  return {setCut:(x)=>{cutX=clamp(Number(x)||cutX,minX+.1,maxX-.1);draw();},getAreas:()=>({cutX,total:area(vertices),left:area(clip(vertices,true)),right:area(clip(vertices,false))}),draw};
 }
 
 // === 天平组件 ===
@@ -1517,6 +1972,9 @@ window.createFeynmanFill=createFeynmanFill;
 window.createNumberLine=createNumberLine;
 window.createAreaModel=createAreaModel;
 window.createFractionBar=createFractionBar;
+window.createLongDivision=createLongDivision;
+window.createLineChartInteract=createLineChartInteract;
+window.createPolygonCut=createPolygonCut;
 window.createBalance=createBalance;
 window.createThreeViewDemo=createThreeViewDemo;
 window.createTransformDemo=createTransformDemo;
