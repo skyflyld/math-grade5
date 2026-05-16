@@ -175,7 +175,7 @@ const lessonByConcept = {
   '平行四边形面积':{href:withHash('modules/06-polygon-area/6-1-parallelogram.html','平行四边形面积'),label:'进入平行四边形面积课件',meta:'剪拼转化'},
   '三角形面积':{href:withHash('modules/06-polygon-area/6-2-triangle.html','三角形面积'),label:'进入三角形面积课件',meta:'双拼一半'},
   '梯形面积':{href:withHash('modules/06-polygon-area/6-3-trapezoid.html','梯形面积'),label:'进入梯形面积课件',meta:'拼合推导'},
-  '组合图形面积':{href:withHash('modules/06-polygon-area/index.html','组合图形面积'),label:'进入多边形面积模块',meta:'3 个互动课件'},
+  '组合图形面积':{href:withHash('modules/06-polygon-area/6-5-comb-area.html','组合图形面积'),label:'进入组合图形面积课件',meta:'分割添补'},
   '整数除法':{href:withHash('modules/14-fraction-meaning/14-2-division.html','整数除法'),label:'进入分数与除法课件',meta:'除法与分数线'},
   '分数基础':{href:withHash('modules/14-fraction-meaning/index.html','分数基础'),label:'进入分数意义模块',meta:'3 个互动课件'},
   '分数的意义':{href:withHash('modules/14-fraction-meaning/14-1-meaning.html','分数的意义'),label:'进入分数的意义课件',meta:'单位1'},

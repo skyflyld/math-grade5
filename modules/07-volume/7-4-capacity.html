@@ -1,25 +1,265 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>容积和容积单位 · 五年级</title><link rel="stylesheet" href="../../shared/layout.css"><style>.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;}.visual-step h4{font-size:17px;margin-bottom:12px;}.visual-step .step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:700;background:var(--accent-light);color:var(--accent-deep);margin-bottom:10px;}.concept-highlight{background:linear-gradient(145deg,#fefce8,#fff);border:2px solid #fde68a;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}.concept-highlight .big-idea{font-size:22px;font-weight:800;color:#92400e;line-height:1.6;}.concept-highlight .big-idea .highlight{color:var(--accent-deep);background:var(--accent-light);padding:2px 8px;border-radius:4px;}.thought-bubble{display:inline-block;background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:10px 16px;margin:6px 0;font-size:14px;max-width:90%;}.thought-bubble::before{content:'💭 ';}</style></head>
-<body data-concept="容积和容积单位"><div class="top-nav"><a href="../../index.html#%E5%AE%B9%E7%A7%AF%E5%92%8C%E5%AE%B9%E7%A7%AF%E5%8D%95%E4%BD%8D">🏠</a><span class="breadcrumb-sep">›</span><span>容积和容积单位</span></div>
-<h1 class="module-title">🥛 容积 — 容器内部的空间</h1><p class="module-subtitle">体积看物体占多大，容积看容器能装多少。1L=1dm³，1mL=1cm³。</p>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>容积和容积单位 · 五年级</title>
+<link rel="stylesheet" href="../../shared/layout.css">
+<style>
+.lesson-hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(220px,.85fr);gap:18px;align-items:center;margin:18px 0 24px;padding:22px;border:1px solid rgba(148,163,184,.3);border-radius:var(--radius);background:linear-gradient(135deg,#fff 0%,#f8fbff 56%,#ecfeff 100%);box-shadow:var(--shadow-md);overflow:hidden;}
+.lesson-hero h2{margin:0 0 8px;font-size:24px;line-height:1.25;color:var(--text);}
+.lesson-hero p{margin:0;color:var(--text-muted);font-size:14px;line-height:1.8;}
+.lesson-hero-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+.lesson-hero-tags span{display:inline-flex;align-items:center;min-height:28px;padding:4px 10px;border-radius:999px;background:#fff;border:1px solid var(--border);font-size:12px;font-weight:800;color:var(--text-muted);}
+.hero-tank{min-height:166px;border-radius:var(--radius-md);background:radial-gradient(circle at 24% 24%,rgba(14,165,233,.2),transparent 34%),radial-gradient(circle at 76% 72%,rgba(6,182,212,.2),transparent 36%),linear-gradient(145deg,#ecfeff,#fff);display:grid;place-items:center;padding:18px;}
+.tank-icon{position:relative;width:150px;height:118px;border:4px solid #0f766e;border-top:0;border-radius:0 0 18px 18px;background:linear-gradient(to top,rgba(14,165,233,.45) 60%,transparent 60%);}
+.tank-icon:before{content:"30×20×25";position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);font-weight:900;color:#164e63;background:rgba(255,255,255,.76);border-radius:999px;padding:5px 10px;}
+.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin:16px 0;}
+.visual-step h4{font-size:17px;margin-bottom:10px;}
+.step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:800;background:#cffafe;color:#0e7490;margin-bottom:10px;}
+.principle-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:12px;}
+.principle-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;}
+.principle-card b{display:block;color:var(--text);margin-bottom:4px;}
+.principle-card p{margin:0;color:var(--text-muted);font-size:13px;line-height:1.65;}
+.concept-highlight{background:linear-gradient(145deg,#ecfeff,#fff);border:2px solid #a5f3fc;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}
+.concept-highlight .big-idea{font-size:21px;font-weight:900;color:#155e75;line-height:1.6;}
+.concept-highlight .highlight{color:#155e75;background:#cffafe;padding:2px 8px;border-radius:4px;}
+.thought-bubble{display:inline-block;background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:10px 16px;margin:6px 0;font-size:14px;line-height:1.65;max-width:100%;}
+.capacity-card{border:1px solid var(--border);border-radius:var(--radius);padding:18px;background:#fff;box-shadow:var(--shadow);}
+.capacity-canvas{display:block;width:100%;max-width:720px;height:360px;margin:0 auto;border-radius:var(--radius-sm);background:#fff;}
+.capacity-readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:12px;}
+.capacity-readout span{border:1px solid var(--border);border-radius:12px;background:#f8fafc;padding:10px 12px;font-size:13px;color:var(--text-muted);}
+.capacity-readout b{display:block;color:#0f172a;font-size:18px;margin-bottom:2px;}
+.lab-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:12px 0 0;}
+.example-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;}
+.example-card{border:1px solid var(--border);background:#fff;border-radius:var(--radius-sm);padding:16px;line-height:1.7;}
+.example-card strong{color:#0e7490;}
+.textbook-box{cursor:pointer;padding:16px 18px;background:#ecfeff;border:1px solid #a5f3fc;border-radius:var(--radius-sm);line-height:1.75;}
+.textbook-box .annot{display:none;margin-top:10px;padding-top:10px;border-top:1px dashed #67e8f9;color:#155e75;}
+@media(max-width:640px){.lesson-hero{grid-template-columns:1fr;padding:16px}.lesson-hero h2{font-size:20px}.hero-tank{min-height:126px}.visual-step{padding:18px 14px}.capacity-canvas{height:300px}.example-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body data-concept="容积和容积单位,体积和体积单位,长方体体积,单位换算">
+<div class="top-nav"><a href="../../index.html#%E5%AE%B9%E7%A7%AF%E5%92%8C%E5%AE%B9%E7%A7%AF%E5%8D%95%E4%BD%8D">🏠</a><span class="breadcrumb-sep">›</span><span>容积和容积单位</span></div>
+<h1 class="module-title">🥛 容积 — 容器内部能装多少</h1>
+<p class="module-subtitle">体积看物体占多大，容积看容器内部空腔能装多少。</p>
+
+<div class="lesson-hero">
+  <div>
+    <h2>水装进去的空间，就是容积</h2>
+    <p>容积和体积用同一个公式，但量的对象不同。体积量外部占位，容积量内部能装的空间；有壁厚时，必须用内部尺寸。</p>
+    <div class="lesson-hero-tags"><span>内部尺寸</span><span>cm³ ↔ mL</span><span>dm³ ↔ L</span></div>
+  </div>
+  <div class="hero-tank" aria-label="容积视觉模型"><div class="tank-icon"></div></div>
+</div>
+
 <div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
-<div class="section"><div class="section-header"><span class="emoji">🧱</span>拆到公理</div><div class="visual-step"><span class="step-label">第 1 步</span><h4>容积和体积的区别</h4><div class="thought-bubble">水杯的外部尺寸算体积，内部空间算容积。容积≤同一物体的体积（因为有杯壁厚度）。</div></div>
-<div class="visual-step"><span class="step-label">第 2 步</span><h4>单位关系</h4><div style="display:flex;gap:12px;justify-content:center;"><div style="padding:14px;background:#dbeafe;border-radius:8px;text-align:center;"><strong>1L = 1dm³</strong><br>升=立方分米</div><div style="padding:14px;background:#fef3c7;border-radius:8px;text-align:center;"><strong>1mL = 1cm³</strong><br>毫升=立方厘米</div></div></div>
-<div class="concept-highlight"><div class="big-idea">🔑 <span class="highlight">容积是体积在容器上的应用——1L=1dm³, 1000L=1m³</span></div></div></div>
-<div class="section"><div class="section-header"><span class="emoji">🎯</span>典例精讲</div><div class="visual-step"><h4>🎯 2L=？dm³</h4>2dm³<br>✏️ 500mL=？L<input class="input-field" id="ex1" style="width:40px;"><button class="btn btn-primary btn-sm" onclick="checkE(1,'0.5',ex1,fb1)">提交</button><div class="feedback" id="fb1"></div></div>
-<div class="visual-step"><h4>🎯 一个鱼缸长5dm宽3dm高4dm，容积？</h4>5×3×4=60L<br>✏️ 长4宽2高3dm→<input class="input-field" id="ex2" style="width:40px;"><button class="btn btn-primary btn-sm" onclick="checkE(2,'24',ex2,fb2)">提交</button><div class="feedback" id="fb2"></div></div></div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🧱</span>拆到公理</div>
+  <div class="visual-step">
+    <span class="step-label">公理 1</span>
+    <h4>容积公式和体积公式一样</h4>
+    <p>长方体容器内部空间仍然是一层一层单位立方体，所以容积 = 内部长 × 内部宽 × 内部高。</p>
+  </div>
+  <div class="visual-step">
+    <span class="step-label">公理 2</span>
+    <h4>容积量内部，体积量外部</h4>
+    <p>纸箱、鱼缸、水杯都有厚度。外部长宽高算物体体积，内部长宽高算能装水的容积。</p>
+    <div class="principle-grid">
+      <div class="principle-card"><b>1L = 1dm³</b><p>升是日常容积单位，和立方分米等值。</p></div>
+      <div class="principle-card"><b>1mL = 1cm³</b><p>毫升和立方厘米等值，适合小容器。</p></div>
+      <div class="principle-card"><b>1000mL = 1L</b><p>容积单位和体积单位之间可以互换。</p></div>
+    </div>
+  </div>
+  <div class="concept-highlight"><div class="big-idea">容积 = <span class="highlight">内部底面积</span> × <span class="highlight">水位高度</span></div></div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🎮</span>交互实验室 · Canvas 注水动画</div>
+  <div class="capacity-card">
+    <canvas id="capacity-canvas" class="capacity-canvas" aria-label="容器注水动画"></canvas>
+    <div class="capacity-readout" id="capacity-readout"></div>
+    <div class="lab-actions">
+      <button class="btn btn-outline btn-sm" type="button" data-water="5">水位 5cm</button>
+      <button class="btn btn-primary btn-sm" type="button" data-water="15">水位 15cm</button>
+      <button class="btn btn-success btn-sm" type="button" data-water="25">装满 25cm</button>
+      <button class="btn btn-outline btn-sm" type="button" data-water="0">倒空</button>
+    </div>
+  </div>
+  <p class="thought-bubble">内部尺寸固定为长30cm、宽20cm、高25cm。水位到哪里，就只计算底面积30×20乘以当前水高。</p>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">📐</span>教材原文</div>
+  <div class="textbook-box" onclick="const a=this.querySelector('.annot');a.style.display=a.style.display==='block'?'none':'block'">
+    📖 <b>核心表述：</b>容器所能容纳物体的体积，通常叫做它们的容积。 <i>（点击看拆解）</i>
+    <div class="annot"><b>拆解：</b>容积仍然是体积，只是关注“容器里面能装多少”。所以公式相同，但尺寸必须从内部量。</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🎯</span>典例精讲</div>
+  <div class="example-grid">
+    <div class="example-card"><h4>例 1：装满容器</h4><p>内部 30cm×20cm×25cm，容积 = 15000cm³ = 15000mL = <strong>15L</strong>。</p></div>
+    <div class="example-card"><h4>例 2：水位 15cm</h4><p>底面积 30×20=600cm²，水体积 = 600×15 = 9000cm³ = <strong>9L</strong>。</p></div>
+    <div class="example-card"><h4>例 3：有壁厚鱼缸</h4><p>外部 50×30×40cm，玻璃厚1cm，内部约 48×28×39cm，不能直接用外部尺寸。</p></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">⚠️</span>踩坑预警</div>
+  <div class="pitfall"><div class="pitfall-title">🕳️ 把体积直接当容积</div><p><b>症状：</b>纸箱外部体积 60dm³，就说容积也是 60dm³。</p><p><b>根因：</b>忽略纸板厚度。薄壁容器可以近似，但厚壁容器差异明显。</p></div>
+  <div class="pitfall"><div class="pitfall-title">🕳️ 单位进率混乱</div><p><b>症状：</b>把 1m³ 误认为 1000cm³。</p><p><b>根因：</b>长度扩大10倍，体积扩大1000倍；1m³ = 1000000cm³。</p></div>
+</div>
+
 <div class="section"><div class="section-header"><span class="emoji">⚡</span>对抗挑战</div><div id="adversary-root"></div></div>
 <div class="section"><div class="section-header"><span class="emoji">🦜</span>费曼输出</div><div id="feynman-root"></div></div>
-<div class="section"><div class="section-header"><span class="emoji">📝</span>练习</div>
-<div class="exercise-tier"><h3><span class="tier-badge basic">基础</span></h3><div id="ex-basic"></div></div><div class="exercise-tier" id="tier-adv" style="display:none;"><h3><span class="tier-badge advanced">提升</span></h3><div id="ex-adv"></div></div>
-<div id="done" style="display:none;text-align:center;padding:24px;font-size:24px;">🎉 通关！</div></div>
-<script src="../../shared/concepts.js"></script><script src="../../shared/concept-sync.js"></script><script src="../../shared/components.js"></script>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">📝</span>分层练习</div>
+  <div class="exercise-tier"><h3><span class="tier-badge basic">组1 直接应用</span></h3><div id="ex-basic"></div></div>
+  <div class="exercise-tier"><h3><span class="tier-badge advanced">组2 变式迁移</span></h3><div id="ex-transfer"></div></div>
+  <div class="exercise-tier"><h3><span class="tier-badge extra">组3 综合应用</span></h3><div id="ex-synthesis"></div></div>
+  <div id="done" style="display:none;text-align:center;padding:24px;font-size:24px;">🎉 容积课件完成</div>
+</div>
+
+<script src="../../shared/concepts.js"></script>
+<script src="../../shared/concept-sync.js"></script>
+<script src="../../shared/components.js"></script>
 <script>
-createGate({containerId:'gate-root',questions:[{label:'1L等于多少dm³？',inputs:[{key:'a',width:30}],check:u=>u.a==='1'}],onPass:()=>document.getElementById('gate-root').innerHTML='✅'});
-function checkE(n,ans,i,f){const ok=i.value.trim()===ans;f.className='feedback show '+(ok?'success':'error');f.innerHTML=ok?'✅':`❌ ${ans}`;}
-createAdversarialChallenge({containerId:'adversary-root',challenges:[{tag:'关系',statement:'容积和体积是一回事。',answer:'refute',hint:'容器的外部和内部一样吗？',explanation:'容积指内部空间，体积指整个物体占空间，容积≤体积。',counterexample:'水杯体积>容积（有杯壁厚度）。'}],onComplete:()=>saveProgress({'volume':{'capacity':{'adversary':'complete'}}})});
-createFeynmanFill({containerId:'feynman-root',template:'容积是容器___的空间。1L=___dm³=___cm³=___mL。长方体容积=长×___×高（从___面量）。',answer:['内部','1','1000','1000','宽','内'],onComplete:()=>saveProgress({'volume':{'capacity':{'feynman':'complete'}}})});
-createExerciseSet({containerId:'ex-basic',exercises:[{question:'1L=?mL',inputs:[{key:'a',width:40}],check:a=>a.a==='1000'},{question:'3L=?dm³',inputs:[{key:'a',width:40}],check:a=>a.a==='3'}],passThreshold:0.5,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}});
-function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[{question:'1m³=?L',inputs:[{key:'a',width:40}],check:a=>a.a==='1000'}],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'volume':{'capacity':{'completed':true}}});}});}
+createGate({
+  containerId:'gate-root',
+  questions:[
+    {label:'长方体体积公式是',inputs:[{key:'a',width:116,placeholder:'长×宽×高'}],check:u=>/长.*宽.*高|底面积.*高/.test(u.a),hint:'容积公式来自体积公式。'},
+    {label:'1L 等于多少 dm³？',inputs:[{key:'a',width:72}],check:u=>u.a==='1',hint:'1L=1dm³。'}
+  ],
+  onPass:()=>{document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:800;padding:12px;">✅ 已准备好：用内部尺寸算容积。</div>';}
+});
+
+function createCapacityPourLab(){
+  var canvas=document.getElementById('capacity-canvas');
+  var readout=document.getElementById('capacity-readout');
+  var ctx=canvas.getContext('2d');
+  var length=30,width=20,height=25,water=0,target=0,raf=0;
+  function resize(){
+    var ratio=window.devicePixelRatio||1;
+    var w=Math.max(300,Math.min(720,canvas.parentElement.clientWidth-32||640));
+    var h=canvas.clientHeight||360;
+    canvas.style.width=w+'px';
+    canvas.width=Math.round(w*ratio);
+    canvas.height=Math.round(h*ratio);
+    ctx.setTransform(ratio,0,0,ratio,0,0);
+    draw();
+  }
+  function drawTank(x,y,w,h,depth){
+    var dx=depth,dy=-depth*.45;
+    ctx.strokeStyle='#0f766e';ctx.lineWidth=3;
+    ctx.fillStyle='rgba(236,254,255,.7)';
+    ctx.beginPath();ctx.rect(x,y,w,h);ctx.fill();ctx.stroke();
+    ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+dx,y+dy);ctx.lineTo(x+w+dx,y+dy);ctx.lineTo(x+w,y);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(x+w,y);ctx.lineTo(x+w+dx,y+dy);ctx.lineTo(x+w+dx,y+h+dy);ctx.lineTo(x+w,y+h);ctx.stroke();
+    ctx.strokeStyle='rgba(15,118,110,.35)';
+    ctx.beginPath();ctx.moveTo(x,y+h);ctx.lineTo(x+dx,y+h+dy);ctx.lineTo(x+w+dx,y+h+dy);ctx.stroke();
+  }
+  function drawWater(x,y,w,h,depth,level){
+    var fillH=h*(level/height);
+    var top=y+h-fillH;
+    var dx=depth,dy=-depth*.45;
+    ctx.fillStyle='rgba(14,165,233,.45)';
+    ctx.strokeStyle='rgba(14,116,144,.8)';
+    ctx.lineWidth=2;
+    ctx.beginPath();ctx.rect(x,top,w,fillH);ctx.fill();ctx.stroke();
+    ctx.fillStyle='rgba(125,211,252,.62)';
+    ctx.beginPath();ctx.moveTo(x,top);ctx.lineTo(x+dx,top+dy);ctx.lineTo(x+w+dx,top+dy);ctx.lineTo(x+w,top);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.fillStyle='rgba(2,132,199,.28)';
+    ctx.beginPath();ctx.moveTo(x+w,top);ctx.lineTo(x+w+dx,top+dy);ctx.lineTo(x+w+dx,y+h+dy);ctx.lineTo(x+w,y+h);ctx.closePath();ctx.fill();
+  }
+  function draw(){
+    var cw=canvas.clientWidth||640,ch=canvas.clientHeight||360;
+    ctx.clearRect(0,0,cw,ch);
+    ctx.fillStyle='#fff';ctx.fillRect(0,0,cw,ch);
+    var tankW=Math.min(270,cw*.48),tankH=220,depth=64;
+    var x=Math.max(46,cw*.5-tankW*.72),y=72;
+    drawWater(x,y,tankW,tankH,depth,water);
+    drawTank(x,y,tankW,tankH,depth);
+    ctx.fillStyle='#0f172a';ctx.font='800 18px -apple-system,BlinkMacSystemFont,sans-serif';
+    ctx.fillText('内部尺寸：30cm × 20cm × 25cm',32,34);
+    ctx.fillStyle='#64748b';ctx.font='13px -apple-system,BlinkMacSystemFont,sans-serif';
+    ctx.fillText('水位高度决定已装水的体积',32,55);
+    var markY=y+tankH-tankH*(water/height);
+    ctx.strokeStyle='#f59e0b';ctx.setLineDash([6,5]);ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(x-22,markY);ctx.lineTo(x+tankW+depth+22,markY+depth*-.45);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='#92400e';ctx.font='800 14px -apple-system,BlinkMacSystemFont,sans-serif';
+    ctx.fillText('水位 '+water.toFixed(1)+'cm',x+tankW+depth+28,markY+depth*-.45+4);
+    var cm3=length*width*water;
+    readout.innerHTML='<span><b>'+water.toFixed(1)+'cm</b>水位高度</span><span><b>'+cm3.toFixed(0)+'cm³</b>水的体积</span><span><b>'+cm3.toFixed(0)+'mL</b>毫升</span><span><b>'+(cm3/1000).toFixed(2)+'L</b>升</span>';
+  }
+  function animate(){
+    water += (target-water)*0.12;
+    if(Math.abs(target-water)<0.05)water=target;
+    draw();
+    if(water!==target)raf=requestAnimationFrame(animate);
+  }
+  function setLevel(v){
+    target=Math.max(0,Math.min(height,Number(v)||0));
+    cancelAnimationFrame(raf);
+    animate();
+  }
+  resize();
+  window.addEventListener('resize',resize);
+  return {setLevel:setLevel,draw:draw};
+}
+var capacityLab=createCapacityPourLab();
+document.querySelectorAll('[data-water]').forEach(btn=>btn.addEventListener('click',()=>capacityLab.setLevel(btn.dataset.water)));
+capacityLab.setLevel(15);
+
+createAdversarialChallenge({
+  containerId:'adversary-root',
+  challenges:[
+    {tag:'内外尺寸',statement:'纸箱体积是60dm³，所以容积一定也是60dm³。',answer:'refute',hint:'纸板有没有厚度？',explanation:'体积量外部占位，容积量内部空间。有厚度时容积会小一些。',counterexample:'厚壁保温箱外部很大，内部可装空间明显更小。'},
+    {tag:'单位',statement:'容积只能用升和毫升表示，不能用 cm³。',answer:'refute',hint:'1mL 和 1cm³ 的关系？',explanation:'容积本质是体积，可以用 cm³、dm³、m³，也可以用 L、mL。',counterexample:'1mL=1cm³。'},
+    {tag:'鱼缸陷阱',statement:'鱼缸外部50×30×40cm、玻璃厚1cm，容积可直接算50×30×40。',answer:'refute',hint:'水在玻璃里面还是外面？',explanation:'水装在内部，长宽高要扣除玻璃厚度。',counterexample:'近似内部尺寸是48×28×39cm。'},
+    {tag:'逆向思考',statement:'容积8L，底面积2000cm²，高度是4cm。',answer:'agree',hint:'先把8L换成cm³。',explanation:'8L=8000cm³，8000÷2000=4cm。',counterexample:'单位统一后直接用体积÷底面积。'}
+  ],
+  onComplete:()=>saveProgress({'volume':{'capacity':{'adversary':'complete'}}})
+});
+
+createFeynmanFill({
+  containerId:'feynman-root',
+  template:'第1句：体积量的是物体___，容积量的是容器___。第2句：1L水倒进1dm³盒子会___，因为1L=___dm³。第3句：有厚度的容器要用___尺寸，而不是___尺寸。第4句：1mL=___cm³，1L=___dm³。',
+  answer:['占的空间','内部空间','刚好装满','1','内部','外部','1','1'],
+  onComplete:()=>saveProgress({'volume':{'capacity':{'feynman':'complete'}}})
+});
+
+createExerciseSet({
+  containerId:'ex-basic',
+  exercises:[
+    {question:'内部40cm×25cm×30cm，容积是多少升？',inputs:[{key:'a',width:90}],check:a=>a.a==='30',expected:'30',hint:'30000cm³=30L。'},
+    {question:'1L 等于多少 mL？',inputs:[{key:'a',width:90}],check:a=>a.a==='1000',expected:'1000',hint:'1L=1000mL。'},
+    {question:'500mL 等于多少 L？',inputs:[{key:'a',width:90}],check:a=>a.a==='0.5'||a.a==='1/2',expected:'0.5',hint:'除以1000。'}
+  ],
+  passThreshold:0.67
+});
+createExerciseSet({
+  containerId:'ex-transfer',
+  exercises:[
+    {question:'外部50×30×40cm，玻璃厚1cm，近似内部长度是',inputs:[{key:'a',width:90}],check:a=>a.a==='48',expected:'48',hint:'左右各减1cm。'},
+    {question:'内部48×28×39cm，容积约多少升？保留一位小数',inputs:[{key:'a',width:90}],check:a=>a.a==='52.4'||a.a==='52.416',expected:'52.4',hint:'48×28×39=52416cm³。'},
+    {question:'9000cm³ 水倒进底面积1000cm²容器，水面高',inputs:[{key:'a',width:90}],check:a=>a.a==='9',expected:'9',hint:'体积÷底面积。'}
+  ],
+  passThreshold:0.67
+});
+createExerciseSet({
+  containerId:'ex-synthesis',
+  exercises:[
+    {question:'蓄水池8m×5m×2m，满水体积是',inputs:[{key:'a',width:90}],check:a=>a.a==='80',expected:'80',hint:'8×5×2。'},
+    {question:'现在有32m³水，再注入多少m³会满？',inputs:[{key:'a',width:90}],check:a=>a.a==='48',expected:'48',hint:'80-32。'},
+    {question:'每分钟注入2m³，还需要几分钟？',inputs:[{key:'a',width:90}],check:a=>a.a==='24',expected:'24',hint:'48÷2。'}
+  ],
+  passThreshold:0.67,
+  onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'volume':{'capacity':{'completed':true}}});}
+});
 </script>
 </body>
 </html>

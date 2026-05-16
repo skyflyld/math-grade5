@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>组合图形面积 · 五年级</title>
+<link rel="stylesheet" href="../../shared/layout.css">
+<style>
+.lesson-hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(220px,.85fr);gap:18px;align-items:center;margin:18px 0 24px;padding:22px;border:1px solid rgba(148,163,184,.3);border-radius:var(--radius);background:linear-gradient(135deg,#fff 0%,#f8fbff 56%,#f0fdf4 100%);box-shadow:var(--shadow-md);overflow:hidden;}
+.lesson-hero h2{margin:0 0 8px;font-size:24px;line-height:1.25;color:var(--text);}
+.lesson-hero p{margin:0;color:var(--text-muted);font-size:14px;line-height:1.8;}
+.lesson-hero-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+.lesson-hero-tags span{display:inline-flex;align-items:center;min-height:28px;padding:4px 10px;border-radius:999px;background:#fff;border:1px solid var(--border);font-size:12px;font-weight:800;color:var(--text-muted);}
+.hero-shape{min-height:166px;border-radius:var(--radius-md);background:radial-gradient(circle at 26% 22%,rgba(34,197,94,.2),transparent 34%),radial-gradient(circle at 78% 70%,rgba(59,130,246,.18),transparent 36%),linear-gradient(145deg,#f0fdf4,#fff);display:grid;place-items:center;padding:18px;}
+.l-shape{width:160px;height:118px;display:grid;grid-template-columns:5fr 3fr;grid-template-rows:3fr 2fr;filter:drop-shadow(0 12px 18px rgba(15,23,42,.14));}
+.l-shape span{background:#22c55e;border:2px solid #166534;}
+.l-shape span:nth-child(2){background:transparent;border:2px dashed #fb923c;}
+.l-shape em{grid-column:1/3;font-style:normal;text-align:center;font-weight:900;color:#166534;margin-top:8px;}
+.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin:16px 0;}
+.visual-step h4{font-size:17px;margin-bottom:10px;}
+.step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:800;background:#dcfce7;color:#15803d;margin-bottom:10px;}
+.principle-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:12px;}
+.principle-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;}
+.principle-card b{display:block;color:var(--text);margin-bottom:4px;}
+.principle-card p{margin:0;color:var(--text-muted);font-size:13px;line-height:1.65;}
+.concept-highlight{background:linear-gradient(145deg,#f0fdf4,#fff);border:2px solid #bbf7d0;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}
+.concept-highlight .big-idea{font-size:21px;font-weight:900;color:#166534;line-height:1.6;}
+.concept-highlight .highlight{color:#166534;background:#dcfce7;padding:2px 8px;border-radius:4px;}
+.thought-bubble{display:inline-block;background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:10px 16px;margin:6px 0;font-size:14px;line-height:1.65;max-width:100%;}
+.lab-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:12px 0 0;}
+.method-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:12px;}
+.method-card{border:1px solid var(--border);background:#fff;border-radius:var(--radius-sm);padding:16px;line-height:1.7;}
+.method-card strong{color:#15803d;}
+.textbook-box{cursor:pointer;padding:16px 18px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:var(--radius-sm);line-height:1.75;}
+.textbook-box .annot{display:none;margin-top:10px;padding-top:10px;border-top:1px dashed #86efac;color:#166534;}
+@media(max-width:640px){.lesson-hero{grid-template-columns:1fr;padding:16px}.lesson-hero h2{font-size:20px}.hero-shape{min-height:126px}.visual-step{padding:18px 14px}.method-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body data-concept="组合图形面积,三角形面积,梯形面积,矩形面积">
+<div class="top-nav"><a href="../../index.html#%E7%BB%84%E5%90%88%E5%9B%BE%E5%BD%A2%E9%9D%A2%E7%A7%AF">🏠</a><span class="breadcrumb-sep">›</span><span>组合图形面积</span></div>
+<h1 class="module-title">🧩 组合图形面积 — 分割、添补、守恒</h1>
+<p class="module-subtitle">复杂图形并不需要新公式，把它转化成会算的基本图形即可。</p>
+
+<div class="lesson-hero">
+  <div>
+    <h2>不是背新公式，而是把未知变成已知</h2>
+    <p>组合图形面积的第一原则是面积可加性：不重叠、不遗漏地切开，各部分面积相加就是整体；补成大图形时，要把补上的部分减掉。</p>
+    <div class="lesson-hero-tags"><span>面积可加性</span><span>分割法</span><span>添补法</span></div>
+  </div>
+  <div class="hero-shape" aria-label="L形组合图形">
+    <div class="l-shape"><span></span><span></span><span></span><em>8×5 - 3×2 = 34</em></div>
+  </div>
+</div>
+
+<div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🧱</span>拆到公理</div>
+  <div class="visual-step">
+    <span class="step-label">公理 1</span>
+    <h4>面积可加性</h4>
+    <p>一个图形被切成不重叠的几块后，总面积等于每一块面积之和。中间的切割线不是面积，不能重复算。</p>
+    <div class="principle-grid">
+      <div class="principle-card"><b>分割</b><p>把复杂图形切成矩形、三角形、梯形等已知图形，再相加。</p></div>
+      <div class="principle-card"><b>添补</b><p>先补成一个好算的大图形，再减去补上的空白部分。</p></div>
+      <div class="principle-card"><b>验证</b><p>不同切法结果必须相同，否则一定有重叠、遗漏或公式用错。</p></div>
+    </div>
+  </div>
+  <div class="visual-step">
+    <span class="step-label">公理 2</span>
+    <h4>选择切法是为了减少未知</h4>
+    <p>切得越多不一定越好。好的切法能直接读出长、宽、底、高；坏的切法会制造更多未知边。</p>
+  </div>
+  <div class="concept-highlight"><div class="big-idea">组合图形面积 = <span class="highlight">基本图形面积</span>的加减组合</div></div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🎮</span>交互实验室 · 拖拽切割线</div>
+  <div id="polygon-cut-lab"></div>
+  <div class="lab-actions">
+    <button class="btn btn-primary btn-sm" type="button" id="cut-left">竖切：左5右3</button>
+    <button class="btn btn-outline btn-sm" type="button" id="cut-middle">移动切线</button>
+    <button class="btn btn-outline btn-sm" type="button" id="cut-right">靠近缺角</button>
+  </div>
+  <p class="thought-bubble">拖动红色切割线，观察左、右两部分面积如何变化；总面积不变，这就是面积守恒。</p>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">📐</span>教材原文</div>
+  <div class="textbook-box" onclick="const a=this.querySelector('.annot');a.style.display=a.style.display==='block'?'none':'block'">
+    📖 <b>核心表述：</b>把组合图形分成已经学过的简单图形，分别求出面积后再相加；也可以补成简单图形再相减。 <i>（点击看拆解）</i>
+    <div class="annot"><b>拆解：</b>“分成”必须不重叠不遗漏，“补成”必须记得减。两种方法的共同根基是面积可加可减。</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🎯</span>典例精讲</div>
+  <div class="method-grid">
+    <div class="method-card"><h4>分割法 A</h4><p>L 形可看成 8×3 的下方矩形，加 5×2 的上方矩形。<br><strong>24 + 10 = 34cm²</strong></p></div>
+    <div class="method-card"><h4>分割法 B</h4><p>也可看成 5×5 的左方矩形，加 3×3 的右下矩形。<br><strong>25 + 9 = 34cm²</strong></p></div>
+    <div class="method-card"><h4>添补法</h4><p>先算大矩形 8×5=40，再减缺角 3×2=6。<br><strong>40 - 6 = 34cm²</strong></p></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">⚠️</span>踩坑预警</div>
+  <div class="pitfall"><div class="pitfall-title">🕳️ 分割后重复计算或漏算</div><p><b>症状：</b>同一个 L 形横切算 34，竖切却算 31。</p><p><b>根因：</b>竖切时右边矩形高度看错了，应该是 3，不是 2。</p><div class="pitfall-chain">自检：换一种方法算，如果结果不一致，先查每块尺寸。</div></div>
+  <div class="pitfall"><div class="pitfall-title">🕳️ 添补后忘记减</div><p><b>症状：</b>只算大矩形 8×5=40。</p><p><b>根因：</b>补上去的 3×2 不是原图面积，必须减掉。</p></div>
+</div>
+
+<div class="section"><div class="section-header"><span class="emoji">⚡</span>对抗挑战</div><div id="adversary-root"></div></div>
+<div class="section"><div class="section-header"><span class="emoji">🦜</span>费曼输出</div><div id="feynman-root"></div></div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">📝</span>分层练习</div>
+  <div class="exercise-tier"><h3><span class="tier-badge basic">组1 直接应用</span></h3><div id="ex-basic"></div></div>
+  <div class="exercise-tier"><h3><span class="tier-badge advanced">组2 变式迁移</span></h3><div id="ex-transfer"></div></div>
+  <div class="exercise-tier"><h3><span class="tier-badge extra">组3 综合应用</span></h3><div id="ex-synthesis"></div></div>
+  <div id="done" style="display:none;text-align:center;padding:24px;font-size:24px;">🎉 组合图形面积课件完成</div>
+</div>
+
+<script src="../../shared/concepts.js"></script>
+<script src="../../shared/concept-sync.js"></script>
+<script src="../../shared/components.js"></script>
+<script>
+createGate({
+  containerId:'gate-root',
+  questions:[
+    {label:'矩形面积公式是',inputs:[{key:'a',width:96,placeholder:'长×宽'}],check:u=>/长.*宽|宽.*长/.test(u.a),hint:'先确认基本图形公式。'},
+    {label:'三角形面积要不要除以2？',inputs:[{key:'a',width:72}],check:u=>/要|需要|是/.test(u.a),hint:'三角形=平行四边形的一半。'}
+  ],
+  onPass:()=>{document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:800;padding:12px;">✅ 已准备好：把未知图形转化为已知图形。</div>';}
+});
+
+var polygonLab=createPolygonCut({
+  containerId:'polygon-cut-lab',
+  title:'L 形面积切割实验',
+  description:'拖动切割线。当前图形可看成 8×5 大矩形缺 3×2 角，总面积 34。',
+  vertices:[[0,0],[8,0],[8,3],[5,3],[5,5],[0,5]],
+  cutX:5
+});
+document.getElementById('cut-left').addEventListener('click',()=>polygonLab.setCut(5));
+document.getElementById('cut-middle').addEventListener('click',()=>polygonLab.setCut(4));
+document.getElementById('cut-right').addEventListener('click',()=>polygonLab.setCut(6.8));
+
+createAdversarialChallenge({
+  containerId:'adversary-root',
+  challenges:[
+    {tag:'切法校验',statement:'同一个 L 形，横切算 34，竖切算 31，说明分割方式不同面积也可以不同。',answer:'refute',hint:'同一个图形面积会变吗？',explanation:'同一图形面积唯一，两个答案不同说明某一步算错。',counterexample:'竖切右侧应是 3×3=9，不是 3×2=6。'},
+    {tag:'过度分割',statement:'分割的块数越多越好算。',answer:'refute',hint:'切成10块会发生什么？',explanation:'块数越多，未知边和重复计算风险越高。好的分割应让尺寸清楚。',counterexample:'一个 L 形两块就能算，切成10块反而复杂。'},
+    {tag:'三角形公式',statement:'三角形底4cm高3cm，面积是 4×3=12cm²。',answer:'refute',hint:'三角形为什么要除以2？',explanation:'两个同样三角形才能拼成 4×3 的平行四边形。',counterexample:'正确是 4×3÷2=6cm²。'},
+    {tag:'逆向思考',statement:'总面积48cm²，由边长6cm正方形和一个三角形组成，三角形面积是12cm²。',answer:'agree',hint:'先算正方形。',explanation:'正方形面积 6×6=36，剩余 48-36=12。',counterexample:'三角形可能底6高4，因为6×4÷2=12。'}
+  ],
+  onComplete:()=>saveProgress({'polygon-area':{'comb-area':{'adversary':'complete'}}})
+});
+
+createFeynmanFill({
+  containerId:'feynman-root',
+  template:'第1句：分割是把复杂图形拆成___，添补是先补成___，两种方法结果应该___。第2句：分割时最重要的是找对每个基本图形的___和___，不能重叠或遗漏。第3句：不同切法都成立，因为面积具有___性质。第4句：添补法先算___，再减去___。',
+  answer:['基本图形','大图形','相同','底','高','可加','整体','补上的部分'],
+  onComplete:()=>saveProgress({'polygon-area':{'comb-area':{'feynman':'complete'}}})
+});
+
+createExerciseSet({
+  containerId:'ex-basic',
+  exercises:[
+    {question:'大矩形10×6，缺角4×3，添补法面积是',inputs:[{key:'a',width:90}],check:a=>a.a==='48',expected:'48',hint:'60-12=48。'},
+    {question:'同一题用分割法，答案应该和添补法',inputs:[{key:'a',width:90}],check:a=>/相同|一样|一致/.test(a.a),expected:'相同',hint:'同一个图形面积唯一。'},
+    {question:'8×5 大矩形缺 3×2 角，面积是',inputs:[{key:'a',width:90}],check:a=>a.a==='34',expected:'34',hint:'40-6。'}
+  ],
+  passThreshold:0.67
+});
+createExerciseSet({
+  containerId:'ex-transfer',
+  exercises:[
+    {question:'矩形5×4，加三角形A 3×2÷2，加三角形B 4×3÷2，总面积',inputs:[{key:'a',width:90}],check:a=>a.a==='29',expected:'29',hint:'20+3+6。'},
+    {question:'底4高3的三角形面积是',inputs:[{key:'a',width:90}],check:a=>a.a==='6',expected:'6',hint:'4×3÷2。'},
+    {question:'添补法忘记减掉补上的部分，会使结果偏',inputs:[{key:'a',width:90}],check:a=>/大|多/.test(a.a),expected:'偏大',hint:'补上的不是原图面积。'}
+  ],
+  passThreshold:0.67
+});
+createExerciseSet({
+  containerId:'ex-synthesis',
+  exercises:[
+    {question:'半圆直径4m，矩形4×6m，π=3.14，花坛面积约',inputs:[{key:'a',width:90}],check:a=>a.a==='30.28',expected:'30.28',hint:'半圆半径2，面积3.14×2×2÷2=6.28，加24。'},
+    {question:'同一花坛直边围栏包括矩形三条边和半圆弧，半圆弧长约',inputs:[{key:'a',width:90}],check:a=>a.a==='6.28',expected:'6.28',hint:'半圆弧长=πr=3.14×2。'},
+    {question:'预测组合图形答案是否可靠，至少要用几种方法验证？',inputs:[{key:'a',width:90}],check:a=>a.a==='2'||/两/.test(a.a),expected:'2种',hint:'分割和添补互相验证。'}
+  ],
+  passThreshold:0.67,
+  onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'polygon-area':{'comb-area':{'completed':true}}});}
+});
+</script>
+</body>
+</html>

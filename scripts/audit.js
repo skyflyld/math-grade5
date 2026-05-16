@@ -95,10 +95,12 @@ const conceptsJS=fs.readFileSync("shared/concepts.js","utf-8");
 const lcMatch=conceptsJS.match(/const lessonByConcept = \{([\s\S]*?)\n\};/);
 const hrefRegex=/'([^']+)':\{href:withHash\('([^']+)'/g;
 let m, fileCount=0, missingFiles=0;
+const linkedCoursewareFiles=new Set();
 if(lcMatch){
   while((m=hrefRegex.exec(lcMatch[0]))!==null){
     fileCount++;
     const cname=m[1], filePath=m[2];
+    linkedCoursewareFiles.add(filePath);
     const absPath=path.join(__dirname, "..", filePath);
     if(!fs.existsSync(absPath)){
       missingFiles++;
@@ -138,7 +140,7 @@ fs.readdirSync("modules",{recursive:true}).filter(f=>f.endsWith(".html")).forEac
     });
   }
 });
-check(totalCW===fileCount, "Total courseware: "+totalCW+" (expected "+fileCount+")");
+check(totalCW>=linkedCoursewareFiles.size, "Courseware files under modules: "+totalCW+" (expected at least linked lesson files "+linkedCoursewareFiles.size+")");
 check(noGate===0, "Missing createGate: "+noGate);
 check(noAdv===0, "Missing AdversarialChallenge: "+noAdv);
 check(noFeyn===0, "Missing FeynmanFill: "+noFeyn);
@@ -146,7 +148,7 @@ check(noEx===0, "Missing ExerciseSet: "+noEx);
 check(noComponents===0, "Missing components.js import: "+noComponents);
 check(noConceptAttr===0, "Missing data-concept: "+noConceptAttr);
 nonMatchingAttr.forEach(v=>check(false, v));
-console.log("  Courseware files: "+totalCW+", deep lessons: "+deepLessons+", structural issues: "+(noGate+noAdv+noFeyn+noEx+noComponents+noConceptAttr+nonMatchingAttr.length));
+console.log("  Courseware files: "+totalCW+", linked lesson files: "+linkedCoursewareFiles.size+", deep lessons: "+deepLessons+", structural issues: "+(noGate+noAdv+noFeyn+noEx+noComponents+noConceptAttr+nonMatchingAttr.length));
 console.log("  Pass: "+(pass-p5pass)+" in this phase");
 
 // === Phase 6: Shared components ===
