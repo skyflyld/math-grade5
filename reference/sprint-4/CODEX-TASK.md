@@ -1,6 +1,6 @@
 # Sprint 4：旧课件升级 — Codex 任务摘要
 
-> 状态：待审批  
+> 状态实时追踪：**读取仓库根目录 `PROGRESS.md`**（Ariste ↔ Codex 双向同步）  
 > 前置：Sprint 3 已封版，52 课全部通过 audit.js (1321/0)
 
 ## 目标
@@ -88,3 +88,22 @@ Ariste 将在每批执行前提供 reference 文档，路径：`reference/sprint
 - 4 道对抗挑战题
 - 4 道费曼输出填空题
 - 3 组分层练习（直接应用 / 变式迁移 / 综合应用）
+
+## Ariste ↔ Codex 通信协议
+
+由于双方无法直接消息，所有通信通过 GitHub 仓库完成：
+
+| 文件 | 谁写 | 谁读 | 用途 |
+|------|------|------|------|
+| `PROGRESS.md` | 双方 | 双方 | 当前阶段状态、阶段流转、审查记录 |
+| `reference/sprint-4/CODEX-TASK.md` | Ariste | Codex | 任务规范 |
+| `reference/sprint-4/batch-X/*.md` | Ariste | Codex | 每课教学内容 |
+| `review/SPRINT-4-*-REVIEW.md` | Ariste | Codex | 审查结论和修改意见 |
+| Git 提交记录 | Codex | Ariste | 交付物和变更追踪 |
+
+**Codex 工作流**：
+1. `git pull` → 读 `PROGRESS.md` 确认当前阶段
+2. 按 `CODEX-TASK.md` 施工
+3. 完成后 `git commit` + `git push`
+4. 更新 `PROGRESS.md` 状态字段
+5. 等待 Ariste 审查 → 审查结果写入 `review/` → 读反馈 → 按需修正
