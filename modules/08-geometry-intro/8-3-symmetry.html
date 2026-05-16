@@ -17,12 +17,72 @@
 <script src="../../shared/concepts.js"></script><script src="../../shared/concept-sync.js"></script><script src="../../shared/components.js"></script>
 <script>
 createGate({containerId:'gate-root',questions:[{label:'正方形有几条对称轴？',inputs:[{key:'a',width:30}],check:u=>u.a==='4'}],onPass:()=>document.getElementById('gate-root').innerHTML='✅'});
-createTransformDemo({containerId:'transform-demo'});
+createSymmetryBoard({containerId:'transform-demo',title:'轴对称实验',description:'拖动对称轴，观察对应点到对称轴的距离是否相等。',mode:'mirror',angle:90});
 function checkE(n,ans,i,f){const ok=i.value.trim()===ans;f.className='feedback show '+(ok?'success':'error');f.innerHTML=ok?'✅':`❌ ${ans}`;}
 createAdversarialChallenge({containerId:'adversary-root',challenges:[{tag:'特性',statement:'旋转后图形的大小改变了。',answer:'refute',hint:'旋转和翻折改变什么？',explanation:'旋转只改变位置和方向，不改变大小和形状。',counterexample:'旋转90°的正方形边长不变。'}],onComplete:()=>saveProgress({'geo':{'symmetry':{'adversary':'complete'}}})});
 createFeynmanFill({containerId:'feynman-root',template:'轴对称图形沿___对折，两边完全___。旋转三要素：___、方向、___。',answer:['对称轴','重合','中心点','角度'],onComplete:()=>saveProgress({'geo':{'symmetry':{'feynman':'complete'}}})});
 createExerciseSet({containerId:'ex-basic',exercises:[{question:'正方形有几条对称轴？',inputs:[{key:'a',width:40}],check:a=>a.a==='4'},{question:'长方形有几条对称轴？',inputs:[{key:'a',width:40}],check:a=>a.a==='2'}],passThreshold:0.5,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}});
 function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[{question:'圆有几条对称轴？',inputs:[{key:'a',width:40}],check:a=>a.a==='无数'||a.a==='无数条'}],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'geo':{'symmetry':{'completed':true}}});}});}
+(function sprint4Batch2Enrichment(){
+  function norm(v){return String(v||'').replace(/\s/g,'');}
+  function ensureTier(){
+    const adv=document.getElementById('tier-adv');
+    let mix=document.getElementById('tier-mix');
+    if(!mix&&adv){
+      mix=document.createElement('div');
+      mix.className='exercise-tier';
+      mix.id='tier-mix';
+      mix.style.display='none';
+      mix.innerHTML='<h3><span class="tier-badge challenge">综合</span></h3><div id="ex-mix"></div>';
+      adv.insertAdjacentElement('afterend',mix);
+    }
+    const done=document.getElementById('done');
+    if(done)done.style.display='none';
+    return mix;
+  }
+
+  document.getElementById('adversary-root').innerHTML='';
+  createAdversarialChallenge({containerId:'adversary-root',challenges:[
+    {tag:'对角线不是对称轴',statement:'长方形的对角线也是对称轴。',answer:'refute',hint:'沿对角线对折，两边重合吗？',explanation:'长方形沿对角线对折不重合，除非是正方形。',counterexample:'长方形的对称轴是两条垂直中线。'},
+    {tag:'对称轴数量',statement:'等腰三角形有3条对称轴。',answer:'refute',hint:'一般等腰三角形几条？等边三角形呢？',explanation:'等腰三角形只有1条；等边三角形才是3条。',counterexample:'等腰三角形只有两腰相等，不是三边相等。'},
+    {tag:'图形判定',statement:'左右看起来一样的图形就是轴对称图形。',answer:'refute',hint:'必须能找到一条线使两边完全重合。',explanation:'“看起来像”不够，必须存在对称轴，对折后完全重合。',counterexample:'人脸左右“像”但不是严格轴对称。'},
+    {tag:'逆向思考',statement:'一个图形有两条对称轴，且它们互相垂直，这个图形可能是长方形。',answer:'agree',hint:'长方形有两条互相垂直的对称轴。',explanation:'长方形的两条中线互相垂直且都是对称轴，所以“可能是”成立。',counterexample:'正方形也满足，但题目是“可能”。'}
+  ],onComplete:()=>saveProgress({'geo':{'symmetry':{'adversary':'complete'}}})});
+
+  document.getElementById('feynman-root').innerHTML='';
+  createFeynmanFill({containerId:'feynman-root',
+    template:'第1句：轴对称是指图形沿一条___对折后，两边完全___。第2句：对称点到对称轴的距离___，连线___于对称轴。第3句：等腰三角形有___条对称轴，长方形有___条，正方形有___条。第4句：判断对称的方法是：在___里翻折，看两边是否重合。',
+    answer:['直线','重合','相等','垂直','1','2','4','脑海'],
+    onComplete:()=>saveProgress({'geo':{'symmetry':{'feynman':'complete'}}})
+  });
+
+  ensureTier();
+  document.getElementById('ex-basic').innerHTML='';
+  document.getElementById('ex-adv').innerHTML='';
+  createExerciseSet({containerId:'ex-basic',exercises:[
+    {question:'正方形有几条对称轴？',inputs:[{key:'a',width:70}],check:a=>norm(a.a)==='4'||norm(a.a)==='4条',expected:'4'},
+    {question:'圆有几条对称轴？',inputs:[{key:'a',width:90}],check:a=>{const v=norm(a.a);return v.includes('无数');},expected:'无数条'},
+    {question:'字母A是轴对称图形吗？（是/否）',inputs:[{key:'a',width:60}],check:a=>['是','对','yes','Y'].includes(norm(a.a)),expected:'是'}
+  ],passThreshold:0.67,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdvEnhanced();}});
+
+  function initAdvEnhanced(){
+    document.getElementById('ex-adv').innerHTML='';
+    createExerciseSet({containerId:'ex-adv',exercises:[
+      {question:'等腰梯形有几条对称轴？',inputs:[{key:'a',width:60}],check:a=>norm(a.a)==='1'||norm(a.a)==='1条',expected:'1'},
+      {question:'正五边形有几条对称轴？',inputs:[{key:'a',width:60}],check:a=>norm(a.a)==='5'||norm(a.a)==='5条',expected:'5'},
+      {question:'平行四边形一定有对称轴吗？（一定/不一定）',inputs:[{key:'a',width:80}],check:a=>norm(a.a).includes('不一定'),expected:'不一定'}
+    ],passThreshold:0.67,onPass:()=>{document.getElementById('tier-mix').style.display='block';initMixEnhanced();}});
+  }
+
+  function initMixEnhanced(){
+    document.getElementById('ex-mix').innerHTML='';
+    createExerciseSet({containerId:'ex-mix',exercises:[
+      {question:'如何证明一个四边形是轴对称图形？',inputs:[{key:'a',width:200}],check:a=>norm(a.a).length>=2,expected:'找到对称轴并验证对折重合'},
+      {question:'画一个只有1条对称轴的四边形。（填“等腰梯形/风筝形”之一）',inputs:[{key:'a',width:120}],check:a=>{const v=norm(a.a);return v.includes('等腰梯形')||v.includes('风筝');},expected:'等腰梯形/风筝形'},
+      {question:'有两根对称轴且互相垂直的四边形一定是正方形吗？（一定/不一定）',inputs:[{key:'a',width:80}],check:a=>norm(a.a).includes('不一定'),expected:'不一定'}
+    ],passThreshold:0.67,onPass:()=>{const done=document.getElementById('done');done.style.display='block';celebrate(done);saveProgress({'geo':{'symmetry':{'completed':true}}});}});
+  }
+})();
 </script>
 </body>
 </html>

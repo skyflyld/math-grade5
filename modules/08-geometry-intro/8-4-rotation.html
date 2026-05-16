@@ -122,7 +122,7 @@
   setupCompletionButton('summary-root');
 // ===== visual depth upgrade for 11 new lessons =====
 createGate({containerId:'gate-root',questions:[{label:'旋转90°后图形大小会变吗？',inputs:[{key:'a',width:90}],check:u=>String(u.a).trim()==='不会'}],onPass:()=>{document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅ 刚性变换不改变大小。</div>';}});
-createTransformDemo({containerId:'upgrade-transform'});
+createSymmetryBoard({containerId:'upgrade-transform',title:'旋转盘实验',description:'拖动角度，观察旋转只改变位置和方向，不改变图形本身。',mode:'rotate',angle:90});
 createAdversarialChallenge({containerId:'adversary-root',challenges:[
     {tag:'大小',statement:'旋转会改变图形大小。',answer:'refute',hint:'有没有拉伸？',explanation:'旋转只改变方向和位置，不改变大小。',counterexample:'正方形旋转90°边长不变。'},
     {tag:'三要素',statement:'旋转需要中心、方向、角度。',answer:'agree',hint:'少一个能确定吗？',explanation:'三要素共同确定一次旋转。',counterexample:'绕不同中心旋转结果不同。'},
@@ -131,11 +131,48 @@ createAdversarialChallenge({containerId:'adversary-root',challenges:[
   ],onComplete:()=>saveProgress({'new-lesson-visual-depth':{'8-4-rotation':{'adversary':'complete'}}})});
 createFeynmanFill({containerId:'feynman-root',template:'旋转有三个要素：旋转___、旋转___和旋转___。旋转后图形的大小和形状___，改变的是位置和___。顺时针90°和逆时针90°通常___。',answer:["中心","方向","角度","不变","方向","不同"],onComplete:()=>saveProgress({'new-lesson-visual-depth':{'8-4-rotation':{'feynman':'complete'}}})});
 createExerciseSet({containerId:'ex-basic',exercises:[
-    {question:'360°表示几圈？',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='1',hint:'一整圈'},
-    {question:'180°表示几圈？',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='半圈',hint:'一半'},
-    {question:'旋转后面积变吗？',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='不变',hint:'刚性变换'},
-    {question:'指针从12顺时针90°到几？',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='3',hint:'钟面右侧'}
-  ],passThreshold:0.75,onPass:()=>{saveProgress({'new-lesson-visual-depth':{'8-4-rotation':{'practice':'complete'}}});}});
+    {question:'【直接应用】钟面上时针从3走到6，旋转了多少度？',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='90°'||String(a.a).trim()==='90',expected:'90°',hint:'四分之一圈'},
+    {question:'【直接应用】“绕O点逆时针旋转90°”中的O点叫什么？',inputs:[{key:'a',width:120}],check:a=>String(a.a).trim()==='旋转中心',expected:'旋转中心'},
+    {question:'【直接应用】线段绕一端旋转180°，长度变吗？（变/不变）',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='不变',expected:'不变'},
+    {question:'【变式迁移】一个三角形绕顶点顺时针旋转90°，原位置和新位置的对应边是什么关系？',inputs:[{key:'a',width:120}],check:a=>String(a.a).includes('垂直'),expected:'互相垂直'},
+    {question:'【变式迁移】正方形绕中心旋转多少度后与原来重合？（写90/180/270/360中任意一个）',inputs:[{key:'a',width:80}],check:a=>['90','180','270','360','90°','180°','270°','360°'].includes(String(a.a).trim()),expected:'90°/180°/270°/360°'},
+    {question:'【变式迁移】旋转270°等于反向旋转多少度？',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='90°'||String(a.a).trim()==='90',expected:'90°'},
+    {question:'【综合应用】风车叶片旋转属于什么变换？旋转中心在哪？',inputs:[{key:'a',width:180}],check:a=>String(a.a).trim().length>=2,expected:'旋转变换；中心轴'},
+    {question:'【综合应用】为什么“绕A点顺时针旋转90°”和“绕A点逆时针旋转270°”结果一样？',inputs:[{key:'a',width:180}],check:a=>String(a.a).includes('360')||String(a.a).includes('90'),expected:'360°-270°=90°'},
+    {question:'【综合应用】平移、旋转、对称三种变换的共同点是什么？',inputs:[{key:'a',width:180}],check:a=>String(a.a).includes('不改变')||String(a.a).includes('不变'),expected:'不改变大小和形状'}
+  ],passThreshold:0.67,onPass:()=>{saveProgress({'new-lesson-visual-depth':{'8-4-rotation':{'practice':'complete'}}});}});
+
+// Sprint 4 Batch 2 enrichment (rotation reference)
+(function sprint4Batch2Enrichment(){
+  function norm(v){return String(v||'').replace(/\\s/g,'');}
+  document.getElementById('adversary-root').innerHTML='';
+  createAdversarialChallenge({containerId:'adversary-root',challenges:[
+    {tag:'三要素',statement:'描述旋转只需要说旋转了多少度。',answer:'refute',hint:'绕哪个点转？往哪个方向转？',explanation:'旋转需要三要素：中心、方向、角度。缺一不可。',counterexample:'绕图形中心顺时针90°和绕一个顶点逆时针90°，结果不同。'},
+    {tag:'旋转不变性',statement:'图形旋转后，它的面积会改变。',answer:'refute',hint:'旋转是挪位置，不是缩放。',explanation:'旋转是刚体变换，面积、周长、边长都不变。',counterexample:'三角形旋转180°，三边长度和面积不变。'},
+    {tag:'旋转与翻转',statement:'一个箭头向右，旋转180°后箭头向左，这跟镜像翻转一样。',answer:'agree',hint:'对单向箭头，结果确实相同。',explanation:'对单向箭头，旋转180°与镜像都得到向左箭头；但对某些图形（如字母）两者不同。',counterexample:'字母“b”旋转180°变“q”，镜像变“d”。'},
+    {tag:'逆向思考',statement:'图形从位置A转到位置B，旋转角是180°，可能有两种不同的旋转方向。',answer:'agree',hint:'顺时针180°和逆时针180°。',explanation:'顺时针180°与逆时针180°到达同一位置，两种描述都成立。',counterexample:'180°本身方向描述不同但结果一致。'}
+  ],onComplete:()=>saveProgress({'geo':{'rotation':{'adversary':'complete'}}})});
+
+  document.getElementById('feynman-root').innerHTML='';
+  createFeynmanFill({containerId:'feynman-root',
+    template:'第1句：旋转有三个要素：___中心、旋转___、旋转___。第2句：旋转后图形的大小和形状___，只是___和方向变了。第3句：旋转90°是转了___分之一个圆，旋转180°是转了___分之一个圆。第4句：顺时针转90°再顺时针转90°=顺时针转___°，等于向___走了一格。',
+    answer:['旋转','方向','角度','不变','位置','四','半','180','后'],
+    onComplete:()=>saveProgress({'geo':{'rotation':{'feynman':'complete'}}})
+  });
+
+  document.getElementById('ex-basic').innerHTML='';
+  createExerciseSet({containerId:'ex-basic',exercises:[
+    {question:'【直接应用】钟面上时针从3走到6，旋转了多少度？',inputs:[{key:'a',width:80}],check:a=>{const v=norm(a.a);return v==='90'||v==='90°';},expected:'90°',hint:'四分之一圈'},
+    {question:'【直接应用】“绕O点逆时针旋转90°”中的O点叫什么？',inputs:[{key:'a',width:120}],check:a=>norm(a.a)==='旋转中心',expected:'旋转中心'},
+    {question:'【直接应用】线段绕一端旋转180°，长度变吗？（变/不变）',inputs:[{key:'a',width:80}],check:a=>norm(a.a)==='不变',expected:'不变'},
+    {question:'【变式迁移】一个三角形绕顶点顺时针旋转90°，原位置和新位置的对应边是什么关系？',inputs:[{key:'a',width:120}],check:a=>norm(a.a).includes('垂直'),expected:'互相垂直'},
+    {question:'【变式迁移】正方形绕中心旋转多少度后与原来重合？（写90/180/270/360中任意一个）',inputs:[{key:'a',width:80}],check:a=>['90','180','270','360','90°','180°','270°','360°'].includes(norm(a.a)),expected:'90/180/270/360'},
+    {question:'【变式迁移】旋转270°等于反向旋转多少度？',inputs:[{key:'a',width:80}],check:a=>{const v=norm(a.a);return v==='90'||v==='90°';},expected:'90°'},
+    {question:'【综合应用】风车叶片旋转属于什么变换？旋转中心在哪？',inputs:[{key:'a',width:180}],check:a=>norm(a.a).length>=2,expected:'旋转变换；中心轴'},
+    {question:'【综合应用】为什么“绕A点顺时针旋转90°”和“绕A点逆时针旋转270°”结果一样？',inputs:[{key:'a',width:180}],check:a=>norm(a.a).includes('360')||norm(a.a).includes('90'),expected:'360°-270°=90°'},
+    {question:'【综合应用】平移、旋转、对称三种变换的共同点是什么？',inputs:[{key:'a',width:180}],check:a=>norm(a.a).includes('不变')||norm(a.a).includes('不改变'),expected:'不改变大小和形状'}
+  ],passThreshold:0.67,onPass:()=>{const root=document.getElementById('summary-root');if(root)saveProgress({'geo':{'rotation':{'practice':'complete'}}});}});
+})();
 })();
 </script>
 </body>

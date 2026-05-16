@@ -83,7 +83,7 @@
   </div>
 </div>
 
-<div class="section"><div class="section-header"><span class="emoji">🎮</span>交互模型 · 观察六个面</div><div id="upgrade-three-view"></div><p class="upgrade-lab-note">切换观察方向，区分“看到的面”和“所有外表面”。</p></div><div class="section"><div class="section-header"><span class="emoji">📝</span>练习集</div><div id="ex-basic"></div></div>
+<div class="section"><div class="section-header"><span class="emoji">🎮</span>交互实验室 · 展开图</div><div id="net-unfold-lab"></div><p class="upgrade-lab-note">拖动展开进度：把立体“拆”成 6 个面，再把面积加起来。</p></div><div class="section"><div class="section-header"><span class="emoji">📝</span>练习集</div><div id="ex-basic"></div></div>
 <div class="section">
   <div class="section-header"><span class="emoji">⚡</span>对抗验证</div>
   <div id="adversary-root"></div>
@@ -126,7 +126,7 @@
   setupCompletionButton('summary-root');
 // ===== visual depth upgrade for 11 new lessons =====
 createGate({containerId:'gate-root',questions:[{label:'长方形面积公式是什么？',inputs:[{key:'a',width:90}],check:u=>String(u.a).trim()==='长×宽'}],onPass:()=>{document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅ 每个面都是长方形。</div>';}});
-createThreeViewDemo({containerId:'upgrade-three-view'});
+createNetUnfold({containerId:'net-unfold-lab',progress:0.15});
 createAdversarialChallenge({containerId:'adversary-root',challenges:[
     {tag:'概念',statement:'表面积就是物体占空间的大小。',answer:'refute',hint:'占空间是哪个概念？',explanation:'占空间大小是体积；表面积是外表面总面积。',counterexample:'给盒子贴纸看表面积，装水看体积。'},
     {tag:'六个面',statement:'长方体有6个面。',answer:'agree',hint:'前后左右上下。',explanation:'表面积就是这6个面的面积总和。',counterexample:'相对的两个面面积相等。'},
@@ -140,6 +140,38 @@ createExerciseSet({containerId:'ex-basic',exercises:[
     {question:'表面积单位是cm²还是cm³？',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='cm²',hint:'表面是面积'},
     {question:'长4宽3高2，表面积',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='52',hint:'2×(12+8+6)'}
   ],passThreshold:0.75,onPass:()=>{saveProgress({'new-lesson-visual-depth':{'7-5-surface-area':{'practice':'complete'}}});}});
+
+// Sprint 4 Batch 2 enrichment (surface area reference)
+(function sprint4Batch2Enrichment(){
+  function norm(v){return String(v||'').replace(/\s/g,'');}
+  document.getElementById('adversary-root').innerHTML='';
+  createAdversarialChallenge({containerId:'adversary-root',challenges:[
+    {tag:'公式混淆',statement:'正方体棱长3cm，表面积是27cm²。',answer:'refute',hint:'27是3³，这是体积还是表面积？',explanation:'表面积=6×3×3=54cm²。27cm³是体积。',counterexample:'一个面9cm²，6个面54cm²。'},
+    {tag:'漏面',statement:'无盖长方体鱼缸的表面积=2(ab+ah+bh)-ab。',answer:'agree',hint:'减去哪个面？',explanation:'无盖=顶面去掉，顶面积=ab，总面积减去ab。',counterexample:'也可直接：ab+2ah+2bh。'},
+    {tag:'单位',statement:'表面积用cm³做单位。',answer:'refute',hint:'面积单位是平方还是立方？',explanation:'表面积是面积，用cm²。cm³是体积单位。',counterexample:'1cm×1cm的面面积1cm²。'},
+    {tag:'逆向思考',statement:'表面积150cm²的正方体，棱长是3cm。',answer:'refute',hint:'6a²=150，a²=?',explanation:'a²=25，a=5cm，不是3。',counterexample:'6×5²=150。'}
+  ],onComplete:()=>saveProgress({'surface-area':{'sprint4':{'adversary':'complete'}}})});
+
+  document.getElementById('feynman-root').innerHTML='';
+  createFeynmanFill({containerId:'feynman-root',
+    template:'第1句：表面积是___个面的面积之___。长方体相对的面___相同。第2句：长方体表面积=2×(__+__+__)，括号里是三个不同面的面积。第3句：正方体表面积=6×棱长___。第4句：无盖盒子只算___个面，通风管只算___个面（侧面）。',
+    answer:['6','和','面积','ab','ah','bh','²','5','4'],
+    onComplete:()=>saveProgress({'surface-area':{'sprint4':{'feynman':'complete'}}})
+  });
+
+  document.getElementById('ex-basic').innerHTML='';
+  createExerciseSet({containerId:'ex-basic',exercises:[
+    {question:'【直接应用】长方体5×4×3cm，表面积是多少？',inputs:[{key:'a',width:90}],check:a=>{const v=norm(a.a);return v==='94'||v==='94cm²'||v==='94cm2';},expected:'94cm²'},
+    {question:'【直接应用】正方体棱长6cm，表面积是多少？',inputs:[{key:'a',width:90}],check:a=>{const v=norm(a.a);return v==='216'||v==='216cm²'||v==='216cm2';},expected:'216cm²'},
+    {question:'【直接应用】长8cm宽5cm高4cm，前面面积是多少？',inputs:[{key:'a',width:90}],check:a=>{const v=norm(a.a);return v==='32'||v==='32cm²'||v==='32cm2';},expected:'32cm²'},
+    {question:'【变式迁移】正方体表面积54cm²，棱长是多少？',inputs:[{key:'a',width:90}],check:a=>{const v=norm(a.a);return v==='3'||v==='3cm';},expected:'3cm'},
+    {question:'【变式迁移】无盖鱼缸内部50×30×40cm，需要多少玻璃？',inputs:[{key:'a',width:110}],check:a=>{const v=norm(a.a);return v==='7900'||v==='7900cm²'||v==='7900cm2';},expected:'7900cm²',hint:'底面+四个侧面'},
+    {question:'【变式迁移】通风管截面正方形边长20cm，长2m，表面积是多少？',inputs:[{key:'a',width:110}],check:a=>{const v=norm(a.a);return v==='1.6m²'||v==='1.6m2'||v==='1.6';},expected:'1.6m²',hint:'只算侧面：周长×长'},
+    {question:'【综合应用】两个棱长1cm正方体拼成长方体，表面积变了吗？（变/不变）',inputs:[{key:'a',width:80}],check:a=>norm(a.a).includes('变'),expected:'变'},
+    {question:'【综合应用】长宽高都扩大到2倍，表面积扩大到几倍？',inputs:[{key:'a',width:80}],check:a=>norm(a.a)==='4'||norm(a.a)==='4倍',expected:'4倍'},
+    {question:'【综合应用】表面积208cm²，长8cm宽6cm的长方体，高是多少？',inputs:[{key:'a',width:90}],check:a=>{const v=norm(a.a);return v==='4'||v==='4cm';},expected:'4cm'}
+  ],passThreshold:0.67,onPass:()=>saveProgress({'surface-area':{'sprint4':{'practice':'complete'}}})});
+})();
 })();
 </script>
 </body>

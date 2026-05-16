@@ -24,13 +24,9 @@
   <div class="thought-bubble">正方体是特殊长方体：V = a³（棱长的立方）</div></div>
   <div class="concept-highlight"><div class="big-idea">🔑 <span class="highlight">体积 = 底面积 × 高</span></div><p>这跟矩形面积=长×宽是同一个逻辑——铺满底面的方块数，乘以有多少层。</p></div>
 </div>
-<div class="section"><div class="section-header"><span class="emoji">🎮</span>交互</div>
-  <div class="interactive-area" style="text-align:center;">
-    长<input id="v-l" type="range" min="2" max="10" value="5" oninput="volCalc()" style="width:80px;"><span id="v-lv">5</span>
-    宽<input id="v-w" type="range" min="2" max="8" value="3" oninput="volCalc()" style="width:80px;"><span id="v-wv">3</span>
-    高<input id="v-h" type="range" min="1" max="6" value="4" oninput="volCalc()" style="width:80px;"><span id="v-hv">4</span>
-    <div style="margin-top:8px;font-size:24px;font-weight:800;">V = <span id="v-vol" style="color:var(--accent-deep);">60</span> cm³</div>
-  </div>
+<div class="section">
+  <div class="section-header"><span class="emoji">🎮</span>交互实验室</div>
+  <div id="volume-lab"></div>
 </div>
 <div class="section"><div class="section-header"><span class="emoji">📐</span>教材原文</div>
   <div style="cursor:pointer;padding:14px 18px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);" onclick="const a=this.querySelector('.annot');a.style.display=a.style.display==='none'?'block':'none'">
@@ -52,8 +48,6 @@
 <script src="../../shared/concepts.js"></script><script src="../../shared/concept-sync.js"></script><script src="../../shared/components.js"></script>
 <script>
 createGate({containerId:'gate-root',questions:[{label:'一个底面积6cm²高4cm的长方体体积？',inputs:[{key:'a',width:40}],check:u=>u.a==='24'||u.a==='24cm³'}],onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅</div>'});
-function volCalc(){const l=+document.getElementById('v-l').value,w=+document.getElementById('v-w').value,h=+document.getElementById('v-h').value;document.getElementById('v-lv').textContent=l;document.getElementById('v-wv').textContent=w;document.getElementById('v-hv').textContent=h;document.getElementById('v-vol').textContent=l*w*h;}
-volCalc();
 function checkE(n,ans,input,fb){const ok=input.value.trim()===ans;fb.className='feedback show '+(ok?'success':'error');fb.innerHTML=ok?'✅ 正确！':`❌ 答案是 ${ans}`;}
 createAdversarialChallenge({containerId:'adversary-root',challenges:[
   {tag:'公式',statement:'长方体体积=长×宽+高。',answer:'refute',hint:'面积公式是长×宽，加高是怎么加？',explanation:'是长×宽×高（或者底面积×高），不是加法。',counterexample:'长3宽4高5→3×4×5=60cm³，不是3×4+5=17。'}
@@ -68,6 +62,77 @@ function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[
   {question:'长7宽5高3cm→V=?',inputs:[{key:'a',width:40}],check:a=>a.a==='105',hint:'7×5×3=105'},
   {question:'长方体底面积25cm²高6cm→V=?',inputs:[{key:'a',width:40}],check:a=>a.a==='150',hint:'25×6=150'}
 ],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'volume':{'formula':{'completed':true}}});}});}
+(function sprint4Batch2Enrichment(){
+  function norm(v){return String(v||'').replace(/\\s/g,'');}
+  function ensureTier(){
+    const adv=document.getElementById('tier-adv');
+    let mix=document.getElementById('tier-mix');
+    if(!mix&&adv){
+      mix=document.createElement('div');
+      mix.className='exercise-tier';
+      mix.id='tier-mix';
+      mix.style.display='none';
+      mix.innerHTML='<h3><span class="tier-badge challenge">综合</span></h3><div id="ex-mix"></div>';
+      adv.insertAdjacentElement('afterend',mix);
+    }
+    const done=document.getElementById('done');
+    if(done)done.style.display='none';
+    return mix;
+  }
+
+  document.getElementById('volume-lab').innerHTML='';
+  createCuboid3D({
+    containerId:'volume-lab',
+    title:'单位立方体堆叠',
+    description:'切换“显示单位块”，看清楚：一层有多少块 × 有几层 = 体积。',
+    length:4,
+    width:3,
+    height:2,
+    cubeMode:true
+  });
+
+  document.getElementById('adversary-root').innerHTML='';
+  createAdversarialChallenge({containerId:'adversary-root',challenges:[
+    {tag:'公式错误',statement:'长方体体积=(长+宽+高)×2。',answer:'refute',hint:'3cm×4cm×5cm 用这个公式算一下。',explanation:'(3+4+5)×2=24，但实际体积是3×4×5=60。混淆了棱长和。',counterexample:'体积是三维度量，应是乘不是加。'},
+    {tag:'单位陷阱',statement:'长方体长2m、宽30cm、高40cm，体积是2400cm³。',answer:'refute',hint:'2m=？cm',explanation:'全部化cm：200×30×40=240000cm³。漏了2m=200cm。',counterexample:'或化m：2×0.3×0.4=0.24m³。'},
+    {tag:'正方体特例',statement:'正方体体积=棱长×6。',answer:'refute',hint:'棱长2cm，2×6=12 对吗？',explanation:'正方体体积=棱长³。2³=8cm³；6是面数不是体积。',counterexample:'棱长1：体积1，棱长×6=6，明显错。'},
+    {tag:'逆向思考',statement:'体积120cm³的长方体，底面积20cm²，高是6cm。',answer:'agree',hint:'120÷20=?',explanation:'V=Sh，h=V÷S=120÷20=6。',counterexample:'验算：20×6=120。'}
+  ],onComplete:()=>saveProgress({'volume':{'formula':{'adversary':'complete'}}})});
+
+  document.getElementById('feynman-root').innerHTML='';
+  createFeynmanFill({containerId:'feynman-root',
+    template:'第1句：体积算的是___有多少个单位立方体。一层有___×___个，一共___层，所以V=___。第2句：V=Sh中的S是___，h是___。第3句：正方体体积=棱长___，因为长=宽=高。第4句：长宽高___不同时，要先___再计算。',
+    answer:['里面','长','宽','高','a×b×c','底面积','高','³','单位','统一单位'],
+    onComplete:()=>saveProgress({'volume':{'formula':{'feynman':'complete'}}})
+  });
+
+  ensureTier();
+  document.getElementById('ex-basic').innerHTML='';
+  document.getElementById('ex-adv').innerHTML='';
+  createExerciseSet({containerId:'ex-basic',exercises:[
+    {question:'长方体4cm×3cm×2cm，体积是多少？',inputs:[{key:'a',width:80}],check:a=>norm(a.a)==='24'||norm(a.a)==='24cm³',expected:'24cm³'},
+    {question:'正方体棱长5cm，体积是多少？',inputs:[{key:'a',width:80}],check:a=>norm(a.a)==='125'||norm(a.a)==='125cm³',expected:'125cm³'},
+    {question:'底面积10cm²，高6cm，体积是多少？',inputs:[{key:'a',width:80}],check:a=>norm(a.a)==='60'||norm(a.a)==='60cm³',expected:'60cm³'}
+  ],passThreshold:0.67,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdvEnhanced();}});
+
+  function initAdvEnhanced(){
+    document.getElementById('ex-adv').innerHTML='';
+    createExerciseSet({containerId:'ex-adv',exercises:[
+      {question:'长方体长5m、宽20cm、高3m，体积是多少m³？',inputs:[{key:'a',width:80}],check:a=>norm(a.a)==='3'||norm(a.a)==='3m³',expected:'3m³',hint:'20cm=0.2m'},
+      {question:'体积48dm³，长4dm，宽3dm，高是多少？',inputs:[{key:'a',width:80}],check:a=>norm(a.a)==='4'||norm(a.a)==='4dm',expected:'4dm'},
+      {question:'正方体体积27cm³，棱长是多少？',inputs:[{key:'a',width:80}],check:a=>norm(a.a)==='3'||norm(a.a)==='3cm',expected:'3cm'}
+    ],passThreshold:0.67,onPass:()=>{document.getElementById('tier-mix').style.display='block';initMixEnhanced();}});
+  }
+
+  function initMixEnhanced(){
+    document.getElementById('ex-mix').innerHTML='';
+    createExerciseSet({containerId:'ex-mix',exercises:[
+      {question:'包装盒内部30×20×15cm，能装多少个1cm³小方块？',inputs:[{key:'a',width:90}],check:a=>norm(a.a)==='9000',expected:'9000'},
+      {question:'体积64cm³的正方体展开后，最小的长方形面周长是多少？',inputs:[{key:'a',width:90}],check:a=>norm(a.a)==='16'||norm(a.a)==='16cm',expected:'16cm',hint:'棱长4，面是4×4'},
+      {question:'长宽高成等差数列(差1cm)，体积60cm³，求长宽高（用逗号分隔）',inputs:[{key:'a',width:120}],check:a=>{const v=norm(a.a).replace('，',',');return v==='3,4,5'||v==='3，4，5';},expected:'3,4,5'}
+    ],passThreshold:0.67,onPass:()=>{const done=document.getElementById('done');done.style.display='block';celebrate(done);saveProgress({'volume':{'formula':{'completed':true}}});}});
+  }
+})();
 </script>
 </body>
 </html>

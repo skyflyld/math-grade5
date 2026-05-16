@@ -29,16 +29,11 @@
     <div style="width:60px;height:60px;background:#fef3c7;border:2px solid #f59e0b;"><span style="display:block;text-align:center;font-size:11px;margin-top:64px;">正方体</span></div>
   </div>
   <div class="thought-bubble" style="margin-top:20px;">正方体的所有棱都相等，所有面都相同——长方体+三条边相等</div></div>
-  <div class="concept-highlight"><div class="big-idea">🔑 <span class="highlight">6个面 · 表面积=f(长,宽,高)</span></div><p>表面积=外面的大小，体积=里面的空间。两个不同的概念。</p></div>
+<div class="concept-highlight"><div class="big-idea">🔑 <span class="highlight">6个面 · 表面积=f(长,宽,高)</span></div><p>表面积=外面的大小，体积=里面的空间。两个不同的概念。</p></div>
 </div>
 <div class="section">
-  <div class="section-header"><span class="emoji">🎮</span>交互 · 表面积计算</div>
-  <div class="interactive-area">
-    <span>长 <input id="l-slider" type="range" min="2" max="10" value="5" oninput="refreshCuboid()" style="width:80px;"> <span id="l-val">5</span></span><br>
-    <span>宽 <input id="w-slider" type="range" min="2" max="8" value="3" oninput="refreshCuboid()" style="width:80px;"> <span id="w-val">3</span></span><br>
-    <span>高 <input id="h-slider" type="range" min="1" max="6" value="4" oninput="refreshCuboid()" style="width:80px;"> <span id="h-val">4</span></span><br>
-    <div style="margin-top:8px;font-size:18px;font-weight:800;">表面积 = <span id="sa-result" style="color:var(--accent-deep);">94</span></div>
-  </div>
+  <div class="section-header"><span class="emoji">🎮</span>交互实验室</div>
+  <div id="cuboid-lab"></div>
 </div>
 <div class="section">
   <div class="section-header"><span class="emoji">📐</span>教材原文</div>
@@ -69,13 +64,7 @@
   <div id="done" style="display:none;text-align:center;padding:24px;font-size:24px;">🎉 长方体和正方体 — 通关！</div></div>
 <script src="../../shared/concepts.js"></script><script src="../../shared/concept-sync.js"></script><script src="../../shared/components.js"></script>
 <script>
-createGate({containerId:'gate-root',questions:[{label:'一个长方形有几个面？',inputs:[{key:'a',width:40}],check:u=>u.a==='6'||u.a==='6个'}],onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅ 好！</div>'});
-function refreshCuboid(){
-  const l=parseInt(document.getElementById('l-slider').value),w=parseInt(document.getElementById('w-slider').value),h=parseInt(document.getElementById('h-slider').value);
-  document.getElementById('l-val').textContent=l;document.getElementById('w-val').textContent=w;document.getElementById('h-val').textContent=h;
-  document.getElementById('sa-result').textContent=2*(l*w+l*h+w*h);
-}
-refreshCuboid();
+createGate({containerId:'gate-root',questions:[{label:'长方体有几个面？',inputs:[{key:'a',width:40}],check:u=>u.a==='6'||u.a==='6个'}],onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅ 好！</div>'});
 function checkE(n,ans,input,fb){const ok=input.value.trim()===ans;fb.className='feedback show '+(ok?'success':'error');fb.innerHTML=ok?'✅ 正确！':`❌ 答案是 ${ans}`;}
 createAdversarialChallenge({containerId:'adversary-root',challenges:[
   {tag:'面与棱',statement:'长方体有8条棱。',answer:'refute',hint:'3组×？=12',explanation:'长方体有3组平行棱，每组4条→12条棱。',counterexample:'长一组4条、宽一组4条、高一組4条，共12条。'},
@@ -92,6 +81,77 @@ function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[
   .concat([{key:'a',width:60}]),check:a=>a.a==='118',hint:'2×(6×5+6×4+5×4)-6×5=148-30=118'},
   {question:'正方体棱长扩大2倍，表面积扩大几倍？',inputs:[{key:'a',width:40}],check:a=>a.a==='4',hint:'S=6a²，a→2a则S→6×4a²=4×原S'}
 ],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'cuboids':{'intro':{'completed':true}}});}});}
+(function sprint4Batch2Enrichment(){
+  function norm(v){return String(v||'').replace(/\s/g,'');}
+  function ensureTier(){
+    const adv=document.getElementById('tier-adv');
+    let mix=document.getElementById('tier-mix');
+    if(!mix&&adv){
+      mix=document.createElement('div');
+      mix.className='exercise-tier';
+      mix.id='tier-mix';
+      mix.style.display='none';
+      mix.innerHTML='<h3><span class="tier-badge challenge">综合</span></h3><div id="ex-mix"></div>';
+      adv.insertAdjacentElement('afterend',mix);
+    }
+    const done=document.getElementById('done');
+    if(done)done.style.display='none';
+    return mix;
+  }
+
+  document.getElementById('cuboid-lab').innerHTML='';
+  createCuboid3D({
+    containerId:'cuboid-lab',
+    title:'长方体 3D 视图',
+    description:'旋转观察：6个面、12条棱、8个顶点；正方体是特殊的长方体。',
+    length:5,
+    width:3,
+    height:4,
+    cubeMode:false
+  });
+
+  document.getElementById('adversary-root').innerHTML='';
+  createAdversarialChallenge({containerId:'adversary-root',challenges:[
+    {tag:'面的数量',statement:'长方体有4个面，因为上下两面看不见。',answer:'refute',hint:'把盒子拆开有多少个面？',explanation:'长方体有6个面，上面和下面也存在，只是视角问题。',counterexample:'展开图有6个矩形。'},
+    {tag:'分类边界',statement:'正方体不是长方体，因为正方体所有棱长相等。',answer:'refute',hint:'正方体满足长方体的条件吗？',explanation:'正方体满足长方体的所有条件，是特殊的长方体。',counterexample:'正方形是特殊的长方形，正方体也是特殊的长方体。'},
+    {tag:'棱的数量',statement:'长方体有12条棱，每条棱长度都不相同。',answer:'refute',hint:'有几条棱是等长的？',explanation:'12条棱分为3组，每组4条等长（长、宽、高）。',counterexample:'火柴盒：4条长=4条宽≠4条高。'},
+    {tag:'逆向思考',statement:'一个立体图形有6个面、8个顶点，它一定是长方体。',answer:'refute',hint:'还有其他图形也可能6面8顶点吗？',explanation:'斜棱柱也可能有6面8顶点；长方体还要求每个面是矩形。',counterexample:'底面是平行四边形的斜棱柱不是长方体。'}
+  ],onComplete:()=>saveProgress({'cuboids':{'intro':{'adversary':'complete'}}})});
+
+  document.getElementById('feynman-root').innerHTML='';
+  createFeynmanFill({containerId:'feynman-root',
+    template:'第1句：长方体有___个面、___条棱、___个顶点。第2句：___的面完全相同，___的棱长度相等。第3句：正方体是___的长方体，因为它的___条棱都相等。第4句：从一个顶点出发的三条棱分别叫___、___、___。',
+    answer:['6','12','8','相对','相对','特殊','12','长','宽','高'],
+    onComplete:()=>saveProgress({'cuboids':{'intro':{'feynman':'complete'}}})
+  });
+
+  ensureTier();
+  document.getElementById('ex-basic').innerHTML='';
+  document.getElementById('ex-adv').innerHTML='';
+  createExerciseSet({containerId:'ex-basic',exercises:[
+    {question:'长方体的面数 + 顶点数 =（ ）。',inputs:[{key:'a',width:70}],check:a=>norm(a.a)==='14',expected:'14'},
+    {question:'正方体有多少条棱？',inputs:[{key:'a',width:70}],check:a=>norm(a.a)==='12',expected:'12'},
+    {question:'一个长方体最多有几个面是正方形？',inputs:[{key:'a',width:70}],check:a=>norm(a.a)==='2',expected:'2'}
+  ],passThreshold:0.67,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdvEnhanced();}});
+
+  function initAdvEnhanced(){
+    document.getElementById('ex-adv').innerHTML='';
+    createExerciseSet({containerId:'ex-adv',exercises:[
+      {question:'已知长方体长5cm、宽3cm、高4cm，哪组棱最长？',inputs:[{key:'a',width:70}],check:a=>norm(a.a)==='长',expected:'长'},
+      {question:'用48cm铁丝做一个正方体框架，每条棱长多少？',inputs:[{key:'a',width:70}],check:a=>norm(a.a)==='4'||norm(a.a)==='4cm',expected:'4cm'},
+      {question:'最少需要几个相同的正方形能拼成一个正方体？',inputs:[{key:'a',width:70}],check:a=>norm(a.a)==='6',expected:'6'}
+    ],passThreshold:0.67,onPass:()=>{document.getElementById('tier-mix').style.display='block';initMixEnhanced();}});
+  }
+
+  function initMixEnhanced(){
+    document.getElementById('ex-mix').innerHTML='';
+    createExerciseSet({containerId:'ex-mix',exercises:[
+      {question:'为什么正方体的展开图不一定是“十字形”？',inputs:[{key:'a',width:180}],check:a=>norm(a.a).length>=2,expected:'展开方式有多种'},
+      {question:'长方体长6cm宽4cm高5cm，所有棱长之和是多少？',inputs:[{key:'a',width:90}],check:a=>norm(a.a)==='60'||norm(a.a)==='60cm',expected:'60cm'},
+      {question:'一个长方体有2个面是正方形，其余4个面一定是什么形状？',inputs:[{key:'a',width:160}],check:a=>norm(a.a).includes('长方形'),expected:'完全相同的长方形'}
+    ],passThreshold:0.67,onPass:()=>{const done=document.getElementById('done');done.style.display='block';celebrate(done);saveProgress({'cuboids':{'intro':{'completed':true}}});}});
+  }
+})();
 </script>
 </body>
 </html>
