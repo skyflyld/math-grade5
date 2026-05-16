@@ -101,9 +101,10 @@ Ariste 将在每批执行前提供 reference 文档，路径：`reference/sprint
 | `review/SPRINT-4-*-REVIEW.md` | Ariste | Codex | 审查结论和修改意见 |
 | Git 提交记录 | Codex | Ariste | 交付物和变更追踪 |
 
-**Codex 工作流**：
-1. `git pull` → 读 `PROGRESS.md` 确认当前阶段
-2. 按 `CODEX-TASK.md` 施工
-3. 完成后 `git commit` + `git push`
-4. 更新 `PROGRESS.md` 状态字段
-5. 等待 Ariste 审查 → 审查结果写入 `review/` → 读反馈 → 按需修正
+**Codex 工作流**（含任务认领协议）：
+1. `git pull` → 读 `PROGRESS.md` 确认当前阶段状态
+2. **认领任务**: 更新 `PROGRESS.md` 状态为 `🏁 已认领`，填写认领人和时间 → `git commit -m "claim: Batch X"` + `git push`
+3. **施工**: 开始编码，可根据需要更新状态为 `🔧 施工中` 并附预计完成时间
+4. **交付**: 完成代码后 → 更新 `PROGRESS.md` 状态为 `⏳ 待审查` → `git commit -m "feat: Batch X complete"` + `git push`
+5. **等待审查**: Ariste cron 自动审查（≤ 30 分钟响应）
+6. **读反馈**: 拉取最新 `PROGRESS.md` 和 `review/` → 如果 `✅ 通过` 则进入下一阶段；如果 `❌ 需修正` 则修复后重新交付
