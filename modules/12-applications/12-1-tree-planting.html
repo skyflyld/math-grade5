@@ -1,10 +1,37 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>植树问题 · 五年级</title><link rel="stylesheet" href="../../shared/layout.css"><style>.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;}.visual-step h4{font-size:17px;margin-bottom:12px;}.visual-step .step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:700;background:var(--accent-light);color:var(--accent-deep);margin-bottom:10px;}.concept-highlight{background:linear-gradient(145deg,#fefce8,#fff);border:2px solid #fde68a;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}.concept-highlight .big-idea{font-size:22px;font-weight:800;color:#92400e;line-height:1.6;}.concept-highlight .big-idea .highlight{color:var(--accent-deep);background:var(--accent-light);padding:2px 8px;border-radius:4px;}.thought-bubble{display:inline-block;background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:10px 16px;margin:6px 0;font-size:14px;max-width:90%;}.thought-bubble::before{content:'💭 ';}</style></head>
-<body data-concept="植树问题"><div class="top-nav"><a href="../../index.html#%E6%A4%8D%E6%A0%91%E9%97%AE%E9%A2%98">🏠</a><span class="breadcrumb-sep">›</span><span>植树问题</span></div>
+<body data-concept="植树问题,整数四则运算"><div class="top-nav"><a href="../../index.html#%E6%A4%8D%E6%A0%91%E9%97%AE%E9%A2%98">🏠</a><span class="breadcrumb-sep">›</span><span>植树问题</span></div>
 <h1 class="module-title">🌳 植树问题 — 间隔与端点</h1><p class="module-subtitle">路长÷间距=间隔数，棵数取决于两端有没有树。间隔是关键。</p>
 <div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
 <div class="section"><div class="section-header"><span class="emoji">🧱</span>拆到公理</div>
 <div class="visual-step"><span class="step-label">第 1 步</span><h4>三种情况</h4><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;"><div style="padding:12px;background:#dbeafe;border-radius:8px;"><strong>两端都栽</strong><br>棵数=间隔数+1</div><div style="padding:12px;background:#fef3c7;border-radius:8px;"><strong>一端不栽</strong><br>棵数=间隔数</div><div style="padding:12px;background:#fca5a5;border-radius:8px;"><strong>两端不栽</strong><br>棵数=间隔数-1</div></div><div class="thought-bubble">100米路每5米一棵→间隔20个。两端都栽21棵，一端栽20棵，都不栽19棵。</div></div>
 <div class="concept-highlight"><div class="big-idea">🔑 <span class="highlight">间隔数=总长÷间距，棵数±看端点</span></div></div></div>
+<div class="section">
+  <div class="section-header"><span class="emoji">🎮</span>交互实验室 · 点与段</div>
+  <div class="interactive-area">
+    <div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;">
+      <span>总长</span><input id="tp-len" class="input-field" type="number" value="60" min="1" style="width:90px;"><span>米</span>
+      <span>间距</span><input id="tp-gap" class="input-field" type="number" value="5" min="1" style="width:80px;"><span>米</span>
+      <select id="tp-mode" class="input-field" style="width:140px;">
+        <option value="both">两端都种</option>
+        <option value="one">一端种</option>
+        <option value="none">两端都不种</option>
+        <option value="circle">圆形（首尾相接）</option>
+      </select>
+      <button class="btn btn-primary btn-sm" onclick="renderTreePlant()">计算并画图</button>
+    </div>
+    <canvas id="tp-canvas" class="visual-canvas" style="margin-top:12px;"></canvas>
+    <div id="tp-readout" style="margin-top:10px;text-align:center;color:var(--text-muted);font-size:13px;"></div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-header"><span class="emoji">📐</span>教材原文</div>
+  <div style="cursor:pointer;padding:14px 18px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);" onclick="const a=this.querySelector('.annot');a.style.display=a.style.display==='none'?'block':'none'">
+    📖 <b>教材：</b>"先求间隔数，再根据两端是否种树确定棵数。" <i>（点击）</i>
+    <div class="annot" style="display:none;margin-top:10px;padding:10px 14px;background:#f0fdf4;border-radius:6px;font-size:14px;">
+      ✏️ 一条线段上有 n 个点，会把线段分成 n-1 段；端点是否“算在树里”决定 +1 / -1。
+    </div>
+  </div>
+</div>
 <div class="section"><div class="section-header"><span class="emoji">🎯</span>典例精讲</div><div class="visual-step"><h4>🎯 60米每5米两端都栽→60÷5=12间隔，棵数=13</h4>✏️ 两端都不栽→棵数？<input class="input-field" id="ex1" style="width:40px;"><button class="btn btn-primary btn-sm" onclick="checkE(1,'11',ex1,fb1)">提交</button><div class="feedback" id="fb1"></div></div></div>
 <div class="section"><div class="section-header"><span class="emoji">⚡</span>对抗挑战</div><div id="adversary-root"></div></div>
 <div class="section"><div class="section-header"><span class="emoji">🦜</span>费曼输出</div><div id="feynman-root"></div></div>
@@ -15,10 +42,91 @@
 <script>
 createGate({containerId:'gate-root',questions:[{label:'两端都栽，棵数=间隔数？',inputs:[{key:'a',width:30}],check:u=>u.a==='+1'||u.a==='多1'}],onPass:()=>document.getElementById('gate-root').innerHTML='✅'});
 function checkE(n,ans,i,f){const ok=i.value.trim()===ans;f.className='feedback show '+(ok?'success':'error');f.innerHTML=ok?'✅':`❌ ${ans}`;}
-createAdversarialChallenge({containerId:'adversary-root',challenges:[{tag:'混淆',statement:'植树问题的关键是路长。',answer:'refute',hint:'先算什么？',explanation:'关键算间隔数（路长÷间距），端点情况决定棵数公式。',counterexample:'100÷5=20间隔，两端都栽=21棵'}],onComplete:()=>saveProgress({'app':{'trees':{'adversary':'complete'}}})});
-createFeynmanFill({containerId:'feynman-root',template:'植树问题三步：①路长÷间距=___数。②看___情况。③两端都栽=间隔数___1。',answer:['间隔','端点','+'],onComplete:()=>saveProgress({'app':{'trees':{'feynman':'complete'}}})});
-createExerciseSet({containerId:'ex-basic',exercises:[{question:'100米每5米两端都栽，棵数？',inputs:[{key:'a',width:40}],check:a=>a.a==='21'},{question:'100米每5米两端都不栽，棵数？',inputs:[{key:'a',width:40}],check:a=>a.a==='19'}],passThreshold:0.5,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}});
-function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[{question:'50米每5米一端不栽，棵数？',inputs:[{key:'a',width:40}],check:a=>a.a==='10'}],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'app':{'trees':{'completed':true}}});}});}
+function renderTreePlant(){
+  const len=Number(document.getElementById('tp-len').value);
+  const gap=Number(document.getElementById('tp-gap').value);
+  const mode=document.getElementById('tp-mode').value;
+  const readout=document.getElementById('tp-readout');
+  const canvas=document.getElementById('tp-canvas');
+  const parent=canvas.parentElement;
+  const width=Math.min(720,(parent?.clientWidth||720)-24);
+  canvas.width=width;canvas.height=220;
+  const ctx=canvas.getContext('2d');
+  if(!Number.isFinite(len)||!Number.isFinite(gap)||len<=0||gap<=0){
+    readout.textContent='请输入正数。';
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    return;
+  }
+  const intervals=len/gap;
+  const intervalsInt=Math.round(intervals);
+  const ok=Math.abs(intervals-intervalsInt)<1e-9;
+  const seg=ok?intervalsInt:intervals;
+  let trees=0;
+  if(mode==='both')trees=ok?intervalsInt+1:Math.floor(intervals)+1;
+  if(mode==='one')trees=ok?intervalsInt:Math.floor(intervals);
+  if(mode==='none')trees=ok?intervalsInt-1:Math.max(0,Math.floor(intervals)-1);
+  if(mode==='circle')trees=ok?intervalsInt:Math.floor(intervals);
+  const label={both:'两端都种',one:'一端种',none:'两端都不种',circle:'圆形（首尾相接）'}[mode]||'';
+  readout.innerHTML=`间隔数 = 总长 ÷ 间距 = <strong>${len} ÷ ${gap} = ${intervals}</strong>${ok?'':'（不整除时按题意通常需要调整/取整）'}；<br>模式：<strong>${label}</strong> → 棵数约 <strong>${trees}</strong>。`;
+  // draw
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);
+  const x0=40,x1=canvas.width-40,y=110;
+  ctx.strokeStyle='#334155';ctx.lineWidth=6;ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(x0,y);ctx.lineTo(x1,y);ctx.stroke();
+  const n=Math.max(0,Math.min(30,ok?intervalsInt:Math.floor(intervals)));
+  const step=(x1-x0)/(Math.max(1,n));
+  function dot(x,color){
+    ctx.beginPath();ctx.arc(x,y,7,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();
+    ctx.strokeStyle='#0f172a22';ctx.lineWidth=2;ctx.stroke();
+  }
+  // interval ticks
+  ctx.strokeStyle='#94a3b8';ctx.lineWidth=2;
+  for(let i=0;i<=n;i++){
+    const x=x0+i*step;
+    ctx.beginPath();ctx.moveTo(x,y-16);ctx.lineTo(x,y+16);ctx.stroke();
+  }
+  // points for trees
+  if(mode==='circle'){
+    // draw ring and n points
+    const cx=canvas.width/2,cy=110,r=70;
+    ctx.strokeStyle='#334155';ctx.lineWidth=6;ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+    const m=Math.max(3,Math.min(24,n||12));
+    for(let i=0;i<m;i++){
+      const ang=-Math.PI/2+i*2*Math.PI/m;
+      ctx.beginPath();
+      ctx.arc(cx+Math.cos(ang)*r,cy+Math.sin(ang)*r,7,0,Math.PI*2);
+      ctx.fillStyle='#22c55e';ctx.fill();
+      ctx.strokeStyle='#0f172a22';ctx.lineWidth=2;ctx.stroke();
+    }
+    return;
+  }
+  const points=[];
+  for(let i=0;i<=n;i++)points.push(x0+i*step);
+  let pick=[];
+  if(mode==='both')pick=points;
+  if(mode==='one')pick=points.slice(0,-1);
+  if(mode==='none')pick=points.slice(1,-1);
+  pick.forEach(x=>dot(x,'#22c55e'));
+}
+createAdversarialChallenge({containerId:'adversary-root',challenges:[
+  {tag:'两端种 vs 不种',statement:'任何种树问题都是间隔数加 1。',answer:'refute',hint:'如果两端不能种树，还要加 1 吗？',explanation:'两端都不种：棵数=间隔数-1；一端种：棵数=间隔数。',counterexample:'100 米每 10 米一盏灯，两端不装：10 段只装 9 盏。'},
+  {tag:'圆形',statement:'圆形花坛周长 60 米，每 5 米种一棵树，种 13 棵。',answer:'refute',hint:'圆圈上起点和终点是同一棵。',explanation:'圆形：棵数=间隔数=60÷5=12。',counterexample:'把圆圈拉直，首尾的树是同一棵。'},
+  {tag:'一端种',statement:'走廊长 24 米，一端靠墙，每 3 米挂一盏灯。共挂 8 盏。',answer:'agree',hint:'一端不需要灯。',explanation:'24÷3=8 段，一端挂灯=8 盏。',counterexample:'两端都挂则是 9 盏。'},
+  {tag:'逆向思考',statement:'一条路每 6 米种一棵树，两端都种，共种 9 棵。路长是 48 米。',answer:'agree',hint:'两端都种：棵数=间隔数+1。',explanation:'9 棵→8 个间隔→8×6=48 米。',counterexample:'验算：48÷6=8 段，两端种=9 棵。'}
+],onComplete:()=>saveProgress({'app':{'trees':{'adversary':'complete'}}})});
+createFeynmanFill({containerId:'feynman-root',template:'第1句：种树问题本质是___和___的关系。第2句：两端都种：棵数=___数+___；两端都不种：棵数=间隔数___1。第3句：圆形花坛种树：棵数___间隔数，因为首尾___。第4句：先求间隔数 =___÷___，再根据___情况确定棵数。',answer:['点','段','间隔','1','-','=','重合','总长','间距','两端'],onComplete:()=>saveProgress({'app':{'trees':{'feynman':'complete'}}})});
+createExerciseSet({containerId:'ex-basic',exercises:[
+  {question:'20 米路，两端都种树，每 2 米一棵，种多少棵？',inputs:[{key:'a',width:60}],check:a=>String(a.a).trim()==='11',hint:'20÷2=10 间隔 → 11'},
+  {question:'20 米路，两端都不种，每 2 米一棵，种多少棵？',inputs:[{key:'a',width:60}],check:a=>String(a.a).trim()==='9',hint:'20÷2=10 间隔 → 9'},
+  {question:'圆形花坛周长 20 米，每 2 米一棵，种多少棵？',inputs:[{key:'a',width:60}],check:a=>String(a.a).trim()==='10',hint:'20÷2=10'}
+],passThreshold:0.67,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}});
+function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[
+  {question:'每隔 4 米种一棵，两端都种共 15 棵，路长多少？',inputs:[{key:'a',width:60}],check:a=>String(a.a).trim()==='56',hint:'15 棵→14 间隔→56'},
+  {question:'30 米路，一端靠墙，每 3 米摆一盆花，摆几盆？',inputs:[{key:'a',width:60}],check:a=>String(a.a).trim()==='10',hint:'30÷3=10'},
+  {question:'正方形池塘每边种 6 棵，四个角都种，共种几棵？',inputs:[{key:'a',width:60}],check:a=>String(a.a).trim()==='20',hint:'4×6-4=20'}
+],passThreshold:0.67,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'app':{'trees':{'completed':true}}});}});}
+renderTreePlant();
 </script>
 </body>
 </html>

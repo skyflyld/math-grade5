@@ -1,10 +1,24 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>可能性 · 五年级</title><link rel="stylesheet" href="../../shared/layout.css"><style>.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;}.visual-step h4{font-size:17px;margin-bottom:12px;}.visual-step .step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:700;background:var(--accent-light);color:var(--accent-deep);margin-bottom:10px;}.concept-highlight{background:linear-gradient(145deg,#fefce8,#fff);border:2px solid #fde68a;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}.concept-highlight .big-idea{font-size:22px;font-weight:800;color:#92400e;line-height:1.6;}.concept-highlight .big-idea .highlight{color:var(--accent-deep);background:var(--accent-light);padding:2px 8px;border-radius:4px;}.thought-bubble{display:inline-block;background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:10px 16px;margin:6px 0;font-size:14px;max-width:90%;}.thought-bubble::before{content:'💭 ';}</style></head>
-<body data-concept="可能性"><div class="top-nav"><a href="../../index.html#%E5%8F%AF%E8%83%BD%E6%80%A7">🏠</a><span class="breadcrumb-sep">›</span><span>可能性</span></div>
+<body data-concept="可能性,数据收集"><div class="top-nav"><a href="../../index.html#%E5%8F%AF%E8%83%BD%E6%80%A7">🏠</a><span class="breadcrumb-sep">›</span><span>可能性</span></div>
 <h1 class="module-title">🎲 可能性 — 机会区域</h1><p class="module-subtitle">骰子、转盘、抽签——有些事一定会发生，有些可能发生，有些不可能。</p>
 <div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
 <div class="section"><div class="section-header"><span class="emoji">🧱</span>拆到公理</div><div class="visual-step"><span class="step-label">第 1 步</span><h4>三类事件</h4><div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;"><div style="padding:14px;background:#dcfce7;border-radius:8px;"><strong>必然</strong><br>一定发生</div><div style="padding:14px;background:#fef3c7;border-radius:8px;"><strong>可能</strong><br>有时发生</div><div style="padding:14px;background:#fca5a5;border-radius:8px;"><strong>不可能</strong><br>绝不会发生</div></div></div>
 <div class="visual-step"><span class="step-label">第 2 步</span><h4>用分数表示可能性</h4><div class="thought-bubble">骰子掷出3的可能性=1/6（6种可能中1种）。必然事件=1，不可能事件=0。</div></div>
 <div class="concept-highlight"><div class="big-idea">🔑 <span class="highlight">可能性=有利结果数÷全部可能结果数</span></div></div></div>
+<div class="section">
+  <div class="section-header"><span class="emoji">🎮</span>交互实验室 · 多次试验看频率</div>
+  <div id="prob-lab"></div>
+  <p style="text-align:center;color:var(--text-muted);font-size:14px;margin-top:8px;">试验次数越多，频率越接近理论概率（大数定律）。</p>
+</div>
+<div class="section">
+  <div class="section-header"><span class="emoji">📐</span>教材原文</div>
+  <div style="cursor:pointer;padding:14px 18px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);" onclick="const a=this.querySelector('.annot');a.style.display=a.style.display==='none'?'block':'none'">
+    📖 <b>教材：</b>"在大量重复试验中，事件发生的频率会逐渐稳定在一个数附近。" <i>（点击）</i>
+    <div class="annot" style="display:none;margin-top:10px;padding:10px 14px;background:#f0fdf4;border-radius:6px;font-size:14px;">
+      ✏️ 这不表示“每次都一样”，而是表示“总体上越来越接近”。
+    </div>
+  </div>
+</div>
 <div class="section"><div class="section-header"><span class="emoji">🎯</span>典例精讲</div><div class="visual-step"><h4>🎯 掷硬币正面朝上的可能性？1/2</h4>✏️ 骰子掷出6的可能性？<input class="input-field" id="ex1" style="width:40px;"><button class="btn btn-primary btn-sm" onclick="checkE(1,'1/6',ex1,fb1)">提交</button><div class="feedback" id="fb1"></div></div></div>
 <div class="section"><div class="section-header"><span class="emoji">⚡</span>对抗挑战</div><div id="adversary-root"></div></div>
 <div class="section"><div class="section-header"><span class="emoji">🦜</span>费曼输出</div><div id="feynman-root"></div></div>
@@ -13,12 +27,26 @@
 <div id="done" style="display:none;text-align:center;padding:24px;font-size:24px;">🎉 通关！</div></div>
 <script src="../../shared/concepts.js"></script><script src="../../shared/concept-sync.js"></script><script src="../../shared/components.js"></script>
 <script>
-createGate({containerId:'gate-root',questions:[{label:'太阳每天从东边升起——这属于什么事件？',inputs:[{key:'a',width:30}],check:u=>u.a==='必然'||u.a==='必然事件'}],onPass:()=>document.getElementById('gate-root').innerHTML='✅'});
+createGate({containerId:'gate-root',questions:[{label:'掷一枚公平硬币，正面概率是？',inputs:[{key:'a',width:40}],check:u=>u.a==='1/2'}],onPass:()=>document.getElementById('gate-root').innerHTML='✅'});
 function checkE(n,ans,i,f){const ok=i.value.trim()===ans;f.className='feedback show '+(ok?'success':'error');f.innerHTML=ok?'✅':`❌ ${ans}`;}
-createAdversarialChallenge({containerId:'adversary-root',challenges:[{tag:'概率',statement:'掷骰子6次，一定出现一次6。',answer:'refute',hint:'每掷一次的概率是多少？',explanation:'每次都是1/6，但不保证6次中会出现。',counterexample:'可能掷10次都不出现6。'}],onComplete:()=>saveProgress({'stats':{'probability':{'adversary':'complete'}}})});
-createFeynmanFill({containerId:'feynman-root',template:'可能性分为___事件（一定）、___事件（可能）、___事件（绝不）。用分数表示时，分子是___结果数，分母是___结果数。',answer:['必然','可能','不可能','有利','全部可能'],onComplete:()=>saveProgress({'stats':{'probability':{'feynman':'complete'}}})});
-createExerciseSet({containerId:'ex-basic',exercises:[{question:'掷硬币正面的可能性？',inputs:[{key:'a',width:40}],check:a=>a.a==='1/2'},{question:'必然事件可能性是？',inputs:[{key:'a',width:40}],check:a=>a.a==='1'}],passThreshold:0.5,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}});
-function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[{question:'袋中有3红2蓝，摸到红的可能性？',inputs:[{key:'a',width:40}],check:a=>a.a==='3/5'}],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'stats':{'probability':{'completed':true}}});}});}
+createProbabilitySim({containerId:'prob-lab',title:'概率模拟器：硬币/骰子/转盘',description:'多次试验后，观察频率怎样逐渐接近可能性。',mode:'dice',labels:['1','2','3','4','5','6']});
+createAdversarialChallenge({containerId:'adversary-root',challenges:[
+  {tag:'赌徒谬误',statement:'抛硬币 5 次都是正面，第 6 次一定是反面。',answer:'refute',hint:'硬币有记忆吗？',explanation:'每次抛硬币是独立事件，第 6 次正面概率仍是 1/2。',counterexample:'用大量仿真验证：5 正后的第 6 次正反仍各半。'},
+  {tag:'等可能假设',statement:'扔两枚硬币，可能出现 0 正、1 正、2 正三种结果，所以每种概率都是 1/3。',answer:'refute',hint:'1 正有多少种实际组合？',explanation:'结果是（正正、正反、反正、反反），其中 1 正有 2 种，概率 1/2。',counterexample:'三种结果不等可能。'},
+  {tag:'概率为 0.5',statement:'明天可能下雨也可能不下雨，所以明天下雨的概率是 1/2。',answer:'refute',hint:'两个结果一定等可能吗？',explanation:'只有等可能时才是 1/2；“可能/不可能”不代表等概率。',counterexample:'沙漠地区下雨概率远小于 1/2。'},
+  {tag:'逆向思考',statement:'袋子里摸出红球概率是 3/5，袋子里一定恰好有 3 个红球和 2 个白球。',answer:'refute',hint:'6 红 + 4 白 的红球概率是多少？',explanation:'概率是比例，只要红:白=3:2，概率都是 3/5。',counterexample:'30 红 + 20 白也是 3/5。'}
+],onComplete:()=>saveProgress({'stats':{'probability':{'adversary':'complete'}}})});
+createFeynmanFill({containerId:'feynman-root',template:'第1句：概率从___（不可能）到___（一定发生）。第2句：等可能事件概率 = 有利结果数___所有等可能结果数。第3句：独立事件之间___影响。前面 5 次正面不影响第 6 次的___。第4句：试验次数越___，频率越接近___概率。',answer:['0','1','除以','互不','概率','多','理论'],onComplete:()=>saveProgress({'stats':{'probability':{'feynman':'complete'}}})});
+createExerciseSet({containerId:'ex-basic',exercises:[
+  {question:'掷一枚骰子，得到偶数的概率是多少？',inputs:[{key:'a',width:60}],check:a=>String(a.a).trim()==='1/2',hint:'3/6=1/2'},
+  {question:'太阳从西边升起的概率是？',inputs:[{key:'a',width:40}],check:a=>String(a.a).trim()==='0',hint:'0'},
+  {question:'从 4 张扑克（红黑各 2）中抽一张，抽到红色的概率？',inputs:[{key:'a',width:60}],check:a=>String(a.a).trim()==='1/2',hint:'2/4=1/2'}
+],passThreshold:0.67,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}});
+function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[
+  {question:'袋子里 3 个红球、5 个白球，摸出红球的概率？',inputs:[{key:'a',width:60}],check:a=>String(a.a).trim()==='3/8',hint:'3/8'},
+  {question:'掷两枚骰子和为 7 的概率是多少？（用分数）',inputs:[{key:'a',width:60}],check:a=>{const v=String(a.a).replace(/\s/g,'');return v==='1/6'||v==='6/36';},hint:'6/36=1/6'},
+  {question:'“连输 10 次，下次一定赢”是数学思维吗？（是/不是）',inputs:[{key:'a',width:60}],check:a=>String(a.a).trim()==='不是',hint:'赌徒谬误'}
+],passThreshold:0.67,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'stats':{'probability':{'completed':true}}});}});}
 </script>
 </body>
 </html>

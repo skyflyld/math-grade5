@@ -4,7 +4,7 @@
 <title>因数和倍数 · 五年级</title>
 <link rel="stylesheet" href="../../shared/layout.css">
 <style>.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;}.visual-step h4{font-size:17px;margin-bottom:12px;}.visual-step .step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:700;background:var(--accent-light);color:var(--accent-deep);margin-bottom:10px;}.concept-highlight{background:linear-gradient(145deg,#fefce8,#fff);border:2px solid #fde68a;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}.concept-highlight .big-idea{font-size:22px;font-weight:800;color:#92400e;line-height:1.6;}.concept-highlight .big-idea .highlight{color:var(--accent-deep);background:var(--accent-light);padding:2px 8px;border-radius:4px;}.thought-bubble{display:inline-block;background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:10px 16px;margin:6px 0;font-size:14px;max-width:90%;}.thought-bubble::before{content:'💭 ';}</style>
-</head><body data-concept="因数和倍数,整数除法,235的倍数特征">
+</head><body data-concept="因数和倍数,质数与合数">
 <div class="top-nav"><a href="../../index.html#%E5%9B%A0%E6%95%B0%E5%92%8C%E5%80%8D%E6%95%B0">🏠</a><span class="breadcrumb-sep">›</span><span>因数和倍数</span></div>
 <h1 class="module-title">🧩 因数和倍数 — 数字的朋友圈</h1>
 <p class="module-subtitle">12÷3=4——3是12的因数，12是3的倍数。它们成对出现。</p>
@@ -24,11 +24,14 @@
   <div class="concept-highlight"><div class="big-idea">🔑 <span class="highlight">a×b=c → a和b是c的因数，c是a和b的倍数</span></div><p>因数和倍数是相互依存的关系——没有a就没有b的倍数。</p></div>
 </div>
 <div class="section">
-  <div class="section-header"><span class="emoji">🎮</span>交互 · 找因数</div>
+  <div class="section-header"><span class="emoji">🎮</span>交互实验室 · 因数树</div>
   <div class="interactive-area">
-    <span>输入一个数，找出所有因数：</span>
-    <input id="factor-input" class="input-field" type="number" value="12" style="width:60px;" oninput="findFactors()">
-    <div id="factor-result" style="margin-top:8px;font-size:16px;"></div>
+    <div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;">
+      <span>输入一个数：</span>
+      <input id="factor-tree-input" class="input-field" type="number" value="12" min="2" style="width:90px;">
+      <button class="btn btn-primary btn-sm" onclick="renderFactorTree()">生成因数树</button>
+    </div>
+    <div id="factor-tree-result" style="margin-top:10px;"></div>
   </div>
 </div>
 <div class="section">
@@ -59,22 +62,71 @@
 <script src="../../shared/concepts.js"></script><script src="../../shared/concept-sync.js"></script><script src="../../shared/components.js"></script>
 <script>
 createGate({containerId:'gate-root',questions:[{label:'12÷3=4，余数为？',inputs:[{key:'a',width:40}],check:u=>u.a==='0'}],onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅ 好！</div>'});
-function findFactors(){const n=parseInt(document.getElementById('factor-input').value)||1;const r=[];for(let i=1;i<=n;i++)if(n%i===0)r.push(i);document.getElementById('factor-result').innerHTML=`<strong>${n}</strong>的因数（共${r.length}个）：<span style="color:var(--accent-deep);font-weight:800;">${r.join(', ')}</span>`;}
-findFactors();
+function normList(v){return String(v||'').replace(/[，\s]+/g,',').replace(/,+/g,',').replace(/^,|,$/g,'');}
+function isPrime(n){if(n<=1)return false;for(let i=2;i*i<=n;i++)if(n%i===0)return false;return true;}
+function smallestFactor(n){for(let i=2;i*i<=n;i++)if(n%i===0)return i;return n;}
+function factorPairs(n){
+  const pairs=[];
+  for(let i=1;i*i<=n;i++){
+    if(n%i===0)pairs.push([i,n/i]);
+  }
+  return pairs;
+}
+function buildFactorTree(n){
+  const f=smallestFactor(n);
+  if(f===n)return {value:n,children:[]};
+  const a=f,b=n/f;
+  return {value:n,children:[buildFactorTree(a),buildFactorTree(b)]};
+}
+function renderTreeNode(node){
+  const isLeaf=!node.children||node.children.length===0;
+  const box=`<span style="display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:#fff;font-weight:800;">${node.value}</span>`;
+  if(isLeaf)return `<div style="display:flex;justify-content:center;align-items:center;gap:10px;margin:6px 0;">${box}</div>`;
+  return `<div style="text-align:center;margin:6px 0;">
+    <div>${box}</div>
+    <div style="display:flex;justify-content:center;gap:18px;margin-top:8px;flex-wrap:wrap;">
+      <div>${renderTreeNode(node.children[0])}</div>
+      <div>${renderTreeNode(node.children[1])}</div>
+    </div>
+  </div>`;
+}
+function renderFactorTree(){
+  const n=Math.floor(Number(document.getElementById('factor-tree-input').value)||0);
+  const out=document.getElementById('factor-tree-result');
+  if(!Number.isFinite(n)||n<2){out.innerHTML='<div class="feedback show error">请输入 ≥ 2 的整数</div>';return;}
+  const pairs=factorPairs(n).map(p=>`${p[0]}×${p[1]}`).join('，');
+  const tree=buildFactorTree(n);
+  out.innerHTML=`<div style="display:grid;gap:10px;">
+    <div style="padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:#f8fafc;">
+      <div style="font-weight:800;margin-bottom:6px;">成对找因数</div>
+      <div style="color:var(--text-muted);font-size:14px;">${pairs}</div>
+    </div>
+    <div style="padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:#fff;">
+      <div style="font-weight:800;margin-bottom:6px;">因数树（一直拆到质数）</div>
+      ${renderTreeNode(tree)}
+      <div style="color:var(--text-muted);font-size:12px;margin-top:8px;">提示：叶子都是质数；同一个数的因数树可能不唯一。</div>
+    </div>
+  </div>`;
+}
+renderFactorTree();
 function checkE(n,ans,input,fb){const ok=input.value.trim()===ans.trim();fb.className='feedback show '+(ok?'success':'error');fb.innerHTML=ok?'✅ 正确！':`❌ 答案是 ${ans}`;}
 createAdversarialChallenge({containerId:'adversary-root',challenges:[
-  {tag:'相互依存',statement:'"因数和倍数是两个数之间的关系，不是单个数的属性。"',answer:'agree',hint:'你能说"12是倍数"吗？',explanation:'必须说"12是谁的倍数"——因数和倍数都是成对说的。',counterexample:'说"12是倍数"没有意义——12是6的倍数，2的倍数，等等。'},
-  {tag:'因数范围',statement:'一个数的因数一定比这个数小。',answer:'refute',hint:'有没有等于它本身的因数？',explanation:'一个数最大的因数就是它本身（如12的因数包括12）。'}
+  {tag:'双向关系',statement:'如果 5×6=30，5 是 30 的倍数。',answer:'refute',hint:'5 是“整除 30”还是“被 30 整除”？',explanation:'5 整除 30，所以 5 是 30 的因数；30 才是 5 的倍数。',counterexample:'30÷5=6（整除），所以 5 是因数。'},
+  {tag:'1 的遗漏',statement:'20 的因数有：2、4、5、10、20。',answer:'refute',hint:'1 能整除 20 吗？',explanation:'1 和本身都一定是因数。完整是 1、2、4、5、10、20。',counterexample:'成对找：1×20、2×10、4×5。'},
+  {tag:'倍数无限',statement:'7 的倍数最大是 70。',answer:'refute',hint:'70 后面还有 7 的倍数吗？',explanation:'倍数是无限的。70 后面还有 77、84…没有“最大倍数”。',counterexample:'不断加 7 就能得到更大的倍数。'},
+  {tag:'逆向思考',statement:'一个数的最大因数和最小倍数都是它本身。',answer:'agree',hint:'8 的最大因数和最小倍数分别是多少？',explanation:'最大因数=本身；在自然数范围内最小倍数也是本身。',counterexample:'36 的最大因数 36，最小倍数 36。'}
 ],onComplete:()=>saveProgress({'factors':{'intro':{'adversary':'complete'}}})});
-createFeynmanFill({containerId:'feynman-root',template:'如果___除以整数b没有余数，我们就说b是a的___，a是b的___。因数和倍数是相互___的关系。一个数的因数中最___的是1，最___的是它本身。',answer:['a','因数','倍数','依存','小','大'],onComplete:()=>saveProgress({'factors':{'intro':{'feynman':'complete'}}})});
+createFeynmanFill({containerId:'feynman-root',template:'第1句：如果 a×b=c，则 a 和 b 是 c 的___，c 是 a 和 b 的___。第2句：找因数要___找：1 配___，小的配___的。第3句：一个数的因数个数是___的，倍数是___的。第4句：___是所有非零自然数的因数。',answer:['因数','倍数','成对','本身','大','有限','无限','1'],onComplete:()=>saveProgress({'factors':{'intro':{'feynman':'complete'}}})});
 createExerciseSet({containerId:'ex-basic',exercises:[
-  {question:'15的因数有哪些？（用逗号分隔）',inputs:[{key:'a',width:100}],check:a=>a.a==='1,3,5,15',hint:'1,3,5,15'},
-  {question:'20以内7的倍数有？',inputs:[{key:'a',width:80}],check:a=>a.a==='7,14',hint:'7,14'}
-],passThreshold:0.5,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}});
+  {question:'12 的因数有哪些？（用逗号分隔）',inputs:[{key:'a',width:160}],check:a=>normList(a.a)==='1,2,3,4,6,12',hint:'1,2,3,4,6,12'},
+  {question:'5 的倍数写出前 5 个。（用逗号分隔）',inputs:[{key:'a',width:200}],check:a=>normList(a.a)==='5,10,15,20,25',hint:'5,10,15,20,25'},
+  {question:'18 是哪些数的倍数？（用逗号分隔）',inputs:[{key:'a',width:200}],check:a=>normList(a.a)==='1,2,3,6,9,18',hint:'1,2,3,6,9,18'}
+],passThreshold:0.67,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}});
 function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[
-  {question:'36的因数共有几个？',inputs:[{key:'a',width:40}],check:a=>a.a==='9',hint:'1,2,3,4,6,9,12,18,36'},
-  {question:'一个数的最大因数是24，这个数是？',inputs:[{key:'a',width:40}],check:a=>a.a==='24',hint:'最大因数=本身'}
-],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'factors':{'intro':{'completed':true}}});}});}
+  {question:'50 以内 6 的倍数有几个？',inputs:[{key:'a',width:60}],check:a=>String(a.a).trim()==='8',hint:'6,12,18,24,30,36,42,48'},
+  {question:'既是 18 的因数又是 24 的因数的数有哪些？（用逗号分隔）',inputs:[{key:'a',width:180}],check:a=>normList(a.a)==='1,2,3,6',hint:'1,2,3,6'},
+  {question:'一个数在 30–40 之间，它是 6 的倍数，有因数 4，这个数是？',inputs:[{key:'a',width:60}],check:a=>String(a.a).trim()==='36',hint:'36'}
+],passThreshold:0.67,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'factors':{'intro':{'completed':true}}});}});}
 </script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>235的倍数特征 · 五年级</title><link rel="stylesheet" href="../../shared/layout.css"><style>.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;}.visual-step h4{font-size:17px;margin-bottom:12px;}.visual-step .step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:700;background:var(--accent-light);color:var(--accent-deep);margin-bottom:10px;}.concept-highlight{background:linear-gradient(145deg,#fefce8,#fff);border:2px solid #fde68a;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}.concept-highlight .big-idea{font-size:22px;font-weight:800;color:#92400e;line-height:1.6;}.concept-highlight .big-idea .highlight{color:var(--accent-deep);background:var(--accent-light);padding:2px 8px;border-radius:4px;}.thought-bubble{display:inline-block;background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:10px 16px;margin:6px 0;font-size:14px;max-width:90%;}.thought-bubble::before{content:'💭 ';}</style></head>
-<body data-concept="235的倍数特征"><div class="top-nav"><a href="../../index.html#235%E7%9A%84%E5%80%8D%E6%95%B0%E7%89%B9%E5%BE%81">🏠</a><span class="breadcrumb-sep">›</span><span>2,3,5的倍数特征</span></div>
+<body data-concept="235的倍数特征,因数和倍数"><div class="top-nav"><a href="../../index.html#235%E7%9A%84%E5%80%8D%E6%95%B0%E7%89%B9%E5%BE%81">🏠</a><span class="breadcrumb-sep">›</span><span>2,3,5的倍数特征</span></div>
 <h1 class="module-title">🔍 2,3,5的倍数特征 — 快速判断</h1><p class="module-subtitle">看个位、看数字和——一眼就能判断一个数是不是2、3或5的倍数。</p>
 <div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
 <div class="section"><div class="section-header"><span class="emoji">🧱</span>拆到公理</div>
@@ -9,7 +9,25 @@
 <div style="padding:14px;background:#dcfce7;border-radius:8px;text-align:center;"><strong>3的倍数</strong><br>各位数字和÷3</div></div></div>
 <div class="visual-step"><span class="step-label">第 2 步</span><h4>验证：318</h4>2？个位8→是。<br>5？个位不是0或5→否。<br>3？3+1+8=12，12÷3=4→是。<br><div class="thought-bubble">318是2和3的倍数（也是6的倍数），但不是5的倍数。</div></div>
 <div class="concept-highlight"><div class="big-idea">🔑 <span class="highlight">2看个位，5看个位，3看数字和</span></div></div></div>
-<div class="section"><div class="section-header"><span class="emoji">🎮</span>交互 · 倍数判断器</div><div class="interactive-area" style="text-align:center;"><input id="div-input" class="input-field" type="number" value="318" style="width:60px;" oninput="checkDiv()"><div id="div-result" style="margin-top:8px;"></div></div></div>
+<div class="section"><div class="section-header"><span class="emoji">🎮</span>交互实验室 · 倍数特征检查器</div>
+  <div class="interactive-area" style="text-align:center;">
+    <div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;">
+      <span>输入：</span>
+      <input id="div-input" class="input-field" type="number" value="318" style="width:120px;" oninput="checkDiv()">
+      <button class="btn btn-outline btn-sm" onclick="checkDiv()">检查</button>
+    </div>
+    <div id="div-result" style="margin-top:10px;text-align:left;display:inline-block;min-width:280px;"></div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-header"><span class="emoji">📐</span>教材原文</div>
+  <div style="cursor:pointer;padding:14px 18px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);" onclick="const a=this.querySelector('.annot');a.style.display=a.style.display==='none'?'block':'none'">
+    📖 <b>教材：</b>"判断一个数是不是 2、5 的倍数，常看个位；判断是不是 3 的倍数，常看各位数字和。" <i>（点击）</i>
+    <div class="annot" style="display:none;margin-top:10px;padding:10px 14px;background:#f0fdf4;border-radius:6px;font-size:14px;">
+      ✏️ “看特征”不是玄学：它来自位值展开（10 的倍数总能被 2/5 整除；100=99+1 导致“各位和”判据）。
+    </div>
+  </div>
+</div>
 <div class="section"><div class="section-header"><span class="emoji">🎯</span>典例精讲</div>
 <div class="visual-step"><h4>🎯 判断420：2✅5✅3✅（4+2+0=6÷3=2）</h4>✏️ 判断111：3的倍数？<input class="input-field" id="ex1" style="width:30px;"><button class="btn btn-primary btn-sm" onclick="checkE(1,'是',ex1,fb1)">提交</button><div class="feedback" id="fb1"></div></div></div>
 <div class="section"><div class="section-header"><span class="emoji">⚡</span>对抗挑战</div><div id="adversary-root"></div></div>
@@ -19,13 +37,57 @@
 <div id="done" style="display:none;text-align:center;padding:24px;font-size:24px;">🎉 通关！</div></div>
 <script src="../../shared/concepts.js"></script><script src="../../shared/concept-sync.js"></script><script src="../../shared/components.js"></script>
 <script>
-createGate({containerId:'gate-root',questions:[{label:'2的倍数看什么位？',inputs:[{key:'a',width:30}],check:u=>u.a==='个位'}],onPass:()=>document.getElementById('gate-root').innerHTML='✅'});
-function checkDiv(){const n=parseInt(document.getElementById('div-input').value)||0;const r=[];if(n%2===0)r.push('2✅');if(n%5===0)r.push('5✅');const s=String(n).split('').reduce((a,b)=>a+parseInt(b),0);if(s%3===0)r.push('3✅');document.getElementById('div-result').textContent=r.length?n+'是'+r.join('、')+'的倍数':n+'不是2、3、5的倍数';}
+createGate({containerId:'gate-root',questions:[{label:'3 的倍数看什么？（末位/各位和）',inputs:[{key:'a',width:60}],check:u=>u.a==='各位和'||u.a==='各位数字和'}],onPass:()=>document.getElementById('gate-root').innerHTML='✅'});
+function digitSum(n){return String(Math.abs(n)).split('').reduce((a,b)=>a+Number(b),0);}
+function checkDiv(){
+  const raw=document.getElementById('div-input').value;
+  const n=parseInt(raw,10);
+  const out=document.getElementById('div-result');
+  if(!Number.isFinite(n)){out.innerHTML='<div class="feedback show error">请输入整数</div>';return;}
+  const last=Math.abs(n)%10;
+  const sum=digitSum(n);
+  const by2=(last%2===0);
+  const by5=(last===0||last===5);
+  const by3=(sum%3===0);
+  const by9=(sum%9===0);
+  const by6=(by2&&by3);
+  const by10=(by2&&by5);
+  function line(ok,label,detail){
+    const c=ok?'var(--success)':'var(--danger)';
+    return `<div style="display:flex;gap:10px;align-items:baseline;margin:6px 0;">
+      <span style="min-width:72px;font-weight:800;color:${c};">${label}${ok?' ✅':' ❌'}</span>
+      <span style="color:var(--text-muted);font-size:13px;">${detail}</span>
+    </div>`;
+  }
+  out.innerHTML=`<div style="font-weight:800;margin-bottom:6px;">${n} 的倍数特征</div>
+    ${line(by2,'×2',`末位 ${last} ${by2?'是偶数':'不是偶数'}（0/2/4/6/8）`)}
+    ${line(by5,'×5',`末位 ${last} ${by5?'是 0 或 5':'不是 0 或 5'}（0/5）`)}
+    ${line(by3,'×3',`各位和 ${sum} ${by3?'能':'不能'}被 3 整除`)}
+    ${line(by9,'×9',`各位和 ${sum} ${by9?'能':'不能'}被 9 整除`)}
+    <div style="margin-top:8px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:#f8fafc;">
+      <div style="font-weight:800;margin-bottom:4px;">组合规则</div>
+      <div style="color:var(--text-muted);font-size:13px;">同时满足 2 和 3 → ${by6?'是':'不是'} 6 的倍数；同时满足 2 和 5 → ${by10?'是':'不是'} 10 的倍数。</div>
+    </div>`;
+}
 function checkE(n,ans,i,f){const ok=i.value.trim()===ans;f.className='feedback show '+(ok?'success':'error');f.innerHTML=ok?'✅':`❌ ${ans}`;}
-createAdversarialChallenge({containerId:'adversary-root',challenges:[{tag:'规则混淆',statement:'一个数各位和是3的倍数→这个数就是3的倍数。',answer:'agree',hint:'这个规则对所有数都成立',explanation:'一位一位加起来看能否被3整除——对所有整数成立。'}],onComplete:()=>saveProgress({'factors':{'divisibility':{'adversary':'complete'}}})});
-createFeynmanFill({containerId:'feynman-root',template:'2的倍数看___位是不是偶数。5的倍数看___位是不是0或5。3的倍数看___。',answer:['个','个','各位数字和'],onComplete:()=>saveProgress({'factors':{'divisibility':{'feynman':'complete'}}})});
-createExerciseSet({containerId:'ex-basic',exercises:[{question:'判断158：2的倍数？',inputs:[{key:'a',width:30}],check:a=>a.a==='是'},{question:'判断75：5的倍数？',inputs:[{key:'a',width:30}],check:a=>a.a==='是'}],passThreshold:0.5,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}});
-function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[{question:'最小能同时被2和5整除的两位数是？',inputs:[{key:'a',width:40}],check:a=>a.a==='10'},{question:'判断504：3的倍数？',inputs:[{key:'a',width:30}],check:a=>a.a==='是'}],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'factors':{'divisibility':{'completed':true}}});}});}
+createAdversarialChallenge({containerId:'adversary-root',challenges:[
+  {tag:'2 的特征边界',statement:'末位是偶数的数一定是 4 的倍数。',answer:'refute',hint:'14 末位是 4，它是 4 的倍数吗？',explanation:'末位偶数只能保证被 2 整除；4 要看末两位能否被 4 整除。',counterexample:'14÷4=3.5，不是 4 的倍数。'},
+  {tag:'3 的特征滥用',statement:'如果一个数的各位之和是 9 的倍数，这个数一定是 9 的倍数。',answer:'agree',hint:'这和 3 的规律同理。',explanation:'9 的倍数判据和 3 一样：看各位数字之和是否为 9 的倍数。',counterexample:'189：1+8+9=18，是 9 的倍数；189÷9=21。'},
+  {tag:'组合规则',statement:'能同时被 2 和 5 整除的数，一定能被 10 整除。',answer:'agree',hint:'2×5=10。',explanation:'2 要求末位偶数，5 要求末位 0 或 5，共同点只能是 0，所以是 10 的倍数。',counterexample:'30：末位 0，被 10 整除。'},
+  {tag:'逆向思考',statement:'一个三位数 4□6 是 3 的倍数，□ 只能是 2、5、8。',answer:'agree',hint:'4+6=10，加什么使总和被 3 整除？',explanation:'10+□ 是 3 的倍数，□=2/5/8。',counterexample:'□=0 得 10（不是 3 倍数），□=4 得 14…'}
+],onComplete:()=>saveProgress({'factors':{'divisibility':{'adversary':'complete'}}})});
+createFeynmanFill({containerId:'feynman-root',template:'第1句：2 的倍数看___位，5 的倍数也看___位。第2句：3 的倍数不能只看末位，要看___的数字之和。第3句：同时满足 2 和 3 的特征 = 被___整除；同时满足 2 和 5 = 被___整除。第4句：9 的倍数判据和___一样——看各位___和。',answer:['末','末','各位','6','10','3','数字'],onComplete:()=>saveProgress({'factors':{'divisibility':{'feynman':'complete'}}})});
+createExerciseSet({containerId:'ex-basic',exercises:[
+  {question:'下列哪些是 2 的倍数：15、24、37、40？（用逗号分隔数字）',inputs:[{key:'a',width:180}],check:a=>String(a.a).replace(/[，\s]+/g,',')==='24,40',hint:'24,40'},
+  {question:'下列哪些是 3 的倍数：21、32、45、56？（用逗号分隔数字）',inputs:[{key:'a',width:180}],check:a=>String(a.a).replace(/[，\s]+/g,',')==='21,45',hint:'21,45'},
+  {question:'245 是 5 的倍数吗？（是/否）',inputs:[{key:'a',width:60}],check:a=>String(a.a).trim()==='是',hint:'末位是 5'}
+],passThreshold:0.67,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}});
+function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[
+  {question:'四位数 2□34 是 3 的倍数，□ 最小填几？',inputs:[{key:'a',width:60}],check:a=>String(a.a).trim()==='0',hint:'2+3+4=9，本来就是 3 的倍数'},
+  {question:'同时是 2、3、5 的倍数的最小三位数是？',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='120',hint:'120'},
+  {question:'567 是 9 的倍数吗？（是/否）',inputs:[{key:'a',width:60}],check:a=>String(a.a).trim()==='是',hint:'5+6+7=18，是 9 的倍数'}
+],passThreshold:0.67,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'factors':{'divisibility':{'completed':true}}});}});}
+checkDiv();
 </script>
 </body>
 </html>

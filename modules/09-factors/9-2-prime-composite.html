@@ -33,12 +33,16 @@
   <div class="concept-highlight"><div class="big-idea">🔑 质数 = <span class="highlight">"数字的原子"</span></div><p>所有整数都是由质数"构造"出来的。</p></div>
 </div>
 <div class="section">
-  <div class="section-header"><span class="emoji">🎮</span>交互 · 质数辨识器</div>
-  <div class="interactive-area" style="text-align:center;">
-    <span>输入判断：</span>
-    <input id="prime-input" class="input-field" type="number" value="17" style="width:60px;">
-    <button class="btn btn-primary btn-sm" onclick="checkPrime()">判断质数/合数</button>
-    <div id="prime-result" style="margin-top:8px;font-size:18px;font-weight:800;"></div>
+  <div class="section-header"><span class="emoji">🎮</span>交互实验室 · 筛法找质数</div>
+  <div class="interactive-area">
+    <div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;">
+      <span>筛到：</span>
+      <input id="sieve-max" class="input-field" type="number" value="50" min="10" max="200" style="width:80px;">
+      <button class="btn btn-primary btn-sm" onclick="renderSieve()">生成表格</button>
+      <button class="btn btn-outline btn-sm" onclick="runSieve()">一键筛出质数</button>
+    </div>
+    <div id="sieve-grid" style="margin-top:12px;text-align:center;"></div>
+    <div id="sieve-readout" style="margin-top:10px;text-align:center;color:var(--text-muted);font-size:13px;"></div>
   </div>
 </div>
 <div class="section">
@@ -67,22 +71,75 @@
   <div id="done" style="display:none;text-align:center;padding:24px;font-size:24px;">🎉 质数与合数 — 通关！</div></div>
 <script src="../../shared/concepts.js"></script><script src="../../shared/concept-sync.js"></script><script src="../../shared/components.js"></script>
 <script>
-createGate({containerId:'gate-root',questions:[{label:'7的因数有几个？',inputs:[{key:'a',width:40}],check:u=>u.a==='2'}],onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅ 好！</div>'});
-function checkPrime(){const n=parseInt(document.getElementById('prime-input').value);if(n<=1){document.getElementById('prime-result').textContent='1既不是质数也不是合数';return;}let isPrime=true;for(let i=2;i*i<=n;i++){if(n%i===0){isPrime=false;break;}}document.getElementById('prime-result').textContent=isPrime?`${n} ✅ 是质数`:`${n} ❌ 是合数`;document.getElementById('prime-result').style.color=isPrime?'var(--success)':'var(--danger)';}
+createGate({containerId:'gate-root',questions:[{label:'1 是质数吗？（是/否）',inputs:[{key:'a',width:40}],check:u=>u.a==='否'||u.a==='不是'}],onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅ 好！</div>'});
+let sieveState={max:50,els:[],isPrime:[]};
+function renderSieve(){
+  const n=Math.max(10,Math.min(200,Math.floor(Number(document.getElementById('sieve-max').value)||50)));
+  sieveState.max=n;
+  const grid=document.getElementById('sieve-grid');
+  const els=[];
+  const wrap=document.createElement('div');
+  wrap.style.cssText='display:flex;flex-wrap:wrap;gap:6px;justify-content:center;';
+  for(let i=1;i<=n;i++){
+    const cell=document.createElement('span');
+    cell.textContent=String(i);
+    cell.style.cssText='display:inline-grid;place-items:center;width:38px;height:34px;border-radius:10px;border:1px solid var(--border);background:#fff;font-weight:800;user-select:none;';
+    if(i===1){cell.style.background='#f1f5f9';cell.style.color='var(--text-muted)';}
+    wrap.appendChild(cell);
+    els.push(cell);
+  }
+  grid.innerHTML='';
+  grid.appendChild(wrap);
+  sieveState.els=els;
+  sieveState.isPrime=new Array(n+1).fill(false);
+  document.getElementById('sieve-readout').textContent='提示：从 2 开始，把 2 的倍数划掉；再看下一个没划掉的数，继续。';
+}
+function runSieve(){
+  const n=sieveState.max||50;
+  if(!sieveState.els||sieveState.els.length!==n)renderSieve();
+  const isPrime=new Array(n+1).fill(true);
+  isPrime[0]=false;isPrime[1]=false;
+  for(let p=2;p*p<=n;p++){
+    if(!isPrime[p])continue;
+    for(let m=p*p;m<=n;m+=p)isPrime[m]=false;
+  }
+  sieveState.isPrime=isPrime;
+  const primes=[];
+  for(let i=1;i<=n;i++){
+    const el=sieveState.els[i-1];
+    if(i<2){continue;}
+    if(isPrime[i]){
+      el.style.background='var(--accent-light)';
+      el.style.borderColor='var(--accent)';
+      el.style.color='var(--accent-deep)';
+      primes.push(i);
+    }else{
+      el.style.background='#f1f5f9';
+      el.style.color='var(--text-muted)';
+    }
+  }
+  document.getElementById('sieve-readout').innerHTML=`<strong>质数：</strong>${primes.join('、')}（共 ${primes.length} 个）`;
+}
 function checkE(n,ans,input,fb){const ok=input.value.trim()===ans.trim();fb.className='feedback show '+(ok?'success':'error');fb.innerHTML=ok?'✅ 正确！':`❌ 答案是 ${ans}`;}
 createAdversarialChallenge({containerId:'adversary-root',challenges:[
-  {tag:'分类',statement:'所有奇数都是质数。',answer:'refute',hint:'9是奇数还是质数？',explanation:'9=3×3，是合数。',counterexample:'9的因数有1,3,9→合数。15、21、25也是奇数但不是质数。'},
-  {tag:'1的身份',statement:'1是质数，因为它只能被1和它本身整除。',answer:'refute',hint:'质数的定义是什么？',explanation:'质数需要恰好2个因数（1和本身），1只有1个因数。',counterexample:'质数定义是"只有1和它本身两个因数"，1只有1个因数，所以不是。'}
+  {tag:'1 的分类',statement:'1 是最小的质数。',answer:'refute',hint:'质数有几个因数？',explanation:'质数需要恰好两个因数，1 只有一个。1 既不是质数也不是合数。',counterexample:'最小的质数是 2。'},
+  {tag:'偶数=合数',statement:'所有的偶数都是合数。',answer:'refute',hint:'2 是偶数，它是不是合数？',explanation:'2 只有因数 1 和 2，是质数。',counterexample:'2 是唯一的偶质数。'},
+  {tag:'判别方法',statement:'判断一个数是否为质数，需要用它去除以所有比它小的数。',answer:'refute',hint:'如果 n=a×b，a 和 b 至少有一个 ≤ √n。',explanation:'只需检查到 √n 的质数即可。',counterexample:'97 只需检查 2、3、5、7（都除不尽），所以是质数。'},
+  {tag:'逆向思考',statement:'两个质数相乘的结果一定是合数。',answer:'agree',hint:'p×q 的因数有哪些？',explanation:'p×q 至少有 1、p、q、p×q 四个因数，所以是合数。',counterexample:'2×3=6，6 的因数有 1,2,3,6。'}
 ],onComplete:()=>saveProgress({'factors':{'prime':{'adversary':'complete'}}})});
-createFeynmanFill({containerId:'feynman-root',template:'质数只有___个因数：1和___。合数有___个因数。1既不是___也不是___，因为它只有___个因数。质数可以理解为"数字的___"，合数则是多个质数___的结果。',answer:['2','本身','3个以上','质数','合数','1','原子','相乘'],onComplete:()=>saveProgress({'factors':{'prime':{'feynman':'complete'}}})});
+createFeynmanFill({containerId:'feynman-root',template:'第1句：质数只有___和___两个因数；合数至少有___个因数。第2句：___既不是质数也不是合数；___是最小的质数，也是唯一的___质数。第3句：判断质数只需用___以内的质数去试除。第4句：两个质数相乘，结果是___数。',answer:['1','它本身','3','1','2','偶','√n','合'],onComplete:()=>saveProgress({'factors':{'prime':{'feynman':'complete'}}})});
+function normList(v){return String(v||'').replace(/[，\s]+/g,',').replace(/,+/g,',').replace(/^,|,$/g,'');}
 createExerciseSet({containerId:'ex-basic',exercises:[
-  {question:'11是质数还是合数？',inputs:[{key:'a',width:40}],check:a=>a.a==='质数',hint:'因数只有1和11'},
-  {question:'20以内的质数有几个？',inputs:[{key:'a',width:40}],check:a=>a.a==='8',hint:'2,3,5,7,11,13,17,19'}
-],passThreshold:0.5,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}});
+  {question:'20 以内的质数有哪些？（用逗号分隔）',inputs:[{key:'a',width:240}],check:a=>normList(a.a)==='2,3,5,7,11,13,17,19',hint:'2,3,5,7,11,13,17,19'},
+  {question:'最小的合数是？',inputs:[{key:'a',width:60}],check:a=>String(a.a).trim()==='4',hint:'4'},
+  {question:'91 是质数还是合数？（质数/合数）',inputs:[{key:'a',width:60}],check:a=>String(a.a).trim()==='合数',hint:'7×13'}
+],passThreshold:0.67,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}});
 function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[
-  {question:'把42分解成质数相乘：42=2×3×?',inputs:[{key:'a',width:40}],check:a=>a.a==='7',hint:'42=2×21=2×3×7'},
-  {question:'最小的质数和最小的合数的和是？',inputs:[{key:'a',width:40}],check:a=>a.a==='6',hint:'2+4=6'}
-],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'factors':{'prime':{'completed':true}}});}});}
+  {question:'两个质数的和是 20，积是 51，这两个质数是？（用“a和b”）',inputs:[{key:'a',width:120}],check:a=>{const t=String(a.a).replace(/\s/g,'');return t==='3和17'||t==='17和3';},hint:'3和17'},
+  {question:'100 以内最大的质数是？',inputs:[{key:'a',width:60}],check:a=>String(a.a).trim()==='97',hint:'97'},
+  {question:'51 是质数吗？用筛法验证。（质数/合数）',inputs:[{key:'a',width:60}],check:a=>String(a.a).trim()==='合数',hint:'51=3×17'}
+],passThreshold:0.67,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'factors':{'prime':{'completed':true}}});}});}
+renderSieve();
 </script>
 </body>
 </html>

@@ -1,10 +1,24 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>数据收集 · 五年级</title><link rel="stylesheet" href="../../shared/layout.css"><style>.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;}.visual-step h4{font-size:17px;margin-bottom:12px;}.visual-step .step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:700;background:var(--accent-light);color:var(--accent-deep);margin-bottom:10px;}.concept-highlight{background:linear-gradient(145deg,#fefce8,#fff);border:2px solid #fde68a;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}.concept-highlight .big-idea{font-size:22px;font-weight:800;color:#92400e;line-height:1.6;}.concept-highlight .big-idea .highlight{color:var(--accent-deep);background:var(--accent-light);padding:2px 8px;border-radius:4px;}.thought-bubble{display:inline-block;background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:10px 16px;margin:6px 0;font-size:14px;max-width:90%;}.thought-bubble::before{content:'💭 ';}</style></head>
-<body data-concept="数据收集"><div class="top-nav"><a href="../../index.html#%E6%95%B0%E6%8D%AE%E6%94%B6%E9%9B%86">🏠</a><span class="breadcrumb-sep">›</span><span>数据收集</span></div>
+<body data-concept="数据收集,折线统计图"><div class="top-nav"><a href="../../index.html#%E6%95%B0%E6%8D%AE%E6%94%B6%E9%9B%86">🏠</a><span class="breadcrumb-sep">›</span><span>数据收集</span></div>
 <h1 class="module-title">📋 数据收集 — 把信息装进格子</h1><p class="module-subtitle">杂乱的数据放进表格，才能看清数字背后的规律。</p>
 <div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
 <div class="section"><div class="section-header"><span class="emoji">🧱</span>拆到公理</div><div class="visual-step"><span class="step-label">第 1 步</span><h4>数据→表格→信息</h4><div class="thought-bubble">全班同学身高：直接看一堆数字很难发现规律。按身高分组做成表→一目了然。</div></div>
 <div class="visual-step"><span class="step-label">第 2 步</span><h4>两种统计表</h4><div style="display:flex;gap:12px;justify-content:center;"><div style="padding:12px;background:#dbeafe;border-radius:8px;"><strong>单式</strong><br>一栏数据</div><div style="padding:12px;background:#fef3c7;border-radius:8px;"><strong>复式</strong><br>多栏对比</div></div></div>
 <div class="concept-highlight"><div class="big-idea">🔑 <span class="highlight">整理数据的目的是为了发现规律</span></div></div></div>
+<div class="section">
+  <div class="section-header"><span class="emoji">🎮</span>交互实验室 · 折线图与表</div>
+  <div id="linechart-lab"></div>
+  <p style="text-align:center;color:var(--text-muted);font-size:14px;margin-top:8px;">折线图看<strong>变化趋势</strong>；统计表看<strong>精确数值</strong>。</p>
+</div>
+<div class="section">
+  <div class="section-header"><span class="emoji">📐</span>教材原文</div>
+  <div style="cursor:pointer;padding:14px 18px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);" onclick="const a=this.querySelector('.annot');a.style.display=a.style.display==='none'?'block':'none'">
+    📖 <b>教材：</b>"统计表和统计图都是整理数据的方法。折线统计图适合表示数量随时间变化的情况。" <i>（点击）</i>
+    <div class="annot" style="display:none;margin-top:10px;padding:10px 14px;background:#f0fdf4;border-radius:6px;font-size:14px;">
+      ✏️ 看图先看纵轴：起点是不是 0？每格代表多少？避免被“夸张的视觉”误导。
+    </div>
+  </div>
+</div>
 <div class="section"><div class="section-header"><span class="emoji">🎯</span>典例精讲</div><div class="visual-step"><h4>🎯 统计表中"合计"是什么？所有数据之和</h4>✏️ 统计表的第一行通常叫什么？<input class="input-field" id="ex1" style="width:50px;"><button class="btn btn-primary btn-sm" onclick="checkE(1,'表头',ex1,fb1)">提交</button><div class="feedback" id="fb1"></div></div></div>
 <div class="section"><div class="section-header"><span class="emoji">⚡</span>对抗挑战</div><div id="adversary-root"></div></div>
 <div class="section"><div class="section-header"><span class="emoji">🦜</span>费曼输出</div><div id="feynman-root"></div></div>
@@ -13,12 +27,26 @@
 <div id="done" style="display:none;text-align:center;padding:24px;font-size:24px;">🎉 通关！</div></div>
 <script src="../../shared/concepts.js"></script><script src="../../shared/concept-sync.js"></script><script src="../../shared/components.js"></script>
 <script>
-createGate({containerId:'gate-root',questions:[{label:'数据整理后放在哪里？',inputs:[{key:'a',width:40}],check:u=>u.a==='表格'||u.a==='统计表'||u.a==='表'}],onPass:()=>document.getElementById('gate-root').innerHTML='✅'});
+createGate({containerId:'gate-root',questions:[{label:'折线图最适合看什么？（趋势/比较）',inputs:[{key:'a',width:60}],check:u=>u.a==='趋势'||u.a==='变化趋势'}],onPass:()=>document.getElementById('gate-root').innerHTML='✅'});
 function checkE(n,ans,i,f){const ok=i.value.trim()===ans;f.className='feedback show '+(ok?'success':'error');f.innerHTML=ok?'✅':`❌ ${ans}`;}
-createAdversarialChallenge({containerId:'adversary-root',challenges:[{tag:'目的',statement:'收集数据只是为了记录。',answer:'refute',hint:'记录之后做什么？',explanation:'收集是为了整理和分析，不是为记录而记录。',counterexample:'记录身高后要分组看分布规律。'}],onComplete:()=>saveProgress({'stats':{'collect':{'adversary':'complete'}}})});
-createFeynmanFill({containerId:'feynman-root',template:'数据收集就是___信息，放进___里面。整理数据的目的是为了发现___。',answer:['收集','表格','规律'],onComplete:()=>saveProgress({'stats':{'collect':{'feynman':'complete'}}})});
-createExerciseSet({containerId:'ex-basic',exercises:[{question:'统计表有哪两种？',inputs:[{key:'a',width:60}],check:a=>a.a==='单式和复式'||a.a==='单式复式'}],passThreshold:0.5,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}});
-function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[{question:'班级兴趣小组统计表的"合计"意义？',inputs:[{key:'a',width:60}],check:a=>a.a.includes('总')||a.a.includes('和')}],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'stats':{'collect':{'completed':true}}});}});}
+createLineChartInteract({containerId:'linechart-lab',title:'数据：表格 ↔ 折线图',description:'拖动点改变数据，观察“趋势”和“精确值”分别怎么读。',xLabel:'天',yLabel:'数量',data:[10,12,9,14,18,16,20]});
+createAdversarialChallenge({containerId:'adversary-root',challenges:[
+  {tag:'相关≠因果',statement:'小明发现数学成绩好的人体育也好，所以学数学能提高体育成绩。',answer:'refute',hint:'有没有第三个因素？',explanation:'相关不一定是因果，可能是自律等因素同时影响两者。',counterexample:'学习习惯好的人各科都可能更好。'},
+  {tag:'样本偏差',statement:'在校门口问了 5 个同学最喜欢的午餐，得出结论全校最爱炸鸡。',answer:'refute',hint:'5 个人能代表全校吗？',explanation:'样本太小且抽样位置可能偏差，需要随机抽取足够多人。',counterexample:'不同年级/班级口味可能不同。'},
+  {tag:'统计表 vs 统计图',statement:'统计图总是比统计表好用。',answer:'refute',hint:'需要精确数值时图够用吗？',explanation:'统计图趋势直观，但精确值常要看统计表，二者互补。',counterexample:'要读“第 7 天 82.6 元”，表更准确。'},
+  {tag:'逆向思考',statement:'统计就是数数和画图，不需要动脑。',answer:'refute',hint:'同样的数据，不同画法会产生不同印象。',explanation:'选择图表类型、刻度起点、分组方式都会影响结论，需要判断力。',counterexample:'纵轴起点不为 0 容易夸大变化。'}
+],onComplete:()=>saveProgress({'stats':{'collect':{'adversary':'complete'}}})});
+createFeynmanFill({containerId:'feynman-root',template:'第1句：数据的呈现方式有___和___，折线图适合看___，条形图适合___。第2句：统计调查要注意___的大小和是否___取样。第3句：发现两件事同时变化，只能说___，不能说___。第4句：看折线图最先查___轴起点和___。',answer:['统计表','统计图','变化趋势','比较大小','样本','随机','相关','因果','纵','刻度'],onComplete:()=>saveProgress({'stats':{'collect':{'feynman':'complete'}}})});
+createExerciseSet({containerId:'ex-basic',exercises:[
+  {question:'折线图最适合看数据的什么？',inputs:[{key:'a',width:80}],check:a=>String(a.a).includes('趋势'),hint:'变化趋势'},
+  {question:'记录全班身高，用统计表还是折线图合适？（统计表/折线图）',inputs:[{key:'a',width:80}],check:a=>String(a.a).trim()==='统计表',hint:'统计表'},
+  {question:'抽样调查的关键要求是什么？',inputs:[{key:'a',width:140}],check:a=>String(a.a).includes('代表'),hint:'样本有代表性'}
+],passThreshold:0.67,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}});
+function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[
+  {question:'“夏天雪糕销量高，溺水人数也多”，能说雪糕导致溺水吗？（能/不能）',inputs:[{key:'a',width:60}],check:a=>String(a.a).trim()==='不能',hint:'相关≠因果'},
+  {question:'一段折线很陡，数据可能只变了一点点，为什么？',inputs:[{key:'a',width:140}],check:a=>String(a.a).includes('纵轴')||String(a.a).includes('刻度'),hint:'纵轴刻度被放大'},
+  {question:'如何判断一个统计图是否“诚实”？',inputs:[{key:'a',width:180}],check:a=>String(a.a).includes('纵轴')||String(a.a).includes('刻度')||String(a.a).includes('数据源'),hint:'检查纵轴起点/刻度/数据源'}
+],passThreshold:0.67,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'stats':{'collect':{'completed':true}}});}});}
 </script>
 </body>
 </html>

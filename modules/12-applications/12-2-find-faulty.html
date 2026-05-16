@@ -1,11 +1,39 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>找次品 · 五年级</title><link rel="stylesheet" href="../../shared/layout.css"><style>.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;}.visual-step h4{font-size:17px;margin-bottom:12px;}.visual-step .step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:700;background:var(--accent-light);color:var(--accent-deep);margin-bottom:10px;}.concept-highlight{background:linear-gradient(145deg,#fefce8,#fff);border:2px solid #fde68a;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}.concept-highlight .big-idea{font-size:22px;font-weight:800;color:#92400e;line-height:1.6;}.concept-highlight .big-idea .highlight{color:var(--accent-deep);background:var(--accent-light);padding:2px 8px;border-radius:4px;}.thought-bubble{display:inline-block;background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:10px 16px;margin:6px 0;font-size:14px;max-width:90%;}.thought-bubble::before{content:'💭 ';}</style></head>
-<body data-concept="找次品"><div class="top-nav"><a href="../../index.html#%E6%89%BE%E6%AC%A1%E5%93%81">🏠</a><span class="breadcrumb-sep">›</span><span>找次品</span></div>
+<body data-concept="找次品,因数和倍数"><div class="top-nav"><a href="../../index.html#%E6%89%BE%E6%AC%A1%E5%93%81">🏠</a><span class="breadcrumb-sep">›</span><span>找次品</span></div>
 <h1 class="module-title">⚖️ 找次品 — 天平的策略</h1><p class="module-subtitle">已知次品偏重或偏轻时，用天平称几次能保证找到？最优策略是三等分——把可能性一分为三。</p>
 <div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
 <div class="section"><div class="section-header"><span class="emoji">🧱</span>拆到公理</div>
 <div class="visual-step"><span class="step-label">第 1 步</span><h4>天平一次告诉我们三件事</h4><div class="thought-bubble">在已知次品偏重（或已知偏轻）的前提下，一次称量有左边重、右边重、一样重三种结果。所以每次称量能把可能范围尽量压缩到1/3。</div></div>
 <div class="visual-step"><span class="step-label">第 2 步</span><h4>最优策略</h4><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;"><div style="padding:12px;background:#dbeafe;border-radius:8px;"><strong>3个</strong><br>称1次</div><div style="padding:12px;background:#fef3c7;border-radius:8px;"><strong>9个</strong><br>称2次</div><div style="padding:12px;background:#dcfce7;border-radius:8px;"><strong>27个</strong><br>称3次</div><div style="padding:12px;background:#fce7f3;border-radius:8px;"><strong>n个</strong><br>最少ceil(log₃n)次</div></div><div class="thought-bubble">9个→3组每组3个→称一次找到哪组→再称一次找到哪个。总共2次。</div></div>
 <div class="concept-highlight"><div class="big-idea">🔑 <span class="highlight">三等分是天平问题的核心策略</span></div></div></div>
+<div class="section">
+  <div class="section-header"><span class="emoji">🎮</span>交互实验室 · 天平三分</div>
+  <div class="interactive-area">
+    <div style="text-align:center;color:var(--text-muted);font-size:14px;margin-bottom:10px;">提示：先把 9 个分成 3 组（3/3/3），称一组对一组。</div>
+    <div id="faulty-scale"></div>
+    <div style="margin-top:10px;display:grid;gap:10px;">
+      <div style="padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:#fff;">
+        <div style="font-weight:800;margin-bottom:6px;">选择要称的零件（共 9 个，已知次品较轻）</div>
+        <div id="faulty-coins" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;"></div>
+        <div style="margin-top:8px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <button class="btn btn-outline btn-sm" onclick="resetWeigh()">清空两边</button>
+          <button class="btn btn-primary btn-sm" onclick="doWeigh()">称一次</button>
+          <button class="btn btn-outline btn-sm" onclick="newGame()">换一个次品</button>
+        </div>
+      </div>
+      <div id="faulty-log" style="padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:#f8fafc;color:var(--text-muted);font-size:13px;"></div>
+    </div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-header"><span class="emoji">📐</span>教材原文</div>
+  <div style="cursor:pointer;padding:14px 18px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);" onclick="const a=this.querySelector('.annot');a.style.display=a.style.display==='none'?'block':'none'">
+    📖 <b>教材：</b>"用天平找次品时，要充分利用天平三种结果（左重、右重、平衡）带来的信息。" <i>（点击）</i>
+    <div class="annot" style="display:none;margin-top:10px;padding:10px 14px;background:#f0fdf4;border-radius:6px;font-size:14px;">
+      ✏️ 三分法的关键不是“魔法”，而是每次称量最多能把可能性分成 3 组。
+    </div>
+  </div>
+</div>
 <div class="section"><div class="section-header"><span class="emoji">🎯</span>典例精讲</div><div class="visual-step"><h4>🎯 8个中找到1个较重次品——最少几次？2次</h4>✏️ 27个中找到次品，最少几次？<input class="input-field" id="ex1" style="width:40px;"><button class="btn btn-primary btn-sm" onclick="checkE(1,'3',ex1,fb1)">提交</button><div class="feedback" id="fb1"></div></div></div>
 <div class="section"><div class="section-header"><span class="emoji">⚡</span>对抗挑战</div><div id="adversary-root"></div></div>
 <div class="section"><div class="section-header"><span class="emoji">🦜</span>费曼输出</div><div id="feynman-root"></div></div>
@@ -16,10 +44,79 @@
 <script>
 createGate({containerId:'gate-root',questions:[{label:'天平一次有几种结果？',inputs:[{key:'a',width:30}],check:u=>u.a==='3'||u.a==='三种'}],onPass:()=>document.getElementById('gate-root').innerHTML='✅'});
 function checkE(n,ans,i,f){const ok=i.value.trim()===ans;f.className='feedback show '+(ok?'success':'error');f.innerHTML=ok?'✅':`❌ ${ans}`;}
-createAdversarialChallenge({containerId:'adversary-root',challenges:[{tag:'策略',statement:'找次品应该两等分，每次排除一半。',answer:'refute',hint:'天平能给出多少种结果？',explanation:'在已知次品偏重或偏轻时，天平有三种结果（左重/右重/相等），三等分最有效。',counterexample:'9个用两分法需3次，三等分只需2次。'}],onComplete:()=>saveProgress({'app':{'faulty':{'adversary':'complete'}}})});
-createFeynmanFill({containerId:'feynman-root',template:'找次品的最优策略是___等分。因为天平一次有___种结果。3个物品找1个偏重次品需称___次，9个需___次。',answer:['三','3','1','2'],onComplete:()=>saveProgress({'app':{'faulty':{'feynman':'complete'}}})});
-createExerciseSet({containerId:'ex-basic',exercises:[{question:'3个球找1个次品（较重），最少称几次？',inputs:[{key:'a',width:40}],check:a=>a.a==='1'},{question:'9个球呢？',inputs:[{key:'a',width:40}],check:a=>a.a==='2'}],passThreshold:0.5,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}});
-function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[{question:'27个球最少称几次？',inputs:[{key:'a',width:40}],check:a=>a.a==='3'},{question:'81个球呢？',inputs:[{key:'a',width:40}],check:a=>a.a==='4'}],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'app':{'faulty':{'completed':true}}});}});}
+const scale=createBalanceScale({containerId:'faulty-scale',title:'天平称量',description:'选择左右两边的零件后点击“称一次”。（已知次品较轻）',left:3,right:3,unit:'块'});
+let faultyIndex=0,leftSet=new Set(),rightSet=new Set(),weighCount=0;
+function coinEl(i){
+  const b=document.createElement('button');
+  b.className='btn btn-outline btn-sm';
+  b.style.minWidth='46px';
+  b.textContent=String(i+1);
+  b.dataset.idx=String(i);
+  b.addEventListener('click',()=>{
+    const idx=Number(b.dataset.idx);
+    if(leftSet.has(idx)){leftSet.delete(idx);rightSet.add(idx);}
+    else if(rightSet.has(idx)){rightSet.delete(idx);}
+    else leftSet.add(idx);
+    syncCoins();
+  });
+  return b;
+}
+function syncCoins(){
+  const coins=document.getElementById('faulty-coins');
+  [...coins.children].forEach(btn=>{
+    const idx=Number(btn.dataset.idx);
+    if(leftSet.has(idx)){btn.className='btn btn-primary btn-sm';btn.textContent=(idx+1)+' L';}
+    else if(rightSet.has(idx)){btn.className='btn btn-success btn-sm';btn.textContent=(idx+1)+' R';}
+    else {btn.className='btn btn-outline btn-sm';btn.textContent=String(idx+1);}
+  });
+  document.getElementById('faulty-log').innerHTML=`<div>已称 ${weighCount} 次。点击零件：未选 → 左盘（L）→ 右盘（R）→ 未选。</div>`;
+  scale.setValues(leftSet.size,rightSet.size);
+}
+function resetWeigh(){leftSet=new Set();rightSet=new Set();syncCoins();}
+function newGame(){
+  faultyIndex=Math.floor(Math.random()*9);
+  weighCount=0;
+  resetWeigh();
+  document.getElementById('faulty-log').innerHTML='<div>已换一个次品（你不知道是哪一个）。建议：先分成 3/3/3 称一次。</div>';
+}
+function doWeigh(){
+  if(leftSet.size!==rightSet.size||leftSet.size===0){
+    document.getElementById('faulty-log').innerHTML='<div class="feedback show error">请先选相同数量的左右两边（例如 3 对 3）</div>';
+    return;
+  }
+  weighCount++;
+  const light=0.85;
+  const weightOf=i=>i===faultyIndex?light:1;
+  let lw=0,rw=0;
+  leftSet.forEach(i=>lw+=weightOf(i));
+  rightSet.forEach(i=>rw+=weightOf(i));
+  const eps=1e-6;
+  let state='平衡';
+  if(Math.abs(lw-rw)>eps)state=lw<rw?'左边轻（右边重）':'右边轻（左边重）';
+  scale.setValues(lw.toFixed(2),rw.toFixed(2));
+  document.getElementById('faulty-log').innerHTML=`<div style="font-weight:800;margin-bottom:6px;">第 ${weighCount} 次称量：${state}</div>
+    <div style="color:var(--text-muted);font-size:13px;">思考：如果平衡，次品在没上秤的那一组；如果不平衡，次品在较轻的一边。</div>`;
+}
+const coins=document.getElementById('faulty-coins');
+for(let i=0;i<9;i++)coins.appendChild(coinEl(i));
+newGame();
+createAdversarialChallenge({containerId:'adversary-root',challenges:[
+  {tag:'二分 vs 三分',statement:'9 个零件中找 1 个次品（已知次品较轻），分成 4、4、1 称一次就能找出。',answer:'refute',hint:'称 4 vs 4，如果平衡，次品在哪？不平衡呢？',explanation:'平衡→剩下 1 个是次品（1 次）。不平衡→较轻那堆 4 个里，还需再称。最坏情况 2 次。',counterexample:'三分法 3+3+3，1 次缩小到 3 个，2 次找到。'},
+  {tag:'轻重未知',statement:'12 个零件找 1 个次品，不知轻重，3 次一定能找出来。',answer:'agree',hint:'3³=27 > 12×2=24 种可能。',explanation:'次品可能是任一个且可能轻或重，共 24 种；3 次最多区分 27 种。',counterexample:'信息量上刚刚够。'},
+  {tag:'称量次数',statement:'称 2 次最多能从 9 个中找出次品。',answer:'agree',hint:'3²=9。',explanation:'已知轻重时，每次三分，2 次最多覆盖 9 个。',counterexample:'3²=9。'},
+  {tag:'逆向思考',statement:'每次一定要用天平才能找次品，不能用其他方法。',answer:'refute',hint:'如果有密度仪呢？',explanation:'天平是经典工具但不是唯一；这类题研究的是“最少比较次数/信息效率”。',counterexample:'用更精密的测量工具也能找到次品。'}
+],onComplete:()=>saveProgress({'app':{'faulty':{'adversary':'complete'}}})});
+createFeynmanFill({containerId:'feynman-root',template:'第1句：天平有___种结果：左重、___重、___，所以每次可把范围缩小到原来的___分之一。第2句：最优策略是尽可能___等分，而不是二分。第3句：称 n 次最多能从___个零件中找出次品（已知轻重）。第4句：如果不知道次品是轻是重，可排查的零件数大约是已知轻重时的___。',answer:['3','右','平衡','3','三','3ⁿ','一半'],onComplete:()=>saveProgress({'app':{'faulty':{'feynman':'complete'}}})});
+createExerciseSet({containerId:'ex-basic',exercises:[
+  {question:'3 个零件有 1 个次品（已知较轻），称几次找出？',inputs:[{key:'a',width:60}],check:a=>String(a.a).trim()==='1',hint:'1'},
+  {question:'9 个零件找 1 个次品（已知较轻），最少称几次？',inputs:[{key:'a',width:60}],check:a=>String(a.a).trim()==='2',hint:'2'},
+  {question:'27 个零件找次品（已知轻），最少称几次？',inputs:[{key:'a',width:60}],check:a=>String(a.a).trim()==='3',hint:'3'}
+],passThreshold:0.67,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}});
+function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[
+  {question:'用天平称 2 次，最多能从几个中找 1 个次品（已知轻重）？',inputs:[{key:'a',width:60}],check:a=>String(a.a).trim()==='9',hint:'3²=9'},
+  {question:'8 个零件有 1 个次品（不知轻重），最少称几次？',inputs:[{key:'a',width:60}],check:a=>String(a.a).trim()==='3',hint:'不知轻重共有 16 种可能，2 次(9种)不够'},
+  {question:'如果天平只能告诉你“是否平衡”，还能用三分法吗？（能/不能）',inputs:[{key:'a',width:60}],check:a=>String(a.a).trim()==='不能',hint:'只有两种结果，信息量变少'}
+],passThreshold:0.67,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'app':{'faulty':{'completed':true}}});}});}
 </script>
 </body>
 </html>
