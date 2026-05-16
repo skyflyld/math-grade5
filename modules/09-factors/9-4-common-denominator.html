@@ -1,74 +1,222 @@
 <!DOCTYPE html>
-<html lang="zh-CN"><head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>通分 · 五年级</title>
 <link rel="stylesheet" href="../../shared/layout.css">
-<style>.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;}.visual-step h4{font-size:17px;margin-bottom:12px;}.visual-step .step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:700;background:var(--accent-light);color:var(--accent-deep);margin-bottom:10px;}.concept-highlight{background:linear-gradient(145deg,#fefce8,#fff);border:2px solid #fde68a;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}.concept-highlight .big-idea{font-size:22px;font-weight:800;color:#92400e;line-height:1.6;}.concept-highlight .big-idea .highlight{color:var(--accent-deep);background:var(--accent-light);padding:2px 8px;border-radius:4px;}.thought-bubble{display:inline-block;background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:10px 16px;margin:6px 0;font-size:14px;max-width:90%;}.thought-bubble::before{content:'💭 ';}</style>
-</head><body data-concept="通分,分数的基本性质,约分">
+<style>
+.lesson-hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(210px,.85fr);gap:18px;align-items:center;margin:18px 0 24px;padding:22px;border:1px solid rgba(148,163,184,.3);border-radius:var(--radius);background:linear-gradient(135deg,#fff 0%,#f8fbff 56%,#fff7ed 100%);box-shadow:var(--shadow-md);overflow:hidden;}
+.lesson-hero h2{margin:0 0 8px;font-size:24px;line-height:1.25;color:var(--text);}
+.lesson-hero p{margin:0;color:var(--text-muted);font-size:14px;line-height:1.8;}
+.lesson-hero-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+.lesson-hero-tags span{display:inline-flex;align-items:center;min-height:28px;padding:4px 10px;border-radius:999px;background:#fff;border:1px solid var(--border);font-size:12px;font-weight:800;color:var(--text-muted);}
+.hero-fraction{min-height:166px;border-radius:var(--radius-md);background:radial-gradient(circle at 30% 20%,rgba(59,130,246,.18),transparent 34%),radial-gradient(circle at 78% 70%,rgba(245,158,11,.2),transparent 36%),linear-gradient(145deg,#eff6ff,#fff);display:grid;place-items:center;padding:18px;}
+.mini-bars{width:min(270px,100%);display:grid;gap:12px;}
+.mini-bar{position:relative;height:34px;border:2px solid #1e293b;border-radius:9px;overflow:hidden;background:#f8fafc;}
+.mini-bar span{display:block;height:100%;}
+.mini-bar em{position:absolute;inset:0;display:grid;place-items:center;font-style:normal;font-weight:900;color:#1e293b;text-shadow:0 1px 0 rgba(255,255,255,.7);}
+.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin:16px 0;}
+.visual-step h4{font-size:17px;margin-bottom:10px;}
+.step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:800;background:var(--accent-light);color:var(--accent-deep);margin-bottom:10px;}
+.principle-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:12px;}
+.principle-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;}
+.principle-card b{display:block;color:var(--text);margin-bottom:4px;}
+.principle-card p{margin:0;color:var(--text-muted);font-size:13px;line-height:1.65;}
+.concept-highlight{background:linear-gradient(145deg,#fefce8,#fff);border:2px solid #fde68a;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}
+.concept-highlight .big-idea{font-size:21px;font-weight:900;color:#92400e;line-height:1.6;}
+.concept-highlight .highlight{color:var(--accent-deep);background:var(--accent-light);padding:2px 8px;border-radius:4px;}
+.thought-bubble{display:inline-block;background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:10px 16px;margin:6px 0;font-size:14px;line-height:1.65;max-width:100%;}
+.lab-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:12px 0 0;}
+.example-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;}
+.example-card{border:1px solid var(--border);background:#fff;border-radius:var(--radius-sm);padding:16px;line-height:1.7;}
+.example-card strong{color:var(--accent-deep);}
+.textbook-box{cursor:pointer;padding:16px 18px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);line-height:1.75;}
+.textbook-box .annot{display:none;margin-top:10px;padding-top:10px;border-top:1px dashed #facc15;color:#92400e;}
+.feynman-stack{display:grid;gap:12px;}
+@media(max-width:640px){.lesson-hero{grid-template-columns:1fr;padding:16px}.lesson-hero h2{font-size:20px}.hero-fraction{min-height:126px}.visual-step{padding:18px 14px}.example-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body data-concept="通分,分数的基本性质,约分">
 <div class="top-nav"><a href="../../index.html#%E9%80%9A%E5%88%86">🏠</a><span class="breadcrumb-sep">›</span><span>通分</span></div>
-<h1 class="module-title">🔧 通分 — 统一单位</h1>
-<p class="module-subtitle">不同分母的分数不能直接比大小和加减——先统一分母，再比较。</p>
+<h1 class="module-title">🔧 通分 — 把不同单位变成同一种单位</h1>
+<p class="module-subtitle">通分不是把数字变大，而是在不改变分数大小的前提下，换一把共同的尺子。</p>
+
+<div class="lesson-hero">
+  <div>
+    <h2>先保护“不变”，再统一“单位”</h2>
+    <p>比较 2/3 和 3/4 时，问题不在谁的分子大，而在它们每一份的大小不同。通分把两条分数条切成同样多份，面积不变，单位变同。</p>
+    <div class="lesson-hero-tags"><span>分数基本性质</span><span>最小公倍数</span><span>分数单位</span></div>
+  </div>
+  <div class="hero-fraction" aria-label="通分视觉模型">
+    <div class="mini-bars">
+      <div class="mini-bar"><span style="width:66.666%;background:#3b82f6;"></span><em>2/3 = 8/12</em></div>
+      <div class="mini-bar"><span style="width:75%;background:#f59e0b;"></span><em>3/4 = 9/12</em></div>
+    </div>
+  </div>
+</div>
+
 <div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
+
 <div class="section">
   <div class="section-header"><span class="emoji">🧱</span>拆到公理</div>
-  <div class="visual-step"><span class="step-label">第 1 步</span><h4>3/4和5/6谁大？</h4>
-  <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin:8px 0;">
-    <div><div style="width:100px;height:20px;display:flex;border:2px solid #333;border-radius:3px;"><div style="width:75%;background:#3b82f6;"></div><div style="width:25%;background:#e5e7eb;"></div></div><span style="font-size:11px;">3/4</span></div>
-    <div><div style="width:100px;height:20px;display:flex;border:2px solid #333;border-radius:3px;"><div style="width:83%;background:#f59e0b;"></div><div style="width:17%;background:#e5e7eb;"></div></div><span style="font-size:11px;">5/6</span></div>
+  <div class="visual-step">
+    <span class="step-label">公理 1</span>
+    <h4>同乘同一个非零数，分数大小不变</h4>
+    <p>如果把每一份再切成 4 小份，拿到的总长度不会变：2/3 = (2×4)/(3×4) = 8/12。</p>
+    <div class="thought-bubble">通分的第一原则是“值守恒”。分母变了，分子也必须按同样倍数变。</div>
   </div>
-  <div class="thought-bubble">直接看不出来？因为"分数单位"不同（四分之一和六分之一）。通分就是把它们变成同一个单位。</div></div>
-  <div class="visual-step"><span class="step-label">第 2 步</span><h4>找公分母（最小公倍数）</h4>
-  <div style="padding:12px;background:#f0fdf4;border:2px solid #86efac;border-radius:8px;text-align:center;font-size:16px;">
-    4的倍数：4,8,<strong>12</strong>,16…<br>
-    6的倍数：6,<strong>12</strong>,18…<br>
-    最小公倍数 = 12<br>
-    3/4 = 9/12，5/6 = 10/12 → 5/6 > 3/4</div>
-  <div class="thought-bubble">一旦分母相同，直接比较分子即可——9&lt;10，所以5/6更大。</div></div>
-  <div class="concept-highlight"><div class="big-idea">🔑 <span class="highlight">通分 = 把不同分数单位统一成最小公倍数</span></div><p>相同单位才能比较和计算——这在分数的世界和整数的世界里一模一样。</p></div>
-</div>
-<div class="section"><div class="section-header"><span class="emoji">🎮</span>交互</div>
-  <div class="interactive-area" style="text-align:center;">
-    比较：<input id="cmp-a" class="input-field" type="number" value="3" style="width:40px;">/<input id="cmp-b" class="input-field" type="number" value="4" style="width:40px;">
-    <span style="font-size:16px;">和</span>
-    <input id="cmp-c" class="input-field" type="number" value="5" style="width:40px;">/<input id="cmp-d" class="input-field" type="number" value="6" style="width:40px;">
-    <button class="btn btn-primary btn-sm" onclick="compare()">比较大小</button>
-    <div id="cmp-result" style="margin-top:8px;font-size:18px;"></div>
+  <div class="visual-step">
+    <span class="step-label">公理 2</span>
+    <h4>公分母是共同单位，不一定只能用最小公倍数</h4>
+    <p>4 和 6 的公分母可以是 12，也可以是 24。12 更简洁，24 也正确，只是数字更大。</p>
+    <div class="principle-grid">
+      <div class="principle-card"><b>分母</b><p>表示整体被平均分成几份，也就是分数单位。</p></div>
+      <div class="principle-card"><b>分子</b><p>表示取了几个这样的单位，单位变化时它必须同步变化。</p></div>
+      <div class="principle-card"><b>公分母</b><p>让两个分数在同一种单位里比较和计算。</p></div>
+    </div>
+  </div>
+  <div class="concept-highlight">
+    <div class="big-idea">通分 = <span class="highlight">等值变形</span> + <span class="highlight">统一分数单位</span></div>
   </div>
 </div>
-<div class="section"><div class="section-header"><span class="emoji">📐</span>教材原文</div>
-  <div style="cursor:pointer;padding:14px 18px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);" onclick="const a=this.querySelector('.annot');a.style.display=a.style.display==='none'?'block':'none'">
-    📖 <b>教材：</b>"把异分母分数分别化成和原来相等的同分母分数，叫做通分。" <i>（点击）</i></div></div>
-<div class="section"><div class="section-header"><span class="emoji">🎯</span>典例精讲</div>
-  <div class="visual-step"><h4>🎯 通分 2/3和3/5</h4>LCM(3,5)=15 → 10/15和9/15 → 10/15>9/15<br>✏️ 1/4和2/3→公分母是多少？<input class="input-field" id="ex1" style="width:60px;"><button class="btn btn-primary btn-sm" onclick="checkE(1,'12',ex1,fb1)">提交</button><div class="feedback" id="fb1"></div></div>
-  <div class="visual-step"><h4>🎯 把3/8和1/3通分</h4>LCM(8,3)=24 → 9/24和8/24<br>✏️ 3/8 → /24 = <input class="input-field" id="ex2" style="width:30px;"><button class="btn btn-primary btn-sm" onclick="checkE(2,'9',ex2,fb2)">提交</button><div class="feedback" id="fb2"></div></div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🎮</span>交互实验室 · 分数条通分</div>
+  <div id="fraction-lab"></div>
+  <div class="lab-actions">
+    <button class="btn btn-primary btn-sm" type="button" id="lab-common">通分到 12 等份</button>
+    <button class="btn btn-outline btn-sm" type="button" id="lab-wide">换成 24 等份</button>
+    <button class="btn btn-outline btn-sm" type="button" id="lab-reset">还原</button>
+  </div>
+  <p class="thought-bubble">观察重点：蓝色和橙色的总长度没有变，只有刻度变细了。刻度相同后，比较分子就有意义。</p>
 </div>
-<div class="section"><div class="section-header"><span class="emoji">⚠️</span>踩坑</div>
-  <div class="pitfall"><div class="pitfall-title">🕳️ 直接用分母相乘当作公分母</div><p><b>症状：</b>通分1/4和1/6，公分母=24（其实12就够了）</p><p><b>根因：</b>没找最小公倍数，只会乘法。数字大了计算容易错。</p></div></div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">📐</span>教材原文</div>
+  <div class="textbook-box" onclick="const a=this.querySelector('.annot');a.style.display=a.style.display==='block'?'none':'block'">
+    📖 <b>教材：</b>“把异分母分数分别化成和原来相等的同分母分数，叫做通分。” <i>（点击看拆解）</i>
+    <div class="annot"><b>拆解：</b>“和原来相等”是核心，“同分母”只是目标形式。先保证等值，再谈比较和计算。</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🎯</span>典例精讲</div>
+  <div class="example-grid">
+    <div class="example-card">
+      <h4>例 1：比较 2/3 和 3/4</h4>
+      <p>3 和 4 的最小公倍数是 <strong>12</strong>。<br>2/3 = 8/12，3/4 = 9/12，所以 3/4 更大。</p>
+    </div>
+    <div class="example-card">
+      <h4>例 2：3/8 = ?/24</h4>
+      <p>分母 8 变成 24，是乘以 3。分子也乘 3：3×3=9，所以 3/8 = <strong>9/24</strong>。</p>
+    </div>
+    <div class="example-card">
+      <h4>例 3：不用最小公倍数可以吗？</h4>
+      <p>1/4 和 1/6 用 12：3/12 和 2/12。用 24：6/24 和 4/24。结果同样等值，但 12 更简洁。</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">⚠️</span>踩坑预警</div>
+  <div class="pitfall"><div class="pitfall-title">🕳️ 只改分母，忘了分子</div><p><b>症状：</b>5/8 = 5/24。</p><p><b>根因：</b>把通分当成“换分母”，忘记分数值必须不变。</p><div class="pitfall-chain">正确链路：8×3=24，所以 5×3=15，5/8=15/24。</div></div>
+  <div class="pitfall"><div class="pitfall-title">🕳️ 以为必须用最小公倍数</div><p><b>症状：</b>看到 24 这种公分母就判错。</p><p><b>根因：</b>混淆了“正确”和“简洁”。公倍数都可以通分，最小公倍数最省力。</p></div>
+</div>
+
 <div class="section"><div class="section-header"><span class="emoji">⚡</span>对抗挑战</div><div id="adversary-root"></div></div>
-<div class="section"><div class="section-header"><span class="emoji">🦜</span>费曼输出</div><div id="feynman-root"></div></div>
-<div class="section"><div class="section-header"><span class="emoji">📝</span>练习</div>
-  <div class="exercise-tier"><h3><span class="tier-badge basic">基础</span></h3><div id="ex-basic"></div></div>
-  <div class="exercise-tier" id="tier-adv" style="display:none;"><h3><span class="tier-badge advanced">提升</span></h3><div id="ex-adv"></div></div>
-  <div id="done" style="display:none;text-align:center;padding:24px;font-size:24px;">🎉 通分 — 通关！</div></div>
-<script src="../../shared/concepts.js"></script><script src="../../shared/concept-sync.js"></script><script src="../../shared/components.js"></script>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🦜</span>费曼输出</div>
+  <div class="feynman-stack">
+    <div id="feynman-root"></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">📝</span>分层练习</div>
+  <div class="exercise-tier"><h3><span class="tier-badge basic">组1 直接应用</span></h3><div id="ex-basic"></div></div>
+  <div class="exercise-tier"><h3><span class="tier-badge advanced">组2 变式迁移</span></h3><div id="ex-transfer"></div></div>
+  <div class="exercise-tier"><h3><span class="tier-badge extra">组3 综合应用</span></h3><div id="ex-synthesis"></div></div>
+  <div id="done" style="display:none;text-align:center;padding:24px;font-size:24px;">🎉 通分课件完成</div>
+</div>
+
+<script src="../../shared/concepts.js"></script>
+<script src="../../shared/concept-sync.js"></script>
+<script src="../../shared/components.js"></script>
 <script>
-createGate({containerId:'gate-root',questions:[{label:'2/3和1/2谁大？',inputs:[{key:'a',width:40}],check:u=>u.a==='2/3'||u.a.includes('大于')||u.a.includes('大')}],onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅</div>'});
-function lcm(a,b){let t=a;a=Math.abs(a);b=Math.abs(b);while(b){[a,b]=[b,a%b];}return t/a*a;}
-function compare(){const a=parseInt(document.getElementById('cmp-a').value),b=parseInt(document.getElementById('cmp-b').value),c=parseInt(document.getElementById('cmp-c').value),d=parseInt(document.getElementById('cmp-d').value);if(!b||!d)return;const L=lcm(b,d),fa=a*(L/b),fc=c*(L/d);const el=document.getElementById('cmp-result');el.innerHTML=`${a}/${b}=${fa}/${L}，${c}/${d}=${fc}/${L} → ${fa>fc?a+'/'+b+' > '+c+'/'+d:fa<fc?a+'/'+b+' < '+c+'/'+d:a+'/'+b+' = '+c+'/'+d}`;}
-function checkE(n,ans,input,fb){const ok=input.value.trim()===ans;fb.className='feedback show '+(ok?'success':'error');fb.innerHTML=ok?'✅ 正确！':`❌ 答案是 ${ans}`;}
-createAdversarialChallenge({containerId:'adversary-root',challenges:[
-  {tag:'数值不变',statement:'通分后分数变大了，因为分母和分子都变大了。',answer:'refute',hint:'3/4=9/12，值一样吗？',explanation:'分子分母同时乘以相同数，值不变——分数基本性质。',counterexample:'3/4=0.75，9/12=0.75'}
-],onComplete:()=>saveProgress({'fractions':{'common-denom':{'adversary':'complete'}}})});
-createFeynmanFill({containerId:'feynman-root',template:'通分就是把___不同的分数，变成___相同的分数。公分母是原来两个分母的___。通分利用了分数的___性质，分子分母同乘一个数，分数___不变。',answer:['分母','分母','最小公倍数','基本','大小'],onComplete:()=>saveProgress({'fractions':{'common-denom':{'feynman':'complete'}}})});
-createExerciseSet({containerId:'ex-basic',exercises:[
-  {question:'1/3和1/4的公分母',inputs:[{key:'a',width:40}],check:a=>a.a==='12',hint:'3和4的LCM'},
-  {question:'2/5= ?/15',inputs:[{key:'a',width:40}],check:a=>a.a==='6',hint:'2×3=6'},
-  {question:'3/4和5/8谁大？',inputs:[{key:'a',width:30}],check:a=>a.a==='3/4'||a.a==='第一个'}
-],passThreshold:0.67,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}});
-function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[
-  {question:'通分 2/3和3/4 → 公分母',inputs:[{key:'a',width:40}],check:a=>a.a==='12',hint:'LCM(3,4)=12'},
-  {question:'通分后 3/7 → ?/28',inputs:[{key:'a',width:40}],check:a=>a.a==='12'}
-],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'fractions':{'common-denom':{'completed':true}}});}});}
+createGate({
+  containerId:'gate-root',
+  questions:[
+    {label:'2/3 和 5/6 可以只比较分子大小吗？',inputs:[{key:'a',width:96,placeholder:'能/不能'}],check:u=>/不能|不可以|否|不行/.test(u.a),hint:'分母不同，单位不同。'},
+    {label:'3 和 4 的最小公倍数是多少？',inputs:[{key:'a',width:72}],check:u=>u.a==='12',hint:'3×4=12。'}
+  ],
+  onPass:()=>{document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:800;padding:12px;">✅ 已准备好：先统一单位，再比较。</div>';}
+});
+
+function lessonGcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){var t=b;b=a%b;a=t;}return a||1;}
+function lessonLcm(a,b){return Math.abs(a*b)/lessonGcd(a,b);}
+
+var commonBar=createFractionBar({
+  containerId:'fraction-lab',
+  title:'2/3 和 3/4 的通分实验',
+  description:'点击“通分到公分母”，看两条分数条如何切成同样的 12 份。分数条长度保持不变。',
+  maxDenominator:36,
+  bars:[
+    {label:'蓝色 2/3',numerator:2,denominator:3,color:'#3b82f6'},
+    {label:'橙色 3/4',numerator:3,denominator:4,color:'#f59e0b'}
+  ]
+});
+document.getElementById('lab-common').addEventListener('click',()=>commonBar.commonDenominator(12));
+document.getElementById('lab-wide').addEventListener('click',()=>commonBar.commonDenominator(24));
+document.getElementById('lab-reset').addEventListener('click',()=>commonBar.reset());
+
+createAdversarialChallenge({
+  containerId:'adversary-root',
+  challenges:[
+    {tag:'小明的计算',statement:'3/5 和 2/7 通分成 21/35 和 10/35，这是错误的，因为分子也变了。',answer:'refute',hint:'分子为什么必须变？',explanation:'这组通分是正确的。分母乘了多少，分子也乘多少，值才不变。',counterexample:'3/5 = 21/35，2/7 = 10/35。'},
+    {tag:'最小公倍数',statement:'通分只能用最小公倍数，不能用其他公倍数。',answer:'refute',hint:'4 和 6 用 24 会不会等值？',explanation:'最小公倍数最简洁，但其他公倍数也能保持等值。',counterexample:'1/4=6/24，1/6=4/24，也可以比较。'},
+    {tag:'同步倍数',statement:'5/8 = 5/24，因为只要把分母改成 24 就完成通分。',answer:'refute',hint:'分母乘了 3，分子呢？',explanation:'分母乘 3，分子也要乘 3。',counterexample:'正确是 5/8 = 15/24。'},
+    {tag:'逆向思考',statement:'一个分数通分后是 20/36，分母扩大 3 倍，原分数是 20/12。',answer:'refute',hint:'逆向时分子也要除以 3。',explanation:'通分时分子分母同乘 3，逆向就要同除 3。',counterexample:'20/36 ÷3 = 20÷3/12 不成立，说明 20 不是 3 的倍数；这个说法条件本身矛盾。'}
+  ],
+  onComplete:()=>saveProgress({'fractions':{'common-denom':{'adversary':'complete'}}})
+});
+
+createFeynmanFill({
+  containerId:'feynman-root',
+  template:'第1句：通分时，分子和分母要同时乘以___的数，因为分数的___不变。第2句：公分母可以是两个分母的___，用最小公倍数只是让数字更___。第3句：5/8 变成 ?/24，分母乘了___，分子也要乘___，所以是___/24。第4句：通分让等份变___，约分让等份变___，但分数值都___。',
+  answer:['相同','大小','公倍数','简洁','3','3','15','多','少','不变'],
+  onComplete:()=>saveProgress({'fractions':{'common-denom':{'feynman':'complete'}}})
+});
+
+createExerciseSet({
+  containerId:'ex-basic',
+  exercises:[
+    {question:'把 2/3 和 5/6 通分，最小公分母是',inputs:[{key:'a',width:80}],check:a=>a.a==='6',expected:'6',hint:'3 和 6 的最小公倍数是 6。'},
+    {question:'3/8 和 5/12 的最小公分母是',inputs:[{key:'a',width:80}],check:a=>a.a==='24',expected:'24',hint:'8 的倍数 8,16,24；12 的倍数 12,24。'},
+    {question:'3/8 = ?/24',inputs:[{key:'a',width:80}],check:a=>a.a==='9',expected:'9',hint:'8×3=24，所以 3×3。'}
+  ],
+  passThreshold:0.67
+});
+createExerciseSet({
+  containerId:'ex-transfer',
+  exercises:[
+    {question:'7/12 和 5/18 的最小公分母是',inputs:[{key:'a',width:80}],check:a=>a.a==='36',expected:'36',hint:'12=2×2×3，18=2×3×3。'},
+    {question:'1/2、2/3、3/4 一起通分，最小公分母是',inputs:[{key:'a',width:80}],check:a=>a.a==='12',expected:'12',hint:'2、3、4 的最小公倍数。'},
+    {question:'1/4 和 1/6 用 24 通分，1/4 = ?/24',inputs:[{key:'a',width:80}],check:a=>a.a==='6',expected:'6',hint:'4×6=24。'}
+  ],
+  passThreshold:0.67
+});
+createExerciseSet({
+  containerId:'ex-synthesis',
+  exercises:[
+    {question:'判断 5/6 和 7/9 谁大，填较大的分数',inputs:[{key:'a',width:92}],check:a=>a.a==='5/6',expected:'5/6',hint:'5/6=15/18，7/9=14/18。'},
+    {question:'小明说 5/6 > 7/9 因为 5<7 但 6<9。这个推理最大漏洞是没有先___',inputs:[{key:'a',width:96}],check:a=>a.a==='通分',expected:'通分',hint:'单位不同不能直接比较分子分母。'},
+    {question:'一个正确通分必须保证分数的什么不变？',inputs:[{key:'a',width:96}],check:a=>/大小|值|数值/.test(a.a),expected:'大小不变',hint:'分数条长度不能变。'}
+  ],
+  passThreshold:0.67,
+  onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'fractions':{'common-denom':{'completed':true}}});}
+});
 </script>
 </body>
 </html>
