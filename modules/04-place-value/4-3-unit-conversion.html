@@ -20,6 +20,31 @@
   </div></div>
   <div class="concept-highlight"><div class="big-idea">🔑 <span class="highlight">×进率（大→小）÷进率（小→大）</span></div></div>
 </div>
+<div class="section">
+  <div class="section-header"><span class="emoji">🎮</span>交互实验室 · 单位转换梯</div>
+  <div class="interactive-area">
+    <div id="nl-unit"></div>
+    <div style="margin-top:10px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap;align-items:center;">
+      <span>长度：<input id="u-m" class="input-field" style="width:70px;" value="3"> m</span>
+      <span>= <b id="u-dm">30</b> dm</span>
+      <span>= <b id="u-cm">300</b> cm</span>
+      <span>= <b id="u-mm">3000</b> mm</span>
+    </div>
+    <div style="margin-top:8px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;align-items:center;">
+      <span>反向：<input id="u-cm-in" class="input-field" style="width:80px;" value="500"> cm</span>
+      <button class="btn btn-outline btn-sm" onclick="fromCM()">换算成 m</button>
+      <div class="feedback" id="u-fb"></div>
+    </div>
+  </div>
+</div>
+<div class="section"><div class="section-header"><span class="emoji">📐</span>教材原文</div>
+  <div style="cursor:pointer;padding:14px 18px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);" onclick="const a=this.querySelector('.annot');a.style.display=a.style.display==='none'?'block':'none'">
+    📖 <b>教材：</b>"把大单位换成小单位要乘进率，把小单位换成大单位要除以进率。" <i>（点击）</i>
+    <div class="annot" style="display:none;margin-top:10px;padding:10px 14px;background:#f0fdf4;border-radius:6px;font-size:14px;line-height:1.7;">
+      ✏️ 记忆诀窍：<b>单位变小，数变大</b>；<b>单位变大，数变小</b>。本质是同一个量的不同表示。
+    </div>
+  </div>
+</div>
 <div class="section"><div class="section-header"><span class="emoji">🎯</span>典例精讲</div>
   <div class="visual-step"><h4>🎯 3m=？cm</h4>3×100=300cm<br>✏️ 5km=？m<input class="input-field" id="ex1" style="width:50px;"><button class="btn btn-primary btn-sm" onclick="checkE(1,'5000',ex1,fb1)">提交</button><div class="feedback" id="fb1"></div></div>
   <div class="visual-step"><h4>🎯 500cm=？m</h4>500÷100=5m<br>✏️ 3000g=？kg<input class="input-field" id="ex2" style="width:50px;"><button class="btn btn-primary btn-sm" onclick="checkE(2,'3',ex2,fb2)">提交</button><div class="feedback" id="fb2"></div></div>
@@ -33,6 +58,33 @@
 <script src="../../shared/concepts.js"></script><script src="../../shared/concept-sync.js"></script><script src="../../shared/components.js"></script>
 <script>
 createGate({containerId:'gate-root',questions:[{label:'1m=?cm',inputs:[{key:'a',width:40}],check:u=>u.a==='100'}],onPass:()=>document.getElementById('gate-root').innerHTML='✅'});
+function syncUnits(m){
+  const dm=Math.round(m*10);
+  const cm=Math.round(m*100);
+  const mm=Math.round(m*1000);
+  document.getElementById('u-m').value=String(m).replace(/\.0$/,'');
+  document.getElementById('u-dm').textContent=String(dm);
+  document.getElementById('u-cm').textContent=String(cm);
+  document.getElementById('u-mm').textContent=String(mm);
+}
+const nlUnit=createNumberLine({
+  containerId:'nl-unit',
+  title:'长度单位：m → dm → cm → mm',
+  description:'拖动游标改变“米”，观察换成更小单位时数值如何变大（×10、×100、×1000）。',
+  min:0,max:10,step:1,initial:3,unit:'m',
+  jumps:[-5,-2,-1,1,2,5],
+  color:'#0ea5e9',
+  onChange:v=>syncUnits(v)
+});
+syncUnits(3);
+function fromCM(){
+  const raw=parseFloat(document.getElementById('u-cm-in').value||'0');
+  const fb=document.getElementById('u-fb');
+  if(!Number.isFinite(raw)){if(fb){fb.className='feedback show error';fb.innerHTML='请输入数字';}return;}
+  const m=raw/100;
+  nlUnit.animateTo(m);
+  if(fb){fb.className='feedback show success';fb.innerHTML=`✅ ${raw}cm = ${m}m（÷100）`;}
+}
 function checkE(n,ans,input,fb){const ok=input.value.trim()===ans;fb.className='feedback show '+(ok?'success':'error');fb.innerHTML=ok?'✅':`❌ ${ans}`;}
 createAdversarialChallenge({containerId:'adversary-root',challenges:[{tag:'面积进率',statement:'1m²=100dm²',answer:'agree',hint:'1m=10dm，面积是平方',explanation:'1m²=10dm×10dm=100dm²'}],onComplete:()=>saveProgress({'units':{'conversion':{'adversary':'complete'}}})});
 createFeynmanFill({containerId:'feynman-root',template:'大单位→小单位用___法（×进率）。小单位→大单位用___法（÷进率）。长度进率是___，面积进率是___的平方。',answer:['乘','除','10','10'],onComplete:()=>saveProgress({'units':{'conversion':{'feynman':'complete'}}})});

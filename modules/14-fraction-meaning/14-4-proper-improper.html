@@ -27,10 +27,14 @@
   <div class="concept-highlight"><div class="big-idea">🔑 分界就是<span class="highlight">"有没有达到1"</span></div><p>3/4<1→真分数；5/4>1→假分数。假分数不是"假的"，是说"比1大"。</p></div>
 </div>
 <div class="section"><div class="section-header"><span class="emoji">🎮</span>交互</div>
-  <div class="interactive-area" style="text-align:center;">
-    判断：<input id="frac-in1" class="input-field" type="number" value="7" style="width:40px;">/<input id="frac-in2" class="input-field" type="number" value="8" style="width:40px;">
-    <button class="btn btn-primary btn-sm" onclick="classify()">判断</button>
-    <div id="frac-result" style="margin-top:8px;font-size:20px;font-weight:800;"></div>
+  <div class="interactive-area">
+    <div id="nl-prop-imp"></div>
+    <div style="margin-top:10px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;align-items:center;">
+      <span>分数：<input id="frac-in1" class="input-field" type="number" value="7" style="width:60px;"> / <input id="frac-in2" class="input-field" type="number" value="8" style="width:60px;"></span>
+      <button class="btn btn-primary btn-sm" onclick="classify()">放到数轴上</button>
+      <div class="feedback" id="pi-fb"></div>
+    </div>
+    <div id="frac-result" style="margin-top:8px;text-align:center;font-size:20px;font-weight:800;"></div>
   </div>
 </div>
 <div class="section"><div class="section-header"><span class="emoji">📐</span>教材原文</div>
@@ -51,7 +55,35 @@
 <script src="../../shared/concepts.js"></script><script src="../../shared/concept-sync.js"></script><script src="../../shared/components.js"></script>
 <script>
 createGate({containerId:'gate-root',questions:[{label:'8块蛋糕吃了5块，用分数表示',inputs:[{key:'a',width:40}],check:u=>u.a==='5/8'||u.a==='5/8'}],onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅</div>'});
-function classify(){const a=parseInt(document.getElementById('frac-in1').value),b=parseInt(document.getElementById('frac-in2').value);if(!b)return;const el=document.getElementById('frac-result');if(a<b)el.textContent=`${a}/${b} ✅ 真分数 < 1`;else if(a===b)el.textContent=`${a}/${b} = 1 (假分数)`;else{const q=Math.floor(a/b),r=a%b;el.textContent=`${a}/${b} ❌ 假分数 = ${q}又${r}/${b}`;}}
+const nlPropImp=createNumberLine({
+  containerId:'nl-prop-imp',
+  title:'分数数轴：1 是分界线',
+  description:'把分数放到数轴上：小于 1 是真分数；等于/大于 1 是假分数。',
+  min:0,max:1.5,step:0.1,initial:1,unit:'',
+  jumps:[-0.5,-0.2,-0.1,0.1,0.2,0.5],
+  color:'#f97316'
+});
+function classify(){
+  const a=parseInt(document.getElementById('frac-in1').value||'0',10);
+  const b=parseInt(document.getElementById('frac-in2').value||'1',10);
+  const el=document.getElementById('frac-result');
+  const fb=document.getElementById('pi-fb');
+  if(!Number.isFinite(a)||!Number.isFinite(b)||b===0){
+    if(fb){fb.className='feedback show error';fb.innerHTML='分母不能为 0';}
+    return;
+  }
+  const v=a/b;
+  nlPropImp.animateTo(v);
+  if(a<b){
+    el.textContent=`${a}/${b} ✅ 真分数（< 1）`;
+  }else if(a===b){
+    el.textContent=`${a}/${b} = 1（假分数）`;
+  }else{
+    const q=Math.floor(a/b),r=a%b;
+    el.textContent=`${a}/${b} ❌ 假分数（≥ 1）= ${q}又${r}/${b}`;
+  }
+  if(fb){fb.className='feedback show success';fb.innerHTML=`✅ 位置：${(Math.round(v*1000)/1000)}`;}
+}
 function checkE(n,ans,input,fb){const ok=input.value.trim()===ans;fb.className='feedback show '+(ok?'success':'error');fb.innerHTML=ok?'✅ 正确！':`❌ 答案是 ${ans}`;}
 createAdversarialChallenge({containerId:'adversary-root',challenges:[
   {tag:'定义混淆',statement:'假分数是"假的分数"，其实不是分数。',answer:'refute',hint:'假分数有分子和分母吗？',explanation:'假分数当然是分数——分子≥分母（如5/4=1.25），完全合法。',counterexample:'14/5=2.8，整数+分数，完全是分数的一种。'}

@@ -6,6 +6,29 @@
 <div class="visual-step"><span class="step-label">第 1 步</span><h4>分数→小数：分子÷分母</h4><div class="thought-bubble">3/4=3÷4=0.75。分母10/100/1000的直接位值对应：7/10=0.7，25/100=0.25。</div></div>
 <div class="visual-step"><span class="step-label">第 2 步</span><h4>小数→分数：看最后一位的位值</h4><div class="thought-bubble">0.3=3/10（十分位），0.07=7/100（百分位），0.125=125/1000=1/8（再约分）。</div></div>
 <div class="concept-highlight"><div class="big-idea">🔑 <span class="highlight">分数和小数是同一个数，只是不同写法</span></div></div></div>
+<div class="section">
+  <div class="section-header"><span class="emoji">🎮</span>交互实验室 · 双标尺对照</div>
+  <div class="interactive-area">
+    <div id="nl-frac-dec"></div>
+    <div style="margin-top:10px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;align-items:center;">
+      <span>十分位分数：<input id="fd-n" class="input-field" style="width:60px;" value="5"> / 10</span>
+      <span>对应小数：<b id="fd-dec" style="color:var(--accent-deep);">0.5</b></span>
+      <button class="btn btn-primary btn-sm" onclick="fdApply()">定位</button>
+      <div class="feedback" id="fd-fb"></div>
+    </div>
+    <div style="text-align:center;color:var(--text-dim);font-size:13px;margin-top:6px;">
+      数轴上同一个点，可以读成 <b>n/10</b>（分数语言），也可以读成 <b>0.n</b>（小数语言）。
+    </div>
+  </div>
+</div>
+<div class="section"><div class="section-header"><span class="emoji">📐</span>教材原文</div>
+  <div style="cursor:pointer;padding:14px 18px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);" onclick="const a=this.querySelector('.annot');a.style.display=a.style.display==='none'?'block':'none'">
+    📖 <b>教材：</b>"分数可以化成小数，小数也可以写成分数（分母是10、100、1000时最方便）。" <i>（点击）</i>
+    <div class="annot" style="display:none;margin-top:10px;padding:10px 14px;background:#f0fdf4;border-radius:6px;font-size:14px;line-height:1.7;">
+      ✏️ 关键是“同一个数的两种表示”。能不能化成有限小数，取决于分母的质因数（只含2和5时可化成有限小数）。
+    </div>
+  </div>
+</div>
 <div class="section"><div class="section-header"><span class="emoji">🎯</span>典例精讲</div><div class="visual-step"><h4>🎯 3/5=0.6</h4>✏️ 1/4=<input class="input-field" id="ex1" style="width:40px;"><button class="btn btn-primary btn-sm" onclick="checkE(1,'0.25',ex1,fb1)">提交</button><div class="feedback" id="fb1"></div></div>
 <div class="visual-step"><h4>🎯 0.75=75/100=3/4</h4>✏️ 0.2=<input class="input-field" id="ex2" style="width:40px;"><button class="btn btn-primary btn-sm" onclick="checkE(2,'1/5',ex2,fb2)">提交</button><div class="feedback" id="fb2"></div></div></div>
 <div class="section"><div class="section-header"><span class="emoji">⚡</span>对抗挑战</div><div id="adversary-root"></div></div>
@@ -16,6 +39,32 @@
 <script src="../../shared/concepts.js"></script><script src="../../shared/concept-sync.js"></script><script src="../../shared/components.js"></script>
 <script>
 createGate({containerId:'gate-root',questions:[{label:'3/4写成小数是？',inputs:[{key:'a',width:40}],check:u=>u.a==='0.75'}],onPass:()=>document.getElementById('gate-root').innerHTML='✅'});
+const nlFracDec=createNumberLine({
+  containerId:'nl-frac-dec',
+  title:'0 到 1：用分数读小数',
+  description:'拖动游标：同时看到“十分位分数”和对应的小数。',
+  min:0,max:1,step:0.1,initial:0.5,unit:'',
+  jumps:[-0.2,-0.1,0.1,0.2],
+  fractionTicks:true,
+  denominator:10,
+  color:'#8b5cf6',
+  onChange:v=>{
+    const n=Math.round(v*10);
+    const inp=document.getElementById('fd-n');
+    const dec=document.getElementById('fd-dec');
+    if(inp)inp.value=String(n);
+    if(dec)dec.textContent=String(v).replace(/\.0$/,'');
+  }
+});
+function fdApply(){
+  const raw=parseInt(document.getElementById('fd-n').value||'0',10);
+  const n=Math.max(0,Math.min(10,Number.isFinite(raw)?raw:0));
+  const v=n/10;
+  document.getElementById('fd-dec').textContent=String(v).replace(/\.0$/,'');
+  nlFracDec.animateTo(v);
+  const fb=document.getElementById('fd-fb');
+  if(fb){fb.className='feedback show success';fb.innerHTML=`✅ ${n}/10 = ${String(v).replace(/\\.0$/,'')}`;}
+}
 function checkE(n,ans,i,f){const ok=i.value.trim()===ans;f.className='feedback show '+(ok?'success':'error');f.innerHTML=ok?'✅':`❌ ${ans}`;}
 createAdversarialChallenge({containerId:'adversary-root',challenges:[{tag:'等价',statement:'0.5和1/2是不同大小的数。',answer:'refute',hint:'1÷2=？',explanation:'1÷2=0.5，完全相等。',counterexample:'0.5=5/10=1/2'}],onComplete:()=>saveProgress({'nums':{'conv':{'adversary':'complete'}}})});
 createFeynmanFill({containerId:'feynman-root',template:'分数→小数：___÷___。小数→分数：看最后一位的位值，如0.3=___/10，0.07=___/100。',answer:['分子','分母','3','7'],onComplete:()=>saveProgress({'nums':{'conv':{'feynman':'complete'}}})});

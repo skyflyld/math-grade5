@@ -33,8 +33,9 @@
   <div class="concept-highlight"><div class="big-idea">🔑 <span class="highlight">小数 = 位置值向右延伸</span></div><p>0.1=十分之一，0.5=十分之五=1/2。小数和分数是同一种东西的两种写法。</p></div>
 </div>
 <div class="section">
-  <div class="section-header"><span class="emoji">🎮</span>交互 · 分数转小数</div>
+  <div class="section-header"><span class="emoji">🎮</span>交互实验室 · 位值伸缩尺</div>
   <div class="interactive-area" style="text-align:center;">
+    <div id="nl-dec-meaning"></div>
     <span>分母为10的分数：<input id="frac-in" class="input-field" type="number" value="3" style="width:50px;">/10 = </span>
     <span id="dec-out" style="font-size:24px;font-weight:800;color:var(--accent-deep);">0.3</span>
     <button class="btn btn-primary btn-sm" onclick="updateDec()">刷新</button>
@@ -62,7 +63,28 @@
 <script src="../../shared/concepts.js"></script><script src="../../shared/concept-sync.js"></script><script src="../../shared/components.js"></script>
 <script>
 createGate({containerId:'gate-root',questions:[{label:'个位右边第一位叫什么？',inputs:[{key:'a',width:60}],check:u=>u.a.includes('十分位')}],onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅</div>'});
-function updateDec(){const v=parseInt(document.getElementById('frac-in').value)||0;document.getElementById('dec-out').textContent=String(v/10).replace(/\.0$/,'');}
+const nlDecMeaning=createNumberLine({
+  containerId:'nl-dec-meaning',
+  title:'十分位刻度（0 到 1）',
+  description:'拖动游标：每向右一格就是 +0.1（十分之一）。',
+  min:0,max:1,step:0.1,initial:0.3,unit:'',
+  jumps:[-0.2,-0.1,0.1,0.2],
+  color:'#16a34a',
+  onChange:v=>{
+    const n=Math.round(v*10);
+    const inp=document.getElementById('frac-in');
+    const out=document.getElementById('dec-out');
+    if(inp)inp.value=String(n);
+    if(out)out.textContent=String(v).replace(/\.0$/,'');
+  }
+});
+function updateDec(){
+  const raw=parseInt(document.getElementById('frac-in').value||'0',10);
+  const v=Math.max(0,Math.min(10,Number.isFinite(raw)?raw:0));
+  const dec=v/10;
+  document.getElementById('dec-out').textContent=String(dec).replace(/\.0$/,'');
+  nlDecMeaning.animateTo(dec);
+}
 function checkE(n,ans,input,fb){const ok=input.value.trim()===ans;fb.className='feedback show '+(ok?'success':'error');fb.innerHTML=ok?'✅ 正确！':`❌ 答案是 ${ans}`;}
 createAdversarialChallenge({containerId:'adversary-root',challenges:[
   {tag:'位值',statement:'0.3中的3和0.03中的3都在小数点右边，一样大。',answer:'refute',hint:'3在什么位上？',explanation:'0.3的3在十分位=3/10；0.03的3在百分位=3/100，大小不同。',counterexample:'0.3=0.30，0.3≠0.03'},

@@ -14,6 +14,19 @@
   <div class="visual-step"><span class="step-label">第 2 步</span><h4>数位对齐 = 同单位才能加</h4><div class="thought-bubble">个位只能跟个位加：23+45→3+5=8(个)，2+4=6(十)→68。进位：个位满10→十位进1。</div></div>
   <div class="concept-highlight"><div class="big-idea">🔑 <span class="highlight">数位对齐 = 相同计数单位对齐</span></div><p>3个一+5个一=8个一，3个十+5个十=8个十。加法从来都是在做同一件事。</p></div>
 </div>
+<div class="section">
+  <div class="section-header"><span class="emoji">🎮</span>交互实验室 · 数轴跳跃</div>
+  <div class="interactive-area">
+    <div id="nl-add-sub"></div>
+    <div style="margin-top:10px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;align-items:center;">
+      <span>起点 a=<input id="nl-a" class="input-field" style="width:70px;" value="0"></span>
+      <span>变化 b=<input id="nl-b" class="input-field" style="width:70px;" value="5"></span>
+      <button class="btn btn-primary btn-sm" onclick="nlJump('+')">a+b</button>
+      <button class="btn btn-outline btn-sm" onclick="nlJump('-')">a-b</button>
+      <div class="feedback" id="nl-fb"></div>
+    </div>
+  </div>
+</div>
 <div class="section"><div class="section-header"><span class="emoji">📐</span>教材原文</div>
   <div style="cursor:pointer;padding:14px 18px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);" onclick="const a=this.querySelector('.annot');a.style.display=a.style.display==='none'?'block':'none'">
     📖 <b>教材：</b>"相同数位对齐，从个位加起。个位满十向十位进1。" <i>（点击）</i></div></div>
@@ -30,6 +43,25 @@
 <script src="../../shared/concepts.js"></script><script src="../../shared/concept-sync.js"></script><script src="../../shared/components.js"></script>
 <script>
 createGate({containerId:'gate-root',questions:[{label:'数位对齐时，个位和什么位对齐？',inputs:[{key:'a',width:60}],check:u=>u.a==='个位'}],onPass:()=>document.getElementById('gate-root').innerHTML='✅'});
+const nlAddSub=createNumberLine({
+  containerId:'nl-add-sub',
+  title:'数轴跳跃：加=向右，减=向左',
+  description:'先把游标拖到起点 a，再输入 b，观察跳跃方向和距离。',
+  min:-20,max:20,step:1,initial:0,unit:'',
+  jumps:[-10,-5,-2,-1,1,2,5,10],
+  color:'#f59e0b',
+  onChange:v=>{const el=document.getElementById('nl-a'); if(el) el.value=String(v);}
+});
+function nlJump(op){
+  const a=parseInt(document.getElementById('nl-a').value||'0',10);
+  const b=parseInt(document.getElementById('nl-b').value||'0',10);
+  const fb=document.getElementById('nl-fb');
+  if(!Number.isFinite(a)||!Number.isFinite(b)){if(fb){fb.className='feedback show error';fb.innerHTML='请输入整数 a 和 b';}return;}
+  nlAddSub.setValue(a,false);
+  const target=op==='-'?a-b:a+b;
+  nlAddSub.animateTo(target);
+  if(fb){fb.className='feedback show success';fb.innerHTML=`✅ ${a}${op}${b} = ${target}`;}
+}
 function checkE(n,ans,input,fb){const ok=input.value.trim()===ans;fb.className='feedback show '+(ok?'success':'error');fb.innerHTML=ok?'✅ 正确！':`❌ 答案是 ${ans}`;}
 createAdversarialChallenge({containerId:'adversary-root',challenges:[
   {tag:'进位',statement:'35+27=512因为5+2=7，3+7=10→不对',answer:'refute',hint:'个位5+7=？',explanation:'5+7=12，进1到十位→3+2+1=6→62，不是512。',counterexample:'35+27→5+7=12写2进1，3+2+1=6→62'}

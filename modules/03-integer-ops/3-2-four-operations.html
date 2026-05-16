@@ -14,6 +14,34 @@
   <div class="visual-step"><span class="step-label">第 2 步</span><h4>括号最优先</h4><div class="thought-bubble">(3+2)×4=20。括号告诉我们要先算3+2=5，再乘4。括号是最高的优先级。</div></div>
   <div class="concept-highlight"><div class="big-idea">🔑 <span class="highlight">括号&gt;乘除&gt;加减</span></div></div>
 </div>
+<div class="section">
+  <div class="section-header"><span class="emoji">🎮</span>交互实验室 · 先乘除后加减</div>
+  <div class="interactive-area">
+    <div id="nl-order"></div>
+    <div style="margin-top:10px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;align-items:center;">
+      <select id="order-kind" class="input-field" style="width:160px;">
+        <option value="add-mul">a + b×c</option>
+        <option value="sub-div">a - b÷c</option>
+      </select>
+      <span>a=<input id="order-a" class="input-field" style="width:60px;" value="6"></span>
+      <span>b=<input id="order-b" class="input-field" style="width:60px;" value="4"></span>
+      <span>c=<input id="order-c" class="input-field" style="width:60px;" value="3"></span>
+      <button class="btn btn-primary btn-sm" onclick="runOrder()">演示</button>
+      <div class="feedback" id="order-fb"></div>
+    </div>
+    <div style="text-align:center;color:var(--text-dim);font-size:13px;margin-top:6px;">
+      先把 <b>b×c</b> 或 <b>b÷c</b> 合并成一个数，再在数轴上对 <b>a</b> 做一次加/减跳跃。
+    </div>
+  </div>
+</div>
+<div class="section"><div class="section-header"><span class="emoji">📐</span>教材原文</div>
+  <div style="cursor:pointer;padding:14px 18px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);" onclick="const a=this.querySelector('.annot');a.style.display=a.style.display==='none'?'block':'none'">
+    📖 <b>教材：</b>"有括号先算括号内；没有括号先乘除后加减；同级从左到右。" <i>（点击）</i>
+    <div class="annot" style="display:none;margin-top:10px;padding:10px 14px;background:#f0fdf4;border-radius:6px;font-size:14px;line-height:1.7;">
+      ✏️ 这套顺序不是“天生”，而是为了让表达式有唯一答案。括号就是“强制先算”。
+    </div>
+  </div>
+</div>
 <div class="section"><div class="section-header"><span class="emoji">🎯</span>典例精讲</div>
   <div class="visual-step"><h4>🎯 6+4×3=6+12=18</h4>✏️ 20-8÷2=<input class="input-field" id="ex1" style="width:50px;"><button class="btn btn-primary btn-sm" onclick="checkE(1,'16',ex1,fb1)">提交</button><div class="feedback" id="fb1"></div></div>
   <div class="visual-step"><h4>🎯 (6+4)×3=10×3=30</h4>✏️ 24÷(4+2)=<input class="input-field" id="ex2" style="width:50px;"><button class="btn btn-primary btn-sm" onclick="checkE(2,'4',ex2,fb2)">提交</button><div class="feedback" id="fb2"></div></div>
@@ -27,6 +55,44 @@
 <script src="../../shared/concepts.js"></script><script src="../../shared/concept-sync.js"></script><script src="../../shared/components.js"></script>
 <script>
 createGate({containerId:'gate-root',questions:[{label:'3+4×2先算什么？',inputs:[{key:'a',width:30}],check:u=>u.a==='4×2'||u.a==='乘法'||u.a==='乘'}],onPass:()=>document.getElementById('gate-root').innerHTML='✅'});
+const nlOrder=createNumberLine({
+  containerId:'nl-order',
+  title:'数轴上的“最后一步”',
+  description:'乘除先合并成一个数，最后一步才是在数轴上做加/减跳跃。',
+  min:0,max:30,step:1,initial:6,unit:'',
+  jumps:[-12,-6,-4,-3,-2,-1,1,2,3,4,6,12],
+  color:'#3b82f6'
+});
+function runOrder(){
+  const kind=document.getElementById('order-kind').value;
+  const a=parseInt(document.getElementById('order-a').value||'0',10);
+  const b=parseInt(document.getElementById('order-b').value||'0',10);
+  const c=parseInt(document.getElementById('order-c').value||'1',10);
+  const fb=document.getElementById('order-fb');
+  if(!Number.isFinite(a)||!Number.isFinite(b)||!Number.isFinite(c)||c===0){
+    if(fb){fb.className='feedback show error';fb.innerHTML='请输入整数，且 c≠0';}
+    return;
+  }
+  let delta=0, expr='';
+  if(kind==='add-mul'){
+    delta=b*c;
+    expr=`${a} + ${b}×${c}`;
+  }else{
+    if(b%c!==0){
+      if(fb){fb.className='feedback show error';fb.innerHTML='b÷c 需要整除（让结果是整数）';}
+      return;
+    }
+    delta=-(b/c);
+    expr=`${a} - ${b}÷${c}`;
+  }
+  const target=a+delta;
+  nlOrder.setValue(a,false);
+  nlOrder.animateTo(target);
+  if(fb){
+    fb.className='feedback show success';
+    fb.innerHTML=`✅ ${expr}：先算 ${kind==='add-mul'?`${b}×${c}=${b*c}`:`${b}÷${c}=${b/c}`}，再做 ${a}${delta>=0?'+':''}${delta}=${target}`;
+  }
+}
 function checkE(n,ans,input,fb){const ok=input.value.trim()===ans;fb.className='feedback show '+(ok?'success':'error');fb.innerHTML=ok?'✅ 正确！':`❌ 答案是 ${ans}`;}
 createAdversarialChallenge({containerId:'adversary-root',challenges:[
   {tag:'顺序',statement:'3+4×2=14（从左到右算）',answer:'refute',hint:'先乘除还是先加减？',explanation:'先乘后加→4×2=8，3+8=11。',counterexample:'3+4×2=3+8=11'}
