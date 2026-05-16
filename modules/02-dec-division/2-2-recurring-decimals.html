@@ -1,68 +1,204 @@
 <!DOCTYPE html>
-<html lang="zh-CN"><head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>循环小数 · 五年级</title>
 <link rel="stylesheet" href="../../shared/layout.css">
-<style>.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;}.visual-step h4{font-size:17px;margin-bottom:12px;}.visual-step .step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:700;background:var(--accent-light);color:var(--accent-deep);margin-bottom:10px;}.concept-highlight{background:linear-gradient(145deg,#fefce8,#fff);border:2px solid #fde68a;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}.concept-highlight .big-idea{font-size:22px;font-weight:800;color:#92400e;line-height:1.6;}.concept-highlight .big-idea .highlight{color:var(--accent-deep);background:var(--accent-light);padding:2px 8px;border-radius:4px;}.thought-bubble{display:inline-block;background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:10px 16px;margin:6px 0;font-size:14px;max-width:90%;}.thought-bubble::before{content:'💭 ';}</style>
-</head><body data-concept="循环小数,小数除法">
+<style>
+.lesson-hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(220px,.85fr);gap:18px;align-items:center;margin:18px 0 24px;padding:22px;border:1px solid rgba(148,163,184,.3);border-radius:var(--radius);background:linear-gradient(135deg,#fff 0%,#f8fbff 56%,#eef2ff 100%);box-shadow:var(--shadow-md);overflow:hidden;}
+.lesson-hero h2{margin:0 0 8px;font-size:24px;line-height:1.25;color:var(--text);}
+.lesson-hero p{margin:0;color:var(--text-muted);font-size:14px;line-height:1.8;}
+.lesson-hero-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+.lesson-hero-tags span{display:inline-flex;align-items:center;min-height:28px;padding:4px 10px;border-radius:999px;background:#fff;border:1px solid var(--border);font-size:12px;font-weight:800;color:var(--text-muted);}
+.hero-cycle{min-height:166px;border-radius:var(--radius-md);background:radial-gradient(circle at 25% 22%,rgba(99,102,241,.2),transparent 34%),radial-gradient(circle at 78% 70%,rgba(14,165,233,.18),transparent 36%),linear-gradient(145deg,#eef2ff,#fff);display:grid;place-items:center;padding:18px;}
+.cycle-digits{display:grid;gap:8px;text-align:center;font-weight:900;color:#1e293b;}
+.cycle-digits .decimal{font-size:28px;letter-spacing:1px;}
+.cycle-digits span{display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:6px 14px;border:1px solid var(--border);border-radius:999px;background:#fff;box-shadow:var(--shadow-sm);}
+.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin:16px 0;}
+.visual-step h4{font-size:17px;margin-bottom:10px;}
+.step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:800;background:#e0e7ff;color:#4338ca;margin-bottom:10px;}
+.principle-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:12px;}
+.principle-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;}
+.principle-card b{display:block;color:var(--text);margin-bottom:4px;}
+.principle-card p{margin:0;color:var(--text-muted);font-size:13px;line-height:1.65;}
+.concept-highlight{background:linear-gradient(145deg,#eef2ff,#fff);border:2px solid #c7d2fe;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}
+.concept-highlight .big-idea{font-size:21px;font-weight:900;color:#3730a3;line-height:1.6;}
+.concept-highlight .highlight{color:#3730a3;background:#e0e7ff;padding:2px 8px;border-radius:4px;}
+.thought-bubble{display:inline-block;background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:10px 16px;margin:6px 0;font-size:14px;line-height:1.65;max-width:100%;}
+.lab-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:12px 0 0;}
+.example-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;}
+.example-card{border:1px solid var(--border);background:#fff;border-radius:var(--radius-sm);padding:16px;line-height:1.7;}
+.example-card strong{color:#4338ca;}
+.textbook-box{cursor:pointer;padding:16px 18px;background:#eef2ff;border:1px solid #c7d2fe;border-radius:var(--radius-sm);line-height:1.75;}
+.textbook-box .annot{display:none;margin-top:10px;padding-top:10px;border-top:1px dashed #a5b4fc;color:#3730a3;}
+@media(max-width:640px){.lesson-hero{grid-template-columns:1fr;padding:16px}.lesson-hero h2{font-size:20px}.hero-cycle{min-height:126px}.visual-step{padding:18px 14px}.example-grid{grid-template-columns:1fr}.cycle-digits .decimal{font-size:23px}}
+</style>
+</head>
+<body data-concept="循环小数,小数除法">
 <div class="top-nav"><a href="../../index.html#%E5%BE%AA%E7%8E%AF%E5%B0%8F%E6%95%B0">🏠</a><span class="breadcrumb-sep">›</span><span>循环小数</span></div>
-<h1 class="module-title">♻️ 循环小数 — 除不尽的循环舞步</h1>
-<p class="module-subtitle">1÷3=0.333…永远除不尽，数字不断重复——这就是循环小数。</p>
+<h1 class="module-title">♻️ 循环小数 — 余数重复，数字就重复</h1>
+<p class="module-subtitle">循环不是巧合，而是除法中同一个余数再次出现后的必然结果。</p>
+
+<div class="lesson-hero">
+  <div>
+    <h2>盯住余数，而不是只盯住商</h2>
+    <p>1÷3 每一步都留下余数 1；下一步又会做同样的 10÷3，所以商里一直出现 3。余数一重复，后面的计算路线就重复。</p>
+    <div class="lesson-hero-tags"><span>竖式除法</span><span>余数周期</span><span>循环节</span></div>
+  </div>
+  <div class="hero-cycle" aria-label="循环小数视觉模型">
+    <div class="cycle-digits">
+      <div class="decimal">0.(142857)</div>
+      <span>余数重复 → 循环节重复</span>
+      <span>1 ÷ 7</span>
+    </div>
+  </div>
+</div>
+
 <div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
+
 <div class="section">
   <div class="section-header"><span class="emoji">🧱</span>拆到公理</div>
-  <div class="visual-step"><span class="step-label">第 1 步</span><h4>1÷3=0.333…为什么除不尽？</h4>
-  <div style="padding:12px;background:#f0fdf4;border:2px solid #86efac;border-radius:8px;text-align:center;font-size:16px;">
-    1÷3 — 1里面不到1个3，添0→10÷3=3余1→再添0→10÷3=3余1→无限重复<br>
-    <span style="font-size:13px;color:var(--text-dim);">余数总是1，永远除不完！</span></div>
-  <div class="thought-bubble">余数重复出现 → 商就重复出现 → 循环小数</div></div>
-  <div class="visual-step"><span class="step-label">第 2 步</span><h4>两种表示法</h4>
-  <div style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;">
-    <div style="padding:14px;background:#dbeafe;border-radius:8px;text-align:center;"><strong>循环节</strong><br><span style="font-size:28px;">0.3̅</span><br><span style="font-size:12px;">点表示循环节</span></div>
-    <div style="padding:14px;background:#fef3c7;border-radius:8px;text-align:center;"><strong>循环节重复</strong><br><span style="font-size:22px;">0.142857142857</span><br><span style="font-size:12px;">重复写几位后用…</span></div>
+  <div class="visual-step">
+    <span class="step-label">公理 1</span>
+    <h4>小数除法就是不断让余数乘 10 继续除</h4>
+    <p>1÷3，整数部分不够除，余数 1 乘 10 变成 10，10÷3 商 3 余 1；余数又是 1，下一步完全重复。</p>
   </div>
-  <div class="thought-bubble">1/7=0.142857142857…循环节是142857（6位）。所有分数要么有限小数，要么循环小数。</div></div>
-  <div class="concept-highlight"><div class="big-idea">🔑 <span class="highlight">循环小数 = 除法的余数不断重复</span></div><p>不是"算错了"——而是1/3这个分数在小数世界没有尽头。所有有理数要么有限要么循环。</p></div>
-</div>
-<div class="section"><div class="section-header"><span class="emoji">🎮</span>交互</div>
-  <div class="interactive-area" style="text-align:center;">
-    判断：<input id="rec-a" class="input-field" type="number" value="2" style="width:40px;">÷<input id="rec-b" class="input-field" type="number" value="3" style="width:40px;">
-    <button class="btn btn-primary btn-sm" onclick="checkRec()">判断</button>
-    <div id="rec-r" style="margin-top:8px;font-size:18px;"></div>
+  <div class="visual-step">
+    <span class="step-label">公理 2</span>
+    <h4>余数的种类有限，除不尽时必然重复</h4>
+    <p>除以 n 时，余数只可能是 0 到 n-1。如果余数变成 0，是有限小数；如果一直不是 0，余数迟早会重复。</p>
+    <div class="principle-grid">
+      <div class="principle-card"><b>余数 0</b><p>除法结束，得到有限小数。例如 1÷4=0.25。</p></div>
+      <div class="principle-card"><b>余数重复</b><p>后续计算重复，商里的数字也重复。</p></div>
+      <div class="principle-card"><b>循环节</b><p>从余数第一次重复对应的位置开始，到重复前结束。</p></div>
+    </div>
+  </div>
+  <div class="concept-highlight">
+    <div class="big-idea">循环小数 = <span class="highlight">有限余数</span>导致的<span class="highlight">周期重复</span></div>
   </div>
 </div>
-<div class="section"><div class="section-header"><span class="emoji">📐</span>教材原文</div>
-  <div style="cursor:pointer;padding:14px 18px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);" onclick="const a=this.querySelector('.annot');a.style.display=a.style.display==='none'?'block':'none'">
-    📖 <b>教材：</b>"一个数的小数部分，从某一位起一个数字或几个数字依次不断重复出现，叫循环小数。" <i>（点击）</i></div></div>
-<div class="section"><div class="section-header"><span class="emoji">🎯</span>典例精讲</div>
-  <div class="visual-step"><h4>🎯 1÷3=0.333…循环节是"3"</h4>✏️ 1÷7=0.142857142857…循环节是？<input class="input-field" id="ex1" style="width:80px;"><button class="btn btn-primary btn-sm" onclick="checkE(1,'142857',ex1,fb1)">提交</button><div class="feedback" id="fb1"></div></div>
-  <div class="visual-step"><h4>🎯 5÷6=0.8333…循环节是"3"</h4>✏️ 10÷3=3.333…循环节是？<input class="input-field" id="ex2" style="width:40px;"><button class="btn btn-primary btn-sm" onclick="checkE(2,'3',ex2,fb2)">提交</button><div class="feedback" id="fb2"></div></div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🎮</span>交互实验室 · 竖式除法找循环节</div>
+  <div id="division-lab"></div>
+  <div class="lab-actions">
+    <button class="btn btn-outline btn-sm" type="button" id="demo-third">1 ÷ 3</button>
+    <button class="btn btn-primary btn-sm" type="button" id="demo-seventh">1 ÷ 7</button>
+    <button class="btn btn-outline btn-sm" type="button" id="demo-five-six">5 ÷ 6</button>
+    <button class="btn btn-success btn-sm" type="button" id="demo-finish">看到循环节</button>
+  </div>
+  <p class="thought-bubble">操作建议：先点“下一步”观察余数，再点“看到循环节”。不要先记 0.142857，要先看余数为什么会重新回到起点。</p>
 </div>
-<div class="section"><div class="section-header"><span class="emoji">⚠️</span>踩坑</div>
-  <div class="pitfall"><div class="pitfall-title">🕳️ 误认为循环小数"不精确"</div><p><b>症状：</b>觉得0.333…≈1/3而不是=1/3</p><p><b>根因：</b>小数是分数的另一种写法——0.333…和1/3是同一个数，完全相等。</p></div></div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">📐</span>教材原文</div>
+  <div class="textbook-box" onclick="const a=this.querySelector('.annot');a.style.display=a.style.display==='block'?'none':'block'">
+    📖 <b>教材：</b>“一个数的小数部分，从某一位起一个数字或几个数字依次不断重复出现，叫循环小数。” <i>（点击看拆解）</i>
+    <div class="annot"><b>拆解：</b>教材描述的是现象。底层原因是余数重复：同一个余数会带来同一串后续商。</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🎯</span>典例精讲</div>
+  <div class="example-grid">
+    <div class="example-card"><h4>例 1：1÷3</h4><p>余数一直是 1，所以每次都商 3。结果是 <strong>0.(3)</strong>，循环节是 3。</p></div>
+    <div class="example-card"><h4>例 2：5÷6</h4><p>5÷6=0.8333...，从第二位小数开始重复，循环节是 <strong>3</strong>。</p></div>
+    <div class="example-card"><h4>例 3：1÷7</h4><p>余数路径产生 142857，结果是 <strong>0.(142857)</strong>。</p></div>
+    <div class="example-card"><h4>例 4：1÷4</h4><p>余数最后变成 0，得到 <strong>0.25</strong>，这是有限小数，不是非零循环节。</p></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">⚠️</span>踩坑预警</div>
+  <div class="pitfall"><div class="pitfall-title">🕳️ 以为循环只是写不完的近似</div><p><b>症状：</b>0.333... 和 1/3 “差不多”。</p><p><b>根因：</b>没有把循环小数看成分数的精确写法。</p><div class="pitfall-chain">0.333... = 1/3，0.33 小于 1/3。</div></div>
+  <div class="pitfall"><div class="pitfall-title">🕳️ 循环节标错</div><p><b>症状：</b>把 5÷6=0.8333... 写成 0.(83)。</p><p><b>根因：</b>没看余数从哪一步开始重复。只有 3 重复，8 不重复。</p></div>
+</div>
+
 <div class="section"><div class="section-header"><span class="emoji">⚡</span>对抗挑战</div><div id="adversary-root"></div></div>
+
 <div class="section"><div class="section-header"><span class="emoji">🦜</span>费曼输出</div><div id="feynman-root"></div></div>
-<div class="section"><div class="section-header"><span class="emoji">📝</span>练习</div>
-  <div class="exercise-tier"><h3><span class="tier-badge basic">基础</span></h3><div id="ex-basic"></div></div>
-  <div class="exercise-tier" id="tier-adv" style="display:none;"><h3><span class="tier-badge advanced">提升</span></h3><div id="ex-adv"></div></div>
-  <div id="done" style="display:none;text-align:center;padding:24px;font-size:24px;">🎉 循环小数 — 通关！</div></div>
-<script src="../../shared/concepts.js"></script><script src="../../shared/concept-sync.js"></script><script src="../../shared/components.js"></script>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">📝</span>分层练习</div>
+  <div class="exercise-tier"><h3><span class="tier-badge basic">组1 直接应用</span></h3><div id="ex-basic"></div></div>
+  <div class="exercise-tier"><h3><span class="tier-badge advanced">组2 变式迁移</span></h3><div id="ex-transfer"></div></div>
+  <div class="exercise-tier"><h3><span class="tier-badge extra">组3 综合应用</span></h3><div id="ex-synthesis"></div></div>
+  <div id="done" style="display:none;text-align:center;padding:24px;font-size:24px;">🎉 循环小数课件完成</div>
+</div>
+
+<script src="../../shared/concepts.js"></script>
+<script src="../../shared/concept-sync.js"></script>
+<script src="../../shared/components.js"></script>
 <script>
-createGate({containerId:'gate-root',questions:[{label:'1÷3的结果是什么？',inputs:[{key:'a',width:60}],check:u=>u.a.includes('.333')||u.a.includes('循环')||u.a==='1/3'}],onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅</div>'});
-function checkRec(){const a=parseInt(document.getElementById('rec-a').value),b=parseInt(document.getElementById('rec-b').value);if(!b)return;const val=a/b;let s=val.toString();const el=document.getElementById('rec-r');if(s.length>10)el.innerHTML=`${a}÷${b}=${s.slice(0,20)}… → ♻️ 循环小数`;else el.innerHTML=`${a}÷${b}=${s} → ✅ 有限小数`;}
-function checkE(n,ans,input,fb){const ok=input.value.trim()===ans;fb.className='feedback show '+(ok?'success':'error');fb.innerHTML=ok?'✅ 正确！':`❌ 答案是 ${ans}`;}
-createAdversarialChallenge({containerId:'adversary-root',challenges:[
-  {tag:'定义',statement:'循环小数是不精确的，只是近似值。',answer:'refute',hint:'0.333…×3=？',explanation:'0.333…=1/3，3×0.333…=0.999…=1，完全精确。',counterexample:'0.333…=1/3，是精确相等，不是≈。'}
-],onComplete:()=>saveProgress({'decimals':{'recurring':{'adversary':'complete'}}})});
-createFeynmanFill({containerId:'feynman-root',template:'循环小数是除法除___时出现的现象。余数不断___，导致商中的某段数字不断___。循环节是指___的那段数字。所有___数要么有限小数，要么循环小数。',answer:['不尽','重复','重复','重复','有理'],onComplete:()=>saveProgress({'decimals':{'recurring':{'feynman':'complete'}}})});
-createExerciseSet({containerId:'ex-basic',exercises:[
-  {question:'1÷3=0.333…循环节是？',inputs:[{key:'a',width:40}],check:a=>a.a==='3'},
-  {question:'1÷7的循环节有多少位？',inputs:[{key:'a',width:40}],check:a=>a.a==='6',hint:'142857共6位'}
-],passThreshold:0.5,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}});
-function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[
-  {question:'2÷11的循环节？',inputs:[{key:'a',width:40}],check:a=>a.a==='18'||a.a==='18',hint:'0.181818…循环节18'},
-  {question:'11÷12=0.91666…循环节是？',inputs:[{key:'a',width:40}],check:a=>a.a==='6'}
-],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'decimals':{'recurring':{'completed':true}}});}});}
+createGate({
+  containerId:'gate-root',
+  questions:[
+    {label:'1÷4=0.25，余数最后会变成几？',inputs:[{key:'a',width:72}],check:u=>u.a==='0',hint:'有限小数的除法会结束。'},
+    {label:'1÷3 的小数部分一直重复哪个数字？',inputs:[{key:'a',width:72}],check:u=>u.a==='3',hint:'0.333...'}
+  ],
+  onPass:()=>{document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:800;padding:12px;">✅ 已准备好：本课要追踪余数。</div>';}
+});
+
+var divisionLab=createLongDivision({
+  containerId:'division-lab',
+  title:'竖式除法：余数重复就产生循环节',
+  description:'点击下一步观察余数轨迹；当同一个余数再次出现，商的小数部分开始循环。',
+  dividend:1,
+  divisor:7,
+  maxSteps:16
+});
+document.getElementById('demo-third').addEventListener('click',()=>divisionLab.setNumbers(1,3));
+document.getElementById('demo-seventh').addEventListener('click',()=>divisionLab.setNumbers(1,7));
+document.getElementById('demo-five-six').addEventListener('click',()=>divisionLab.setNumbers(5,6));
+document.getElementById('demo-finish').addEventListener('click',()=>divisionLab.finish());
+
+createAdversarialChallenge({
+  containerId:'adversary-root',
+  challenges:[
+    {tag:'精确性',statement:'1÷3=0.333...，写三个 3 就差不多等于 1/3。',answer:'refute',hint:'0.33 和 1/3 谁大？',explanation:'0.333... 是精确等于 1/3；有限个 3 只是近似。',counterexample:'0.33=33/100，小于1/3。'},
+    {tag:'有限小数',statement:'所有分数除出来都是循环小数。',answer:'refute',hint:'1/4 呢？',explanation:'有些分数会除尽，得到有限小数。',counterexample:'1/4=0.25，余数最后变成0。'},
+    {tag:'循环节',statement:'5÷6=0.8333...，循环节是 83。',answer:'refute',hint:'8 会重复吗？',explanation:'8 只出现一次，重复的是 3。',counterexample:'正确写法是 0.8(3)。'},
+    {tag:'逆向思考',statement:'0.(142857) 很可能来自 1÷7。',answer:'agree',hint:'7 的倒数有什么特征？',explanation:'1÷7=0.142857142857...，循环节正是 142857。',counterexample:'这串数字是七分之一的经典循环节。'}
+  ],
+  onComplete:()=>saveProgress({'decimals':{'recurring':{'adversary':'complete'}}})
+});
+
+createFeynmanFill({
+  containerId:'feynman-root',
+  template:'第1句：循环小数会循环，是因为除法中的___是有限的；同一个余数再次出现时，后面的计算会___。第2句：除以 7 时，非零余数最多有___种，所以循环节最多___位。第3句：循环节从余数___出现的位置开始，到它再次出现前结束。第4句：有限小数表示余数某一步变成了___。',
+  answer:['余数','重复','6','6','第一次','0'],
+  onComplete:()=>saveProgress({'decimals':{'recurring':{'feynman':'complete'}}})
+});
+
+createExerciseSet({
+  containerId:'ex-basic',
+  exercises:[
+    {question:'1÷6=0.1666...，循环节是',inputs:[{key:'a',width:80}],check:a=>a.a==='6',expected:'6',hint:'1 不重复，6 重复。'},
+    {question:'2÷3=0.666...，循环节是',inputs:[{key:'a',width:80}],check:a=>a.a==='6',expected:'6',hint:'重复数字是 6。'},
+    {question:'5÷11=0.4545...，循环节是',inputs:[{key:'a',width:80}],check:a=>a.a==='45',expected:'45',hint:'45 一直重复。'}
+  ],
+  passThreshold:0.67
+});
+createExerciseSet({
+  containerId:'ex-transfer',
+  exercises:[
+    {question:'1÷7 的循环节最多几位？',inputs:[{key:'a',width:80}],check:a=>a.a==='6',expected:'6',hint:'除以7，非零余数最多6种。'},
+    {question:'1÷7=0.142857142857...，第100位小数是',inputs:[{key:'a',width:80}],check:a=>a.a==='5',expected:'5',hint:'100÷6 余4，第4位是5。'},
+    {question:'5÷6=0.8333...，第一个不循环的数字是',inputs:[{key:'a',width:80}],check:a=>a.a==='8',expected:'8',hint:'8只出现一次，后面3循环。'}
+  ],
+  passThreshold:0.67
+});
+createExerciseSet({
+  containerId:'ex-synthesis',
+  exercises:[
+    {question:'比较 0.(3) 和 0.33，较大的是',inputs:[{key:'a',width:90}],check:a=>a.a==='0.(3)'||a.a==='0.333...'||a.a==='循环小数',expected:'0.(3)',hint:'0.(3)=1/3，0.33=33/100。'},
+    {question:'循环节是 09 的小数可写成 0.(09)，它等于哪个分数？',inputs:[{key:'a',width:90}],check:a=>a.a==='1/11',expected:'1/11',hint:'1÷11=0.0909...。'},
+    {question:'判断一个除法会不会循环，最关键要观察什么？',inputs:[{key:'a',width:90}],check:a=>/余数/.test(a.a),expected:'余数是否重复或变成0',hint:'不要只看商，要看余数。'}
+  ],
+  passThreshold:0.67,
+  onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'decimals':{'recurring':{'completed':true}}});}
+});
 </script>
 </body>
 </html>

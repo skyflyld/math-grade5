@@ -1,89 +1,214 @@
 <!DOCTYPE html>
-<html lang="zh-CN"><head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>分数加减法 · 五年级</title>
 <link rel="stylesheet" href="../../shared/layout.css">
-<style>.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;}.visual-step h4{font-size:17px;margin-bottom:12px;}.visual-step .step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:700;background:var(--accent-light);color:var(--accent-deep);margin-bottom:10px;}.concept-highlight{background:linear-gradient(145deg,#fefce8,#fff);border:2px solid #fde68a;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}.concept-highlight .big-idea{font-size:22px;font-weight:800;color:#92400e;line-height:1.6;}.concept-highlight .big-idea .highlight{color:var(--accent-deep);background:var(--accent-light);padding:2px 8px;border-radius:4px;}.thought-bubble{display:inline-block;background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:10px 16px;margin:6px 0;font-size:14px;max-width:90%;}.thought-bubble::before{content:'💭 ';}</style>
-</head><body data-concept="分数加减法,分数的基本性质,通分,约分">
+<style>
+.lesson-hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(220px,.85fr);gap:18px;align-items:center;margin:18px 0 24px;padding:22px;border:1px solid rgba(148,163,184,.3);border-radius:var(--radius);background:linear-gradient(135deg,#fff 0%,#f8fbff 56%,#fff7ed 100%);box-shadow:var(--shadow-md);overflow:hidden;}
+.lesson-hero h2{margin:0 0 8px;font-size:24px;line-height:1.25;color:var(--text);}
+.lesson-hero p{margin:0;color:var(--text-muted);font-size:14px;line-height:1.8;}
+.lesson-hero-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+.lesson-hero-tags span{display:inline-flex;align-items:center;min-height:28px;padding:4px 10px;border-radius:999px;background:#fff;border:1px solid var(--border);font-size:12px;font-weight:800;color:var(--text-muted);}
+.hero-equation{min-height:166px;border-radius:var(--radius-md);background:radial-gradient(circle at 25% 22%,rgba(59,130,246,.18),transparent 34%),radial-gradient(circle at 78% 70%,rgba(245,158,11,.22),transparent 36%),linear-gradient(145deg,#eff6ff,#fff);display:grid;place-items:center;padding:18px;}
+.fraction-equation{display:grid;gap:10px;font-weight:900;color:#1e293b;text-align:center;}
+.fraction-equation span{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:7px 14px;border:1px solid var(--border);border-radius:999px;background:#fff;box-shadow:var(--shadow-sm);}
+.visual-step{background:linear-gradient(145deg,#f8fafc,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin:16px 0;}
+.visual-step h4{font-size:17px;margin-bottom:10px;}
+.step-label{display:inline-block;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:800;background:var(--accent-light);color:var(--accent-deep);margin-bottom:10px;}
+.principle-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:12px;}
+.principle-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;}
+.principle-card b{display:block;color:var(--text);margin-bottom:4px;}
+.principle-card p{margin:0;color:var(--text-muted);font-size:13px;line-height:1.65;}
+.concept-highlight{background:linear-gradient(145deg,#fefce8,#fff);border:2px solid #fde68a;border-radius:var(--radius);padding:20px 24px;margin:16px 0;text-align:center;}
+.concept-highlight .big-idea{font-size:21px;font-weight:900;color:#92400e;line-height:1.6;}
+.concept-highlight .highlight{color:var(--accent-deep);background:var(--accent-light);padding:2px 8px;border-radius:4px;}
+.thought-bubble{display:inline-block;background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:10px 16px;margin:6px 0;font-size:14px;line-height:1.65;max-width:100%;}
+.lab-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:12px 0 0;}
+.example-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;}
+.example-card{border:1px solid var(--border);background:#fff;border-radius:var(--radius-sm);padding:16px;line-height:1.7;}
+.example-card strong{color:var(--accent-deep);}
+.textbook-box{cursor:pointer;padding:16px 18px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);line-height:1.75;}
+.textbook-box .annot{display:none;margin-top:10px;padding-top:10px;border-top:1px dashed #facc15;color:#92400e;}
+@media(max-width:640px){.lesson-hero{grid-template-columns:1fr;padding:16px}.lesson-hero h2{font-size:20px}.hero-equation{min-height:126px}.visual-step{padding:18px 14px}.example-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body data-concept="分数加减法,分数的基本性质,通分,约分">
 <div class="top-nav"><a href="../../index.html#%E5%88%86%E6%95%B0%E5%8A%A0%E5%87%8F%E6%B3%95">🏠</a><span class="breadcrumb-sep">›</span><span>分数加减法</span></div>
-<h1 class="module-title">🧮 分数加减法 — 同单位相加</h1>
-<p class="module-subtitle">同分母直接加分子，异分母先通分再加——核心原则和整数一模一样。</p>
-<div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
-<div class="section">
-  <div class="section-header"><span class="emoji">🧱</span>拆到公理</div>
-  <div class="visual-step"><span class="step-label">第 1 步</span><h4>1/5+2/5=3/5 — 分母相同，直接加分子</h4>
-  <div style="display:flex;justify-content:center;gap:8px;margin:8px 0;">
-    <div style="width:100px;height:24px;display:flex;border:2px solid #333;border-radius:3px;"><div style="width:20%;background:#3b82f6;"></div><div style="width:20%;background:#f59e0b;"></div><div style="width:60%;background:#e5e7eb;"></div></div>
-    <span style="display:grid;place-items:center;font-size:24px;">= 3/5</span></div>
-  <div class="thought-bubble">就像2个苹果+3个苹果=5个苹果。分数单位相同（都是1/5），直接数字就行。</div></div>
-  <div class="visual-step"><span class="step-label">第 2 步</span><h4>1/3+1/4 — 不同分母先通分</h4>
-  <div style="padding:12px;background:#f0fdf4;border:2px solid #86efac;border-radius:8px;text-align:center;font-size:18px;">
-    1/3+1/4 = 4/12+3/12 = 7/12</div>
-  <div class="thought-bubble">分数单位不同不能直接相加——通分成12后再加。7/12不能再约分。</div></div>
-  <div class="concept-highlight"><div class="big-idea">🔑 <span class="highlight">分数加减 = 统一单位 → 加分子 → 化简</span></div><p>三步走：①分母相同？②是→直接加分子，否→通分再加 ③结果约分至最简。</p></div>
-  <div id="frac-add-core-hint"></div>
-</div>
-<div class="section"><div class="section-header"><span class="emoji">▰</span>数学操作台 · 先统一分数单位</div>
-  <div id="frac-unit-bar"></div>
-</div>
-<div class="section"><div class="section-header"><span class="emoji">🎮</span>交互 · 分数加法器</div>
-  <div class="interactive-area" style="text-align:center;">
-    <input id="f1-n" class="input-field" type="number" value="1" style="width:35px;">/<input id="f1-d" class="input-field" type="number" value="3" style="width:35px;">
-    <span style="font-size:20px;">+</span>
-    <input id="f2-n" class="input-field" type="number" value="1" style="width:35px;">/<input id="f2-d" class="input-field" type="number" value="4" style="width:35px;">
-    <span style="font-size:20px;">=</span>
-    <button class="btn btn-primary btn-sm" onclick="addFrac()">计算</button>
-    <div id="frac-r" style="margin-top:8px;font-size:22px;font-weight:800;"></div>
+<h1 class="module-title">🧮 分数加减法 — 同单位才能合并</h1>
+<p class="module-subtitle">分数加减和整数加减一样：先对齐单位，再改变数量。</p>
+
+<div class="lesson-hero">
+  <div>
+    <h2>分母不是要相加的数，它是单位</h2>
+    <p>3 个苹果加 2 个苹果，结果是 5 个苹果，不是 5 个梨。分数也是一样：只有分数单位相同，分子才可以直接加减。</p>
+    <div class="lesson-hero-tags"><span>分数单位</span><span>通分</span><span>约分</span></div>
+  </div>
+  <div class="hero-equation" aria-label="分数加减视觉模型">
+    <div class="fraction-equation">
+      <span>1/4 + 1/6</span>
+      <span>3/12 + 2/12</span>
+      <span>= 5/12</span>
+    </div>
   </div>
 </div>
-<div class="section"><div class="section-header"><span class="emoji">📐</span>教材原文</div>
-  <div style="cursor:pointer;padding:14px 18px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);" onclick="const a=this.querySelector('.annot');a.style.display=a.style.display==='none'?'block':'none'">
-    📖 <b>教材：</b>"同分母分数相加，分母不变，分子相加。异分母分数相加，先通分。计算结果能约分的要约分。" <i>（点击）</i></div></div>
-<div class="section"><div class="section-header"><span class="emoji">🎯</span>典例精讲</div>
-  <div class="visual-step"><h4>🎯 2/7+3/7=5/7</h4>✏️ 5/12+1/12=<input class="input-field" id="ex1" style="width:50px;"><button class="btn btn-primary btn-sm" onclick="checkE(1,'6/12',ex1,fb1)">验证</button>要约分→<input class="input-field" id="ex1b" style="width:40px;"><button class="btn btn-primary btn-sm" onclick="checkE(1b,'1/2',ex1b,fb1b)">最简</button><div class="feedback" id="fb1"></div><div class="feedback" id="fb1b"></div></div>
-  <div class="visual-step"><h4>🎯 1/2+1/3=3/6+2/6=5/6</h4>✏️ 1/4+2/5=<input class="input-field" id="ex2" style="width:50px;"><button class="btn btn-primary btn-sm" onclick="checkE(2,'13/20',ex2,fb2)">提交</button><div class="feedback" id="fb2"></div><div id="frac-add-explain-2"></div></div>
+
+<div class="section"><div class="section-header"><span class="emoji">🔑</span>预热</div><div id="gate-root"></div></div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🧱</span>拆到公理</div>
+  <div class="visual-step">
+    <span class="step-label">公理 1</span>
+    <h4>只有相同单位才能直接加减</h4>
+    <p>整数加减要个位对个位、十位对十位；分数加减要分母相同，也就是每一份大小相同。</p>
+    <div class="principle-grid">
+      <div class="principle-card"><b>同分母</b><p>单位相同，只改变取了几份。3/7 + 2/7 = 5/7。</p></div>
+      <div class="principle-card"><b>异分母</b><p>单位不同，先通分。1/4 + 1/6 = 3/12 + 2/12。</p></div>
+      <div class="principle-card"><b>结果约分</b><p>算完后检查能不能写得更简洁，例如 3/6 = 1/2。</p></div>
+    </div>
+  </div>
+  <div class="visual-step">
+    <span class="step-label">公理 2</span>
+    <h4>加减的是“份数”，不是“单位名”</h4>
+    <p>1/3 + 1/3 = 2/3。分母 3 表示单位是“三分之一”，两个三分之一合起来还是用三分之一作单位。</p>
+    <div class="thought-bubble">错法 1/3 + 1/3 = 2/6，相当于把“苹果”也加成了另一个单位。</div>
+  </div>
+  <div class="concept-highlight">
+    <div class="big-idea">分数加减 = <span class="highlight">统一单位</span> → <span class="highlight">加减份数</span> → <span class="highlight">约成最简</span></div>
+  </div>
 </div>
-<div class="section"><div class="section-header"><span class="emoji">⚠️</span>踩坑</div>
-  <div class="pitfall"><div class="pitfall-title">🕳️ 分母也相加了</div><p><b>症状：</b>1/3+1/4=2/7（分子加分子，分母加分母）</p><p><b>根因：</b>把分数加法当成了普通数字加法。分数加法是"单位不变，数量相加"——分母是单位，不能加。</p></div></div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🎮</span>交互实验室 · 通分到加减再约简</div>
+  <div id="fraction-lab"></div>
+  <div class="lab-actions">
+    <button class="btn btn-outline btn-sm" type="button" id="lab-add-start">加法：1/4 + 1/6</button>
+    <button class="btn btn-primary btn-sm" type="button" id="lab-add-common">1 通分</button>
+    <button class="btn btn-primary btn-sm" type="button" id="lab-add-result">2 相加</button>
+    <button class="btn btn-outline btn-sm" type="button" id="lab-sub-start">减法：5/6 - 1/3</button>
+    <button class="btn btn-primary btn-sm" type="button" id="lab-sub-common">1 通分</button>
+    <button class="btn btn-primary btn-sm" type="button" id="lab-sub-result">2 相减</button>
+    <button class="btn btn-success btn-sm" type="button" id="lab-sub-simple">3 约简</button>
+  </div>
+  <p class="thought-bubble">看分数条时，只问一个问题：两条刻度是不是同一把尺子？是，才能加减；不是，先通分。</p>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">📐</span>教材原文</div>
+  <div class="textbook-box" onclick="const a=this.querySelector('.annot');a.style.display=a.style.display==='block'?'none':'block'">
+    📖 <b>教材：</b>“同分母分数相加，分母不变，分子相加。异分母分数相加，先通分。计算结果能约分的要约分。” <i>（点击看拆解）</i>
+    <div class="annot"><b>拆解：</b>分母不变，因为单位不变；异分母先通分，因为单位不同；最后约分，是把同一个值写得更简洁。</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">🎯</span>典例精讲</div>
+  <div class="example-grid">
+    <div class="example-card"><h4>例 1：3/7 + 2/7</h4><p>单位都是 1/7，只加份数：3+2=5，所以结果是 <strong>5/7</strong>。</p></div>
+    <div class="example-card"><h4>例 2：1/4 + 1/6</h4><p>最小公分母 12：1/4=3/12，1/6=2/12，所以结果是 <strong>5/12</strong>。</p></div>
+    <div class="example-card"><h4>例 3：5/8 - 1/3</h4><p>通分到 24：15/24 - 8/24 = <strong>7/24</strong>。</p></div>
+    <div class="example-card"><h4>例 4：2/6 + 1/6</h4><p>先算 3/6，再约分为 <strong>1/2</strong>。3/6 对，但不是最简。</p></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">⚠️</span>踩坑预警</div>
+  <div class="pitfall"><div class="pitfall-title">🕳️ 分母也相加</div><p><b>症状：</b>1/3 + 1/3 = 2/6。</p><p><b>根因：</b>不知道分母是单位大小，不是要合并的数量。</p><div class="pitfall-chain">正确链路：两个 1/3 合起来是 2 个 1/3，所以是 2/3。</div></div>
+  <div class="pitfall"><div class="pitfall-title">🕳️ 只通分不约分</div><p><b>症状：</b>2/6 + 1/6 = 3/6 就停下。</p><p><b>根因：</b>把“算出一个等值答案”和“写成最简答案”混为一谈。</p></div>
+</div>
+
 <div class="section"><div class="section-header"><span class="emoji">⚡</span>对抗挑战</div><div id="adversary-root"></div></div>
+
 <div class="section"><div class="section-header"><span class="emoji">🦜</span>费曼输出</div><div id="feynman-root"></div></div>
-<div class="section"><div class="section-header"><span class="emoji">📝</span>练习</div>
-  <div class="exercise-tier"><h3><span class="tier-badge basic">基础</span></h3><div id="ex-basic"></div></div>
-  <div class="exercise-tier" id="tier-adv" style="display:none;"><h3><span class="tier-badge advanced">提升</span></h3><div id="ex-adv"></div></div>
-  <div id="done" style="display:none;text-align:center;padding:24px;font-size:24px;">🎉 分数加减法 — 通关！</div></div>
-<div id="course-summary"></div>
-<div class="next-lesson-card" id="next-lesson" style="display:none;"></div>
-<script src="../../shared/concepts.js"></script><script src="../../shared/concept-sync.js"></script><script src="../../shared/components.js"></script>
+
+<div class="section">
+  <div class="section-header"><span class="emoji">📝</span>分层练习</div>
+  <div class="exercise-tier"><h3><span class="tier-badge basic">组1 直接应用</span></h3><div id="ex-basic"></div></div>
+  <div class="exercise-tier"><h3><span class="tier-badge advanced">组2 变式迁移</span></h3><div id="ex-transfer"></div></div>
+  <div class="exercise-tier"><h3><span class="tier-badge extra">组3 综合应用</span></h3><div id="ex-synthesis"></div></div>
+  <div id="done" style="display:none;text-align:center;padding:24px;font-size:24px;">🎉 分数加减法课件完成</div>
+</div>
+
+<script src="../../shared/concepts.js"></script>
+<script src="../../shared/concept-sync.js"></script>
+<script src="../../shared/components.js"></script>
 <script>
-createGate({containerId:'gate-root',questions:[{label:'1/5+2/5=?',inputs:[{key:'a',width:40}],check:u=>u.a==='3/5'}],onPass:()=>document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:700;padding:12px;">✅</div>'});
-addHintButton('frac-add-core-hint','先看“分数单位”是否相同。1/5 和 2/5 都是在数五分之一，所以可以直接数份数；1/3 和 1/4 单位不同，必须先通分。','先统一单位');
-createFractionBar({
-  containerId:'frac-unit-bar',
-  title:'统一单位前，先看分数条',
-  description:'拖动分母，观察单位从 1/3、1/4 变成共同的 1/12 后，才可以直接相加。',
-  numerator:3,
-  denominator:6,
-  maxDenominator:12,
-  color:'#3b82f6'
+createGate({
+  containerId:'gate-root',
+  questions:[
+    {label:'3/7 + 2/7 的分母会变吗？',inputs:[{key:'a',width:96,placeholder:'变/不变'}],check:u=>/不变|不会/.test(u.a),hint:'同分母表示单位相同。'},
+    {label:'1/4 和 1/6 相加前要先做什么？',inputs:[{key:'a',width:96}],check:u=>u.a==='通分',hint:'单位不同，先通分。'}
+  ],
+  onPass:()=>{document.getElementById('gate-root').innerHTML='<div style="text-align:center;color:var(--success);font-weight:800;padding:12px;">✅ 已准备好：先看单位，再做加减。</div>';}
 });
-addExplanation('frac-add-explain-2','1/4 和 2/5 的最小公分母是 20：1/4=5/20，2/5=8/20，所以相加是 13/20。');
-createCourseSummary({containerId:'course-summary'});
-function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){[a,b]=[b,a%b];}return a;}
-function addFrac(){const n1=parseInt(document.getElementById('f1-n').value),d1=parseInt(document.getElementById('f1-d').value),n2=parseInt(document.getElementById('f2-n').value),d2=parseInt(document.getElementById('f2-d').value);if(!d1||!d2)return;const num=n1*d2+n2*d1,den=d1*d2,g=gcd(num,den);document.getElementById('frac-r').textContent=`${n1}/${d1} + ${n2}/${d2} = ${num}/${den} = ${num/g}/${den/g}`;}
-function checkE(n,ans,input,fb){const ok=input.value.trim()===ans;fb.className='feedback show '+(ok?'success':'error');fb.innerHTML=ok?'✅ 正确！':`❌ 答案是 ${ans}`;}
-createAdversarialChallenge({containerId:'adversary-root',challenges:[
-  {tag:'加法规则',statement:'分数加法就是分子加分子，分母加分母。',answer:'refute',hint:'1/2+1/3如果是2/5对吗？',explanation:'分数加法是同分母分子相加。异分母要先通分，不是分母也相加。',counterexample:'1/2+1/3=5/6（不是2/5）。验算：0.5+0.333=0.833=5/6'}
-],onComplete:()=>saveProgress({'fractions':{'add-sub':{'adversary':'complete'}}})});
-createFeynmanFill({containerId:'feynman-root',template:'分数加减法：同分母直接___分子，分母___。异分母先___，再计算。最后的结果要___。减法也是一样的规则——1/2-1/3=3/6-2/6=___。',answer:['加减','不变','通分','约分','1/6'],onComplete:()=>saveProgress({'fractions':{'add-sub':{'feynman':'complete'}}})});
-createExerciseSet({containerId:'ex-basic',exercises:[
-  {question:'3/8+1/8=?',inputs:[{key:'a',width:40}],check:a=>a.a==='4/8'||a.a==='1/2'},
-  {question:'2/5+1/5=?',inputs:[{key:'a',width:40}],check:a=>a.a==='3/5'},
-  {question:'5/12-1/12=?',inputs:[{key:'a',width:40}],check:a=>a.a==='4/12'||a.a==='1/3'}
-].filter(Boolean),passThreshold:0.67,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdv();}});
-function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[
-  {question:'1/2+1/4=?',inputs:[{key:'a',width:40}],check:a=>a.a==='3/4',hint:'2/4+1/4=3/4'},
-  {question:'2/3-1/4=?',inputs:[{key:'a',width:40}],check:a=>a.a==='5/12',hint:'8/12-3/12=5/12'}
-],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'fractions':{'add-sub':{'completed':true}}});createNextLessonSuggestion({containerId:'next-lesson'});}});}
+
+var fractionLab=createFractionBar({
+  containerId:'fraction-lab',
+  title:'分数加减流程演示',
+  description:'从异分母开始，依次观察通分、加减和约简。',
+  maxDenominator:36,
+  bars:[
+    {label:'第一项 1/4',numerator:1,denominator:4,color:'#3b82f6'},
+    {label:'第二项 1/6',numerator:1,denominator:6,color:'#f59e0b'}
+  ]
+});
+function setAddStart(){fractionLab.setBars([{label:'第一项 1/4',numerator:1,denominator:4,color:'#3b82f6'},{label:'第二项 1/6',numerator:1,denominator:6,color:'#f59e0b'}]);}
+function setSubStart(){fractionLab.setBars([{label:'被减数 5/6',numerator:5,denominator:6,color:'#ef4444'},{label:'减数 1/3',numerator:1,denominator:3,color:'#38bdf8'}]);}
+document.getElementById('lab-add-start').addEventListener('click',setAddStart);
+document.getElementById('lab-add-common').addEventListener('click',()=>fractionLab.commonDenominator(12));
+document.getElementById('lab-add-result').addEventListener('click',()=>fractionLab.setBars([{label:'和 5/12',numerator:5,denominator:12,color:'#22c55e'}]));
+document.getElementById('lab-sub-start').addEventListener('click',setSubStart);
+document.getElementById('lab-sub-common').addEventListener('click',()=>fractionLab.commonDenominator(6));
+document.getElementById('lab-sub-result').addEventListener('click',()=>fractionLab.setBars([{label:'差 3/6',numerator:3,denominator:6,color:'#22c55e'}]));
+document.getElementById('lab-sub-simple').addEventListener('click',()=>fractionLab.setBars([{label:'最简差 1/2',numerator:1,denominator:2,color:'#16a34a'}]));
+
+createAdversarialChallenge({
+  containerId:'adversary-root',
+  challenges:[
+    {tag:'同单位',statement:'1/4 + 1/4 = 2/8，因为分子分母都要相加。',answer:'refute',hint:'分母是单位还是数量？',explanation:'同分母相加时单位不变，只加分子。',counterexample:'1/4+1/4=2/4=1/2，不是2/8。'},
+    {tag:'反例',statement:'分数加法就是分子加分子、分母加分母。',answer:'refute',hint:'用 1/2 + 1/2 检查。',explanation:'如果这样算，1/2+1/2=2/4=1/2，明显少了。',counterexample:'实际 1/2+1/2=1。'},
+    {tag:'通分陷阱',statement:'3/8 + 1/4 = 5/16，因为通分后也要把 8 和 8 相加。',answer:'refute',hint:'通分后单位已经统一，分母还变吗？',explanation:'1/4=2/8，3/8+2/8=5/8。分母 8 是单位，不相加。',counterexample:'5/16 还小于 3/8，不可能是加法结果。'},
+    {tag:'逆向思考',statement:'两个分数相加等于 5/6，其中一个是 1/2，另一个是 1/3。',answer:'agree',hint:'5/6 - 1/2。',explanation:'1/2=3/6，5/6-3/6=2/6=1/3。',counterexample:'验证：1/2+1/3=3/6+2/6=5/6。'}
+  ],
+  onComplete:()=>saveProgress({'fractions':{'add-sub':{'adversary':'complete'}}})
+});
+
+createFeynmanFill({
+  containerId:'feynman-root',
+  template:'第1句：分数加减法和整数加减法的共同规则是，只有___才能直接加减；在分数里，单位由___决定。第2句：异分母必须先___，否则就像把苹果和梨直接相加。第3句：同分母加减时，分母表示___，只改变___。第4句：结果要检查能不能___，因为最简答案更清楚。',
+  answer:['相同单位','分母','通分','分数单位','份数','约分'],
+  onComplete:()=>saveProgress({'fractions':{'add-sub':{'feynman':'complete'}}})
+});
+
+createExerciseSet({
+  containerId:'ex-basic',
+  exercises:[
+    {question:'3/7 + 2/7 =',inputs:[{key:'a',width:90}],check:a=>a.a==='5/7',expected:'5/7',hint:'同分母，分子相加。'},
+    {question:'5/9 - 2/9 =',inputs:[{key:'a',width:90}],check:a=>a.a==='1/3'||a.a==='3/9',expected:'1/3',hint:'3/9 还可以约分。'},
+    {question:'1/4 + 1/6 =',inputs:[{key:'a',width:90}],check:a=>a.a==='5/12',expected:'5/12',hint:'通分到 12。'}
+  ],
+  passThreshold:0.67
+});
+createExerciseSet({
+  containerId:'ex-transfer',
+  exercises:[
+    {question:'5/8 - 1/3 =',inputs:[{key:'a',width:90}],check:a=>a.a==='7/24',expected:'7/24',hint:'15/24 - 8/24。'},
+    {question:'7/12 + 5/12 大于 1 还是小于 1？',inputs:[{key:'a',width:90}],check:a=>/等于|=|1/.test(a.a),expected:'等于1',hint:'7+5=12，所以是12/12。'},
+    {question:'3/10 + 2/5 和 2/5 + 3/10 结果一样吗？',inputs:[{key:'a',width:90}],check:a=>/一样|相同|等/.test(a.a),expected:'一样',hint:'加法交换律仍然成立。'}
+  ],
+  passThreshold:0.67
+});
+createExerciseSet({
+  containerId:'ex-synthesis',
+  exercises:[
+    {question:'小华跑了 3/8，小明跑了 1/4，两人共跑了全程的',inputs:[{key:'a',width:90}],check:a=>a.a==='5/8',expected:'5/8',hint:'1/4=2/8。'},
+    {question:'还剩全程的',inputs:[{key:'a',width:90}],check:a=>a.a==='3/8',expected:'3/8',hint:'1-5/8=3/8。'},
+    {question:'用小数验证 3/8+1/4，结果是',inputs:[{key:'a',width:90}],check:a=>a.a==='0.625'||a.a==='5/8',expected:'0.625',hint:'3/8=0.375，1/4=0.25。'}
+  ],
+  passThreshold:0.67,
+  onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'fractions':{'add-sub':{'completed':true}}});}
+});
 </script>
 </body>
 </html>
