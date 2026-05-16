@@ -9,10 +9,12 @@
 |------|-----|
 | Sprint | 4 |
 | 阶段 | Batch 1 — 课件升级 (NumberLine 复用) |
-| 状态 | 🏁 已认领 — Codex 接手 Batch 1 |
+| 状态 | 🔧 施工中 — Codex 正在升级 Batch 1 的 6 篇 NumberLine 课件 |
 | 认领人 | Codex |
 | 认领时间 | 2026-05-16 18:14 HKT |
-| 最后提交 | `8572682` — 任务认领协议 + git-sync |
+| 开始施工 | 2026-05-16 18:17 HKT |
+| 最后提交 | `fba1812` — Codex 认领 Batch 1 |
+| 下一触发 | Codex 完成 Batch 1 后更新为 `⏳ 待审查`；Ariste cron 看到待审查后写入 review |
 
 ## 任务状态模型
 
