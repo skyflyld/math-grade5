@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cuboid 3D Demo</title>
+<link rel="stylesheet" href="../shared/layout.css">
+</head>
+<body>
+<div class="top-nav"><a href="../index.html">首页</a><span class="breadcrumb-sep">›</span><span>cuboid-3d demo</span></div>
+<h1 class="module-title">长方体 3D 组件 Demo</h1>
+<p class="module-subtitle">旋转长方体，切换单位立方体堆叠模式，理解体积来自逐层计数。</p>
+<div id="cuboid-demo"></div>
+<script src="../shared/components.js"></script>
+<script>
+createCuboid3D({
+  containerId:'cuboid-demo',
+  title:'4 × 3 × 2 长方体',
+  length:4,
+  width:3,
+  height:2,
+  cubeMode:true
+});
+</script>
+</body>
+</html>

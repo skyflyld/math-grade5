@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balance Scale Demo</title>
+<link rel="stylesheet" href="../shared/layout.css">
+</head>
+<body>
+<div class="top-nav"><a href="../index.html">首页</a><span class="breadcrumb-sep">›</span><span>balance-scale demo</span></div>
+<h1 class="module-title">天平秤组件 Demo</h1>
+<p class="module-subtitle">只给一边加物会失衡，两边同时加减同样的量会保持平衡。</p>
+<div id="balance-scale-demo"></div>
+<script src="../shared/components.js"></script>
+<script>
+createBalanceScale({
+  containerId:'balance-scale-demo',
+  title:'等式保持实验',
+  left:4,
+  right:4,
+  unit:'个'
+});
+</script>
+</body>
+</html>

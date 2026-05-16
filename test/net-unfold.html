@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Net Unfold Demo</title>
+<link rel="stylesheet" href="../shared/layout.css">
+</head>
+<body>
+<div class="top-nav"><a href="../index.html">首页</a><span class="breadcrumb-sep">›</span><span>net-unfold demo</span></div>
+<h1 class="module-title">展开图组件 Demo</h1>
+<p class="module-subtitle">拖动展开进度，观察 6 个面从外壳变成平面展开图。</p>
+<div id="net-demo"></div>
+<script src="../shared/components.js"></script>
+<script>
+createNetUnfold({
+  containerId:'net-demo',
+  title:'长方体 6 面展开',
+  progress:0.45
+});
+</script>
+</body>
+</html>

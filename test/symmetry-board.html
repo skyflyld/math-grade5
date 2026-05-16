@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Symmetry Board Demo</title>
+<link rel="stylesheet" href="../shared/layout.css">
+</head>
+<body>
+<div class="top-nav"><a href="../index.html">首页</a><span class="breadcrumb-sep">›</span><span>symmetry-board demo</span></div>
+<h1 class="module-title">对称与旋转组件 Demo</h1>
+<p class="module-subtitle">拖动镜像轴或切换旋转模式，观察图形大小不变、位置方向改变。</p>
+<div id="symmetry-demo"></div>
+<script src="../shared/components.js"></script>
+<script>
+createSymmetryBoard({
+  containerId:'symmetry-demo',
+  title:'镜像与旋转画板',
+  mode:'mirror',
+  angle:90
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Probability Sim Demo</title>
+<link rel="stylesheet" href="../shared/layout.css">
+</head>
+<body>
+<div class="top-nav"><a href="../index.html">首页</a><span class="breadcrumb-sep">›</span><span>probability-sim demo</span></div>
+<h1 class="module-title">概率模拟器 Demo</h1>
+<p class="module-subtitle">连续试验，观察频率如何围绕理论可能性波动。</p>
+<div id="probability-demo"></div>
+<script src="../shared/components.js"></script>
+<script>
+createProbabilitySim({
+  containerId:'probability-demo',
+  title:'四等分转盘',
+  labels:['红','蓝','黄','绿']
+});
+</script>
+</body>
+</html>

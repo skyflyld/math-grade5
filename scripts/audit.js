@@ -162,14 +162,21 @@ if(fs.existsSync("shared/components.js")){
   ["createGate","createAdversarialChallenge","createFeynmanFill","createExerciseSet",
    "createNumberLine","createAreaModel","createFractionBar","createBalance",
    "createLongDivision","createLineChartInteract","createPolygonCut",
+   "createCuboid3D","createNetUnfold","createSymmetryBoard","createBalanceScale","createProbabilitySim",
    "saveProgress","getProgress","celebrate"].forEach(fn=>{
     check(comp.includes("function "+fn), "Component MISSING: "+fn);
   });
   [
+    ["test/number-line.html","createNumberLine"],
     ["test/fraction-bar.html","createFractionBar"],
     ["test/long-division.html","createLongDivision"],
     ["test/line-chart-interact.html","createLineChartInteract"],
-    ["test/polygon-cut.html","createPolygonCut"]
+    ["test/polygon-cut.html","createPolygonCut"],
+    ["test/cuboid-3d.html","createCuboid3D"],
+    ["test/net-unfold.html","createNetUnfold"],
+    ["test/symmetry-board.html","createSymmetryBoard"],
+    ["test/balance-scale.html","createBalanceScale"],
+    ["test/probability-sim.html","createProbabilitySim"]
   ].forEach(([file,fn])=>{
     check(fs.existsSync(file), "Component demo MISSING: "+file);
     if(fs.existsSync(file)){

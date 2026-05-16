@@ -570,7 +570,9 @@ function createNumberLine(opts){
   info.className='number-line-info';
   const controls=document.createElement('div');
   controls.className='number-line-controls';
-  controls.innerHTML='<button class="btn btn-outline btn-sm" type="button" data-nl-reset>回到起点</button>';
+  const jumps=(opts.jumps||opts.jumpSteps||[]).map(v=>Number(v)).filter(Number.isFinite);
+  controls.innerHTML='<button class="btn btn-outline btn-sm" type="button" data-nl-reset>回到起点</button>'+
+    jumps.map(v=>`<button class="btn btn-outline btn-sm" type="button" data-nl-jump="${v}">${v>0?'+':''}${formatStatic(v)}</button>`).join('');
   let value=initial;
   c.innerHTML=`<div class="component-card number-line-card">
     <div class="component-card-head">
@@ -582,7 +584,23 @@ function createNumberLine(opts){
   stage.append(canvas,info,controls);
 
   function clamp(v,lo,hi){return Math.max(lo,Math.min(hi,Number.isFinite(v)?v:lo));}
+  function formatStatic(v){
+    const fixed=decimals?Number(v).toFixed(decimals):String(Math.round(v));
+    return fixed.includes('.')?fixed.replace(/\.?0+$/,''):fixed;
+  }
+  function fractionLabel(v){
+    const denominator=Number(opts.denominator||opts.fractionDenominator||10);
+    if(!opts.fractionTicks || !Number.isFinite(denominator) || denominator<=0)return null;
+    const n=Math.round(v*denominator);
+    if(Math.abs(n/denominator-v)>1e-6)return null;
+    if(n===0)return '0';
+    if(n===denominator)return '1';
+    const g=gcd(n,denominator);
+    return `${n/g}/${denominator/g}`;
+  }
   function formatValue(v){
+    const frac=fractionLabel(v);
+    if(frac)return frac;
     const fixed=decimals?Number(v).toFixed(decimals):String(Math.round(v));
     return fixed.includes('.')?fixed.replace(/\.?0+$/,''):fixed;
   }
@@ -612,6 +630,17 @@ function createNumberLine(opts){
       ctx.beginPath();ctx.moveTo(x,cy-8);ctx.lineTo(x,cy+8);ctx.stroke();
       ctx.fillStyle='#64748b';ctx.fillText(formatValue(v),x,cy+26);
     }
+    (opts.markers||[]).forEach(marker=>{
+      const mv=Number(typeof marker==='number'?marker:marker.value);
+      if(!Number.isFinite(mv)||mv<min||mv>max)return;
+      const mx=pad+(mv-min)/range*lw;
+      ctx.fillStyle=(marker.color||'#10b981')+'22';
+      ctx.beginPath();ctx.arc(mx,cy,18,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle=marker.color||'#10b981';
+      ctx.beginPath();ctx.arc(mx,cy,6,0,Math.PI*2);ctx.fill();
+      ctx.font='800 12px sans-serif';ctx.textAlign='center';
+      ctx.fillText(marker.label||formatValue(mv),mx,cy-26);
+    });
 
     ctx.strokeStyle='#f59e0b';ctx.lineWidth=2;ctx.setLineDash([5,5]);
     ctx.beginPath();ctx.moveTo(anchorPos,cy-28);ctx.lineTo(anchorPos,cy+8);ctx.stroke();
@@ -656,6 +685,18 @@ function createNumberLine(opts){
     draw();
     if(notify&&opts.onChange)opts.onChange(value);
   }
+  function animateTo(target,duration=520){
+    const from=value,to=snap(target),start=performance.now();
+    function frame(now){
+      const t=Math.min(1,(now-start)/duration);
+      const eased=1-Math.pow(1-t,3);
+      value=snap(from+(to-from)*eased);
+      draw();
+      if(t<1)requestAnimationFrame(frame);
+      else setValue(to);
+    }
+    requestAnimationFrame(frame);
+  }
 
   let dragging=false;
   canvas.addEventListener('pointerdown',e=>{dragging=true;canvas.setPointerCapture?.(e.pointerId);setValue(getValueFromX(e.clientX));});
@@ -664,6 +705,7 @@ function createNumberLine(opts){
   canvas.addEventListener('pointercancel',()=>{dragging=false;});
   controls.addEventListener('click',e=>{
     if(e.target?.dataset?.nlReset!==undefined)setValue(initial);
+    if(e.target?.dataset?.nlJump!==undefined)animateTo(value+Number(e.target.dataset.nlJump));
   });
   function resize(){
     canvas.width=Math.max(280,Math.min(680,c.clientWidth-32||620));
@@ -672,7 +714,7 @@ function createNumberLine(opts){
   }
   resize();
   window.addEventListener('resize',resize);
-  return {getValue:()=>value,setValue,draw};
+  return {getValue:()=>value,setValue,animateTo,jump:delta=>animateTo(value+Number(delta||0)),draw,render:draw,destroy:()=>window.removeEventListener('resize',resize)};
 }
 
 // === 面积模型组件 ===
@@ -1390,6 +1432,294 @@ function createBalance(opts){
   return {setValues:(l,r)=>{leftVal=l;rightVal=r;draw();},draw};
 }
 
+// === Sprint 4：长方体 3D 视图 ===
+function createCuboid3D(opts){
+  const c=document.getElementById(opts.containerId);
+  if(!c)return;
+  const title=opts.title||'长方体 3D 视图';
+  const description=opts.description||'旋转长方体，观察长、宽、高和单位立方体如何组成体积。';
+  const dims={x:Number(opts.length||opts.x||4),y:Number(opts.width||opts.y||3),z:Number(opts.height||opts.z||2)};
+  let rotY=Number(opts.rotateY||-28)*Math.PI/180;
+  let rotX=Number(opts.rotateX||20)*Math.PI/180;
+  let cubeMode=!!(opts.cubeMode||opts.mode==='cubes');
+  c.innerHTML=`<div class="component-card cuboid3d-card">
+    <div class="component-card-head"><div><h4>${escapeHTML(title)}</h4><p>${escapeHTML(description)}</p></div></div>
+    <canvas class="cuboid3d-canvas" aria-label="${escapeHTML(title)}"></canvas>
+    <div class="component-toolbar">
+      <button class="btn btn-outline btn-sm" data-cuboid-action="left">向左转</button>
+      <button class="btn btn-outline btn-sm" data-cuboid-action="right">向右转</button>
+      <button class="btn btn-outline btn-sm" data-cuboid-action="up">抬高视角</button>
+      <button class="btn btn-outline btn-sm" data-cuboid-action="toggle">${cubeMode?'显示外形':'显示单位块'}</button>
+    </div>
+    <div class="component-readout"></div>
+  </div>`;
+  const canvas=c.querySelector('canvas'), ctx=canvas.getContext('2d'), readout=c.querySelector('.component-readout');
+  function project(x,y,z){
+    const cy=Math.cos(rotY),sy=Math.sin(rotY),cx=Math.cos(rotX),sx=Math.sin(rotX);
+    const rx=x*cy-z*sy, rz=x*sy+z*cy, ry=y*cx-rz*sx;
+    return {x:rx,y:ry,z:y*sx+rz*cx};
+  }
+  function screen(p,scale,w,h){return {x:w/2+p.x*scale,y:h*.56-p.y*scale};}
+  function drawFace(points,fill,stroke){
+    ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();
+    ctx.fillStyle=fill;ctx.fill();ctx.strokeStyle=stroke;ctx.lineWidth=1.4;ctx.stroke();
+  }
+  function cuboidFaces(x0,y0,z0,x1,y1,z1){
+    const pts=[
+      [x0,y0,z0],[x1,y0,z0],[x1,y1,z0],[x0,y1,z0],
+      [x0,y0,z1],[x1,y0,z1],[x1,y1,z1],[x0,y1,z1]
+    ].map(p=>project(p[0],p[1],p[2]));
+    return [
+      {idx:[0,1,2,3],color:'rgba(147,197,253,.72)'},{idx:[4,7,6,5],color:'rgba(59,130,246,.46)'},
+      {idx:[0,4,5,1],color:'rgba(191,219,254,.76)'},{idx:[3,2,6,7],color:'rgba(37,99,235,.26)'},
+      {idx:[1,5,6,2],color:'rgba(96,165,250,.62)'},{idx:[0,3,7,4],color:'rgba(14,165,233,.34)'}
+    ].map(face=>({...face,depth:face.idx.reduce((s,i)=>s+pts[i].z,0)/face.idx.length,pts}));
+  }
+  function drawCuboid(x0,y0,z0,x1,y1,z1,scale,w,h,alpha=1){
+    cuboidFaces(x0,y0,z0,x1,y1,z1).sort((a,b)=>a.depth-b.depth).forEach(face=>{
+      drawFace(face.idx.map(i=>screen(face.pts[i],scale,w,h)),face.color.replace(/[\d.]+\)$/,(.18+alpha*.58)+')'),'#2563eb');
+    });
+  }
+  function draw(){
+    const w=canvas.clientWidth||640,h=canvas.clientHeight||360;
+    ctx.clearRect(0,0,w,h);ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);
+    const scale=Math.min(w/(dims.x+dims.z+4),h/(dims.y+dims.z+4))*1.45;
+    if(cubeMode){
+      for(let x=0;x<dims.x;x++)for(let y=0;y<dims.y;y++)for(let z=0;z<dims.z;z++){
+        drawCuboid(x-dims.x/2,y-dims.y/2,z-dims.z/2,x+1-dims.x/2,y+1-dims.y/2,z+1-dims.z/2,scale,w,h,.48);
+      }
+    }else{
+      drawCuboid(-dims.x/2,-dims.y/2,-dims.z/2,dims.x/2,dims.y/2,dims.z/2,scale,w,h,1);
+    }
+    ctx.fillStyle='#1e293b';ctx.font='800 15px sans-serif';ctx.textAlign='center';
+    ctx.fillText(`长 ${dims.x} × 宽 ${dims.y} × 高 ${dims.z}`,w/2,28);
+    readout.innerHTML=`<strong>${dims.x*dims.y*dims.z}</strong><span>个单位立方体</span><em>${cubeMode?'堆叠模式：体积来自逐层计数':'外形模式：先识别长、宽、高'}</em>`;
+  }
+  function resize(){
+    const width=Math.max(300,Math.min(720,c.clientWidth-32||640)),height=360,ratio=window.devicePixelRatio||1;
+    canvas.style.width=width+'px';canvas.style.height=height+'px';canvas.width=Math.round(width*ratio);canvas.height=Math.round(height*ratio);ctx.setTransform(ratio,0,0,ratio,0,0);draw();
+  }
+  c.querySelector('.component-toolbar').addEventListener('click',e=>{
+    const a=e.target?.dataset?.cuboidAction;if(!a)return;
+    if(a==='left')rotY-=Math.PI/12;if(a==='right')rotY+=Math.PI/12;if(a==='up')rotX=clamp(rotX+Math.PI/18,-.2,1.05);
+    if(a==='toggle'){cubeMode=!cubeMode;e.target.textContent=cubeMode?'显示外形':'显示单位块';}
+    draw();
+  });
+  resize();window.addEventListener('resize',resize);
+  return {render:draw,draw,setMode:mode=>{cubeMode=mode==='cubes';draw();},setRotation:(x,y)=>{rotX=x;rotY=y;draw();},destroy:()=>window.removeEventListener('resize',resize)};
+}
+
+// === Sprint 4：展开图动画 ===
+function createNetUnfold(opts){
+  const c=document.getElementById(opts.containerId);
+  if(!c)return;
+  const title=opts.title||'长方体展开图';
+  const description=opts.description||'拖动展开进度，观察 6 个面如何从立体外壳展开成平面图。';
+  let progress=Number(opts.progress||0);
+  c.innerHTML=`<div class="component-card net-unfold-card">
+    <div class="component-card-head"><div><h4>${escapeHTML(title)}</h4><p>${escapeHTML(description)}</p></div></div>
+    <canvas class="net-unfold-canvas" aria-label="${escapeHTML(title)}"></canvas>
+    <div class="component-toolbar">
+      <button class="btn btn-outline btn-sm" data-net="fold">折叠</button>
+      <input type="range" min="0" max="1" step="0.01" value="${progress}" class="net-slider" aria-label="展开进度">
+      <button class="btn btn-outline btn-sm" data-net="open">展开</button>
+    </div>
+    <div class="component-readout"></div>
+  </div>`;
+  const canvas=c.querySelector('canvas'),ctx=canvas.getContext('2d'),slider=c.querySelector('.net-slider'),readout=c.querySelector('.component-readout');
+  function face(ctx,x,y,w,h,label,color,angle=0){
+    ctx.save();ctx.translate(x+w/2,y+h/2);ctx.rotate(angle);ctx.translate(-w/2,-h/2);
+    ctx.fillStyle=color;ctx.strokeStyle='#64748b';ctx.lineWidth=2;ctx.fillRect(0,0,w,h);ctx.strokeRect(0,0,w,h);
+    ctx.fillStyle='#0f172a';ctx.font='800 13px sans-serif';ctx.textAlign='center';ctx.fillText(label,w/2,h/2+4);
+    ctx.restore();
+  }
+  function draw(){
+    const w=canvas.clientWidth||640,h=canvas.clientHeight||340;ctx.clearRect(0,0,w,h);ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);
+    const fw=Math.min(118,w/6),fh=74,cx=w/2,cy=h/2+12,t=progress;
+    const lift=(1-t)*44;
+    face(ctx,cx-fw/2,cy-fh/2,fw,fh,'底面','#dbeafe');
+    face(ctx,cx-fw/2-fw*t,cy-fh/2,fw,fh,'左面','#bfdbfe',-(1-t)*.8);
+    face(ctx,cx+fw*(t-.5),cy-fh/2,fw,fh,'右面','#93c5fd',(1-t)*.8);
+    face(ctx,cx-fw/2,cy-fh/2-fh*t,fw,fh,'后面','#fed7aa',-(1-t)*.65);
+    face(ctx,cx-fw/2,cy-fh/2+fh*t,fw,fh,'前面','#fef3c7',(1-t)*.65);
+    face(ctx,cx-fw/2,cy-fh/2-fh*(1+t)-lift,fw,fh,'上面','#bbf7d0',(1-t)*.25);
+    ctx.fillStyle='#475569';ctx.font='13px sans-serif';ctx.textAlign='center';
+    ctx.fillText(t<.5?'折叠状态：面围成外壳':'展开状态：6 个面都能单独计算面积',w/2,h-18);
+    readout.innerHTML=`<strong>${Math.round(t*100)}%</strong><span>展开进度</span><em>表面积 = 6 个面的面积之和</em>`;
+  }
+  function setProgress(v){progress=clamp(Number(v)||0,0,1);slider.value=progress;draw();if(opts.onChange)opts.onChange(progress);}
+  function resize(){const width=Math.max(300,Math.min(720,c.clientWidth-32||640)),height=340,ratio=window.devicePixelRatio||1;canvas.style.width=width+'px';canvas.style.height=height+'px';canvas.width=Math.round(width*ratio);canvas.height=Math.round(height*ratio);ctx.setTransform(ratio,0,0,ratio,0,0);draw();}
+  slider.addEventListener('input',e=>setProgress(e.target.value));
+  c.querySelector('.component-toolbar').addEventListener('click',e=>{if(e.target?.dataset?.net==='fold')setProgress(0);if(e.target?.dataset?.net==='open')setProgress(1);});
+  resize();window.addEventListener('resize',resize);
+  return {render:draw,setProgress,destroy:()=>window.removeEventListener('resize',resize)};
+}
+
+// === Sprint 4：对称与旋转画板 ===
+function createSymmetryBoard(opts){
+  const c=document.getElementById(opts.containerId);
+  if(!c)return;
+  const title=opts.title||'对称与旋转画板';
+  const description=opts.description||'拖动镜像轴或改变旋转角，观察图形变换前后哪些量不变。';
+  let mode=opts.mode||'mirror',axis=0.5,angle=Number(opts.angle||90),dragging=false;
+  c.innerHTML=`<div class="component-card symmetry-board-card">
+    <div class="component-card-head"><div><h4>${escapeHTML(title)}</h4><p>${escapeHTML(description)}</p></div></div>
+    <canvas class="symmetry-board-canvas" aria-label="${escapeHTML(title)}"></canvas>
+    <div class="component-toolbar">
+      <button class="btn btn-outline btn-sm" data-sym="mirror">镜像</button>
+      <button class="btn btn-outline btn-sm" data-sym="rotate">旋转</button>
+      <label style="display:inline-flex;gap:6px;align-items:center;">角度 <input class="sym-angle" type="range" min="0" max="360" step="15" value="${angle}"></label>
+    </div>
+    <div class="component-readout"></div>
+  </div>`;
+  const canvas=c.querySelector('canvas'),ctx=canvas.getContext('2d'),angleInput=c.querySelector('.sym-angle'),readout=c.querySelector('.component-readout');
+  const poly=[[-90,-36],[-20,-70],[-8,-16],[72,-20],[34,48],[-58,40]];
+  function point(p,cx,cy,scale=1){return {x:cx+p[0]*scale,y:cy+p[1]*scale};}
+  function drawPoly(points,color){ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();ctx.fillStyle=color;ctx.fill();ctx.strokeStyle='#1e40af';ctx.lineWidth=2;ctx.stroke();}
+  function drawGrid(w,h){ctx.strokeStyle='#e2e8f0';ctx.lineWidth=1;for(let x=30;x<w;x+=30){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();}for(let y=30;y<h;y+=30){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}}
+  function draw(){
+    const w=canvas.clientWidth||640,h=canvas.clientHeight||340,cx=w/2,cy=h/2;
+    ctx.clearRect(0,0,w,h);ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);drawGrid(w,h);
+    const original=poly.map(p=>point(p,cx-80,cy));
+    drawPoly(original,'rgba(59,130,246,.42)');
+    if(mode==='mirror'){
+      const ax=axis*w;
+      ctx.strokeStyle='#f97316';ctx.lineWidth=3;ctx.setLineDash([8,6]);ctx.beginPath();ctx.moveTo(ax,24);ctx.lineTo(ax,h-24);ctx.stroke();ctx.setLineDash([]);
+      const mirrored=original.map(p=>({x:2*ax-p.x,y:p.y}));
+      drawPoly(mirrored,'rgba(34,197,94,.38)');
+      readout.innerHTML=`<strong>镜像轴 x=${Math.round(ax)}</strong><span>对应点到轴距离相等</span><em>拖动橙色轴改变对称位置</em>`;
+    }else{
+      const rad=angle*Math.PI/180;
+      ctx.strokeStyle='#f97316';ctx.lineWidth=2;ctx.beginPath();ctx.arc(cx,cy,8,0,Math.PI*2);ctx.stroke();
+      const rotated=poly.map(p=>({x:cx+(p[0]*Math.cos(rad)-p[1]*Math.sin(rad)),y:cy+(p[0]*Math.sin(rad)+p[1]*Math.cos(rad))}));
+      drawPoly(rotated,'rgba(249,115,22,.38)');
+      readout.innerHTML=`<strong>${angle}°</strong><span>绕中心旋转</span><em>形状和大小不变，方向改变</em>`;
+    }
+  }
+  function pos(e){const r=canvas.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top};}
+  canvas.addEventListener('pointerdown',e=>{if(mode==='mirror'){dragging=true;canvas.setPointerCapture?.(e.pointerId);axis=clamp(pos(e).x/(canvas.clientWidth||1),.08,.92);draw();}});
+  canvas.addEventListener('pointermove',e=>{if(dragging){axis=clamp(pos(e).x/(canvas.clientWidth||1),.08,.92);draw();}});
+  canvas.addEventListener('pointerup',()=>dragging=false);canvas.addEventListener('pointercancel',()=>dragging=false);
+  angleInput.addEventListener('input',e=>{angle=Number(e.target.value);mode='rotate';draw();});
+  c.querySelector('.component-toolbar').addEventListener('click',e=>{const m=e.target?.dataset?.sym;if(m){mode=m;draw();}});
+  function resize(){const width=Math.max(300,Math.min(720,c.clientWidth-32||640)),height=340,ratio=window.devicePixelRatio||1;canvas.style.width=width+'px';canvas.style.height=height+'px';canvas.width=Math.round(width*ratio);canvas.height=Math.round(height*ratio);ctx.setTransform(ratio,0,0,ratio,0,0);draw();}
+  resize();window.addEventListener('resize',resize);
+  return {render:draw,setMode:m=>{mode=m;draw();},setAngle:a=>{angle=Number(a)||0;angleInput.value=angle;mode='rotate';draw();},destroy:()=>window.removeEventListener('resize',resize)};
+}
+
+// === Sprint 4：通用天平秤 ===
+function createBalanceScale(opts){
+  const c=document.getElementById(opts.containerId);
+  if(!c)return;
+  const title=opts.title||'天平秤实验';
+  const description=opts.description||'向两边添加或拿走同样的重量，观察平衡是否保持。';
+  let left=Number(opts.left||opts.leftValue||3),right=Number(opts.right||opts.rightValue||3);
+  const unit=opts.unit||'块';
+  c.innerHTML=`<div class="component-card balance-scale-card">
+    <div class="component-card-head"><div><h4>${escapeHTML(title)}</h4><p>${escapeHTML(description)}</p></div></div>
+    <canvas class="balance-scale-canvas" aria-label="${escapeHTML(title)}"></canvas>
+    <div class="component-toolbar">
+      <button class="btn btn-outline btn-sm" data-bal="left-plus">左 +1</button>
+      <button class="btn btn-outline btn-sm" data-bal="right-plus">右 +1</button>
+      <button class="btn btn-outline btn-sm" data-bal="both-plus">两边 +1</button>
+      <button class="btn btn-outline btn-sm" data-bal="both-minus">两边 -1</button>
+      <button class="btn btn-outline btn-sm" data-bal="reset">重置</button>
+    </div>
+    <div class="component-readout"></div>
+  </div>`;
+  const canvas=c.querySelector('canvas'),ctx=canvas.getContext('2d'),readout=c.querySelector('.component-readout');
+  function drawPan(cx,cy,label,count,color){
+    ctx.strokeStyle=color;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(cx,cy-54);ctx.lineTo(cx,cy-8);ctx.moveTo(cx-55,cy);ctx.quadraticCurveTo(cx,cy+30,cx+55,cy);ctx.stroke();
+    ctx.fillStyle=color+'22';ctx.beginPath();ctx.moveTo(cx-55,cy);ctx.quadraticCurveTo(cx,cy+44,cx+55,cy);ctx.lineTo(cx+44,cy+22);ctx.quadraticCurveTo(cx,cy+34,cx-44,cy+22);ctx.closePath();ctx.fill();
+    for(let i=0;i<Math.min(count,10);i++){ctx.fillStyle=color;ctx.fillRect(cx-42+(i%5)*18,cy-18-Math.floor(i/5)*18,13,13);}
+    ctx.fillStyle='#0f172a';ctx.font='800 14px sans-serif';ctx.textAlign='center';ctx.fillText(`${label} ${count}${unit}`,cx,cy+58);
+  }
+  function draw(){
+    const w=canvas.clientWidth||640,h=canvas.clientHeight||300,cx=w/2,top=76,tilt=clamp((left-right)*2,-12,12);
+    ctx.clearRect(0,0,w,h);ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);
+    ctx.strokeStyle='#64748b';ctx.lineWidth=6;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(cx,top);ctx.lineTo(cx,h-42);ctx.moveTo(cx-42,h-42);ctx.lineTo(cx+42,h-42);ctx.stroke();
+    ctx.save();ctx.translate(cx,top);ctx.rotate(tilt*Math.PI/180);
+    ctx.strokeStyle='#475569';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(-190,0);ctx.lineTo(190,0);ctx.stroke();
+    drawPan(-150,78,'左',left,'#3b82f6');drawPan(150,78,'右',right,'#16a34a');
+    ctx.restore();
+    const state=left===right?'平衡':left>right?'左边重':'右边重';
+    readout.innerHTML=`<strong>${state}</strong><span>左 ${left}${unit} · 右 ${right}${unit}</span><em>${left===right?'等式保持成立':'两边数量不同，关系被破坏'}</em>`;
+    if(opts.onChange)opts.onChange({left,right,state});
+  }
+  function setValues(l,r){left=Math.max(0,Number(l)||0);right=Math.max(0,Number(r)||0);draw();}
+  c.querySelector('.component-toolbar').addEventListener('click',e=>{
+    const a=e.target?.dataset?.bal;if(!a)return;
+    if(a==='left-plus')left++;if(a==='right-plus')right++;if(a==='both-plus'){left++;right++;}if(a==='both-minus'){left=Math.max(0,left-1);right=Math.max(0,right-1);}if(a==='reset'){left=Number(opts.left||opts.leftValue||3);right=Number(opts.right||opts.rightValue||3);}
+    draw();
+  });
+  function resize(){const width=Math.max(300,Math.min(720,c.clientWidth-32||640)),height=300,ratio=window.devicePixelRatio||1;canvas.style.width=width+'px';canvas.style.height=height+'px';canvas.width=Math.round(width*ratio);canvas.height=Math.round(height*ratio);ctx.setTransform(ratio,0,0,ratio,0,0);draw();}
+  resize();window.addEventListener('resize',resize);
+  return {render:draw,setValues,getState:()=>({left,right}),destroy:()=>window.removeEventListener('resize',resize)};
+}
+
+// === Sprint 4：概率模拟器 ===
+function createProbabilitySim(opts){
+  const c=document.getElementById(opts.containerId);
+  if(!c)return;
+  const title=opts.title||'概率模拟器';
+  const description=opts.description||'多次试验后，观察频率怎样逐渐接近可能性。';
+  const mode=opts.mode||'spinner';
+  const labels=opts.labels||['红','蓝','黄','绿'];
+  const colors=opts.colors||['#ef4444','#3b82f6','#f59e0b','#22c55e','#8b5cf6','#14b8a6'];
+  let counts=labels.map(()=>0),total=0,last=0;
+  c.innerHTML=`<div class="component-card probability-sim-card">
+    <div class="component-card-head"><div><h4>${escapeHTML(title)}</h4><p>${escapeHTML(description)}</p></div></div>
+    <canvas class="probability-sim-canvas" aria-label="${escapeHTML(title)}"></canvas>
+    <div class="component-toolbar">
+      <button class="btn btn-outline btn-sm" data-prob="one">试 1 次</button>
+      <button class="btn btn-outline btn-sm" data-prob="twenty">试 20 次</button>
+      <button class="btn btn-outline btn-sm" data-prob="hundred">试 100 次</button>
+      <button class="btn btn-outline btn-sm" data-prob="reset">清空</button>
+    </div>
+    <div class="component-readout"></div>
+  </div>`;
+  const canvas=c.querySelector('canvas'),ctx=canvas.getContext('2d'),readout=c.querySelector('.component-readout');
+  function trial(n){
+    for(let i=0;i<n;i++){
+      last=Math.floor(Math.random()*labels.length);
+      counts[last]++;total++;
+    }
+    draw();
+    if(opts.onChange)opts.onChange({counts:[...counts],total,last:labels[last]});
+  }
+  function drawSpinner(cx,cy,r){
+    let start=-Math.PI/2;
+    labels.forEach((label,i)=>{
+      const end=start+Math.PI*2/labels.length;
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,start,end);ctx.closePath();ctx.fillStyle=colors[i%colors.length];ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.stroke();
+      const mid=(start+end)/2;ctx.fillStyle='#fff';ctx.font='800 13px sans-serif';ctx.textAlign='center';ctx.fillText(label,cx+Math.cos(mid)*r*.58,cy+Math.sin(mid)*r*.58+4);start=end;
+    });
+    const mid=-Math.PI/2+(last+.5)*Math.PI*2/labels.length;
+    ctx.strokeStyle='#0f172a';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(mid)*r*.78,cy+Math.sin(mid)*r*.78);ctx.stroke();
+  }
+  function drawBars(x,y,w,h){
+    const maxCount=Math.max(1,...counts);
+    labels.forEach((label,i)=>{
+      const barH=h*(counts[i]/maxCount),bx=x+i*w/labels.length+w*.12,bw=w/labels.length*.68;
+      ctx.fillStyle=colors[i%colors.length]+'33';ctx.fillRect(bx,y+h-barH,bw,barH);ctx.strokeStyle=colors[i%colors.length];ctx.strokeRect(bx,y+h-barH,bw,barH);
+      ctx.fillStyle='#334155';ctx.font='12px sans-serif';ctx.textAlign='center';ctx.fillText(label,bx+bw/2,y+h+18);ctx.fillText(String(counts[i]),bx+bw/2,y+h-barH-6);
+    });
+  }
+  function draw(){
+    const w=canvas.clientWidth||640,h=canvas.clientHeight||340;ctx.clearRect(0,0,w,h);ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);
+    if(mode==='dice'){
+      const size=110,x=w*.24-size/2,y=72;ctx.fillStyle='#f8fafc';ctx.strokeStyle='#334155';ctx.lineWidth=3;ctx.fillRect(x,y,size,size);ctx.strokeRect(x,y,size,size);ctx.fillStyle='#ef4444';ctx.font='800 48px sans-serif';ctx.textAlign='center';ctx.fillText(labels[last]||'1',x+size/2,y+70);
+    }else drawSpinner(w*.25,140,92);
+    drawBars(w*.48,54,w*.42,210);
+    const pct=total?Math.round(counts[last]/total*100):0;
+    readout.innerHTML=`<strong>${total}</strong><span>次试验</span><em>最近结果：${escapeHTML(labels[last])}，当前频率约 ${pct}%</em>`;
+  }
+  c.querySelector('.component-toolbar').addEventListener('click',e=>{const a=e.target?.dataset?.prob;if(a==='one')trial(1);if(a==='twenty')trial(20);if(a==='hundred')trial(100);if(a==='reset'){counts=labels.map(()=>0);total=0;last=0;draw();}});
+  function resize(){const width=Math.max(300,Math.min(720,c.clientWidth-32||640)),height=340,ratio=window.devicePixelRatio||1;canvas.style.width=width+'px';canvas.style.height=height+'px';canvas.width=Math.round(width*ratio);canvas.height=Math.round(height*ratio);ctx.setTransform(ratio,0,0,ratio,0,0);draw();}
+  resize();window.addEventListener('resize',resize);
+  return {render:draw,trial,reset:()=>{counts=labels.map(()=>0);total=0;draw();},getState:()=>({counts:[...counts],total,last:labels[last]}),destroy:()=>window.removeEventListener('resize',resize)};
+}
+
 // === 三视图积木投影 ===
 function createThreeViewDemo(opts){
   const c=document.getElementById(opts.containerId);
@@ -1976,6 +2306,11 @@ window.createLongDivision=createLongDivision;
 window.createLineChartInteract=createLineChartInteract;
 window.createPolygonCut=createPolygonCut;
 window.createBalance=createBalance;
+window.createCuboid3D=createCuboid3D;
+window.createNetUnfold=createNetUnfold;
+window.createSymmetryBoard=createSymmetryBoard;
+window.createBalanceScale=createBalanceScale;
+window.createProbabilitySim=createProbabilitySim;
 window.createThreeViewDemo=createThreeViewDemo;
 window.createTransformDemo=createTransformDemo;
 window.createParallelogramCutDemo=createParallelogramCutDemo;
