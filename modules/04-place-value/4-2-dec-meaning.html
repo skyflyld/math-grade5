@@ -100,6 +100,55 @@ function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[
   {question:'3/100写成小数',inputs:[{key:'a',width:40}],check:a=>a.a==='0.03'},
   {question:'0.125 = ?/1000',inputs:[{key:'a',width:40}],check:a=>a.a==='125'}
 ],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'dec-meaning':{'concept':{'completed':true}}});}});}
+(function sprint4Batch1Enrichment(){
+  function norm(v){return String(v||'').replace(/\s/g,'');}
+  function ensureTier(){
+    const adv=document.getElementById('tier-adv');
+    let mix=document.getElementById('tier-mix');
+    if(!mix&&adv){
+      mix=document.createElement('div');
+      mix.className='exercise-tier';
+      mix.id='tier-mix';
+      mix.style.display='none';
+      mix.innerHTML='<h3><span class="tier-badge challenge">综合</span></h3><div id="ex-mix"></div>';
+      adv.insertAdjacentElement('afterend',mix);
+    }
+    const done=document.getElementById('done');
+    if(done)done.style.display='none';
+  }
+  document.getElementById('adversary-root').innerHTML='';
+  createAdversarialChallenge({containerId:'adversary-root',challenges:[
+    {tag:'位数陷阱',statement:'0.37比0.9大，因为37>9。',answer:'refute',hint:'先看十分位。',explanation:'0.37的十分位是3，0.9的十分位是9，所以0.37<0.9。',counterexample:'0.9元是9角，0.37元是3角7分。'},
+    {tag:'0的区分',statement:'2.5=2.50=2.500，所以小数里的0可以随便加减。',answer:'refute',hint:'2.05去掉0会怎样？',explanation:'只有末尾0可去掉，中间0不能去掉。',counterexample:'2.05去掉0变2.5，值变了。'},
+    {tag:'单位换算',statement:'0.35千米=35米。',answer:'refute',hint:'1千米等于多少米？',explanation:'0.35km=0.35×1000=350m。',counterexample:'0.35×1000=350。'},
+    {tag:'位值组成',statement:'3个一、4个0.1和5个0.01组成3.45。',answer:'agree',hint:'3×1+4×0.1+5×0.01。',explanation:'个位3、十分位4、百分位5，写成3.45。',counterexample:'3+0.4+0.05=3.45。'}
+  ],onComplete:()=>saveProgress({'dec-meaning':{'concept':{'adversary':'complete'}}})});
+  document.getElementById('feynman-root').innerHTML='';
+  createFeynmanFill({containerId:'feynman-root',template:'小数点左边是___部分，右边是___部分；右边第一位是___位，计数单位是___；比较小数先对齐___，再从___位开始比；末尾0可以___，中间0不能___。',answer:['整数','小数','十分','0.1','小数点','十分','去掉','去掉'],onComplete:()=>saveProgress({'dec-meaning':{'concept':{'feynman':'complete'}}})});
+  ensureTier();
+  document.getElementById('ex-basic').innerHTML='';
+  document.getElementById('ex-adv').innerHTML='';
+  createExerciseSet({containerId:'ex-basic',exercises:[
+    {question:'0.6里面有几个0.1？',inputs:[{key:'a',width:50}],check:a=>norm(a.a)==='6',expected:'6'},
+    {question:'3.25的百分位数字是？',inputs:[{key:'a',width:50}],check:a=>norm(a.a)==='5',expected:'5'},
+    {question:'0.78 ○ 0.8（填> < =）',inputs:[{key:'a',width:50}],check:a=>norm(a.a)==='<',expected:'<'}
+  ],passThreshold:0.67,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdvEnhanced();}});
+  function initAdvEnhanced(){
+    document.getElementById('ex-adv').innerHTML='';
+    createExerciseSet({containerId:'ex-adv',exercises:[
+      {question:'5个0.1、3个0.01和2个0.001写成小数。',inputs:[{key:'a',width:60}],check:a=>norm(a.a)==='0.532',expected:'0.532'},
+      {question:'0.45米=多少厘米？',inputs:[{key:'a',width:50}],check:a=>norm(a.a)==='45',expected:'45'},
+      {question:'3.05和3.50哪个大？',inputs:[{key:'a',width:60}],check:a=>['3.50','3.5'].includes(norm(a.a)),expected:'3.50'}
+    ],passThreshold:0.67,onPass:()=>{document.getElementById('tier-mix').style.display='block';initMixEnhanced();}});
+  }
+  function initMixEnhanced(){
+    createExerciseSet({containerId:'ex-mix',exercises:[
+      {question:'用2、3、0、5组成最大的两位小数。',inputs:[{key:'a',width:60}],check:a=>['53.20','53.2'].includes(norm(a.a)),expected:'53.20'},
+      {question:'0.8和0.80大小相等吗？',inputs:[{key:'a',width:70}],check:a=>['相等','一样','等于'].includes(norm(a.a)),expected:'相等'},
+      {question:'0.25、0.5、0.75相邻差是多少？',inputs:[{key:'a',width:60}],check:a=>['0.25','1/4'].includes(norm(a.a)),expected:'0.25'}
+    ],passThreshold:0.67,onPass:()=>{const done=document.getElementById('done');done.style.display='block';celebrate(done);saveProgress({'dec-meaning':{'concept':{'completed':true}}});}});
+  }
+})();
 </script>
 </body>
 </html>

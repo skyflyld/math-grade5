@@ -76,6 +76,56 @@ function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[
   {question:'400-127=?',inputs:[{key:'a',width:40}],check:a=>a.a==='273'},
   {question:'365+289=?',inputs:[{key:'a',width:40}],check:a=>a.a==='654'}
 ],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'int-ops':{'add-sub':{'completed':true}}});}});}
+(function sprint4Batch1Enrichment(){
+  function norm(v){return String(v||'').replace(/\s/g,'');}
+  function ensureTier(){
+    const adv=document.getElementById('tier-adv');
+    let mix=document.getElementById('tier-mix');
+    if(!mix&&adv){
+      mix=document.createElement('div');
+      mix.className='exercise-tier';
+      mix.id='tier-mix';
+      mix.style.display='none';
+      mix.innerHTML='<h3><span class="tier-badge challenge">综合</span></h3><div id="ex-mix"></div>';
+      adv.insertAdjacentElement('afterend',mix);
+    }
+    const done=document.getElementById('done');
+    if(done)done.style.display='none';
+    return mix;
+  }
+  document.getElementById('adversary-root').innerHTML='';
+  createAdversarialChallenge({containerId:'adversary-root',challenges:[
+    {tag:'进位标记',statement:'38+46=74，因为8+6=14进1，3+4=7，所以结果是74。',answer:'refute',hint:'十位还要加什么？',explanation:'十位要算3+4+1=8，正确答案是84。',counterexample:'38+40=78，再加6得84。'},
+    {tag:'交换律边界',statement:'加法可以用交换律验算，减法也可以用交换律验算。',answer:'refute',hint:'53-28和28-53一样吗？',explanation:'减法不满足交换律。验算减法要用差+减数=被减数。',counterexample:'53-28=25，25+28=53。'},
+    {tag:'连续退位',statement:'600-238=472，因为十位是0时借不到。',answer:'refute',hint:'十位是0就继续向百位借。',explanation:'从百位借后，十位变9，个位变10，600-238=362。',counterexample:'362+238=600。'},
+    {tag:'逆向思考',statement:'一个数减去276得458，这个数可以用458-276算出来。',answer:'refute',hint:'减法的逆运算是什么？',explanation:'原数=458+276=734。',counterexample:'734-276=458。'}
+  ],onComplete:()=>saveProgress({'int-ops':{'add-sub':{'adversary':'complete'}}})});
+  document.getElementById('feynman-root').innerHTML='';
+  createFeynmanFill({containerId:'feynman-root',template:'整数加减法的第一个规则是___对齐；加法从___位算起，有进位就向___一位进1；减法退位时向___一位借1当10；减法验算用___法，因为___+___=___。',answer:['数位','个','高','高','加','差','减数','被减数'],onComplete:()=>saveProgress({'int-ops':{'add-sub':{'feynman':'complete'}}})});
+  ensureTier();
+  document.getElementById('ex-basic').innerHTML='';
+  document.getElementById('ex-adv').innerHTML='';
+  createExerciseSet({containerId:'ex-basic',exercises:[
+    {question:'258+367=?',inputs:[{key:'a',width:50}],check:a=>norm(a.a)==='625',expected:'625'},
+    {question:'703-456=?',inputs:[{key:'a',width:50}],check:a=>norm(a.a)==='247',expected:'247'},
+    {question:'487+239的进位有几次？',inputs:[{key:'a',width:50}],check:a=>['3','3次'].includes(norm(a.a)),expected:'3次'}
+  ],passThreshold:0.67,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdvEnhanced();}});
+  function initAdvEnhanced(){
+    document.getElementById('ex-adv').innerHTML='';
+    createExerciseSet({containerId:'ex-adv',exercises:[
+      {question:'800-365，小明算445，少做了哪一步？',inputs:[{key:'a',width:130}],check:a=>norm(a.a).includes('退位')&&norm(a.a).includes('十位'),expected:'百位退位后十位变9'},
+      {question:'两个数相加得1000，一个加数637，另一个是？',inputs:[{key:'a',width:50}],check:a=>norm(a.a)==='363',expected:'363'},
+      {question:'563+□=892，□=?',inputs:[{key:'a',width:50}],check:a=>norm(a.a)==='329',expected:'329'}
+    ],passThreshold:0.67,onPass:()=>{document.getElementById('tier-mix').style.display='block';initMixEnhanced();}});
+  }
+  function initMixEnhanced(){
+    createExerciseSet({containerId:'ex-mix',exercises:[
+      {question:'图书馆1245本，借出867本，又购入438本，现在有多少本？',inputs:[{key:'a',width:50}],check:a=>norm(a.a)==='816',expected:'816'},
+      {question:'200元买书包89元、文具56元，还剩多少？',inputs:[{key:'a',width:50}],check:a=>norm(a.a)==='55',expected:'55'},
+      {question:'用加法验算1000-468=532，算式是？',inputs:[{key:'a',width:130}],check:a=>norm(a.a).includes('532+468')&&norm(a.a).includes('1000'),expected:'532+468=1000'}
+    ],passThreshold:0.67,onPass:()=>{const done=document.getElementById('done');done.style.display='block';celebrate(done);saveProgress({'int-ops':{'add-sub':{'completed':true}}});}});
+  }
+})();
 </script>
 </body>
 </html>

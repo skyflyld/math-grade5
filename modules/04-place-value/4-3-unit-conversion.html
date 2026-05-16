@@ -97,6 +97,55 @@ function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[
   {question:'5km²=?m²',inputs:[{key:'a',width:60}],check:a=>a.a==='5000000'},
   {question:'2.5km=?m',inputs:[{key:'a',width:40}],check:a=>a.a==='2500'}
 ],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'units':{'conversion':{'completed':true}}});}});}
+(function sprint4Batch1Enrichment(){
+  function norm(v){return String(v||'').replace(/\s/g,'');}
+  function ensureTier(){
+    const adv=document.getElementById('tier-adv');
+    let mix=document.getElementById('tier-mix');
+    if(!mix&&adv){
+      mix=document.createElement('div');
+      mix.className='exercise-tier';
+      mix.id='tier-mix';
+      mix.style.display='none';
+      mix.innerHTML='<h3><span class="tier-badge challenge">综合</span></h3><div id="ex-mix"></div>';
+      adv.insertAdjacentElement('afterend',mix);
+    }
+    const done=document.getElementById('done');
+    if(done)done.style.display='none';
+  }
+  document.getElementById('adversary-root').innerHTML='';
+  createAdversarialChallenge({containerId:'adversary-root',challenges:[
+    {tag:'进率陷阱',statement:'1平方米=100平方厘米。',answer:'refute',hint:'1m=100cm，面积要平方。',explanation:'1m²=100cm×100cm=10000cm²。',counterexample:'1m×1m的大正方形有10000个1cm²小格。'},
+    {tag:'方向判断',statement:'0.05千米=5米，因为要除以1000。',answer:'refute',hint:'km换m，数值应该变大。',explanation:'km→m是大单位换小单位，要乘1000，0.05×1000=50m。',counterexample:'0.05km是1km的1/20，即50m。'},
+    {tag:'时间进制',statement:'2.3小时=2小时3分钟。',answer:'refute',hint:'1小时=60分钟。',explanation:'0.3小时=0.3×60=18分钟，所以是2小时18分钟。',counterexample:'2.5小时=2小时30分钟。'},
+    {tag:'逆向思考',statement:'3.6km=3600m，所以km→m是除以1000。',answer:'refute',hint:'3.6变3600是变大还是变小？',explanation:'数字变大说明乘了1000。',counterexample:'3.6÷1000=0.0036，不可能是3600。'}
+  ],onComplete:()=>saveProgress({'units':{'conversion':{'adversary':'complete'}}})});
+  document.getElementById('feynman-root').innerHTML='';
+  createFeynmanFill({containerId:'feynman-root',template:'单位换算就是___或___进率；大化小用___法，小化大用___法；长度相邻进率___，面积进率___，体积进率___；2.5米=___厘米。',answer:['乘','除以','乘','除','10','100','1000','250'],onComplete:()=>saveProgress({'units':{'conversion':{'feynman':'complete'}}})});
+  ensureTier();
+  document.getElementById('ex-basic').innerHTML='';
+  document.getElementById('ex-adv').innerHTML='';
+  createExerciseSet({containerId:'ex-basic',exercises:[
+    {question:'5千米=多少米？',inputs:[{key:'a',width:60}],check:a=>norm(a.a)==='5000',expected:'5000'},
+    {question:'300厘米=多少米？',inputs:[{key:'a',width:50}],check:a=>norm(a.a)==='3',expected:'3'},
+    {question:'2平方米=多少平方分米？',inputs:[{key:'a',width:50}],check:a=>norm(a.a)==='200',expected:'200'}
+  ],passThreshold:0.67,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdvEnhanced();}});
+  function initAdvEnhanced(){
+    document.getElementById('ex-adv').innerHTML='';
+    createExerciseSet({containerId:'ex-adv',exercises:[
+      {question:'0.35千克=多少克？',inputs:[{key:'a',width:60}],check:a=>norm(a.a)==='350',expected:'350'},
+      {question:'1.5小时=多少分钟？',inputs:[{key:'a',width:60}],check:a=>norm(a.a)==='90',expected:'90'},
+      {question:'2500毫升=多少升？',inputs:[{key:'a',width:60}],check:a=>norm(a.a)==='2.5',expected:'2.5'}
+    ],passThreshold:0.67,onPass:()=>{document.getElementById('tier-mix').style.display='block';initMixEnhanced();}});
+  }
+  function initMixEnhanced(){
+    createExerciseSet({containerId:'ex-mix',exercises:[
+      {question:'2.4米绳子剪成每段30厘米，能剪几段？',inputs:[{key:'a',width:50}],check:a=>norm(a.a)==='8',expected:'8'},
+      {question:'50米泳池游20个来回，共多少千米？',inputs:[{key:'a',width:60}],check:a=>norm(a.a)==='2',expected:'2'},
+      {question:'1.5平方米和15000平方厘米谁大？',inputs:[{key:'a',width:80}],check:a=>['相等','一样','等于'].includes(norm(a.a)),expected:'相等'}
+    ],passThreshold:0.67,onPass:()=>{const done=document.getElementById('done');done.style.display='block';celebrate(done);saveProgress({'units':{'conversion':{'completed':true}}});}});
+  }
+})();
 </script>
 </body>
 </html>

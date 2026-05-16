@@ -98,6 +98,55 @@ function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[
   {question:'11/3=？又2/3',inputs:[{key:'a',width:40}],check:a=>a.a==='3',hint:'11÷3=3余2'},
   {question:'24/7化成带分数',inputs:[{key:'a',width:60}],check:a=>a.a==='3又3/7',hint:'24÷7=3余3'}
 ],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'fractions':{'proper-improper':{'completed':true}}});}});}
+(function sprint4Batch1Enrichment(){
+  function norm(v){return String(v||'').replace(/\s/g,'');}
+  function ensureTier(){
+    const adv=document.getElementById('tier-adv');
+    let mix=document.getElementById('tier-mix');
+    if(!mix&&adv){
+      mix=document.createElement('div');
+      mix.className='exercise-tier';
+      mix.id='tier-mix';
+      mix.style.display='none';
+      mix.innerHTML='<h3><span class="tier-badge challenge">综合</span></h3><div id="ex-mix"></div>';
+      adv.insertAdjacentElement('afterend',mix);
+    }
+    const done=document.getElementById('done');
+    if(done)done.style.display='none';
+  }
+  document.getElementById('adversary-root').innerHTML='';
+  createAdversarialChallenge({containerId:'adversary-root',challenges:[
+    {tag:'定义辨析',statement:'7/7是一个真分数，因为分子等于分母。',answer:'refute',hint:'真分数要求严格小于。',explanation:'7/7=1，属于假分数，不是真分数。',counterexample:'2/3才是真分数，因为2<3。'},
+    {tag:'大小判断',statement:'真分数都小于1，假分数都大于1。',answer:'refute',hint:'3/3等于多少？',explanation:'假分数是大于或等于1，3/3=1。',counterexample:'5/5=1，也是假的分数类型。'},
+    {tag:'互化验证',statement:'11/4=2又3/4，因为11÷4=2余3。',answer:'agree',hint:'2×4+3等于几？',explanation:'2×4+3=11，所以2又3/4=11/4。',counterexample:'11/4=2.75，2又3/4也是2.75。'},
+    {tag:'逆向思考',statement:'一个带分数是3又2/5，化成假分数是17/5。',answer:'agree',hint:'3×5+2。',explanation:'整数×分母+分子=3×5+2=17。',counterexample:'17÷5=3余2，又回到3又2/5。'}
+  ],onComplete:()=>saveProgress({'fractions':{'proper-improper':{'adversary':'complete'}}})});
+  document.getElementById('feynman-root').innerHTML='';
+  createFeynmanFill({containerId:'feynman-root',template:'分子小于分母叫___分数，它一定___于1；分子大于等于分母叫___分数，它___于等于1；假分数化带分数用___除以___；带分数化假分数用整数×___+___。',answer:['真','小','假','大','分子','分母','分母','分子'],onComplete:()=>saveProgress({'fractions':{'proper-improper':{'feynman':'complete'}}})});
+  ensureTier();
+  document.getElementById('ex-basic').innerHTML='';
+  document.getElementById('ex-adv').innerHTML='';
+  createExerciseSet({containerId:'ex-basic',exercises:[
+    {question:'3/5是真分数还是假分数？',inputs:[{key:'a',width:60}],check:a=>['真','真分数'].includes(norm(a.a)),expected:'真分数'},
+    {question:'7/4是真分数还是假分数？',inputs:[{key:'a',width:60}],check:a=>['假','假分数'].includes(norm(a.a)),expected:'假分数'},
+    {question:'9/9是真分数还是假分数？',inputs:[{key:'a',width:60}],check:a=>['假','假分数'].includes(norm(a.a)),expected:'假分数'}
+  ],passThreshold:0.67,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdvEnhanced();}});
+  function initAdvEnhanced(){
+    document.getElementById('ex-adv').innerHTML='';
+    createExerciseSet({containerId:'ex-adv',exercises:[
+      {question:'8/3化成带分数是？',inputs:[{key:'a',width:70}],check:a=>['2又2/3','2又2/3'].includes(norm(a.a)),expected:'2又2/3'},
+      {question:'2又3/4化成假分数是？',inputs:[{key:'a',width:70}],check:a=>norm(a.a)==='11/4',expected:'11/4'},
+      {question:'2又2/3和8/3在数轴上是同一点吗？',inputs:[{key:'a',width:60}],check:a=>['是','同一点','一样'].includes(norm(a.a)),expected:'同一点'}
+    ],passThreshold:0.67,onPass:()=>{document.getElementById('tier-mix').style.display='block';initMixEnhanced();}});
+  }
+  function initMixEnhanced(){
+    createExerciseSet({containerId:'ex-mix',exercises:[
+      {question:'从小到大排5/6、1又1/4、2/3、3/2，最小的是？',inputs:[{key:'a',width:60}],check:a=>norm(a.a)==='2/3',expected:'2/3'},
+      {question:'3个披萨平均分给4人，每人多少个？',inputs:[{key:'a',width:60}],check:a=>norm(a.a)==='3/4',expected:'3/4'},
+      {question:'“假分数是错的分数”对吗？',inputs:[{key:'a',width:60}],check:a=>['不对','错','错误','否'].includes(norm(a.a)),expected:'不对'}
+    ],passThreshold:0.67,onPass:()=>{const done=document.getElementById('done');done.style.display='block';celebrate(done);saveProgress({'fractions':{'proper-improper':{'completed':true}}});}});
+  }
+})();
 </script>
 </body>
 </html>

@@ -107,6 +107,55 @@ function initAdv(){createExerciseSet({containerId:'ex-adv',exercises:[
   {question:'24÷3+5×2=?',inputs:[{key:'a',width:40}],check:a=>a.a==='18'},
   {question:'(24÷3+5)×2=?',inputs:[{key:'a',width:40}],check:a=>a.a==='26'}
 ],passThreshold:0.5,onPass:()=>{document.getElementById('done').style.display='block';celebrate(document.getElementById('done'));saveProgress({'int-ops':{'order':{'completed':true}}});}});}
+(function sprint4Batch1Enrichment(){
+  function norm(v){return String(v||'').replace(/\s/g,'');}
+  function ensureTier(){
+    const adv=document.getElementById('tier-adv');
+    let mix=document.getElementById('tier-mix');
+    if(!mix&&adv){
+      mix=document.createElement('div');
+      mix.className='exercise-tier';
+      mix.id='tier-mix';
+      mix.style.display='none';
+      mix.innerHTML='<h3><span class="tier-badge challenge">综合</span></h3><div id="ex-mix"></div>';
+      adv.insertAdjacentElement('afterend',mix);
+    }
+    const done=document.getElementById('done');
+    if(done)done.style.display='none';
+  }
+  document.getElementById('adversary-root').innerHTML='';
+  createAdversarialChallenge({containerId:'adversary-root',challenges:[
+    {tag:'优先级陷阱',statement:'20-8÷4=3，因为20-8=12，12÷4=3。',answer:'refute',hint:'除法和减法谁优先？',explanation:'先除后减。8÷4=2，20-2=18。',counterexample:'20元买4支共8元的笔，每支2元，还剩18元。'},
+    {tag:'同级顺序',statement:'18-6+3=9，因为6+3=9，18-9=9。',answer:'refute',hint:'减号和加号同级，从哪边开始？',explanation:'同级从左到右。18-6=12，12+3=15。',counterexample:'18+(-6)+3=15。'},
+    {tag:'括号作用',statement:'有括号的算式，括号外仍然可以直接从左到右算。',answer:'refute',hint:'8×(2+3)能先算8×2吗？',explanation:'括号强制优先。8×(2+3)=8×5=40。',counterexample:'用分配律：8×2+8×3=40。'},
+    {tag:'逆向思考',statement:'20+□×3=35，□=5。',answer:'agree',hint:'先把□×3看成一个整体。',explanation:'□×3=35-20=15，所以□=5。',counterexample:'如果□=15，结果会是65。'}
+  ],onComplete:()=>saveProgress({'int-ops':{'order':{'adversary':'complete'}}})});
+  document.getElementById('feynman-root').innerHTML='';
+  createFeynmanFill({containerId:'feynman-root',template:'四则运算顺序是先___后___，同级从___到___；括号的作用是___优先计算；12-4+2从左到右得___；减法可以看成加___数。',answer:['乘除','加减','左','右','强制','10','负'],onComplete:()=>saveProgress({'int-ops':{'order':{'feynman':'complete'}}})});
+  ensureTier();
+  document.getElementById('ex-basic').innerHTML='';
+  document.getElementById('ex-adv').innerHTML='';
+  createExerciseSet({containerId:'ex-basic',exercises:[
+    {question:'15+6×3=?',inputs:[{key:'a',width:50}],check:a=>norm(a.a)==='33',expected:'33'},
+    {question:'(15+6)×3=?',inputs:[{key:'a',width:50}],check:a=>norm(a.a)==='63',expected:'63'},
+    {question:'36÷4+7=?',inputs:[{key:'a',width:50}],check:a=>norm(a.a)==='16',expected:'16'}
+  ],passThreshold:0.67,onPass:()=>{document.getElementById('tier-adv').style.display='block';initAdvEnhanced();}});
+  function initAdvEnhanced(){
+    document.getElementById('ex-adv').innerHTML='';
+    createExerciseSet({containerId:'ex-adv',exercises:[
+      {question:'24-8÷2+3=?',inputs:[{key:'a',width:50}],check:a=>norm(a.a)==='23',expected:'23'},
+      {question:'4本书每本8元，又买12元笔袋，综合算式结果是多少？',inputs:[{key:'a',width:50}],check:a=>norm(a.a)==='44',expected:'4×8+12=44'},
+      {question:'□×5-15=10，□=?',inputs:[{key:'a',width:50}],check:a=>norm(a.a)==='5',expected:'5'}
+    ],passThreshold:0.67,onPass:()=>{document.getElementById('tier-mix').style.display='block';initMixEnhanced();}});
+  }
+  function initMixEnhanced(){
+    createExerciseSet({containerId:'ex-mix',exercises:[
+      {question:'100-50÷5，结果是多少？',inputs:[{key:'a',width:50}],check:a=>norm(a.a)==='90',expected:'90'},
+      {question:'添括号使60÷3+7×2=12，可写成60÷(3+7)×2，这个式子结果是？',inputs:[{key:'a',width:50}],check:a=>norm(a.a)==='12',expected:'12'},
+      {question:'(25+75)×4 和 25×4+75×4 的大小关系？',inputs:[{key:'a',width:80}],check:a=>['相等','一样','=', '等于'].includes(norm(a.a)),expected:'相等'}
+    ],passThreshold:0.67,onPass:()=>{const done=document.getElementById('done');done.style.display='block';celebrate(done);saveProgress({'int-ops':{'order':{'completed':true}}});}});
+  }
+})();
 </script>
 </body>
 </html>
