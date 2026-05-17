@@ -72,23 +72,56 @@ Phase 0 (6组件) → Batch 1 (6课, NumberLine) → Batch 2 (7课, 几何) → 
 
 ---
 
+## 信号协议（P0 — 必读）
+
+`signals/` 目录是独立于 PROGRESS.md 的信号通道。**每次状态变更必须同时写信号文件。**
+
+### Codex 发送信号
+```
+# 1. 写信号文件（先于 PROGRESS.md 更新）
+echo '{"type":"deliver","phase":"Batch X","ts":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"}' > signals/deliver-$(date +%s).json
+
+# 2. 更新 PROGRESS.md
+# 3. git add signals/ PROGRESS.md && git commit + push
+```
+
+### 信号类型
+| 文件前缀 | 含义 | 发送者 | 预期回应 |
+|---------|------|--------|---------|
+| `deliver-` | 交付物就绪，等审查 | Codex | Ariste 执行审查 → 删信号 + 写报告 |
+| `revise-` | 已按 review 修正重交 | Codex | Ariste 重新审查 |
+| `start-` | 开始施工（认领确认） | Codex | Ariste 确认状态匹配 |
+| `fault-` | 系统异常 | 任一方 | 读出故障上下文 → 群内报告 |
+
+### Ariste 确认信号
+Cron 处理完信号后：
+```
+git rm signals/<file>  # 删除已处理的信号
+# 写 ack 完成信号
+```
+
+### 超时规则
+信号文件在 `signals/` 停留 > 30 分钟 → cron 自动告警（信号通道故障，不依赖 PROGRESS.md）。
+
 ## 执行指南
 
 ### Codex 执行流程
 1. 确认当前阶段状态为 `⏳ 空闲`
-2. **认领**: 更新状态为 `🏁 已认领`，填写认领人，commit 并 push
-3. **施工**: 自由工作，可更新为 `🔧 施工中` 并附预期时间
-4. **交付**: 完成代码 + 更新状态为 `⏳ 待审查` → commit + push
-5. **反馈**: 拉取最新 PROGRESS.md 和 review/，查看审查结论
+2. **认领**: 写 `signals/start-<ts>.json` + 更新 PROGRESS.md 为 `🏁 已认领` → commit + push
+3. **施工**: 自由工作，可更新为 `🔧 施工中`
+4. **交付**: 写 `signals/deliver-<ts>.json` + 更新 PROGRESS.md 为 `⏳ 待审查` → commit + push
+5. **反馈**: 拉取 → 检查信号是否已删除（Ariste 确认） → 读 review/ → 按结论行动
    - ✅ 通过 → 继续下一阶段
-   - ❌ 需修正 → 读 review/ 报告 → 修复 → 重新交付
+   - ❌ 需修正 → 修复后写 `signals/revise-<ts>.json` + 重交
 
 ### Ariste 执行流程
-1. Cron 检测到状态 `⏳ 待审查` 或空闲超过 4 小时
-2. 拉取代码 + 审查
-3. 写 review/ 报告 + 更新 PROGRESS.md（✅ 或 ❌）
-4. 群内简报
+1. Cron 每 5 分钟：`git fetch origin gh-pages && git reset --hard origin/gh-pages`
+2. 先检查 `signals/`（独立通道，优先级高于 PROGRESS.md）
+3. 有信号 → 处理信号 → 审核/确认/报告 → 删除信号文件 → push
+4. 无信号 → 检查 PROGRESS.md 超时规则
+5. 群内简报
 
 ### Sky 介入条件
-- 阶段空闲 > 4 小时无人认领 → 群内 @Sky 提醒
-- ❌ 需修正 > 4 小时无响应 → 群内 @Sky 介入
+- 信号在 `signals/` 停留 > 30 分钟 → 群内 @Sky（说明: 即使是 Ariste cron 挂了，信号文件也能揭示问题）
+- 阶段空闲 > 4 小时无人认领 → 群内 @Sky
+- ❌ 需修正 > 4 小时无响应 → 群内 @Sky
